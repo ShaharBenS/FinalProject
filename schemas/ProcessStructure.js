@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const processStructure = new Schema({
-    structure_name: String,
+    structure_name: {type:String,unique:true},
     initials: [Number],
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
