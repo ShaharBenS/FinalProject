@@ -7,3 +7,7 @@ module.exports.addProcessStructure = (structure_name, initials, stages, callback
         stages:stages,
     },callback)
 };
+
+module.exports.editProcessStructure = (structure_name, initials, stages, callback)=>{
+    ProcessStructure.findOneAndUpdate({structure_name : structure_name}, { $set: { initials: initials, stages:stages}},callback)
+};

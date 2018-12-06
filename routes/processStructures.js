@@ -10,5 +10,12 @@ router.post('/addProcessStructure', function (req, res) {
     processStructure.addProcessStructure(structure_name, initials, stages, (result)=> res.send(result));
 });
 
+router.post('/editProcessStructure', function (req, res) {
+    let structure_name = req.body.structure_name;
+    let initials = req.body.initials;
+    let stages =  req.body.stages;
+    processStructure.editProcessStructure(structure_name, initials, stages, (result)=> res.send(result));
+});
+
 
 module.exports = router;
