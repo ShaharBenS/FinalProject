@@ -17,5 +17,10 @@ router.post('/editProcessStructure', function (req, res) {
     processStructure.editProcessStructure(structure_name, initials, stages, (result)=> res.send(result));
 });
 
+router.post('/removeProcessStructure', function (req, res) {
+    let structure_name = req.body.structure_name;
+    processStructure.removeProcessStructure(structure_name,(result)=> res.send(result));
+});
+
 
 module.exports = router;
