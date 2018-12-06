@@ -1,21 +1,13 @@
 let express = require('express');
 let processStructure = require('../controllers/processes/processStructure');
-let List = require("collections/list");
 
 let router = express.Router();
 
-router.post('/add', function (req, res) {
-    let username = req.body.register_username;
-    let password = req.body.register_password;
-
-    addUser(username, password, (err)=>{
-        if(err){
-            res.send("registered failed");
-        }
-        else{
-            res.send("registered successfully");
-        }
-    });
+router.post('/addProcessStructure', function (req, res) {
+    let structure_name = req.body.structure_name;
+    let initials = req.body.initials;
+    let stages =  req.body.stages;
+    processStructure.addProcessStructure(structure_name, initials, stages, (result)=> res.send(result));
 });
 
 
