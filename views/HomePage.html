@@ -107,5 +107,35 @@
     <br><br>
     <input value="deleteUserByRole" type="submit">
 </form>
+
+<p style="font-size: 40px;">Edit User Email:</p>
+<form method="POST" action="/editUserEmail/">
+    <label>
+        Old User Email:
+        <input name="editUser1_email" type="text">
+    </label>
+    <br><br>
+    <label>
+        New User Email:
+        <input name="editUser2_email" type="text">
+    </label>
+    <br><br>
+    <input value="editUserEmail" type="submit">
+</form>
+
+<p style="font-size: 40px;">Edit User Role:</p>
+<form method="POST" action="/editUserRole/">
+    <label>
+        Old User Role:
+        <input name="editUser1_role" type="text">
+    </label>
+    <br><br>
+    <label>
+        New User Role:
+        <input name="editUser2_role" type="text">
+    </label>
+    <br><br>
+    <input value="editUserRole" type="submit">
+</form>
 </body>
 </html>
