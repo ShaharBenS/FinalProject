@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const onlineForm = new Schema({
     name: String,
-    fields: [{field_name: String, value: String}],
+    HTMLSource : String,
 });
 
 this.onlineForm = mongoose.model('OnlineForm', onlineForm);

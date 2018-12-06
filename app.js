@@ -9,7 +9,8 @@ let mongoose = require('mongoose');
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let registerRouter = require('./routes/register');
-let processStructures = require('./routes/processStructures');
+let processStructuresRouter = require('./routes/processStructures');
+let activeProcessesRouter = require('./routes/activeProcesses');
 
 let app = express();
 
@@ -39,6 +40,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
 app.use('/processStructures', processStructuresRouter);
+app.use('/activeProcesses',activeProcessesRouter);
 
 
 // catch 404 and forward to error handler
