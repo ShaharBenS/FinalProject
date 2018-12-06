@@ -37,5 +37,40 @@
     <br><br>
     <input value="Login" type="submit">
 </form>
+
+<p style="font-size: 40px;">Add Role:</p>
+<form method="POST" action="/addRole/">
+    <label>
+        Role Name:
+        <input name="addRole_role" type="text">
+    </label>
+    <br><br>
+    <input value="addRole" type="submit">
+</form>
+
+<p style="font-size: 40px;">Delete Role:</p>
+<form method="POST" action="/DeleteRole/">
+    <label>
+        Role Name:
+        <input name="deleteRole_role" type="text">
+    </label>
+    <br><br>
+    <input value="deleteRole" type="submit">
+</form>
+
+<p style="font-size: 40px;">Edit Role:</p>
+<form method="POST" action="/editRole/">
+    <label>
+        Old Role Name:
+        <input name="editRole1_role" type="text">
+    </label>
+    <br><br>
+    <label>
+        New Role Name:
+        <input name="editRole2_role" type="text">
+    </label>
+    <br><br>
+    <input value="editRole" type="submit">
+</form>
 </body>
 </html>

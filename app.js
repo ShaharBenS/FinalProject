@@ -9,6 +9,9 @@ var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var registerRouter = require('./routes/register');
+var addRoleRouter = require('./routes/addRole');
+var deleteRoleRouter = require('./routes/deleteRole');
+var editRoleRouter = require('./routes/editRole');
 
 var app = express();
 
@@ -19,7 +22,7 @@ mongoose.set('useCreateIndex', true);
 var PS = require("./schemas/ProcessStructure");
 var UAR = require("./schemas/UsersAndRole");
 var U = require("./schemas/User");
-
+var X = require("./schemas/Roles");
 
 // view engine setup
 app.engine('html', require('ejs').renderFile);
@@ -37,6 +40,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
+app.use('/addRole', addRoleRouter);
+app.use('/deleteRole', deleteRoleRouter);
+app.use('/editRole', editRoleRouter);
 
 
 // catch 404 and forward to error handler
