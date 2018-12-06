@@ -49,7 +49,7 @@
 </form>
 
 <p style="font-size: 40px;">Delete Role:</p>
-<form method="POST" action="/DeleteRole/">
+<form method="POST" action="/deleteRole/">
     <label>
         Role Name:
         <input name="deleteRole_role" type="text">
@@ -71,6 +71,41 @@
     </label>
     <br><br>
     <input value="editRole" type="submit">
+</form>
+
+<p style="font-size: 40px;">Add User:</p>
+<form method="POST" action="/addUser/">
+    <label>
+        User Email:
+        <input name="addUser_1" type="text">
+    </label>
+    <br><br>
+    <label>
+        User Role:
+        <input name="addUser_2" type="text">
+    </label>
+    <br><br>
+    <input value="addUser" type="submit">
+</form>
+
+<p style="font-size: 40px;">Delete User By Email:</p>
+<form method="POST" action="/deleteUserByEmail/">
+    <label>
+        User Email:
+        <input name="deleteUserByEmail" type="text">
+    </label>
+    <br><br>
+    <input value="deleteUserByEmail" type="submit">
+</form>
+
+<p style="font-size: 40px;">Delete User By Role:</p>
+<form method="POST" action="/deleteUserByRole/">
+    <label>
+        User Role:
+        <input name="deleteUserByRole" type="text">
+    </label>
+    <br><br>
+    <input value="deleteUserByRole" type="submit">
 </form>
 </body>
 </html>
