@@ -1,5 +1,6 @@
 let ActiveProcess = require("../../schemas/ActiveProcess");
 let ProcessStructure = require("../../schemas/ProcessStructure");
+let activeProcess = require('../controllers/processes/activeProcess');
 
 module.exports.activateProcess = (structure_name,process_name,initial_stage, callback)=>{
     ProcessStructure.find({structure_name:structure_name});
@@ -22,4 +23,18 @@ module.exports.activateProcess = (structure_name,process_name,initial_stage, cal
             attached_files_names: [String],
         }],
     },callback)
+};
+
+module.exports.getActiveProcessesByUser = (user_name, callback)=>{
+    let toReturn =[];
+    activeProcess.find().foreach(function(activeP)
+    {
+        activeP.current_stages.forEach(function (currentStage)
+        {
+            if(currentStage.userID === user_name)
+            {
+                toReturn.push(activeP);
+            }
+        })
+    });
 };
