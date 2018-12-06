@@ -1,24 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let bodyParser = require('body-parser');
+let mongoose = require('mongoose');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var registerRouter = require('./routes/register');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
+let registerRouter = require('./routes/register');
 
-var app = express();
+let app = express();
 
 
 //Setting up schemas
 mongoose.connect('mongodb://localhost:27017/Aguda',{ useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
-var PS = require("./schemas/ProcessStructure");
-var UAR = require("./schemas/UsersAndRole");
-var U = require("./schemas/User");
+let PS = require("./schemas/ProcessStructure");
+let UAR = require("./schemas/UsersAndRole");
+let U = require("./schemas/User");
 
 
 // view engine setup
