@@ -5,12 +5,12 @@ const processStructure = new Schema({
     structure_name: String,
     initials: [Number],
     stages: [{
-        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
+        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         condition: {type: String, enum: ['And', 'Or']},
         nextStages: [Number],
         stagesToWaitFor: [Number],
         online_forms: [{type: Schema.Types.ObjectId, ref:'OnlineForm'}],
-        attached_files: [{type: Schema.Types.ObjectId, ref:'File'}],
+        attached_files_names: [String],
     }],
 });
 
