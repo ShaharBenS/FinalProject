@@ -12,6 +12,9 @@ let registerRouter = require('./routes/register');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
 
+let openRouter = require('./routes/open');
+let saveRouter = require('./routes/save');
+
 let app = express();
 
 
@@ -42,6 +45,8 @@ app.use('/register', registerRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses',activeProcessesRouter);
 
+app.use('/open',openRouter);
+app.use('/save',saveRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
