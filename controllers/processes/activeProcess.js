@@ -1,6 +1,5 @@
 let ActiveProcess = require("../../schemas/ActiveProcess");
 let ProcessStructure = require("../../schemas/ProcessStructure");
-let activeProcess = require('../controllers/processes/activeProcess');
 
 module.exports.activateProcess = (structure_name,process_name,initial_stage, callback)=>{
     ProcessStructure.find({structure_name:structure_name});

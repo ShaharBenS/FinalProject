@@ -1,0 +1,46 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <title>Sankey - Transaction Mining</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway:100,200,300" >
+    <link href="../common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="../common/lib/ionicons/css/ionicons.min.css" />
+    <link rel="stylesheet" href="./assets/css/main.css" >
+
+
+    <SCRIPT src="../common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="../common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+    <SCRIPT src="../common/assets/javascript/common.js"></SCRIPT>
+    <SCRIPT src="./assets/javascript/viewer.js"></SCRIPT>
+    <script src="/socket.io/socket.io.js"></script>
+
+
+    <script>
+        var view,
+            socket;
+
+        $(window).load(function () {
+            socket = io();
+            view= new sankey.Application(socket);
+        });
+
+    </script>
+
+    </head>
+<body id="container">
+        <div id="draw2dCanvasWrapper">
+            <div id="canvas"  style="width:9000px; height:9000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
+        </div>
+
+    <div id="toolbar">
+        <a class="navbar-brand brand highlight" href="../index" target="_index"><img src="../common/assets/img/logo.png">Sankey <i>state</i></a>
+        <div class="headline">Transaction Mining - The Basics for Marketing Managers</div>
+    </div>
+
+
+</body>
+
+</html>
