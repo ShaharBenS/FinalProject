@@ -11,7 +11,7 @@ module.exports.activateProcess = (structure_name,process_name,initial_stage, cal
             result[0].forEach((stage)=>{
                stages.push({
                    roleID: stage.roleID,
-                   userID: null, //TODO: userID is being referenced to Users, so putting null might break it. 
+                   userID: null, //TODO: userID is being referenced to Users, so putting null might break it.
                    condition: stage.condition,
                    nextStages: stage.nextStages,
                    stagesToWaitFor: stage.stagesToWaitFor,
@@ -33,4 +33,18 @@ module.exports.activateProcess = (structure_name,process_name,initial_stage, cal
         }
     });
 
+};
+
+module.exports.getActiveProcessesByUser = (user_name, callback)=>{
+    let toReturn =[];
+    activeProcess.find().foreach(function(activeP)
+    {
+        activeP.current_stages.forEach(function (currentStage)
+        {
+            if(currentStage.userID === user_name)
+            {
+                toReturn.push(activeP);
+            }
+        })
+    });
 };

@@ -18,5 +18,16 @@ router.post('/activateProcess', function (req, res) {
     });
 });
 
+router.get('/getActiveProcessesByUser', function (req, res) {
+    let user_name = req.body.user_name;
+    activeProcess.getActiveProcessesByUser(user_name,(err)=>{
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.send("Activated Successfully");
+        }
+    });
+});
 
 module.exports = router;
