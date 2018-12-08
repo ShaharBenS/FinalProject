@@ -7,8 +7,8 @@ const activeProcess = new Schema({
     current_stages: [Number],
     initials: [Number],
     stages: [{
-        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
-        userID: {type: Schema.Types.ObjectId, ref: 'Role'},
+        roleName: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
+        userEmail: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         stageNum: Number,
         nextStages: [Number],
         stagesToWaitFor: [Number],

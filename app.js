@@ -7,21 +7,20 @@ let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 
 let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
-let registerRouter = require('./routes/register');
 let mainRouter = require('./routes/main');
 let loginRouter = require('./routes/login');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
 
+var UsersAndRolesRouter = require('./routes/UsersAndRoles');
+
 let app = express();
 
 //Setting up schemas
-mongoose.connect('mongodb://localhost:27017/Aguda',{ useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/Aguda', {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
-let PS = require("./schemas/ProcessStructure");
-let UAR = require("./schemas/UsersAndRole");
-let U = require("./schemas/User");
+var PS = require("./schemas/ProcessStructure");
+var UAR = require("./schemas/UsersAndRoles");
 
 
 // view engine setup
@@ -38,12 +37,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/register', registerRouter);
 app.use('/main',mainRouter);
 app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
+app.use('/UsersAndRoles', UsersAndRolesRouter);
+
 
 
 // catch 404 and forward to error handler
