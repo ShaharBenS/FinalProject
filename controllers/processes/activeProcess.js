@@ -34,7 +34,6 @@ module.exports.startProcessByUsername = (username, processStructureName, process
             roleID: stage.roleID,
             userID: null, //TODO: userID is being referenced to Users, so putting null might break it.
             stageNum: stage.stageNum,
-            condition: stage.condition,
             nextStages: stage.nextStages,
             stagesToWaitFor: stage.stagesToWaitFor,
             origin_stagesToWaitFor: stage.stagesToWaitFor,

@@ -7,7 +7,6 @@ const processStructure = new Schema({
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         stageNum: Number,
-        condition: {type: String, enum: ['And', 'Or']},
         nextStages: [Number],
         stagesToWaitFor: [Number],
         online_forms: [{type: Schema.Types.ObjectId, ref:'OnlineForm'}],

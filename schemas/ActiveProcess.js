@@ -10,7 +10,6 @@ const activeProcess = new Schema({
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userID: {type: Schema.Types.ObjectId, ref: 'Role'},
         stageNum: Number,
-        condition: {type: String, enum: ['And', 'Or']},
         nextStages: [Number],
         stagesToWaitFor: [Number],
         origin_stagesToWaitFor: [Number],
