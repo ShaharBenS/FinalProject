@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var registerRouter = require('./routes/register');
-var addRoleRouter = require('./routes/addRole');
+var addRoleRouter = require('./routes/addRole')
 var deleteRoleRouter = require('./routes/deleteRole');
 var editRoleRouter = require('./routes/editRole');
 var addUserRouter = require('./routes/addUser');
@@ -17,6 +17,8 @@ var deleteUserByEmailRouter = require('./routes/deleteUserByEmail');
 var deleteUserByRoleRouter = require('./routes/deleteUserByRole');
 var editUserEmailRouter = require('./routes/editUserEmail');
 var editUserRoleRouter = require('./routes/editUserRole');
+var addNewRoleRouter = require('./routes/addNewRole');
+var deleteRoleRouter = require('./routes/deleteRole');
 
 
 var app = express();
@@ -26,7 +28,7 @@ var app = express();
 mongoose.connect('mongodb://localhost:27017/Aguda',{ useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
 var PS = require("./schemas/ProcessStructure");
-var UAR = require("./schemas/UsersAndRole");
+var UAR = require("./schemas/UsersAndRoles");
 var U = require("./schemas/User");
 var X = require("./schemas/Roles");
 
@@ -54,6 +56,8 @@ app.use('/deleteUserByEmail', deleteUserByEmailRouter);
 app.use('/deleteUserByRole', deleteUserByRoleRouter);
 app.use('/editUserEmail', editUserEmailRouter);
 app.use('/editUserRole', editUserRoleRouter);
+app.use('/addNewRole', addNewRoleRouter);
+app.use('/deleteRole', deleteRoleRouter);
 
 
 // catch 404 and forward to error handler

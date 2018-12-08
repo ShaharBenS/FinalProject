@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var usersAndRole = new Schema({
+var UsersAndRoles = new Schema({
     roleName: {type:String, unique:true},
-    userEmail: [{type:Schema.Types.ObjectId, ref:'User'}],
+    userEmail: [{type:String}],
     children: [{type:Schema.Types.ObjectId, ref:'UsersAndRoles'}]
 });
 
-this.usersAndRole = mongoose.model('UsersAndRoles', usersAndRole);
+module.exports = mongoose.model('UsersAndRoles', UsersAndRoles);

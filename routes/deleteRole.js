@@ -1,11 +1,11 @@
 let express = require('express');
-let deleteRole = require('../controllers/roles/deleteRole');
+let deleteRole = require('../controllers/UsersAndRoles/deleteRole');
 
 let router = express.Router();
 
 router.post('/', function (req, res) {
-    let roleName = req.body.deleteRole_role;
-    deleteRole(roleName, (err) => {
+    let roleToDelete = req.body.roleToDelete;
+    deleteRole(roleToDelete, (err) => {
         if (err) {
             res.send("Role Deletion Failed");
         }
