@@ -3,7 +3,7 @@ let UsersAndRole = require("../../schemas/UsersAndRole");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 
 
-export function getRoleID_by_username(username) {
+exports.getRoleID_by_username = function (username) {
     UsersAndRole.find({userID: username}, (err, user) => {
         if (err) throw err;
         else {
@@ -11,9 +11,9 @@ export function getRoleID_by_username(username) {
             return user[0].roleName;
         }
     });
-}
+};
 
-export function getProcessStructure(processStructureName) {
+exports.getProcessStructure = function (processStructureName) {
     ProcessStructure.find({structure_name: processStructureName}, (err, processStructure) => {
         if (err) throw err;
         else {
@@ -21,9 +21,9 @@ export function getProcessStructure(processStructureName) {
             return processStructure[0];
         }
     });
-}
+};
 
-export function getActiveProcessByProcessName(processName) {
+exports.getActiveProcessByProcessName = function (processName) {
     ActiveProcess.find({process_name: processName}, (err, process) => {
         if (err) throw err;
         else {
@@ -31,4 +31,4 @@ export function getActiveProcessByProcessName(processName) {
             return process[0];
         }
     });
-}
+};

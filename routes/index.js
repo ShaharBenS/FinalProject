@@ -6,11 +6,11 @@ router.get('/', function (req, res) {
     res.render('login', {title: 'Express'});
 });
 
-router.post('/backend/file/save',function (req,res,next) {
-   res.send("okay?");
+router.post('/backend/file/save', function (req, res, next) {
+    res.send("okay?");
 });
 
-router.post('/backend/file/get',function (req,res,next) {
+router.post('/backend/file/get', function (req, res, next) {
     res.send({
         "content": {
             "diagram": [
@@ -453,9 +453,9 @@ router.post('/backend/file/get',function (req,res,next) {
             ]
         }
     });
+});
 
-
-router.post('/backend/sankey/weights',function (req,res,next) {
+router.post('/backend/sankey/weights', function (req, res, next) {
     res.send([{
         file: req.body.id
     }]);
