@@ -19,6 +19,9 @@ var editUserEmailRouter = require('./routes/editUserEmail');
 var editUserRoleRouter = require('./routes/editUserRole');
 var addNewRoleRouter = require('./routes/addNewRole');
 var deleteRoleRouter = require('./routes/deleteRole');
+var changeRoleNameRouter = require('./routes/changeRoleName');
+var addNewUserToRoleRouter = require('./routes/addNewUserToRole');
+var deleteUserFromRoleRouter = require('./routes/deleteUserFromRole');
 
 
 var app = express();
@@ -58,6 +61,9 @@ app.use('/editUserEmail', editUserEmailRouter);
 app.use('/editUserRole', editUserRoleRouter);
 app.use('/addNewRole', addNewRoleRouter);
 app.use('/deleteRole', deleteRoleRouter);
+app.use('/changeRoleName', changeRoleNameRouter);
+app.use('/addNewUserToRole', addNewUserToRoleRouter);
+app.use('/deleteUserFromRole', deleteUserFromRoleRouter);
 
 
 // catch 404 and forward to error handler

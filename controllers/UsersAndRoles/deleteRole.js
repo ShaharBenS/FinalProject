@@ -20,7 +20,7 @@ module.exports = (roleToDelete, callback) => {
                                     console.log('Error In deleteRole' + err3);
                                 }
                                 else {
-                                    UsersAndRoles.updateOne({_id: fatherID},  { $push: { children: { $each: toDeleteChildren }}}, (err4) => {
+                                    UsersAndRoles.updateOne({_id: fatherID}, {$push: {children: {$each: toDeleteChildren}}}, (err4) => {
                                             if (err4) {
                                                 console.log('Error In deleteRole' + err4);
                                             }
@@ -32,6 +32,9 @@ module.exports = (roleToDelete, callback) => {
                                 }
                             }
                         )
+                    }
+                    else {
+                        UsersAndRoles.deleteOne({_id: toDeleteID}, callback);
                     }
                 }
             });
