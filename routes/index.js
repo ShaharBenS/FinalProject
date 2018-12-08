@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('HomePage.html', {title: 'Express'});
+router.get('/', function (req, res) {
+    res.render('login', {title: 'Express'});
 });
 
 router.post('/backend/file/save',function (req,res,next) {
@@ -453,7 +453,7 @@ router.post('/backend/file/get',function (req,res,next) {
             ]
         }
     });
-});
+
 
 router.post('/backend/sankey/weights',function (req,res,next) {
     res.send([{
