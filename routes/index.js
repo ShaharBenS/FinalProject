@@ -3,9 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('../public/draw_sankey/server/html/editor/index.html',
-        {structure_name: "Untitled.sankey"});
-    //res.render('../public/draw_sankey/server/html/editor/index.html');
+    res.render('HomePage.html', {title: 'Express'});
 });
 
 router.post('/backend/file/save',function (req,res,next) {

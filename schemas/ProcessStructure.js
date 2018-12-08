@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+let mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const processStructure = new Schema({
@@ -6,6 +6,7 @@ const processStructure = new Schema({
     initials: [Number],
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
+        stageNum: Number,
         condition: {type: String, enum: ['And', 'Or']},
         nextStages: [Number],
         stagesToWaitFor: [Number],
@@ -14,4 +15,4 @@ const processStructure = new Schema({
     }],
 });
 
-this.processStructure = mongoose.model('ProcessStructure', processStructure);
+module.exports = mongoose.model('processStructure', processStructure);

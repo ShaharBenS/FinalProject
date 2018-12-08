@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const activeProcess = new Schema({
+    process_name: {type: String, unique: true},
     time_creation: Date,
     current_stages: [Number],
-    process_name: String,
     initials: [Number],
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userID: {type: Schema.Types.ObjectId, ref: 'Role'},
+        stageNum: Number,
         condition: {type: String, enum: ['And', 'Or']},
         nextStages: [Number],
         stagesToWaitFor: [Number],
