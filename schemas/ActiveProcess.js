@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const activeProcess = new Schema({
     process_name: {type: String, unique: true},
     time_creation: Date,
+    notificationTime: Number,
     current_stages: [Number],
     initials: [Number],
     stages: [{
@@ -14,8 +15,8 @@ const activeProcess = new Schema({
         stagesToWaitFor: [Number],
         origin_stagesToWaitFor: [Number],
         time_approval: Date,
-        online_forms: [{type: Schema.Types.ObjectId, ref:'OnlineForm'}],
-        filled_online_forms: [{type: Schema.Types.ObjectId, ref:'FilledOnlineForm'}],
+        online_forms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
+        filled_online_forms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
         attached_files_names: [String],
     }],
 });
