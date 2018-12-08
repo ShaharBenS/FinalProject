@@ -197,5 +197,25 @@
     <br><br>
     <input value="deleteUserFromRole" type="submit">
 </form>
+
+<p style="font-size: 40px;">Change User Email In Role:</p>
+<form method="POST" action="/changeUserEmailInRole/">
+    <label>
+        Role Name :
+        <input name="changeUserEmailInRole_roleName" type="text">
+    </label>
+    <br><br>
+    <label>
+        Old User Email :
+        <input name="changeUserEmailInRole_oldUserEmail" type="text">
+    </label>
+    <br><br>
+    <label>
+        New User Email :
+        <input name="changeUserEmailInRole_newUserEmail" type="text">
+    </label>
+    <br><br>
+    <input value="changeUserEmailInRole" type="submit">
+</form>
 </body>
 </html>
