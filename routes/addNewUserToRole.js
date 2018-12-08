@@ -6,8 +6,7 @@ let router = express.Router();
 router.post('/', function (req, res) {
     let userEmail = req.body.addNewUserToRole_userEmail;
     let roleName = req.body.addNewUserToRole_roleName;
-    addNewUserToRole(userEmail,roleName,(err) =>
-    {
+    addNewUserToRole(userEmail, roleName, (err) => {
         if (err) {
             res.send("User Addition To Role Failed");
         }

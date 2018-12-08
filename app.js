@@ -7,19 +7,11 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var registerRouter = require('./routes/register');
-var addRoleRouter = require('./routes/addRole')
-var deleteRoleRouter = require('./routes/deleteRole');
-var editRoleRouter = require('./routes/editRole');
-var addUserRouter = require('./routes/addUser');
-var deleteUserByEmailRouter = require('./routes/deleteUserByEmail');
-var deleteUserByRoleRouter = require('./routes/deleteUserByRole');
-var editUserEmailRouter = require('./routes/editUserEmail');
-var editUserRoleRouter = require('./routes/editUserRole');
+
 var addNewRoleRouter = require('./routes/addNewRole');
 var deleteRoleRouter = require('./routes/deleteRole');
 var changeRoleNameRouter = require('./routes/changeRoleName');
+
 var addNewUserToRoleRouter = require('./routes/addNewUserToRole');
 var deleteUserFromRoleRouter = require('./routes/deleteUserFromRole');
 var changeUserEmailInRoleRouter = require('./routes/changeUserEmailInRole');
@@ -29,7 +21,7 @@ var app = express();
 
 
 //Setting up schemas
-mongoose.connect('mongodb://localhost:27017/Aguda',{ useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/Aguda', {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
 var PS = require("./schemas/ProcessStructure");
 var UAR = require("./schemas/UsersAndRoles");
@@ -50,16 +42,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/register', registerRouter);
-app.use('/addRole', addRoleRouter);
-app.use('/deleteRole', deleteRoleRouter);
-app.use('/editRole', editRoleRouter);
-app.use('/addUser', addUserRouter);
-app.use('/deleteUserByEmail', deleteUserByEmailRouter);
-app.use('/deleteUserByRole', deleteUserByRoleRouter);
-app.use('/editUserEmail', editUserEmailRouter);
-app.use('/editUserRole', editUserRoleRouter);
 app.use('/addNewRole', addNewRoleRouter);
 app.use('/deleteRole', deleteRoleRouter);
 app.use('/changeRoleName', changeRoleNameRouter);
