@@ -9,7 +9,6 @@ let mongoose = require('mongoose');
 let indexRouter = require('./routes/index');
 let mainRouter = require('./routes/main');
 let loginRouter = require('./routes/login');
-let graphRouter = require('./routes/graph');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
 
@@ -40,7 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/main',mainRouter);
 app.use('/login',loginRouter);
-app.use('/graph',graphRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
 app.use('/UsersAndRoles', UsersAndRolesRouter);

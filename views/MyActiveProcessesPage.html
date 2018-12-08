@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1">
+<% table.forEach(function(process){ %>
+    <tr><td><%= process.process_name %></td><td><%= process.time_creation %></td></tr>
+<% })%>
+</table>
+</body>
+</html>
