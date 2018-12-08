@@ -10,7 +10,7 @@
 </head>
 <body>
 <p style="font-size: 40px;">Add New Role:</p>
-<form method="POST" action="/addNewRole/">
+<form method="POST" action="/UsersAndRoles/addNewRole/">
     <label>
         New Role Name:
         <input name="addNewRole_newRoleName" type="text">
@@ -25,7 +25,7 @@
 </form>
 
 <p style="font-size: 40px;">Delete Role:</p>
-<form method="POST" action="/deleteRole/">
+<form method="POST" action="/UsersAndRoles/deleteRole/">
     <label>
         Role Name:
         <input name="roleToDelete" type="text">
@@ -35,7 +35,7 @@
 </form>
 
 <p style="font-size: 40px;">Change Role Name:</p>
-<form method="POST" action="/changeRoleName/">
+<form method="POST" action="/UsersAndRoles/changeRoleName/">
     <label>
         Old Role Name:
         <input name="changeRoleName_oldRoleName" type="text">
@@ -50,7 +50,7 @@
 </form>
 
 <p style="font-size: 40px;">Add User To Role:</p>
-<form method="POST" action="/addNewUserToRole/">
+<form method="POST" action="/UsersAndRoles/addNewUserToRole/">
     <label>
         User Email :
         <input name="addNewUserToRole_userEmail" type="text">
@@ -65,7 +65,7 @@
 </form>
 
 <p style="font-size: 40px;">Delete User From Role:</p>
-<form method="POST" action="/deleteUserFromRole/">
+<form method="POST" action="/UsersAndRoles/deleteUserFromRole/">
     <label>
         User Email :
         <input name="deleteUserFromRole_userEmail" type="text">
@@ -80,7 +80,7 @@
 </form>
 
 <p style="font-size: 40px;">Change User Email In Role:</p>
-<form method="POST" action="/changeUserEmailInRole/">
+<form method="POST" action="/UsersAndRoles/changeUserEmailInRole/">
     <label>
         Role Name :
         <input name="changeUserEmailInRole_roleName" type="text">

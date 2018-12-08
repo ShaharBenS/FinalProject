@@ -8,14 +8,7 @@ var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 
-var addNewRoleRouter = require('./routes/addNewRole');
-var deleteRoleRouter = require('./routes/deleteRole');
-var changeRoleNameRouter = require('./routes/changeRoleName');
-
-var addNewUserToRoleRouter = require('./routes/addNewUserToRole');
-var deleteUserFromRoleRouter = require('./routes/deleteUserFromRole');
-var changeUserEmailInRoleRouter = require('./routes/changeUserEmailInRole');
-
+var UsersAndRolesRouter = require('./routes/UsersAndRoles');
 
 var app = express();
 
@@ -42,12 +35,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 app.use('/', indexRouter);
-app.use('/addNewRole', addNewRoleRouter);
-app.use('/deleteRole', deleteRoleRouter);
-app.use('/changeRoleName', changeRoleNameRouter);
-app.use('/addNewUserToRole', addNewUserToRoleRouter);
-app.use('/deleteUserFromRole', deleteUserFromRoleRouter);
-app.use('/changeUserEmailInRole', changeUserEmailInRoleRouter);
+app.use('/UsersAndRoles', UsersAndRolesRouter);
+
 
 
 // catch 404 and forward to error handler
