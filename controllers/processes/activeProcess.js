@@ -1,8 +1,5 @@
 let ActiveProcess = require("../../schemas/ActiveProcess");
-let UsersAndRole = require("../../schemas/UsersAndRole");
-let ProcessStructure = require("../../schemas/ProcessStructure");
 let HELPER = require("./helperFunctions.js");
-
 
 /**
  * Starts new process from a defined structure
@@ -37,7 +34,7 @@ module.exports.startProcessByUsername = (username, processStructureName, process
             nextStages: stage.nextStages,
             stagesToWaitFor: stage.stagesToWaitFor,
             origin_stagesToWaitFor: stage.stagesToWaitFor,
-            time_approval: null, //new Date(-8640000000000000)
+            time_approval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
             online_forms: stage.online_forms,
             filled_online_forms: [],
             attached_files_names: stage.attached_files_names,
@@ -60,7 +57,7 @@ module.exports.startProcessByUsername = (username, processStructureName, process
  * @param username
  * @param callback
  */
-module.exports.getActiveProcessesByUser = (username, callback) => {
+module.exports.getWaitingActiveProcessesByUser = (username, callback) => {
     let waiting_active_processes = [];
     let roleName = HELPER.getRoleName_by_username(username);
     ActiveProcess.find({}, (err, activeProcesses) => {
@@ -79,6 +76,33 @@ module.exports.getActiveProcessesByUser = (username, callback) => {
         }
     });
     callback(waiting_active_processes);
+};
+
+/**
+ * returns all active process for specific user
+ * > FOR MONITORING <
+ *
+ * @param username
+ * @param callback
+ */
+module.exports.getAllActiveProcessesByUser = (username, callback) => {
+    let active_processes = [];
+    let roleName = HELPER.getRoleName_by_username(username);
+    ActiveProcess.find({}, (err, activeProcesses) => {
+        if (err) console.log(err);
+        else {
+            activeProcesses.forEach((process) => {
+                process.stages.every((stage) => {
+                    if (stage.roleName === roleName) {
+                        active_processes.push(process);
+                        return false;
+                    }
+                    return true;
+                });
+            });
+        }
+    });
+    callback(active_processes);
 };
 
 
