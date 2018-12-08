@@ -22,5 +22,10 @@ router.post('/removeProcessStructure', function (req, res) {
     processStructure.removeProcessStructure(structure_name,(result)=> res.send(result));
 });
 
+/* HTML Pages */
+router.get('/addProcessStructure', function (req, res) {
+    res.render('AddProcessStructure');
+});
+
 
 module.exports = router;

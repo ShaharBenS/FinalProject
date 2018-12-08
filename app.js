@@ -39,7 +39,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
 app.use('/processStructures', processStructuresRouter);
-app.use('/activeProcesses',activeProcessesRouter);
+app.use('/activeProcesses', activeProcessesRouter);
 
 
 // catch 404 and forward to error handler

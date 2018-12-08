@@ -157,6 +157,7 @@ sankey.Application = Class.extend(
                         try{
                             _this.view.clear();
                             var reader = new draw2d.io.json.Reader();
+                            alert(JSON.stringify(response.content.diagram));
                             reader.unmarshal(_this.view, response.content.diagram);
                             _this.view.getCommandStack().markSaveLocation();
                             _this.view.centerDocument();
@@ -480,6 +481,7 @@ sankey.View = draw2d.Canvas.extend({
 
     updateWeights: function(weights)
     {
+
         // no content
         //
         if(weights.length===0){
@@ -488,10 +490,10 @@ sankey.View = draw2d.Canvas.extend({
 
         // content is not for this diagram
         //
+        alert(this.diagramName);
         if(weights[0].file!==this.diagramName){
             return;
         }
-
         var _this = this;
         this.getLines().each(function(index, conn){
             conn.setWeight("0");

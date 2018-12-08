@@ -24,7 +24,6 @@
         $(window).load(function () {
             socket = io();
             app  = new sankey.Application(socket);
-            //app.fileOpen("<%= structure_name %>")
         });
 
     </script>
@@ -39,19 +38,20 @@
             <img src="/draw_sankey/server/html/editor/assets/img/palette_start.png"  data-shape="sankey.shape.Start"   class="palette_node_element draw2d_droppable">
             <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.State"   class="palette_node_element draw2d_droppable">
             <img src="/draw_sankey/server/html/editor/assets/img/palette_end.png"    data-shape="sankey.shape.End"     class="palette_node_element draw2d_droppable">
+            <button title="Save Report" style="width: 50px;height: 50px" class="ion-ios-upload-outline icon">Save</button>
         </div>
         <div id="view">
             <div id="draw2dCanvasWrapper">
-                <div id="canvas"  style="width:9000px; height:9000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
+                <div id="canvas"  style="width:2000px; height:2000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
             </div>
-            <div id="property">
-            </div>
+            <!--<div id="property">
+            </div>-->
         </div>
     </div>
 </div>
-<div id="toolbar">
-    <a class="navbar-brand brand highlight"  href="../index" target="_index"><img src="draw_sankey/server/html/common/assets/img/logo.png">Sankey <i>state</i></a>
-</div>
+<!--<div id="toolbar">
+    <a class="navbar-brand brand highlight"  href="../index" target="_index"><img src="../../draw_sankey/server/html/common/assets/img/logo.png">Sankey <i>state</i></a>
+</div>-->
 
 
 
