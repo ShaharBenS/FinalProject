@@ -7,14 +7,11 @@ let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 
 let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
-let registerRouter = require('./routes/register');
 let mainRouter = require('./routes/main');
 let loginRouter = require('./routes/login');
 let graphRouter = require('./routes/graph');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
-var indexRouter = require('./routes/index');
 
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
 
@@ -25,8 +22,6 @@ mongoose.connect('mongodb://localhost:27017/Aguda', {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
 var PS = require("./schemas/ProcessStructure");
 var UAR = require("./schemas/UsersAndRoles");
-var U = require("./schemas/User");
-var X = require("./schemas/Roles");
 
 
 // view engine setup
@@ -43,8 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/register', registerRouter);
 app.use('/main',mainRouter);
 app.use('/login',loginRouter);
 app.use('/graph',graphRouter);
