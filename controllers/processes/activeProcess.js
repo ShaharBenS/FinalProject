@@ -13,7 +13,7 @@ let HELPER = require("./helperFunctions.js");
  * @param callback
  */
 module.exports.startProcessByUsername = (username, processStructureName, process_name, callback) => {
-    let roleID = HELPER.getRoleID_by_username(username);
+    let roleName = HELPER.getRoleName_by_username(username);
     let processStructure = HELPER.getProcessStructure(processStructureName);
     if (HELPER.getActiveProcessByProcessName(process_name) === false)
         throw ">>> ERROR: there is already process with the name: " + process_name;
@@ -21,7 +21,7 @@ module.exports.startProcessByUsername = (username, processStructureName, process
 
     let initial_stage = -1;
     processStructure.stages.every((stage) => {
-        if (stage.roleID === roleID && processStructure.initials.includes(stage.stageNum)) {
+        if (stage.roleName === roleName && processStructure.initials.includes(stage.stageNum)) {
             initial_stage = stage.stageNum;
             return false;
         }
@@ -31,8 +31,8 @@ module.exports.startProcessByUsername = (username, processStructureName, process
 
     processStructure.stages.forEach((stage) => {
         stages.push({
-            roleID: stage.roleID,
-            userID: null, //TODO: userID is being referenced to Users, so putting null might break it.
+            roleName: stage.roleName,
+            userEmail: null, //TODO: userEmail is being referenced to Users, so putting null might break it.
             stageNum: stage.stageNum,
             nextStages: stage.nextStages,
             stagesToWaitFor: stage.stagesToWaitFor,
@@ -62,14 +62,14 @@ module.exports.startProcessByUsername = (username, processStructureName, process
  */
 module.exports.getActiveProcessesByUser = (username, callback) => {
     let waiting_active_processes = [];
-    let roleID = HELPER.getRoleID_by_username(username);
+    let roleName = HELPER.getRoleName_by_username(username);
     ActiveProcess.find({}, (err, activeProcesses) => {
         if (err) console.log(err);
         else {
             activeProcesses.forEach((process) => {
                 let currentStages = process.current_stages;
                 process.stages.every((stage) => {
-                    if (process.current_stages.includes(stage.stageNum) && stage.roleID === roleID) {
+                    if (process.current_stages.includes(stage.stageNum) && stage.roleName === roleName) {
                         waiting_active_processes.push(process);
                         currentStages.remove(stage.stageNum);
                         return currentStages.length !== 0;
@@ -115,24 +115,64 @@ module.exports.handleProcess = (username, process_name, stageDetails, filledForm
         });
 };
 
-
+/**
+ * Advance process to next stage if able
+ *
+ * @param process_name
+ * @param nextStages
+ */
 module.exports.advanceProcess = (process_name, nextStages) => {
     let process = HELPER.getActiveProcessByProcessName(process_name);
     process.stages.forEach((stage) => {
         if (process.current_stages.includes(stage.stageNum)) {
             if (stage.stagesToWaitFor.length() === 0) {
                 if (nextStages.every((stageNum) => stage.nextStages.includes(stageNum))) {
-                    process.current_stages.concat(nextStages)
+                    process.current_stages.concat(nextStages);
+
+                    //remove stages
+                    let graph = [];
+                    let recursive_all_stages_in_path = function (stageNum) {
+                        process.stages.forEach((stage) => {
+                            if (stage.stageNum === stageNum) {
+                                graph.push(stageNum);
+                                stage.nextStages.forEach((iStage) => recursive_all_stages_in_path(iStage));
+                            }
+                        })
+                    };
+                    process.current_stages.forEach((stageNum) => recursive_all_stages_in_path(stageNum));
+
+                    let stages_to_remove = [];
+                    let recursive_remove_stages = function (stageNum) {
+                        process.stages.forEach((stage) => {
+                            if (stage.stageNum === stageNum && !graph.includes(stageNum)) {
+                                stages_to_remove.push(stageNum);
+                                stage.nextStages.forEach((iStage) => recursive_remove_stages(iStage));
+                            }
+                        })
+                    };
+                    let init_stages_to_remove = nextStages.filter(value => stage.nextStages.includes(value) === false);
+                    init_stages_to_remove.forEach((stageNum) => recursive_remove_stages(stageNum));
+
+                    let remove_stage = function (stage) {
+                        let index = process.stages.indexOf(stage);
+                        process.stages.splice(index, 1);
+                    };
+
+                    process.stages.forEach((stage) => {
+                        if (stages_to_remove.includes(stage.stageNum)) remove_stage(stage);
+                    });
+
 
                 }
                 else throw ">>> ERROR: invalid next stages"
             }
         }
     });
-    ActiveProcess.updateOne({process_name: process_name}, {current_stages: stages},
+    ActiveProcess.updateOne({process_name: process_name}, {
+            current_stages: process.current_stages, stages: process.stages
+        },
         (err, res) => {
             if (err) throw ">>> ERROR: advance process | UPDATE";
             else callback(res);
         });
-    return true;
 };

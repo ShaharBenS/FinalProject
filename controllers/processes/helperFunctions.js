@@ -3,8 +3,8 @@ let UsersAndRole = require("../../schemas/UsersAndRole");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 
 
-exports.getRoleID_by_username = function (username) {
-    UsersAndRole.find({userID: username}, (err, user) => {
+exports.getRoleName_by_username = function (username) {
+    UsersAndRole.find({userEmail: username}, (err, user) => {
         if (err) throw err;
         else {
             if (user.length === 0) throw ">>> ERROR: user " + username + " has no role";
