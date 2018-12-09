@@ -18,10 +18,19 @@ router.post('/activateProcess', function (req, res) {
     });
 });
 
-router.get('/getActiveProcessesByUser', function (req, res) {
+router.get('/getAllActiveProcessesByUser', function (req, res) {
     let user_name = req.body.user_name;
     let array_of_processes = [];
-    activeProcess.getActiveProcessesByUser(user_name,(array)=>{
+    activeProcess.getAllActiveProcessesByUser(user_name,(array)=>{
+        array_of_processes = array;
+    });
+    res.render('MyActiveProcessesPage', {title: 'Express', table : array_of_processes});
+});
+
+router.get('/getWaitingActiveProcessesByUser', function (req, res) {
+    let user_name = req.body.user_name;
+    let array_of_processes = [];
+    activeProcess.getWaitingActiveProcessesByUser(user_name,(array)=>{
         array_of_processes = array;
     });
     res.render('MyActiveProcessesPage', {title: 'Express', table : array_of_processes});
