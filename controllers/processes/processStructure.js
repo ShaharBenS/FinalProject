@@ -1,10 +1,25 @@
 let processStructure = require("../../schemas/ProcessStructure");
 
-module.exports.addProcessStructure = (structure_name, initials, stages, callback) => {
+module.exports.addProcessStructure = (structure_name,sankey_content, callback) => {
+    let parsed_sankey = JSON.parse(sankey_content);
+    let initials = parsed_sankey.content.diagram.filter((figure)=>{
+        return figure.type === "sankey.shape.Start";
+
+    }).map((figure,index)=>{
+        return index;
+    });
+    let stages = parsed_sankey.content.diagram.filter((figure)=>{
+        return figure.type !== "sankey.shape.Connection";
+
+    });
+
+    //TODO: stages from sankey
+
     processStructure.create({
         structure_name: structure_name,
         initials: initials,
         stages: stages,
+        sankey: sankey_content,
     }, callback)
 };
 

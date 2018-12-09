@@ -3,14 +3,14 @@ var conf= {
 
     backend: {
         file: {
-            list: "/backend/file/list",
-            get : "/backend/file/get",
-            save: "/backend/file/save"
+            list: "/sankey/file/list",
+            get : "/sankey/file/get",
+            save: "/sankey/file/save"
         },
-        hook:"/backend/hook",
-        weights:"/backend/sankey/weights",
-        suggestPath:"/backend/suggestPath",
-        suggestValue:"/backend/suggestValue"
+        hook:"/sankey/hook",
+        weights:"/sankey/sankey/weights",
+        suggestPath:"/sankey/suggestPath",
+        suggestValue:"/sankey/suggestValue"
     }
 };
 
@@ -29,7 +29,7 @@ var sankey ={
     locator:{
     }
 };
-;
+
 
 sankey.anchor.ConnectionAnchor = draw2d.layout.anchor.ConnectionAnchor.extend({
 
@@ -126,7 +126,7 @@ sankey.anchor.ConnectionAnchor = draw2d.layout.anchor.ConnectionAnchor.extend({
 		return this.getBox().getCenter();
 	}
 });
-;
+
 var colors = [
     {
         "50": "#fde0dc",
@@ -421,7 +421,7 @@ var colors = [
         "800": "#37474f",
         "900": "#263238"
     }
-];;
+];
 
 /**
 
@@ -700,7 +700,6 @@ sankey.shape.Connection = draw2d.Connection.extend({
 });
 
 
-;
 /*jshint evil:true */
 
 
@@ -711,7 +710,7 @@ sankey.shape.End = draw2d.shape.node.End.extend({
     {
         var _this = this;
         this.label = this.label = new draw2d.shape.basic.Label({
-            text:"End",
+            text:"סוף",
             angle:270,
             fontColor:"#FFFFFF",
             fontSize:18,
@@ -811,7 +810,7 @@ sankey.shape.End = draw2d.shape.node.End.extend({
         },this));
     }
 });
-;
+
 sankey.shape.Label = draw2d.shape.basic.Label.extend({
     NAME: "sankey.shape.Label",
 
@@ -937,7 +936,7 @@ sankey.shape.Start = draw2d.shape.node.Start.extend({
     {
         var _this = this;
         this.label = this.label = new draw2d.shape.basic.Label({
-            text:"Start",
+            text:"התחלה",
             angle:270,
             fontColor:"#FFFFFF",
             fontSize:18,

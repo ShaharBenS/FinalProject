@@ -11,6 +11,7 @@ let mainRouter = require('./routes/main');
 let loginRouter = require('./routes/login');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
+let sankeyRouter = require('./routes/sankey');
 
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
 
@@ -41,6 +42,7 @@ app.use('/main',mainRouter);
 app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
+app.use('/sankey',sankeyRouter);
 app.use('/UsersAndRoles', UsersAndRolesRouter);
 
 

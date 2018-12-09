@@ -3,19 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('HomePage', {title: 'Express'});
-});
-
-router.post('/backend/file/save',function (req,res,next) {
-   res.send("okay?");
-});
-
-
-
-router.post('/backend/sankey/weights',function (req,res,next) {
-    res.send([{
-        file: req.body.id
-    }]);
+    res.render('HomePage', {structure_name: ''});
 });
 
 module.exports = router;

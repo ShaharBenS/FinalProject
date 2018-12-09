@@ -10,6 +10,11 @@
     <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css" />
     <link rel="stylesheet" href="/draw_sankey/server/html/editor/assets/css/main.css" >
 
+    <script>
+        let diagramContext = 'add_process_structure';
+        let process_structure_name = '<%= process_structure_name %>';
+    </script>
+
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/common.js"></SCRIPT>
@@ -27,6 +32,7 @@
         });
 
     </script>
+    <script src="/draw_sankey/server/html/editor/assets/javascript/project_extension.js"></script>
 
     </head>
 
@@ -38,7 +44,7 @@
             <img src="/draw_sankey/server/html/editor/assets/img/palette_start.png"  data-shape="sankey.shape.Start"   class="palette_node_element draw2d_droppable">
             <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.State"   class="palette_node_element draw2d_droppable">
             <img src="/draw_sankey/server/html/editor/assets/img/palette_end.png"    data-shape="sankey.shape.End"     class="palette_node_element draw2d_droppable">
-            <button title="Save Report" style="width: 50px;height: 50px" class="ion-ios-upload-outline icon">Save</button>
+            <button onclick="confirm()" title="Save Report" style="width: 50px;height: 50px" class="ion-ios-upload-outline icon">Save</button>
         </div>
         <div id="view">
             <div id="draw2dCanvasWrapper">
@@ -131,40 +137,46 @@
 </div>
 
 
+
 <!--
-  #  File share dialog
+  #  Select Role Modal
   #
   -->
-<div id="fileShareDialog" class="modal fade" tabindex="-1">
+
+<div id="select_role_modal" class="modal fade githubFileDialog" tabindex="-1">
     <div class="modal-dialog ">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="media-heading">Share link to "{{name}}"</h3>
-                <h4 class="media-heading">Everyone will have read access"</h4>
+                <h4 class="media-heading">Select Role</h4>
             </div>
             <div class="modal-body">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button class="shareButton clipboard" data-clipboard-text="{{url}}">
-                        <span class="btn-circle btn-xl ion-ios-copy-outline  "></span>
-                        <br>
-                        <span id="copiedToClipboardMessage">Copy Link</span>
+                <div class="media">
+                    <div class="media-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <select>
+                                        <option value="0">Select Role:</option>
+                                        <option value="1">רמ"ד</option>
+                                        <option value="2">מנהל גרפיקה</option>
+                                        <option value="3">סיו"ר</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row"></div>
 
-                    </button>
-                    <button class="shareButton">
-                        <a href="mailto:?body={{url}}" class="btn-circle btn-xl ion-ios-email-outline "></a>
-                        <br>
-                        Mail Link
-                    </button>
+
+                    </div>
                 </div>
-
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary okButton" data-dismiss="modal"><span>Close</span></button>
+                <button class="btn" data-dismiss="modal">Cancel</button>
+                <button onclick="select_role_clicked()" id="select_role_okay_button" class="btn btn-primary okButton"><span>Okay</span></button>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <div id="figureConfigDialog">

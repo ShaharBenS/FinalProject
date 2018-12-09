@@ -103,7 +103,7 @@ sankey.Application = Class.extend(
 			this.fileOpen(diagram);
 		}
 		this.view.centerDocument();
-	},
+		},
 
 	fileNew: function(shapeTemplate)
 	{
@@ -119,9 +119,8 @@ sankey.Application = Class.extend(
 		this.view.centerDocument();
 	},
 
-
 	fileSave: function()
-	{
+    {
 		var _this = this;
         var writer = new draw2d.io.json.Writer();
         writer.marshal(this.view, function (json, base64) {
@@ -137,7 +136,6 @@ sankey.Application = Class.extend(
             });
 		});
 	},
-
 
 	fileOpen: function(name)
 	{
@@ -212,7 +210,6 @@ sankey.Application = Class.extend(
         return this;
 	},
 
-
 	flatten:function (obj, path, result)
     {
 		var key, val, _path;
@@ -255,7 +252,6 @@ sankey.Application = Class.extend(
 
 });
 
-;
 
 
 sankey.PropertyWindow = Class.extend({
@@ -329,7 +325,6 @@ sankey.PropertyWindow = Class.extend({
     
 });
 
-;
 
 sankey.Toolbar = Class.extend({
 	
@@ -441,7 +436,7 @@ sankey.Toolbar = Class.extend({
 		this.undoButton.prop("disabled", !event.getStack().canUndo() );
 		this.redoButton.prop("disabled", !event.getStack().canRedo() );
 	}
-});;
+});
 /*jshint sub:true*/
 /*jshint evil:true */
 
@@ -555,11 +550,11 @@ sankey.View = draw2d.Canvas.extend({
     onDrop : function(droppedDomNode, x, y, shiftKey, ctrlKey)
     {
         var type = $(droppedDomNode).data("shape");
-
         var figure = eval("new "+type+"();");
         // create a command for the undo/redo support
+
         var command = new draw2d.command.CommandAdd(this, figure, x, y);
-        this.getCommandStack().execute(command);
+        onDrop_extension(type,command,figure);
     },
 
     getBoundingBox: function()
@@ -605,7 +600,7 @@ sankey.View = draw2d.Canvas.extend({
     }
 });
 
-;
+
 sankey.dialog.FileSave = Class.extend({
 
     /**
@@ -644,7 +639,9 @@ sankey.dialog.FileSave = Class.extend({
                 var data ={
                     base64Image:imageDataUrl,
                     id:$("#githubSaveFileDialog .githubFileName").val(),
-                    content:JSON.stringify(json, undefined, 2)
+                    content:JSON.stringify(json, undefined, 2),
+                    context: diagramContext,
+                    process_structure_name: process_structure_name,
                 };
 
                 $.ajax({
@@ -653,7 +650,7 @@ sankey.dialog.FileSave = Class.extend({
                         xhrFields: {
                             withCredentials: true
                         },
-                        data:data
+                        data:data,
                     }
                 ).done(function(){
                     $('#githubSaveFileDialog').modal('hide');
@@ -665,7 +662,7 @@ sankey.dialog.FileSave = Class.extend({
 
     }
 
-});;
+});
 sankey.dialog.FileSelect = Class.extend({
 
     /**
@@ -743,7 +740,7 @@ sankey.dialog.FileSelect = Class.extend({
                 }
         });
     }
-});;
+});
 sankey.dialog.FileShare = Class.extend({
 
     /**
@@ -797,6 +794,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
       this._super();
       this.mouseMoveProxy = $.proxy(this._onMouseMoveCallback, this);
       this.configIcon=null;
+
+      add_label = this._attachLabelWithText;
     },
 
     /**
@@ -990,7 +989,25 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         var locator;
         var label = new sankey.shape.Label({text:text, stroke:0, x:-20, y:-40});
         if(figure instanceof draw2d.Connection){
-            locator =new sankey.locator.SmartConnectionLocator();
+            locator = new sankey.locator.SmartConnectionLocator();
+            label.setPosition(figure.getStartPosition());
+        }
+        else {
+            locator = new draw2d.layout.locator.SmartDraggableLocator();
+        }
+        if(text) {
+            label.installEditor(new draw2d.ui.LabelInplaceEditor());
+            figure.add(label,locator);
+        }
+        $("#figureConfigDialog").hide();
+    },
+
+    _attachLabelWithText:function(figure,text)
+    {
+        var locator;
+        var label = new sankey.shape.Label({text:text, stroke:0, x:-20, y:-40});
+        if(figure instanceof draw2d.Connection){
+            locator = new sankey.locator.SmartConnectionLocator();
             label.setPosition(figure.getStartPosition());
         }
         else {
@@ -1029,7 +1046,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             $("#colorDialog").remove();
         });
     }
-});;
+});
 
 
 sankey.property.PropertyPane = Class.extend({
@@ -1161,7 +1178,6 @@ sankey.property.PropertyPane = Class.extend({
     }
 });
 
-;
 
 sankey.property.PropertyPaneConnection = sankey.property.PropertyPane.extend({
 	
@@ -1182,8 +1198,6 @@ sankey.property.PropertyPaneConnection = sankey.property.PropertyPane.extend({
     }
 });
 
-;
-
 
 sankey.property.PropertyPaneStart = sankey.property.PropertyPane.extend({
 
@@ -1202,8 +1216,6 @@ sankey.property.PropertyPaneStart = sankey.property.PropertyPane.extend({
 		this._super(domId);
 	}
 });
-
-;
 
 
 sankey.property.PropertyPaneState  = sankey.property.PropertyPane.extend({
@@ -1227,4 +1239,3 @@ sankey.property.PropertyPaneState  = sankey.property.PropertyPane.extend({
 		this._super(domId);
 	}
 });
-
