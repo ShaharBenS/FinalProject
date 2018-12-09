@@ -2,7 +2,6 @@ let ActiveProcess = require("../../schemas/ActiveProcess");
 let UsersAndRole = require("../../schemas/UsersAndRole");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 
-
 export function getRoleID_by_username(username) {
     UsersAndRole.find({userID: username}, (err, user) => {
         if (err) throw err;
@@ -32,3 +31,4 @@ export function getActiveProcessByProcessName(processName) {
         }
     });
 }
+

@@ -14,6 +14,7 @@ let loginRouter = require('./routes/login');
 let graphRouter = require('./routes/graph');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
+let sankeyRouter = require('./routes/sankey');
 
 let app = express();
 
@@ -46,6 +47,7 @@ app.use('/login',loginRouter);
 app.use('/graph',graphRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
+app.use('/sankey',sankeyRouter);
 
 
 // catch 404 and forward to error handler

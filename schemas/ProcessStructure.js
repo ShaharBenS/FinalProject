@@ -12,6 +12,7 @@ const processStructure = new Schema({
         online_forms: [{type: Schema.Types.ObjectId, ref:'OnlineForm'}],
         attached_files_names: [String],
     }],
+    sankey: String
 });
 
 module.exports = mongoose.model('processStructure', processStructure);
