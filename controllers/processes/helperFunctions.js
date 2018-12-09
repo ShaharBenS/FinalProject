@@ -3,32 +3,32 @@ let UsersAndRole = require("../../schemas/UsersAndRoles");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 
 
-exports.getRoleName_by_username = function (username) {
+exports.getRoleName_by_username = function (username, callback) {
     UsersAndRole.find({userEmail: username}, (err, user) => {
         if (err) throw err;
         else {
             if (user.length === 0) throw ">>> ERROR: user " + username + " has no role";
-            return user[0].roleName;
+            callback(user[0]._doc._id.id);
         }
     });
 };
 
-exports.getProcessStructure = function (processStructureName) {
+exports.getProcessStructure = function (processStructureName, callback) {
     ProcessStructure.find({structure_name: processStructureName}, (err, processStructure) => {
         if (err) throw err;
         else {
             if (processStructure.length === 0) throw ">>> ERROR: processStructure " + processStructure + " does not exists";
-            return processStructure[0];
+            callback(processStructure[0]._doc);
         }
     });
 };
 
-exports.getActiveProcessByProcessName = function (processName) {
+exports.getActiveProcessByProcessName = function (processName, callback) {
     ActiveProcess.find({process_name: processName}, (err, process) => {
         if (err) throw err;
         else {
             if (process.length === 0) return false;
-            return process[0];
+            callback(process[0]._doc);
         }
     });
 };
