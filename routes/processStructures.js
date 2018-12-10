@@ -9,6 +9,7 @@ router.get('/addProcessStructure', function (req, res) {
     let initials = req.body.initials;
     let stages =  req.body.stages;*/
 
+    //TODO: this is only test, remember to refactoring
     let structure_name = 'structure 1';
     let initials = [1, 2];
 
@@ -76,11 +77,5 @@ router.post('/removeProcessStructure', function (req, res) {
     let structure_name = req.body.structure_name;
     processStructure.removeProcessStructure(structure_name, (result) => res.send(result));
 });
-
-/* HTML Pages */
-router.get('/addProcessStructure', function (req, res) {
-    res.render('AddProcessStructure');
-});
-
 
 module.exports = router;
