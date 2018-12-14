@@ -4,13 +4,13 @@ let HELPER = require("./helperFunctions.js");
 /**
  * Starts new process from a defined structure
  *
- * @param username | The username that starts the process
+ * @param userEmail | The userEmail that starts the process
  * @param processStructureName | The name of the structure to start
  * @param process_name | The requested name for the active process
  * @param callback
  */
-module.exports.startProcessByUsername = (username, processStructureName, process_name, callback) => {
-    HELPER.getRoleName_by_username(username, (err, roleName) => {
+module.exports.startProcessByUsername = (userEmail, processStructureName, process_name, callback) => {
+    HELPER.getRoleID_by_username(userEmail, (err, roleID) => {
         if(err)
         {
             callback(err);
@@ -31,41 +31,30 @@ module.exports.startProcessByUsername = (username, processStructureName, process
                         }
                         else
                         {
-                            if(activeProcesses)
+                            if(!activeProcesses)
                             {
-                                let stages = [];
                                 let initial_stage = -1;
                                 processStructure.stages.every((stage) => {
-                                    if (stage.roleName === roleName && processStructure.initials.includes(stage.stageNum)) {
+                                    let roleEqual = stage._doc.roleID.id.equals(roleID.id);
+                                    let initialsInclude = processStructure.initials.includes(stage.stageNum);
+                                    if (roleEqual && initialsInclude) {
                                         initial_stage = stage.stageNum;
                                         return false;
                                     }
                                     return true;
                                 });
-                                if (initial_stage === -1) throw ">>> ERROR: username " + username + " don't have the proper role to start the process " + processStructureName;
-
-                                processStructure.stages.forEach((stage) => {
-                                    stages.push({
-                                        roleName: stage.roleName,
-                                        userEmail: null, //TODO: userEmail is being referenced to Users, so putting null might break it.
-                                        stageNum: stage.stageNum,
-                                        nextStages: stage.nextStages,
-                                        stagesToWaitFor: stage.stagesToWaitFor,
-                                        origin_stagesToWaitFor: stage.stagesToWaitFor,
-                                        time_approval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
-                                        online_forms: stage.online_forms,
-                                        filled_online_forms: [],
-                                        attached_files_names: stage.attached_files_names,
-                                    });
+                                if (initial_stage === -1) callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
+                                getAllNewStages(0,processStructure.stages,[],(newStages)=>{
+                                    ActiveProcess.create({
+                                        time_creation: new Date(),
+                                        current_stages: [initial_stage],
+                                        process_name: process_name,
+                                        initials: processStructure.initials,
+                                        stages: newStages,
+                                    }, callback);
                                 });
 
-                                ActiveProcess.create({
-                                    time_creation: new Date(),
-                                    current_stages: [initial_stage],
-                                    process_name: process_name,
-                                    initials: processStructure.initials,
-                                    stages: [stages],
-                                }, callback);
+
                             }
                             else
                             {
@@ -79,15 +68,60 @@ module.exports.startProcessByUsername = (username, processStructureName, process
     });
 };
 
+const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
+
+    if(stages.length === index)
+    {
+        callback(newStages);
+    }
+    else
+    {
+        let stage = stages[index];
+        if(index === 0)
+        {
+            newStages.push({
+                roleID: stage._doc.roleID,
+                userEmail: initialUserEmail,
+                stageNum: stage._doc.stageNum,
+                nextStages: stage._doc.nextStages,
+                stagesToWaitFor: stage._doc.stagesToWaitFor,
+                origin_stagesToWaitFor: stage._doc.stagesToWaitFor,
+                time_approval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
+                online_forms: stage._doc.online_forms,
+                filled_online_forms: [],
+                attached_files_names: stage._doc.attached_files_names,
+            });
+            getAllNewStages(index+1,stages,newStages,callback);
+        }
+        else
+        {
+            HELPER.getUsernameByRoleID(stage._doc.roleID,(err,res)=>{
+                newStages.push({
+                    roleID: stage._doc.roleID,
+                    userEmail: res,
+                    stageNum: stage._doc.stageNum,
+                    nextStages: stage._doc.nextStages,
+                    stagesToWaitFor: stage._doc.stagesToWaitFor,
+                    origin_stagesToWaitFor: stage._doc.stagesToWaitFor,
+                    time_approval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
+                    online_forms: stage._doc.online_forms,
+                    filled_online_forms: [],
+                    attached_files_names: stage._doc.attached_files_names,
+                });
+                getAllNewStages(index+1,stages,newStages,callback);
+            });
+        }
+    }
+};
 
 /**
  * return array of active processes for specific username
  *
- * @param username
+ * @param userEmail
  * @param callback
  */
-module.exports.getWaitingActiveProcessesByUser = (username, callback) => {
-    HELPER.getRoleName_by_username(username, (err,roleName) => {
+module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
+    HELPER.getRoleID_by_username(username, (err) => {
         if(err)
         {
             callback(err);
@@ -101,16 +135,16 @@ module.exports.getWaitingActiveProcessesByUser = (username, callback) => {
                     activeProcesses.forEach((process) => {
                         let currentStages = process.current_stages;
                         process.stages.every((stage) => {
-                            if (process.current_stages.includes(stage.stageNum) && stage.roleName === roleName) {
+                            if (process.current_stages.includes(stage.stageNum) && stage._doc.userEmail === userEmail) {
                                 waiting_active_processes.push(process);
                                 currentStages.remove(stage.stageNum);
                                 return currentStages.length !== 0;
                             }
                         });
                     });
+                    callback(null,waiting_active_processes);
                 }
             });
-            callback(null,waiting_active_processes);
         }
     });
 };
@@ -119,11 +153,11 @@ module.exports.getWaitingActiveProcessesByUser = (username, callback) => {
  * returns all active process for specific user
  * > FOR MONITORING <
  *
- * @param username
+ * @param userEmail
  * @param callback
  */
-module.exports.getAllActiveProcessesByUser = (username, callback) => {
-    HELPER.getRoleName_by_username(username, (err,roleName) => {
+module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
+    HELPER.getRoleID_by_username(userEmail, (err) => {
         if(err)
         {
             callback(err);
@@ -136,16 +170,15 @@ module.exports.getAllActiveProcessesByUser = (username, callback) => {
                 else {
                     activeProcesses.forEach((process) => {
                         process.stages.every((stage) => {
-                            if (stage.roleName === roleName) {
+                            if (stage._doc.userEmail === userEmail) {
                                 active_processes.push(process);
-                                return false;
                             }
                             return true;
                         });
                     });
+                    callback(null,active_processes);
                 }
             });
-            callback(null,active_processes);
         }
     });
 };

@@ -9,7 +9,7 @@ const activeProcess = new Schema({
     initials: [Number],
     stages: [{
         roleName: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
-        userEmail: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
+        userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
         stageNum: Number,
         nextStages: [Number],
         stagesToWaitFor: [Number],
@@ -17,7 +17,7 @@ const activeProcess = new Schema({
         time_approval: Date,
         online_forms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
         filled_online_forms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
-        attached_files_names: [String],
+        attached_files_names: [String]
     }],
 });
 

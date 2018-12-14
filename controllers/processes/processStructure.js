@@ -5,7 +5,7 @@ module.exports.addProcessStructure = (structure_name, initials, stages, callback
         structure_name: structure_name,
         initials: initials,
         stages: stages,
-    }, callback)
+    }, callback);
 };
 
 module.exports.editProcessStructure = (structure_name, initials, stages, callback) => {

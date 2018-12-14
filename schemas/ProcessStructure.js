@@ -5,7 +5,7 @@ const processStructure = new Schema({
     structure_name: {type:String,unique:true},
     initials: [Number],
     stages: [{
-        roleName: {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
+        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
         stageNum: Number,
         nextStages: [Number],
         stagesToWaitFor: [Number],

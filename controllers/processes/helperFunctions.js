@@ -3,12 +3,22 @@ let UsersAndRole = require("../../schemas/UsersAndRoles");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 
 
+exports.getRoleID_by_username = function (username, callback) {
+    UsersAndRole.find({userEmail: username}, (err, user) => {
+        if (err) callback(err);
+        else {
+            if (user.length === 0) callback(null,null);
+            else callback(null, user[0]._doc._id);
+        }
+    });
+};
+
 exports.getRoleName_by_username = function (username, callback) {
     UsersAndRole.find({userEmail: username}, (err, user) => {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(null,null);
-            else callback(null, user[0]._doc._id.id);
+            else callback(null, user[0]._doc.roleName);
         }
     });
 };
@@ -31,4 +41,14 @@ exports.getActiveProcessByProcessName = function (processName, callback) {
             else callback(null,process[0]._doc);
         }
     });
+};
+exports.getUsernameByRoleID = (roleID, callback) => {
+    UsersAndRole.find({_id: roleID}, (err1, res) => {
+        if (err1) {
+            callback(err1);
+        }
+        else {
+            callback(null,res[0]._doc.userEmail[0]);
+        }
+    })
 };
