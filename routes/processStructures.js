@@ -24,7 +24,12 @@ router.post('/removeProcessStructure', function (req, res) {
 
 /* HTML Pages */
 router.get('/addProcessStructure', function (req, res) {
-    res.render('AddProcessStructure',{process_structure_name:req.query.name});
+    if(req.query.name){
+        res.render('AddProcessStructure',{process_structure_name:req.query.name});
+    }
+    else{
+        res.send("Missing structure name.")
+    }
 });
 
 

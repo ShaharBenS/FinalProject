@@ -7,12 +7,34 @@ function onDrop_extension(type,command,figure){
     if(diagramContext === 'add_process_structure')
     {
         select_role_clicked = function () {
-            add_label(figure,"RoleNameHere");
+            let selector = document.getElementById("role_selector");
+            figure.role_id = selector.options[selector.selectedIndex].value;
+            console.log(JSON.stringify(Object.keys(figure)));
+            add_label(figure,selector.options[selector.selectedIndex].innerText);
             app.view.getCommandStack().execute(command);
             $("#select_role_modal").modal("hide");
         };
 
-        $("#select_role_modal").modal("show");
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                let selector = document.getElementById("role_selector");
+
+                JSON.parse(xmlHttp.responseText).forEach((role)=>{
+                    let option = document.createElement('option');
+                    option.value = role._id;
+                    option.innerText = role.roleName;
+                    selector.appendChild(option);
+                });
+
+                $("#select_role_modal").modal("show");
+            }
+        };
+        xmlHttp.open("GET", '/UsersAndRoles/getAllRoles/', true);
+        xmlHttp.send(null);
+
+
 
     }
 }
