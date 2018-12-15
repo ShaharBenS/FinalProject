@@ -121,7 +121,7 @@ const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
  * @param callback
  */
 module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
-    HELPER.getRoleID_by_username(username, (err) => {
+    HELPER.getRoleID_by_username(userEmail, (err) => {
         if(err)
         {
             callback(err);
@@ -187,14 +187,14 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
 /**
  * approving process and updating stages
  *
- * @param username | the user that approved
+ * @param userEmail | the user that approved
  * @param process_name | the process name that approved
  * @param stageDetails | all the stage details
  * @param filledForms | the filled forms
  * @param fileNames | added files
  * @param callback
  */
-module.exports.handleProcess = (username, process_name, stageDetails, filledForms, fileNames, callback) => {
+module.exports.handleProcess = (userEmail, process_name, stageDetails, filledForms, fileNames, callback) => {
     HELPER.getActiveProcessByProcessName(process_name, (err,process) => {
         if(err)
         {
