@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const activeProcess = new Schema({
+const activeProcessSchema = new Schema({
     process_name: {type: String, unique: true},
     time_creation: Date,
     notificationTime: Number,
@@ -21,4 +21,4 @@ const activeProcess = new Schema({
     }],
 });
 
-module.exports = mongoose.model('ActiveProcess', activeProcess);
+module.exports = mongoose.model('ActiveProcessSchema', activeProcessSchema);
