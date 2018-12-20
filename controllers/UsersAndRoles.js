@@ -166,3 +166,14 @@ module.exports.setUsersAndRolesTree = (sankey,callback)=>{
         }
     })
 };
+
+module.exports.getAllUsersByRole = (roleName,callback)=>{
+    UsersAndRoles.find({roleName:roleName},(err,result)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            callback(null,result);
+        }
+    })
+};

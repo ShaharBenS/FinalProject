@@ -814,8 +814,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             items.del = {name: "Delete", icon: "x ion-ios-close-outline"};
         }
 
-
-
         $.contextMenu({
             selector: 'body',
             events: {
@@ -842,7 +840,35 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         this._attachLabel(figure);
                         break;
                     case "users":
-                        $("#select_users_modal").modal('show');
+                        let xmlHttp = new XMLHttpRequest();
+                        xmlHttp.onreadystatechange = function() {
+                            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+                            {
+                                let response = JSON.parse(xmlHttp.responseText);
+                                let users_div = document.getElementById("users-div");
+                                response.forEach((user)=>{
+                                    let div = document.createElement("div");
+                                    let button = document.createElement("button");
+                                    button.class = "btn";
+                                    button.innerText = '-';
+                                    let label = document.createElement("label");
+                                    label.innerText = user.userEmail;
+                                    div.appendChild(button);
+                                    div.appendChild(label);
+                                    users_div.append(div);
+                                });
+                                let div = document.createElement("div");
+                                let button = document.createElement("button");
+                                button.class = "btn";
+                                button.innerText = '+';
+                                div.appendChild(button);
+                                users_div.append(div);
+                                $("#select_users_modal").modal('show');
+                            }
+                        };
+                        let role_name = figure.children.data[0].figure.text;
+                        xmlHttp.open("GET", '/usersAndRoles/getAllUsersByRole/?roleName='+role_name, true);
+                        xmlHttp.send(null);
                         break;
                     default:
                         break;
