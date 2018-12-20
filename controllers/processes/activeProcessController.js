@@ -46,7 +46,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         userEmail: stage.stageNum === initial_stage ? userEmail : null,
                                         stageNum: stage.stageNum,
                                         nextStages: stage.nextStages,
-                                        stagesToWaitFor: stage.stagesToWaitFor,
+                                        stagesToWaitFor: stage.stageNum === initial_stage?[]:stage.stagesToWaitFor,
                                         origin_stagesToWaitFor: stage.stagesToWaitFor,
                                         time_approval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
                                         online_forms: stage.online_forms,
