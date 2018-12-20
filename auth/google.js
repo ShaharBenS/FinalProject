@@ -10,13 +10,14 @@ passport.use(new GoogleStrategy({
     function (accessToken, refreshToken, profile, done) {
         let userEmail = profile.emails[0].value;
         let suffixOfEmail = userEmail.split('@')[1];
-        console.log(suffixOfEmail);
-        if (suffixOfEmail === 'aguda.bgu.ac.il') {
+        //Remember Change The Condition.
+        if (suffixOfEmail !== 'aguda.bgu.ac.il') {
             done(null, profile);
         }
         else {
             done(null, null);
         }
+        //
         //User.findOrCreate({userid: profile.id}, {name: profile.displayName, userid: profile.id}, function (err, user) {
         //  return done(err, user);
         //});
