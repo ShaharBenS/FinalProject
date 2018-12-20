@@ -188,6 +188,7 @@ module.exports.handleProcess = (userEmail, process_name, stageDetails, filledFor
                         stage.time_approval = new Date();
                         stage.filled_online_forms = stage.filled_online_forms.concat(filledForms);
                         stage.attached_files_names = stage.attached_files_names.concat(fileNames);
+                        stage.comments = stageDetails.comments;
                     }
                     newStages.push(stage);
                 });

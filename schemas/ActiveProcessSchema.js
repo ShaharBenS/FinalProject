@@ -17,7 +17,8 @@ const activeProcessSchema = new Schema({
         time_approval: Date,
         online_forms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
         filled_online_forms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
-        attached_files_names: [String]
+        attached_files_names: [String],
+        comments: String
     }],
 });
 

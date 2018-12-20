@@ -39,7 +39,7 @@ router.get('/reportMePlease', function (req, res) {
 router.post('/handleProcess', function (req, res) {
     let user_name = req.body.user_name;
     let process_name = req.body.process_name;
-    let stage = {stageNum: parseInt(req.body.stage_num)};
+    let stage = {stageNum: parseInt(req.body.stage_num), comments: "HII"};
     activeProcess.handleProcess(user_name, process_name, stage, [""], [""], (err, ret) => {
         if (err) {
             res.send(err);
