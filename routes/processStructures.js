@@ -32,5 +32,13 @@ router.get('/addProcessStructure', function (req, res) {
     }
 });
 
+router.get('/editProcessStructure',function (req,res){
+    if(req.query.name){
+        res.render('EditProcessStructure',{process_structure_name: req.query.name})
+    }
+    else{
+        res.send("Missing structure name.")
+    }
+});
 
 module.exports = router;

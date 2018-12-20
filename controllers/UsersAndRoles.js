@@ -1,5 +1,5 @@
 
-var UsersAndRoles = require("../schemas/UsersAndRoles");
+var UsersAndRoles = require("../schemas/UsersAndRole");
 
 module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
     UsersAndRoles.create({roleName: newRoleName, userEmail: [], children: []}, (err) => {
