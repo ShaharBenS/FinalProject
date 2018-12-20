@@ -8,12 +8,11 @@ const processReportSchema = new Schema({
     current_stages: [Number],
     initials: [Number],
     stages: [{
-        type: String,
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
         stageNum: Number,
         time_approval: Date,
-        comment: String,
+        comments: String,
     }],
 });
 
