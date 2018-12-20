@@ -98,4 +98,22 @@ router.get('/getAllRoles', (req,res)=>{
     })
 });
 
+router.get('/getAllUsersByRole',(req,res)=>{
+    if(req.query.roleName){
+        UsersAndRoles.getAllUsersByRole(req.query.roleName, (err,users)=>{
+            if(err){
+                console.log(err);
+                res.send(err);
+            }
+            else{
+                res.send(users);
+            }
+        })
+    }
+});
+
+router.get('/editTree',(req,res)=>{
+    res.render('UsersAndRolesTree');
+});
+
 module.exports = router;
