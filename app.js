@@ -19,9 +19,8 @@ let app = express();
 //Setting up schemas
 mongoose.connect('mongodb://localhost:27017/Aguda', {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
-var PS = require("./schemas/ProcessStructure");
-var UAR = require("./schemas/UsersAndRoles");
-
+let PS = require("./schemas/ProcessStructure");
+let UAR = require("./schemas/UsersAndRoles");
 
 // view engine setup
 app.engine('html', require('ejs').renderFile);

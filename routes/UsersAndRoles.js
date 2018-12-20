@@ -99,4 +99,8 @@ router.get('/getAllRoles', (req,res)=>{
     })
 });
 
+router.get('/editTree',(req,res)=>{
+    res.render('UsersAndRolesTree');
+});
+
 module.exports = router;

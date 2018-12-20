@@ -1040,9 +1040,9 @@ sankey.shape.Start = draw2d.shape.node.Start.extend({
 sankey.shape.State = draw2d.shape.node.Between.extend({
     NAME:"sankey.shape.State",
 
-    init:function()
+    init:function(color)
     {
-        this._super();
+        this._super(color === undefined ? {} : color);
         this.getOutputPort(0).setConnectionAnchor(new sankey.anchor.ConnectionAnchor());
         this.getInputPort(0).setConnectionAnchor(new sankey.anchor.ConnectionAnchor());
 

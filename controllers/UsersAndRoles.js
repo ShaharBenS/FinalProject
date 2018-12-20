@@ -1,4 +1,5 @@
-var UsersAndRoles = require("../schemas/UsersAndRoles");
+var UsersAndRoles = require("../schemas/UsersAndRoles.js");
+let UsersAndRolesTreeSankey = require('../schemas/UsersAndRolesTreeSankey.js');
 
 module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
     UsersAndRoles.create({roleName: newRoleName, userEmail: [], children: []}, (err) => {
@@ -134,6 +135,34 @@ module.exports.getAllRoles = (callback)=>{
     UsersAndRoles.find({},callback).select('roleName');
 };
 
-module.exports.getRoleByName = (name,callback)=>{
-  return UsersAndRoles.find({roleName:name},callback);
+module.exports.getUsersAndRolesTree = (callback)=>{
+    UsersAndRolesTreeSankey.find({},(err,result)=>{
+        if(err){
+            callback(err);
+        }
+        else if(result.length === 0){
+            UsersAndRolesTreeSankey.create({sankey:JSON.stringify({content:{diagram:[]}})},(err,result)=>{
+                if(err){
+                    callback(err);
+                }
+                else{
+                    callback(null,result);
+                }
+            });
+        }
+        else{
+            callback(null,result[0]);
+        }
+    });
+};
+
+module.exports.setUsersAndRolesTree = (sankey,callback)=>{
+    UsersAndRolesTreeSankey.updateOne({},{sankey:sankey},(err)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            callback(null);
+        }
+    })
 };

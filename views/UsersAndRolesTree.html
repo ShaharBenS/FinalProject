@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="/draw_sankey/server/html/editor/assets/css/main.css" >
 
     <script>
-        let diagramContext = '<%= page_context %>';
-        let process_structure_name = '<%= process_structure_name %>';
+        let diagramContext = '__tree__';
+        let process_structure_name = '__tree__';
     </script>
 
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
@@ -29,13 +29,11 @@
         $(window).load(function () {
             socket = io();
             app  = new sankey.Application(socket);
-            if(diagramContext === 'edit_process_structure'){
-                app.fileOpen(process_structure_name);
-            }
+            app.fileOpen("__tree__");
         });
 
     </script>
-    <script src="/javascripts/processStructure.js"></script>
+    <script src="/javascripts/usersAndRolesTree.js"></script>
 
     </head>
 
@@ -44,7 +42,6 @@
 <div id="content">
     <div id="editor">
         <div id="palette">
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.Start"   class="palette_node_element draw2d_droppable">
             <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.State"   class="palette_node_element draw2d_droppable">
             <button onclick="confirm()" title="Save Report" style="width: 50px;height: 50px" class="ion-ios-upload-outline icon">Save</button>
             <button onclick="app.view.centerDocument();" >Center</button>
@@ -173,6 +170,37 @@
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal">Cancel</button>
                 <button onclick="select_role_clicked()" id="select_role_okay_button" class="btn btn-primary okButton"><span>Okay</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="select_users_modal" class="modal fade githubFileDialog" tabindex="-1">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="media-heading">Select Users</h4>
+            </div>
+            <div class="modal-body">
+                <div class="media">
+                    <div class="media-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-lg-12">
+
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row"></div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal">Cancel</button>
+                <button onclick="" id="no-id123" class="btn btn-primary okButton"><span>Okay</span></button>
             </div>
         </div>
     </div>

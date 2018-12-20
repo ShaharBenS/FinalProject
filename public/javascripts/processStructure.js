@@ -9,7 +9,6 @@ function onDrop_extension(type,command,figure){
     {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
-
             figure.label = figure.label = new draw2d.shape.basic.Label({
                 text: selector.options[selector.selectedIndex].innerText,
                 angle:270,
