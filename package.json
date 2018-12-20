@@ -11,10 +11,16 @@
     "debug": "~2.6.9",
     "ejs": "^2.6.1",
     "express": "~4.16.0",
+    "express-session": "^1.15.6",
+    "googleapis": "^36.0.0",
     "http-errors": "~1.6.2",
     "mongoose": "^5.3.11",
     "morgan": "~1.9.0",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^1.0.0",
+    "passport-google-oauth20": "^1.0.0",
     "pug": "2.0.0-beta11",
+    "pug-bootstrap": "0.0.15",
     "socket.io": "^2.2.0"
   }
 }

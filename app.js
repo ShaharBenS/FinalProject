@@ -8,13 +8,15 @@ let mongoose = require('mongoose');
 
 let indexRouter = require('./routes/index');
 let mainRouter = require('./routes/main');
-let loginRouter = require('./routes/login');
+//let loginRouter = require('./routes/login');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
 let sankeyRouter = require('./routes/sankey');
-
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
-
+///
+var users = require('./routes/users');
+var auth = require('./routes/auth');
+///
 let app = express();
 
 //Setting up schemas
@@ -23,6 +25,17 @@ mongoose.set('useCreateIndex', true);
 var PS = require("./schemas/ProcessStructure");
 var UAR = require("./schemas/UsersAndRoles");
 
+////////////////
+var passport = require('passport');
+var session = require('express-session');
+app.use(session({
+    secret: 's3cr3t',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+////////////////
 
 // view engine setup
 app.engine('html', require('ejs').renderFile);
@@ -39,12 +52,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Routes
 app.use('/', indexRouter);
 app.use('/main',mainRouter);
-app.use('/login',loginRouter);
+//app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
 app.use('/sankey',sankeyRouter);
 app.use('/UsersAndRoles', UsersAndRolesRouter);
-
+///
+app.use('/users', users);
+app.use('/auth', auth);
+///
 
 
 // catch 404 and forward to error handler
@@ -63,5 +79,12 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
 
 module.exports = app;
