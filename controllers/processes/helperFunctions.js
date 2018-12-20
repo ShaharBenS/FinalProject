@@ -1,36 +1,47 @@
-let ActiveProcess = require("../../schemas/ActiveProcess");
-let UsersAndRoles = require("../../schemas/UsersAndRoles");
+let ActiveProcess = require("../../schemas/ActiveProcessSchema");
+let UsersAndRole = require("../../schemas/UsersAndRoles");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 let UserAndRolesControllers = require("../UsersAndRoles");
 let mongoose = require('mongoose');
 
 
-exports.getRoleName_by_username = function (username) {
-    UsersAndRoles.find({userEmail: username}, (err, user) => {
-        if (err) throw err;
+exports.getRoleID_by_username = function (username, callback) {
+    UsersAndRole.find({userEmail: username}, (err, user) => {
+        if (err) callback(err);
         else {
-            if (user.length === 0) throw ">>> ERROR: user " + username + " has no role";
-            return user[0].roleName;
+            if (user.length === 0) callback(null, null);
+            else callback(null, user[0]._doc._id);
         }
     });
 };
 
-exports.getProcessStructure = function (processStructureName) {
+exports.getRoleName_by_RoleID = function (roleID, callback) {
+    UsersAndRole.find({_id: roleID}, (err, user) => {
+        if (err) callback(err);
+        else {
+            if (user.length === 0) callback(null, null);
+            else callback(null, user[0]._doc.roleName);
+        }
+    });
+};
+
+
+exports.getProcessStructure = function (processStructureName, callback) {
     ProcessStructure.find({structure_name: processStructureName}, (err, processStructure) => {
-        if (err) throw err;
+        if (err) callback(err);
         else {
-            if (processStructure.length === 0) throw ">>> ERROR: processStructure " + processStructure + " does not exists";
-            return processStructure[0];
+            if (processStructure.length === 0) callback(null, null);
+            else callback(null, processStructure[0]._doc);
         }
     });
 };
 
-exports.getActiveProcessByProcessName = function (processName) {
+exports.getActiveProcessByProcessName = function (processName, callback) {
     ActiveProcess.find({process_name: processName}, (err, process) => {
-        if (err) throw err;
+        if (err) callback(err);
         else {
-            if (process.length === 0) return false;
-            return process[0];
+            if (process.length === 0) callback(null, null);
+            else callback(null, process[0]);
         }
     });
 };
@@ -107,4 +118,13 @@ exports.sankeyToStructure = function (sankey_content, callback) {
                 stages: stages,
             });
     });
+};
+exports.getUsernameByRoleID = (roleID, callback) => {
+    UsersAndRole.find({_id: roleID}, (err1, res) => {
+        if (err1) {
+            callback(err1);
+        } else {
+            callback(null, res[0]._doc.userEmail[0]);
+        }
+    })
 };

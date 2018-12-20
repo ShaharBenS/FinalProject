@@ -8,12 +8,16 @@ let mongoose = require('mongoose');
 
 let indexRouter = require('./routes/index');
 let mainRouter = require('./routes/main');
-let loginRouter = require('./routes/login');
+let testProcessStructure = require('./routes/testProcessStructures');
 let processStructuresRouter = require('./routes/processStructures');
-let activeProcessesRouter = require('./routes/activeProcesses');
 let sankeyRouter = require('./routes/sankey');
-let usersAndRolesRouter = require('./routes/UsersAndRoles');
-
+let activeProcessesRouter = require('./routes/activeProcessesRoute');
+var UsersAndRolesRouter = require('./routes/UsersAndRoles');
+///
+let NotAgudaEmployeeRouter = require('./routes/NotAgudaEmployee');
+var usersLogin = require('./routes/usersLogin');
+var auth = require('./routes/auth');
+///
 let app = express();
 
 //Setting up schemas
@@ -22,6 +26,17 @@ mongoose.set('useCreateIndex', true);
 var PS = require("./schemas/ProcessStructure");
 var UAR = require("./schemas/UsersAndRoles");
 
+////////////////
+var passport = require('passport');
+var session = require('express-session');
+app.use(session({
+    secret: 's3cr3t',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+////////////////
 
 // view engine setup
 app.engine('html', require('ejs').renderFile);
@@ -37,12 +52,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 app.use('/', indexRouter);
-app.use('/main',mainRouter);
-app.use('/login',loginRouter);
+app.use('/main', mainRouter);
 app.use('/processStructures', processStructuresRouter);
+app.use('/testProcessStructure',testProcessStructure);
 app.use('/activeProcesses', activeProcessesRouter);
-app.use('/sankey',sankeyRouter);
-app.use('/usersAndRoles',usersAndRolesRouter);
+app.use('/sankey', sankeyRouter);
+app.use('/UsersAndRoles', UsersAndRolesRouter);
+app.use('/NotAgudaEmployee', NotAgudaEmployeeRouter);
+///
+app.use('/usersLogin', usersLogin);
+app.use('/auth', auth);
+///
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -60,5 +80,12 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
 
 module.exports = app;
