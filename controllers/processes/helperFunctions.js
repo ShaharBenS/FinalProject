@@ -1,7 +1,7 @@
 let ActiveProcess = require("../../schemas/ActiveProcessSchema");
 let UsersAndRole = require("../../schemas/UsersAndRoles");
 let ProcessStructure = require("../../schemas/ProcessStructure");
-let UserAndRolesControllers = require("../UsersAndRoles");
+let UserAndRolesControllers = require("../users/UsersAndRoles");
 let mongoose = require('mongoose');
 
 

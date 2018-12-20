@@ -1,5 +1,4 @@
 let processStructure = require("../../schemas/ProcessStructure");
-let UsersAndRoles = require('../UsersAndRoles');
 let helperFunctions = require('./helperFunctions');
 
 module.exports.addProcessStructure = (structure_name, sankey_content, callback) => {
