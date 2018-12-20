@@ -37,12 +37,10 @@ module.exports.deleteRole = (roleToDelete, callback) => {
     UsersAndRoles.find({roleName: roleToDelete}, (err1, result1) => {
         if (err1) {
             console.log('Error In deleteRole ' + err1);
-        } else if(result1.length === 0)
-        {
+        } else if (result1.length === 0) {
             callback(new Error('Length 0 In Delete Role'));
         }
-        else
-            {
+        else {
             let toDeleteID = result1[0]._doc._id;
             let toDeleteChildren = result1[0]._doc.children;
             UsersAndRoles.find({children: toDeleteID}, (err2, result2) => {
@@ -76,14 +74,28 @@ module.exports.deleteRole = (roleToDelete, callback) => {
 };
 
 module.exports.changeRoleName = (oldRoleName, newRoleName, callback) => {
-    UsersAndRoles.find({roleName: oldRoleName}, (err1, result1) => {
-        if (err1) {
-            console.log('Error In deleteRole' + err1);
-        } else {
-            let toChangeID = result1[0]._doc._id;
-            UsersAndRoles.updateOne({_id: toChangeID}, {roleName: newRoleName}, callback)
-        }
-    })
+    if(newRoleName !== "")
+    {
+        UsersAndRoles.find({roleName: oldRoleName}, (err1, result1) => {
+            if (err1) {
+                console.log('Error In deleteRole' + err1);
+            } else {
+                UsersAndRoles.find({roleName: newRoleName}, (err2, result2) => {
+                    if (result2.length === 0) {
+                        let toChangeID = result1[0]._doc._id;
+                        UsersAndRoles.updateOne({_id: toChangeID}, {roleName: newRoleName}, callback)
+                    }
+                    else {
+                        callback(new Error());
+                    }
+                })
+            }
+        })
+    }
+    else
+    {
+        callback(new Error())
+    }
 };
 
 module.exports.addNewUserToRole = (userEmail, roleName, callback) => {
@@ -91,8 +103,14 @@ module.exports.addNewUserToRole = (userEmail, roleName, callback) => {
         if (err1) {
             console.log('Error In Add New User To Role' + err1);
         } else {
-            let toChangeID = result1[0]._doc._id;
-            UsersAndRoles.updateOne({_id: toChangeID}, {$push: {userEmail: userEmail}}, callback);
+            let emailsInRole = result1[0]._doc.userEmail;
+            if (emailsInRole.includes(userEmail)) {
+                callback(new Error());
+            }
+            else {
+                let toChangeID = result1[0]._doc._id;
+                UsersAndRoles.updateOne({_id: toChangeID}, {$push: {userEmail: userEmail}}, callback);
+            }
         }
     })
 };
@@ -102,8 +120,14 @@ module.exports.deleteUserFromRole = (userEmail, roleName, callback) => {
         if (err1) {
             console.log('Error In Add New User To Role' + err1);
         } else {
-            let toChangeID = result1[0]._doc._id;
-            UsersAndRoles.updateOne({_id: toChangeID}, {$pull: {userEmail: userEmail}}, callback);
+            let emailsInRole = result1[0]._doc.userEmail;
+            if (!emailsInRole.includes(userEmail)) {
+                callback(new Error());
+            }
+            else {
+                let toChangeID = result1[0]._doc._id;
+                UsersAndRoles.updateOne({_id: toChangeID}, {$pull: {userEmail: userEmail}}, callback);
+            }
         }
     })
 };

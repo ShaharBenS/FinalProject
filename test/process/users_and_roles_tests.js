@@ -214,10 +214,10 @@ describe('3. add user to role', function () {
     });
 
     it('3.2 add user to role and than add again', function (done) {
-        UsersAndRoles.addNewUserToRole(username, (err) => {
+        UsersAndRoles.addNewUserToRole(username,role3,(err) => {
             if (err) done(err);
             else
-                UsersAndRoles.addNewUserToRole(username, (err) => {
+                UsersAndRoles.addNewUserToRole(username,role3, (err) => {
                     if (err) done();
                     else done(new Error("should not happen"))
                 });
