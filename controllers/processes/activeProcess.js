@@ -11,28 +11,18 @@ let HELPER = require("./helperFunctions.js");
  */
 module.exports.startProcessByUsername = (userEmail, processStructureName, process_name, callback) => {
     HELPER.getRoleID_by_username(userEmail, (err, roleID) => {
-        if(err)
-        {
+        if (err) {
             callback(err);
-        }
-        else
-        {
+        } else {
             HELPER.getProcessStructure(processStructureName, (err, processStructure) => {
-                if(err)
-                {
+                if (err) {
                     callback(err);
-                }
-                else
-                {
+                } else {
                     HELPER.getActiveProcessByProcessName(process_name, (err, activeProcesses) => {
-                        if(err)
-                        {
+                        if (err) {
                             callback(err);
-                        }
-                        else
-                        {
-                            if(!activeProcesses)
-                            {
+                        } else {
+                            if (!activeProcesses) {
                                 let initial_stage = -1;
                                 processStructure.stages.every((stage) => {
                                     let roleEqual = stage._doc.roleID.id.equals(roleID.id);
@@ -44,7 +34,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     return true;
                                 });
                                 if (initial_stage === -1) callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
-                                getAllNewStages(0,userEmail,processStructure.stages,[],(err,newStages)=>{
+                                getAllNewStages(0, userEmail, processStructure.stages, [], (err, newStages) => {
                                     ActiveProcess.create({
                                         time_creation: new Date(),
                                         current_stages: [initial_stage],
@@ -55,9 +45,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
 
 
-                            }
-                            else
-                            {
+                            } else {
                                 callback(new Error(">>> ERROR: there is already process with the name: " + process_name));
                             }
                         }
@@ -68,16 +56,12 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
     });
 };
 
-const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
-    if(stages.length === index)
-    {
-        callback(null,newStages);
-    }
-    else
-    {
+const getAllNewStages = (index, initialUserEmail, stages, newStages, callback) => {
+    if (stages.length === index) {
+        callback(null, newStages);
+    } else {
         let stage = stages[index];
-        if(index === 0)
-        {
+        if (index === 0) {
             newStages.push({
                 roleID: stage._doc.roleID,
                 userEmail: initialUserEmail,
@@ -90,11 +74,9 @@ const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
                 filled_online_forms: [],
                 attached_files_names: stage._doc.attached_files_names,
             });
-            getAllNewStages(index+1,initialUserEmail,stages,newStages,callback);
-        }
-        else
-        {
-            HELPER.getUsernameByRoleID(stage._doc.roleID,(err,res)=>{
+            getAllNewStages(index + 1, initialUserEmail, stages, newStages, callback);
+        } else {
+            HELPER.getUsernameByRoleID(stage._doc.roleID, (err, res) => {
                 newStages.push({
                     roleID: stage._doc.roleID,
                     userEmail: res,
@@ -107,7 +89,7 @@ const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
                     filled_online_forms: [],
                     attached_files_names: stage._doc.attached_files_names,
                 });
-                getAllNewStages(index+1,initialUserEmail,stages,newStages,callback);
+                getAllNewStages(index + 1, initialUserEmail, stages, newStages, callback);
             });
         }
     }
@@ -121,12 +103,9 @@ const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
  */
 module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
     HELPER.getRoleID_by_username(userEmail, (err) => {
-        if(err)
-        {
+        if (err) {
             callback(err);
-        }
-        else
-        {
+        } else {
             let waiting_active_processes = [];
             ActiveProcess.find({}, (err, activeProcesses) => {
                 if (err) callback(err);
@@ -139,9 +118,10 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
                                 currentStages.remove(stage.stageNum);
                                 return currentStages.length !== 0;
                             }
+                            return true;
                         });
                     });
-                    callback(null,waiting_active_processes);
+                    callback(null, waiting_active_processes);
                 }
             });
         }
@@ -157,12 +137,9 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
  */
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     HELPER.getRoleID_by_username(userEmail, (err) => {
-        if(err)
-        {
+        if (err) {
             callback(err);
-        }
-        else
-        {
+        } else {
             let active_processes = [];
             ActiveProcess.find({}, (err, activeProcesses) => {
                 if (err) callback(err);
@@ -175,7 +152,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                             return true;
                         });
                     });
-                    callback(null,active_processes);
+                    callback(null, active_processes);
                 }
             });
         }
@@ -194,16 +171,13 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
  * @param callback
  */
 module.exports.handleProcess = (userEmail, process_name, stageDetails, filledForms, fileNames, callback) => {
-    HELPER.getActiveProcessByProcessName(process_name, (err,process) => {
-        if(err)
-        {
+    HELPER.getActiveProcessByProcessName(process_name, (err, process) => {
+        if (err) {
             callback(err);
-        }
-        else
-        {
-            if (process)
-            {
+        } else {
+            if (process) {
                 let stages = process.stages;
+                let newStages = [];
                 stages.forEach((stage) => {
                     if (stage.stagesToWaitFor.includes(stageDetails.stageNum)) {
                         let index = stage.stagesToWaitFor.indexOf(stageDetails.stageNum);
@@ -211,18 +185,17 @@ module.exports.handleProcess = (userEmail, process_name, stageDetails, filledFor
                     }
                     if (stage.stageNum === stageDetails.stageNum) {
                         stage.time_approval = new Date();
-                        stage.filled_online_forms.concat(filledForms);
-                        stage.attached_files_names.concat(fileNames);
+                        stage.filled_online_forms = stage.filled_online_forms.concat(filledForms);
+                        stage.attached_files_names = stage.attached_files_names.concat(fileNames);
                     }
+                    newStages.push(stage);
                 });
-                ActiveProcess.updateOne({process_name: process_name}, {stages: stages},
+                ActiveProcess.updateOne({process_name: process_name}, {stages: newStages},
                     (err, res) => {
                         if (err) callback(err);
-                        else callback(null,res);
+                        else callback(null, res);
                     });
-            }
-            else
-            {
+            } else {
                 callback(new Error(">>> ERROR: there is already process with the name: " + process_name))
             }
         }
@@ -236,54 +209,51 @@ module.exports.handleProcess = (userEmail, process_name, stageDetails, filledFor
  * @param nextStages
  * @param callback
  */
-module.exports.advanceProcess = (process_name, nextStages,callback) => {
-    HELPER.getActiveProcessByProcessName(process_name, (err,process) => {
-        if(err)
-        {
+module.exports.advanceProcess = (process_name, nextStages, callback) => {
+    HELPER.getActiveProcessByProcessName(process_name, (err, process) => {
+        if (err) {
             callback(err);
-        }
-        else
-        {
+        } else {
             process.stages.forEach((stage) => {
                 if (process.current_stages.includes(stage.stageNum)) {
                     if (stage.stagesToWaitFor.length === 0) {
-                        if (nextStages.every((stageNum) => stage.nextStages.includes(stageNum))) {
-                            process.current_stages.concat(nextStages);
 
-                            //remove stages
-                            let graph = [];
-                            let recursive_all_stages_in_path = function (stageNum) {
-                                process.stages.forEach((stage) => {
-                                    if (stage.stageNum === stageNum) {
-                                        graph.push(stageNum);
-                                        stage.nextStages.forEach((iStage) => recursive_all_stages_in_path(iStage));
-                                    }
-                                })
-                            };
-                            process.current_stages.forEach((stageNum) => recursive_all_stages_in_path(stageNum));
-
-                            let stages_to_remove = [];
-                            let recursive_remove_stages = function (stageNum) {
-                                process.stages.forEach((stage) => {
-                                    if (stage.stageNum === stageNum && !graph.includes(stageNum)) {
-                                        stages_to_remove.push(stageNum);
-                                        stage.nextStages.forEach((iStage) => recursive_remove_stages(iStage));
-                                    }
-                                })
-                            };
-                            let init_stages_to_remove = nextStages.filter(value => stage.nextStages.includes(value) === false);
-                            init_stages_to_remove.forEach((stageNum) => recursive_remove_stages(stageNum));
-
-                            let remove_stage = function (stage) {
-                                let index = process.stages.indexOf(stage);
-                                process.stages.splice(index, 1);
-                            };
-
+                        process.current_stages = process.current_stages.concat(nextStages);
+                        let index = process.current_stages.indexOf(stage.stageNum);
+                        process.current_stages.splice(index, 1);
+                        //remove stages
+                        let graph = [];
+                        let recursive_all_stages_in_path = function (stageNum) {
                             process.stages.forEach((stage) => {
-                                if (stages_to_remove.includes(stage.stageNum)) remove_stage(stage);
-                            });
-                        }
-                        else callback(new Error(">>> ERROR: invalid next stages"));
+                                if (stage.stageNum === stageNum) {
+                                    graph.push(stageNum);
+                                    stage.nextStages.forEach((iStage) => recursive_all_stages_in_path(iStage));
+                                }
+                            })
+                        };
+                        process.current_stages.forEach((stageNum) => recursive_all_stages_in_path(stageNum));
+
+                        let stages_to_remove = [];
+                        let recursive_remove_stages = function (stageNum) {
+                            process.stages.forEach((stage) => {
+                                if (stage.stageNum === stageNum && !graph.includes(stageNum)) {
+                                    stages_to_remove.push(stageNum);
+                                    stage.nextStages.forEach((iStage) => recursive_remove_stages(iStage));
+                                }
+                            })
+                        };
+                        let init_stages_to_remove = nextStages.filter(value => stage.nextStages.includes(value) === false);
+                        init_stages_to_remove.forEach((stageNum) => recursive_remove_stages(stageNum));
+
+                        let remove_stage = function (stage) {
+                            let index = process.stages.indexOf(stage);
+                            process.stages.splice(index, 1);
+                        };
+
+                        process.stages.forEach((stage) => {
+                            if (stages_to_remove.includes(stage.stageNum)) remove_stage(stage);
+                        });
+
                     }
                 }
             });
@@ -292,7 +262,7 @@ module.exports.advanceProcess = (process_name, nextStages,callback) => {
                 },
                 (err, res) => {
                     if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
-                    else callback(null,res);
+                    else callback(null, res);
                 });
         }
     });

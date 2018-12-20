@@ -38,8 +38,8 @@ exports.getActiveProcessByProcessName = function (processName, callback) {
         if (err) callback(err);
         else {
             if (process.length === 0) callback(null,null);
-            else callback(null,process[0]._doc);
-        }
+            else callback(null,process[0]);
+}
     });
 };
 exports.getUsernameByRoleID = (roleID, callback) => {

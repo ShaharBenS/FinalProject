@@ -46,5 +46,44 @@
     <br><br>
     <input value="getProcesses" type="submit">
 </form>
+
+<p style="font-size: 40px;">Handle Process:</p>
+<form method="POST" action="/activeProcesses/handleProcess">
+    <label>
+        User Name:
+        <input name="user_name" type="text">
+    </label>
+    <br><br>
+
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+
+    <label>
+        Stage Num:
+        <input name="stage_num" type="number">
+    </label>
+    <br><br>
+    <input value="handle it" type="submit">
+</form>
+
+<p style="font-size: 40px;">Advance Process:</p>
+<form method="POST" action="/activeProcesses/advanceProcess">
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+
+    <label>
+        Next:
+        <input name="next" type="number">
+    </label>
+    <br><br>
+    <input value="advance" type="submit">
+</form>
+
 </body>
 </html>
