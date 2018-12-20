@@ -8,8 +8,6 @@ let mongoose = require('mongoose');
 
 let indexRouter = require('./routes/index');
 let mainRouter = require('./routes/main');
-//let loginRouter = require('./routes/login');
-let loginRouter = require('./routes/login');
 let testProcessStructure = require('./routes/testProcessStructures');
 let processStructuresRouter = require('./routes/processStructures');
 let sankeyRouter = require('./routes/sankey');
@@ -55,7 +53,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Routes
 app.use('/', indexRouter);
 app.use('/main', mainRouter);
-//app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/testProcessStructure',testProcessStructure);
 app.use('/activeProcesses', activeProcessesRouter);
