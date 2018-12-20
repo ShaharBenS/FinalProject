@@ -50,21 +50,24 @@ describe('add user', function () {
         });
     });
 
-    it.skip('shouldn\'t add role with INVALID father', function (done) {
+    it('shouldn\'t add role with INVALID father', function (done) {
         let roleName = "role 3";
         let fatherRoleName = "INVALID ROLE";
         UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
             if (err) {
                 UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
+                    if (err) {
+                        done(err);
+                    }
                     else {
                         assert.equal(res.length, 2);
                         done();
                     }
                 });
             }
-            else
-               done(new Error("should not happen"))
+            else {
+                done(new Error("should not happen"));
+            }
         });
     });
 
