@@ -12,8 +12,7 @@ let loginRouter = require('./routes/login');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
 let sankeyRouter = require('./routes/sankey');
-
-var UsersAndRolesRouter = require('./routes/UsersAndRoles');
+let usersAndRolesRouter = require('./routes/UsersAndRoles');
 
 let app = express();
 
@@ -43,9 +42,7 @@ app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
 app.use('/sankey',sankeyRouter);
-app.use('/UsersAndRoles', UsersAndRolesRouter);
-
-
+app.use('/usersAndRoles',usersAndRolesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

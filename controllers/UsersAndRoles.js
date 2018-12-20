@@ -129,3 +129,11 @@ module.exports.changeUserEmailInRole = (roleName, oldUserEmail, newUserEmail, ca
         }
     })
 };
+
+module.exports.getAllRoles = (callback)=>{
+    UsersAndRoles.find({},callback).select('roleName');
+};
+
+module.exports.getRoleByName = (name,callback)=>{
+  return UsersAndRoles.find({roleName:name},callback);
+};

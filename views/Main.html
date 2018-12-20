@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
+    <script src="/javascripts/main.js"></script>
 </head>
-<button>start process</button>
-<button>notifications</button>
-<button onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">my processes</button>
-<button onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">processes waiting for me</button>
-<button>add process structure</button>
-<button>edit process structure</button>
+<body>
+<div>
+    <button>start process</button>
+    <button>notifications</button>
+    <button onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">my processes</button>
+    <button onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">processes waiting for me</button>
+    <button>processes waiting for me</button>
+    <button onclick="addProcessStructureClicked()">add process structure</button>
+    <button onclick="editProcessStructureClicked()">edit process structure</button>
+</div>
 </body>
 </html>

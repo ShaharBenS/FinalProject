@@ -24,8 +24,21 @@ router.post('/removeProcessStructure', function (req, res) {
 
 /* HTML Pages */
 router.get('/addProcessStructure', function (req, res) {
-    res.render('AddProcessStructure',{process_structure_name:req.query.name});
+    if(req.query.name){
+        res.render('ProcessStructure',{process_structure_name:req.query.name,page_context: 'add_process_structure'});
+    }
+    else{
+        res.send("Missing structure name.")
+    }
 });
 
+router.get('/editProcessStructure',function (req,res){
+    if(req.query.name){
+        res.render('ProcessStructure',{process_structure_name: req.query.name, page_context: 'edit_process_structure'})
+    }
+    else{
+        res.send("Missing structure name.")
+    }
+});
 
 module.exports = router;
