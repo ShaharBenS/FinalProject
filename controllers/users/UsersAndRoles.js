@@ -10,7 +10,9 @@ module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
                     if (err1) {
                         console.log('Error In AddNewRole' + err1);
                     } else if (result1.length === 0) {
-                        UsersAndRoles.deleteOne({roleName: newRoleName}, (err3,result3)=>{new Error (">>> ERROR: father name does not exists")});
+                        UsersAndRoles.deleteOne({roleName: newRoleName}, (err3, result3) => {
+                            new Error(">>> ERROR: father name does not exists")
+                        });
                         callback(new Error(">>> ERROR: father name does not exists"));
                     } else {
                         let fatherID = result1[0]._doc._id;
@@ -34,8 +36,13 @@ module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
 module.exports.deleteRole = (roleToDelete, callback) => {
     UsersAndRoles.find({roleName: roleToDelete}, (err1, result1) => {
         if (err1) {
-            console.log('Error In deleteRole' + err1);
-        } else {
+            console.log('Error In deleteRole ' + err1);
+        } else if(result1.length === 0)
+        {
+            callback(new Error('Length 0 In Delete Role'));
+        }
+        else
+            {
             let toDeleteID = result1[0]._doc._id;
             let toDeleteChildren = result1[0]._doc.children;
             UsersAndRoles.find({children: toDeleteID}, (err2, result2) => {

@@ -125,7 +125,7 @@ describe('2. delete role', function () {
                     if (err) done(err);
                     else {
                         assert.equal(res[1].children.length, 1);
-                        assert.equal(res[1].children[0], res[4].id);
+                        assert.equal(res[1].children[0], res[3].id);
                         done();
                     }
                 });
@@ -135,7 +135,7 @@ describe('2. delete role', function () {
     it('2.3 delete leaf', function (done) {
         let roleName = "role 5";
         UsersAndRoles.deleteRole(roleName, (err) => {
-            if (err) {
+            if (!err) {
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
                     else {
@@ -145,7 +145,7 @@ describe('2. delete role', function () {
                     }
                 });
             } else
-                done(new Error("should not happen"))
+                done(err)
         });
     });
 
