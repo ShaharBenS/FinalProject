@@ -11,7 +11,7 @@ let mainRouter = require('./routes/main');
 let loginRouter = require('./routes/login');
 let testProcessStructure = require('./routes/testProcessStructures');
 let processStructuresRouter = require('./routes/processStructures');
-let activeProcessesRouter = require('./routes/activeProcesses');
+let activeProcessesRouter = require('./routes/activeProcessesRoute');
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
 
 let app = express();
@@ -43,7 +43,6 @@ app.use('/processStructures', processStructuresRouter);
 app.use('/testProcessStructure',testProcessStructure);
 app.use('/activeProcesses', activeProcessesRouter);
 app.use('/UsersAndRoles', UsersAndRolesRouter);
-
 
 
 // catch 404 and forward to error handler

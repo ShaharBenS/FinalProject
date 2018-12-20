@@ -1,5 +1,5 @@
 let express = require('express');
-let activeProcess = require('../controllers/processes/activeProcess');
+let activeProcess = require('../controllers/processes/activeProcessController');
 
 let router = express.Router();
 
@@ -27,6 +27,12 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let user_name = req.query.user_name;
     activeProcess.getWaitingActiveProcessesByUser(user_name, (err, array) => {
         res.render('MyWaitingProcessesPage', {title: 'Express', table: array});
+    });
+});
+router.get('/reportMePlease', function (req, res) {
+    let process_name = req.query.process_name;
+    activeProcess.getAllActiveProcessDetails(process_name, (err,array) => {
+        res.render('processReport', {title: 'Express', processDetails: array[0], table: array[1]});
     });
 });
 

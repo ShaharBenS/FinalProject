@@ -1,4 +1,4 @@
-let ActiveProcess = require("../../schemas/ActiveProcess");
+let ActiveProcess = require("../../schemas/ActiveProcessSchema");
 let UsersAndRole = require("../../schemas/UsersAndRoles");
 let ProcessStructure = require("../../schemas/ProcessStructure");
 

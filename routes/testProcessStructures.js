@@ -3,7 +3,7 @@ let HELPER = require("../controllers/processes/helperFunctions");
 let processStructure = require('../controllers/processes/processStructure');
 let userControl = require('../controllers/UsersAndRoles');
 let router = express.Router();
-let activeProcess = require('../controllers/processes/activeProcess');
+let activeProcess = require('../controllers/processes/activeProcessController');
 
 router.get('/addDemoProcessStructure', function (req, res) {
     //TODO: this is only test, remember to refactoring

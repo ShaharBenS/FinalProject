@@ -1,5 +1,6 @@
-let ActiveProcess = require("../../schemas/ActiveProcess");
+let ActiveProcessController = require("../../schemas/ActiveProcessSchema");
 let HELPER = require("./helperFunctions.js");
+let ProcessReportSchema = require("../../schemas/ProcessReportSchema");
 
 /**
  * Starts new process from a defined structure
@@ -34,8 +35,8 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     return true;
                                 });
                                 if (initial_stage === -1) callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
-                                getAllNewStages(0, userEmail, processStructure.stages, [], (err, newStages) => {
-                                    ActiveProcess.create({
+                                getAllNewStages(0,userEmail,processStructure.stages,[],(err,newStages)=>{
+                                    ActiveProcessController.create({
                                         time_creation: new Date(),
                                         current_stages: [initial_stage],
                                         process_name: process_name,
@@ -107,7 +108,7 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
             callback(err);
         } else {
             let waiting_active_processes = [];
-            ActiveProcess.find({}, (err, activeProcesses) => {
+            ActiveProcessController.find({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
                     activeProcesses.forEach((process) => {
@@ -141,7 +142,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             callback(err);
         } else {
             let active_processes = [];
-            ActiveProcess.find({}, (err, activeProcesses) => {
+            ActiveProcessController.find({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
                     activeProcesses.forEach((process) => {
@@ -190,7 +191,7 @@ module.exports.handleProcess = (userEmail, process_name, stageDetails, filledFor
                     }
                     newStages.push(stage);
                 });
-                ActiveProcess.updateOne({process_name: process_name}, {stages: newStages},
+                ActiveProcessController.updateOne({process_name: process_name}, {stages: stages},
                     (err, res) => {
                         if (err) callback(err);
                         else callback(null, res);
@@ -257,7 +258,7 @@ module.exports.advanceProcess = (process_name, nextStages, callback) => {
                     }
                 }
             });
-            ActiveProcess.updateOne({process_name: process_name}, {
+            ActiveProcessController.updateOne({process_name: process_name}, {
                     current_stages: process.current_stages, stages: process.stages
                 },
                 (err, res) => {
@@ -265,5 +266,19 @@ module.exports.advanceProcess = (process_name, nextStages, callback) => {
                     else callback(null, res);
                 });
         }
+    });
+};
+
+module.exports.getAllActiveProcessDetails = (processName, callback) => {
+    ProcessReportSchema.find({processName : processName},(err,processReport)=>{
+        let returnProcessDetails = [];
+        let returnStages = [];
+        returnProcessDetails.push({process_name: processReport.process_name,time_creation: processReport.time_creation, status:processReport.status});
+        processReport.stages.forEach((stage)=>{
+            returnStages.push({type: stage.type,roleName: stage.roleName, userEmail: stage.userEmail,
+                stageNum: stage.stageNum,time_approval : stage.time_approval, comment: stage.comment,
+            });
+        });
+        callback(null,[returnProcessDetails,returnStages]);
     });
 };
