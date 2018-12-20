@@ -9,7 +9,7 @@ const processReportSchema = new Schema({
     initials: [Number],
     stages: [{
         type: String,
-        roleName: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
+        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
         stageNum: Number,
         time_approval: Date,

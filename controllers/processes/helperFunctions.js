@@ -13,15 +13,6 @@ exports.getRoleID_by_username = function (username, callback) {
     });
 };
 
-exports.getRoleName_by_username = function (username, callback) {
-    UsersAndRole.find({userEmail: username}, (err, user) => {
-        if (err) callback(err);
-        else {
-            if (user.length === 0) callback(null,null);
-            else callback(null, user[0]._doc.roleName);
-        }
-    });
-};
 
 exports.getProcessStructure = function (processStructureName, callback) {
     ProcessStructure.find({structure_name: processStructureName}, (err, processStructure) => {

@@ -31,7 +31,7 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
 });
 router.get('/reportMePlease', function (req, res) {
     let process_name = req.query.process_name;
-    activeProcess.getAllActiveProcessDetails(process_name, (err,array) => {
+    activeProcess.getAllActiveProcessDetails(process_name, (err, array) => {
         res.render('processReport', {title: 'Express', processDetails: array[0], table: array[1]});
     });
 });
@@ -39,7 +39,8 @@ router.get('/reportMePlease', function (req, res) {
 router.post('/handleProcess', function (req, res) {
     let user_name = req.body.user_name;
     let process_name = req.body.process_name;
-    let stage = {stageNum: parseInt(req.body.stage_num), comments: "HII"};
+    let next = [parseInt(req.body.next)];
+    let stage = {stageNum: parseInt(req.body.stage_num), nextStages: next, comments: "HII"};
     activeProcess.handleProcess(user_name, process_name, stage, [""], [""], (err, ret) => {
         if (err) {
             res.send(err);
@@ -51,7 +52,6 @@ router.post('/handleProcess', function (req, res) {
 
 router.post('/advanceProcess', function (req, res) {
     let process_name = req.body.process_name;
-    let next = [parseInt(req.body.next)];
     activeProcess.advanceProcess(process_name, next, (err, ret) => {
         if (err) {
             res.send(err);
