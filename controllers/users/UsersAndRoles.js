@@ -74,8 +74,7 @@ module.exports.deleteRole = (roleToDelete, callback) => {
 };
 
 module.exports.changeRoleName = (oldRoleName, newRoleName, callback) => {
-    if(newRoleName !== "")
-    {
+    if (newRoleName !== "") {
         UsersAndRoles.find({roleName: oldRoleName}, (err1, result1) => {
             if (err1) {
                 console.log('Error In deleteRole' + err1);
@@ -92,8 +91,7 @@ module.exports.changeRoleName = (oldRoleName, newRoleName, callback) => {
             }
         })
     }
-    else
-    {
+    else {
         callback(new Error())
     }
 };
@@ -133,19 +131,32 @@ module.exports.deleteUserFromRole = (userEmail, roleName, callback) => {
 };
 
 module.exports.changeUserEmailInRole = (roleName, oldUserEmail, newUserEmail, callback) => {
-    UsersAndRoles.find({roleName: roleName}, (err1, result1) => {
-        if (err1) {
-            console.log('Error In Add New User To Role' + err1);
-        } else {
-            let toChangeID = result1[0]._doc._id;
-            UsersAndRoles.updateOne({_id: toChangeID}, {$pull: {userEmail: oldUserEmail}}, (err2) => {
-                    if (err2) {
-                        console.log('Error In Add New User To Role' + err2);
-                    } else {
-                        UsersAndRoles.updateOne({_id: toChangeID}, {$push: {userEmail: newUserEmail}}, callback)
+    UsersAndRoles.find({userEmail: {"$in": [newUserEmail]}}, (err2, result2) => {
+        if (result2.length === 0) {
+            UsersAndRoles.find({roleName: roleName}, (err1, result1) => {
+                if (err1) {
+                    console.log('Error In Add New User To Role' + err1);
+                } else {
+                    let emailsInRole = result1[0]._doc.userEmail;
+                    if (!emailsInRole.includes(oldUserEmail)) {
+                        callback(new Error());
+                    }
+                    else {
+                        let toChangeID = result1[0]._doc._id;
+                        UsersAndRoles.updateOne({_id: toChangeID}, {$pull: {userEmail: oldUserEmail}}, (err2) => {
+                                if (err2) {
+                                    console.log('Error In Add New User To Role' + err2);
+                                } else {
+                                    UsersAndRoles.updateOne({_id: toChangeID}, {$push: {userEmail: newUserEmail}}, callback)
+                                }
+                            }
+                        )
                     }
                 }
-            )
+            })
+        }
+        else {
+            callback(new Error());
         }
     })
 };
