@@ -9,9 +9,12 @@ let mongoose = require('mongoose');
 let indexRouter = require('./routes/index');
 let mainRouter = require('./routes/main');
 //let loginRouter = require('./routes/login');
+let loginRouter = require('./routes/login');
+let testProcessStructure = require('./routes/testProcessStructures');
 let processStructuresRouter = require('./routes/processStructures');
 let activeProcessesRouter = require('./routes/activeProcesses');
 let sankeyRouter = require('./routes/sankey');
+let activeProcessesRouter = require('./routes/activeProcessesRoute');
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
 ///
 let NotAgudaEmployeeRouter = require('./routes/NotAgudaEmployee');
@@ -55,6 +58,7 @@ app.use('/', indexRouter);
 app.use('/main', mainRouter);
 //app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
+app.use('/testProcessStructure',testProcessStructure);
 app.use('/activeProcesses', activeProcessesRouter);
 app.use('/sankey', sankeyRouter);
 app.use('/UsersAndRoles', UsersAndRolesRouter);
@@ -63,7 +67,6 @@ app.use('/NotAgudaEmployee', NotAgudaEmployeeRouter);
 app.use('/usersLogin', usersLogin);
 app.use('/auth', auth);
 ///
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

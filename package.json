@@ -22,5 +22,8 @@
     "pug": "2.0.0-beta11",
     "pug-bootstrap": "0.0.15",
     "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
   }
 }
