@@ -12,7 +12,6 @@ let mainRouter = require('./routes/main');
 let loginRouter = require('./routes/login');
 let testProcessStructure = require('./routes/testProcessStructures');
 let processStructuresRouter = require('./routes/processStructures');
-let activeProcessesRouter = require('./routes/activeProcesses');
 let sankeyRouter = require('./routes/sankey');
 let activeProcessesRouter = require('./routes/activeProcessesRoute');
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
