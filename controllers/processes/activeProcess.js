@@ -44,7 +44,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     return true;
                                 });
                                 if (initial_stage === -1) callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
-                                getAllNewStages(0,processStructure.stages,[],(newStages)=>{
+                                getAllNewStages(0,userEmail,processStructure.stages,[],(err,newStages)=>{
                                     ActiveProcess.create({
                                         time_creation: new Date(),
                                         current_stages: [initial_stage],
@@ -69,10 +69,9 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
 };
 
 const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
-
     if(stages.length === index)
     {
-        callback(newStages);
+        callback(null,newStages);
     }
     else
     {
@@ -91,7 +90,7 @@ const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
                 filled_online_forms: [],
                 attached_files_names: stage._doc.attached_files_names,
             });
-            getAllNewStages(index+1,stages,newStages,callback);
+            getAllNewStages(index+1,initialUserEmail,stages,newStages,callback);
         }
         else
         {
@@ -108,7 +107,7 @@ const getAllNewStages = (index,initialUserEmail,stages,newStages,callback)=>{
                     filled_online_forms: [],
                     attached_files_names: stage._doc.attached_files_names,
                 });
-                getAllNewStages(index+1,stages,newStages,callback);
+                getAllNewStages(index+1,initialUserEmail,stages,newStages,callback);
             });
         }
     }
