@@ -14,7 +14,8 @@ let activeProcessesRouter = require('./routes/activeProcesses');
 let sankeyRouter = require('./routes/sankey');
 var UsersAndRolesRouter = require('./routes/UsersAndRoles');
 ///
-var users = require('./routes/users');
+let NotAgudaEmployeeRouter = require('./routes/NotAgudaEmployee');
+var usersLogin = require('./routes/usersLogin');
 var auth = require('./routes/auth');
 ///
 let app = express();
@@ -51,14 +52,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 app.use('/', indexRouter);
-app.use('/main',mainRouter);
+app.use('/main', mainRouter);
 //app.use('/login',loginRouter);
 app.use('/processStructures', processStructuresRouter);
 app.use('/activeProcesses', activeProcessesRouter);
-app.use('/sankey',sankeyRouter);
+app.use('/sankey', sankeyRouter);
 app.use('/UsersAndRoles', UsersAndRolesRouter);
+app.use('/NotAgudaEmployee', NotAgudaEmployeeRouter);
 ///
-app.use('/users', users);
+app.use('/usersLogin', usersLogin);
 app.use('/auth', auth);
 ///
 
