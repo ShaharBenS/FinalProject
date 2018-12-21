@@ -388,3 +388,89 @@ describe('5. delete user from role', function () {
     });
 
 });
+
+
+describe('6. change user email in role', function () {
+
+    let username4 = "random4@bgu.aguda.ac.il";
+
+    before(async function () {
+        await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
+        mongoose.set('useCreateIndex', true);
+    });
+
+    beforeEach((done) => {
+        base_structure(() => {
+            UsersAndRoles.addNewUserToRole(username, root, () => {
+                UsersAndRoles.addNewUserToRole(username2, son_root, () => {
+                    UsersAndRoles.addNewUserToRole(username3, son_root, () => {
+                        done()
+                    });
+                });
+            });
+        });
+    });
+
+    afterEach(function (done) {
+        mongoose.connection.db.dropDatabase();
+        done();
+    });
+
+    after(function () {
+        mongoose.connection.close();
+
+    });
+
+    it('6.1 change user in root', function (done) {
+        UsersAndRoles.changeUserEmailInRole(root, username, username4, (err) => {
+            if (err) done(err);
+            else
+                UsersAndRoles.getAllRolesObjects((err, res) => {
+                    if (err) done(err);
+                    else {
+                        assert.equal(res[0].userEmail.length, 1);
+                        assert.equal(res[0].userEmail[0], username4);
+                        done();
+                    }
+                });
+        });
+    });
+
+    it('6.2 change user in list', function (done) {
+        UsersAndRoles.changeUserEmailInRole(son_root, username2, username4, (err) => {
+            if (err) done(err);
+            else
+                UsersAndRoles.getAllRolesObjects((err, res) => {
+                    if (err) done(err);
+                    else {
+                        assert.equal(res[1].userEmail.length, 2);
+                        assert.equal(res[1].userEmail.includes(username4), true);
+                        assert.equal(res[1].userEmail.includes(username3), true);
+                        done();
+                    }
+                });
+        });
+    });
+
+    it('6.3 change invalid user (role have 1 username)', function (done) {
+        UsersAndRoles.changeUserEmailInRole(root, username4, username2, (err) => {
+            if (err) done();
+            else done(new Error("this should not happen"));
+        });
+    });
+
+    it('6.4 change invalid user (role have no usernames)', function (done) {
+        UsersAndRoles.changeUserEmailInRole(role4, username, username2, (err) => {
+            if (err) done();
+            else done(new Error("this should not happen"));
+        });
+    });
+
+    it('6.5 change user to existing one', function (done) {
+        UsersAndRoles.changeUserEmailInRole(son_root, username2, username3, (err) => {
+            if (err) done();
+            else done(new Error("this should not happen"));
+        });
+    });
+
+});
