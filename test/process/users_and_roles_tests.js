@@ -18,7 +18,7 @@ describe('add user', function () {
         mongoose.connection.close();
     });
 
-    it('checks that root role is added', function (done) {
+    it('add  root role', function (done) {
         let roleName = "role 1";
         UsersAndRoles.addNewRole(roleName, "", (err) => {
             if (err) done(err);
@@ -33,7 +33,7 @@ describe('add user', function () {
         });
     });
 
-    it('checks that role with father is added', function (done) {
+    it('add role with father', function (done) {
         let roleName = "role 2";
         let fatherRoleName = "role 1";
         UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
@@ -50,7 +50,7 @@ describe('add user', function () {
         });
     });
 
-    it('checks that role with invalid father is not added', function (done) {
+    it.skip('shouldn\'t add role with INVALID father', function (done) {
         let roleName = "role 3";
         let fatherRoleName = "INVALID ROLE";
         UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
