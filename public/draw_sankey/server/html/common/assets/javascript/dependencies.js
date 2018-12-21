@@ -21615,7 +21615,7 @@ draw2d.layout.connection.DirectRouter = draw2d.layout.connection.ConnectionRoute
        var start =connection.getStartPoint();
        var end = connection.getEndPoint();
        
-       // required for hit tests
+       // required for hit test
        //
        connection.addPoint(start);
        connection.addPoint(end);
@@ -21801,7 +21801,7 @@ draw2d.layout.connection.RubberbandRouter = draw2d.layout.connection.ConnectionR
        var end90  = new draw2d.geo.Point(-uv.y+end.x, uv.x+end.y);
        var end270 = new draw2d.geo.Point( uv.y+end.x,-uv.x+end.y);
 
-       // required for hit tests
+       // required for hit test
        //
        connection.addPoint(start);
        connection.addPoint(end);
@@ -23470,7 +23470,7 @@ draw2d.layout.connection.FanConnectionRouter = draw2d.layout.connection.DirectRo
             bendPoint = new draw2d.geo.Point(midPoint.x + (index / 2) * ySeparation, midPoint.y + (index / 2) * (-1 * xSeparation));
         }
 
-        // required for hit tests
+        // required for hit test
         conn.addPoint(start);
         conn.addPoint(bendPoint);
         conn.addPoint(end);

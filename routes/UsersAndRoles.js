@@ -1,8 +1,7 @@
 var express = require('express');
-let UsersAndRoles = require('../controllers/UsersAndRoles');
+let UsersAndRoles = require('../controllers/users/UsersAndRoles');
 var router = express.Router();
 
-//AddNewRole.
 router.post('/addNewRole', function (req, res) {
     let newRoleName = req.body.addNewRole_newRoleName;
     let fatherRoleName = req.body.addNewRole_fatherRoleName;
@@ -16,7 +15,7 @@ router.post('/addNewRole', function (req, res) {
     });
 });
 
-//AddNewUserToRole.
+
 router.post('/addNewUserToRole', function (req, res) {
     let userEmail = req.body.addNewUserToRole_userEmail;
     let roleName = req.body.addNewUserToRole_roleName;

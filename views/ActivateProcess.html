@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+    <script>
+
+    </script>
+</head>
+<body>
+<p style="font-size: 40px;">Activate Process:</p>
+<form method="POST" action="/activeProcesses/startProcess/">
+    <label>
+        Structure Name:
+        <input name="structure_name" type="text">
+    </label>
+    <br><br>
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+    <label>
+        User Name:
+        <input name="user_name" type="text">
+    </label>
+    <br><br>
+    <input value="activateProcess" type="submit">
+</form>
+<p style="font-size: 40px;">My Waiting Processes:</p>
+<form method="GET" action="/activeProcesses/getWaitingActiveProcessesByUser">
+    <label>
+        User Name:
+        <input name="user_name" type="text">
+    </label>
+    <br><br>
+    <input value="getWaitingProcesses" type="submit">
+</form>
+<p style="font-size: 40px;">My Active Processes:</p>
+<form method="GET" action="/activeProcesses/getAllActiveProcessesByUser">
+    <label>
+        User Name:
+        <input name="user_name" type="text">
+    </label>
+    <br><br>
+    <input value="getProcesses" type="submit">
+</form>
+
+<p style="font-size: 40px;">Handle Process:</p>
+<form method="POST" action="/activeProcesses/handleProcess">
+    <label>
+        User Name:
+        <input name="user_name" type="text">
+    </label>
+    <br><br>
+
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+
+    <label>
+        Stage Num:
+        <input name="stage_num" type="number">
+    </label>
+    <br><br>
+
+    <label>
+        Next:
+        <input name="next" type="number">
+    </label>
+    <br><br>
+
+    <input value="handle it" type="submit">
+</form>
+
+</body>
+</html>
