@@ -75,6 +75,42 @@
 
     <input value="handle it" type="submit">
 </form>
-
+<p style="font-size: 40px;">Process Report:</p>
+<form method="GET" action="/activeProcesses/reportProcess">
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+    <input value="getReport" type="submit">
+</form>
+<p style="font-size: 40px;">Take Process:</p>
+<form method="POST" action="/activeProcesses/takePartInProcess">
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+    <label>
+        User Email:
+        <input name="user_email" type="text">
+    </label>
+    <br><br>
+    <input value="takePart" type="submit">
+</form>
+<p style="font-size: 40px;">UnTake Process:</p>
+<form method="POST" action="/activeProcesses/unTakePartInProcess">
+    <label>
+        Process Name:
+        <input name="process_name" type="text">
+    </label>
+    <br><br>
+    <label>
+        User Email:
+        <input name="user_email" type="text">
+    </label>
+    <br><br>
+    <input value="unTakePart" type="submit">
+</form>
 </body>
 </html>

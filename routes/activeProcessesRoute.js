@@ -50,13 +50,37 @@ router.post('/handleProcess', function (req, res) {
     });
 });
 
-router.post('/advanceProcess', function (req, res) {
+router.post('/takePartInProcess', function (req, res) {
     let process_name = req.body.process_name;
-    activeProcess.advanceProcess(process_name, next, (err, ret) => {
+    let userEmail = req.body.user_email;
+    activeProcess.takePartInActiveProcess(process_name,userEmail, (err, result) => {
         if (err) {
             res.send(err);
         } else {
-            res.send("Activated Successfully");
+            res.send("Success");
+        }
+    });
+});
+
+router.post('/unTakePartInProcess', function (req, res) {
+    let process_name = req.body.process_name;
+    let userEmail = req.body.user_email;
+    activeProcess.unTakePartInActiveProcess(process_name,userEmail, (err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send("Success");
+        }
+    });
+});
+
+router.get('/reportProcess', function (req, res) {
+    let process_name = req.query.process_name;
+    activeProcess.getAllActiveProcessDetails(process_name, (err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.render('ProcessReport',{title: 'Express', processDetails: result[0], table: result[1]})
         }
     });
 });
