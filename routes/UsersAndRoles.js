@@ -87,4 +87,15 @@ router.post('/deleteUserFromRole', function (req, res) {
     });
 });
 
+router.get('/getAllRoles', (req,res)=>{
+    UsersAndRoles.getAllRoles((err,result)=>{
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+        }
+    })
+});
+
 module.exports = router;
