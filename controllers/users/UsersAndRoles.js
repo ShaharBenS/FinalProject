@@ -10,6 +10,7 @@ module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
                     if (err1) {
                         console.log('Error In AddNewRole' + err1);
                     } else if (result1.length === 0) {
+                        UsersAndRoles.deleteOne({roleName: newRoleName}, (err3,result3)=>{new Error (">>> ERROR: father name does not exists")});
                         callback(new Error(">>> ERROR: father name does not exists"));
                     } else {
                         let fatherID = result1[0]._doc._id;

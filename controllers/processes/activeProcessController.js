@@ -34,7 +34,11 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     }
                                     return true;
                                 });
-                                if (initial_stage === -1) callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
+                                if (initial_stage === -1)
+                                {
+                                    callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
+                                    return;
+                                }
                                 let newStages = [];
                                 processStructure.stages.forEach((stage) => {
                                     newStages.push({
@@ -42,7 +46,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         userEmail: stage.stageNum === initial_stage ? userEmail : null,
                                         stageNum: stage.stageNum,
                                         nextStages: stage.nextStages,
-                                        stagesToWaitFor: stage.stagesToWaitFor,
+                                        stagesToWaitFor: stage.stageNum === initial_stage?[]:stage.stagesToWaitFor,
                                         origin_stagesToWaitFor: stage.stagesToWaitFor,
                                         time_approval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
                                         online_forms: stage.online_forms,
@@ -262,35 +266,43 @@ const addProcessReport = (process_name,time_creation,callback)=>{
       });
 };
 const addActiveProcessDetailsToReport = (process_name,userEmail,stageNum,time_approval,comments,callback)=>{
-    ProcessReportSchema.findOne({process_name: process_name},(err1,processReport)=>{
-        if(err1) callback(err1);
+    ProcessReportSchema.findOne({process_name: process_name},(err,processReport)=>{
+        if(err) callback(err);
         else
         {
-            HELPER.getRoleID_by_username(userEmail,(err2,roleID)=>{
-                let newStage = {roleID: roleID, userEmail: userEmail, stageNum: stageNum, time_approval:time_approval,
-                    comments: comments};
-                let stages = [];
-                processReport.stages.forEach((stage)=>{
-                    stages.push({roleID: stage.roleID, userEmail: stage.userEmail, stageNum: stage.stageNum, time_approval: stage.time_approval,
-                        comments: stage.comments})
-                });
-                stages.push(newStage);
-                ProcessReportSchema.updateOne({process_name: process_name},{stages:stages},(err3,res)=>{
-                    if(err3) callback(err3);
-                    else callback(null);
-                });
+            HELPER.getRoleID_by_username(userEmail,(err,roleID)=>{
+                if(err) callback(err);
+                else
+                {
+                    let newStage = {roleID: roleID, userEmail: userEmail, stageNum: stageNum, time_approval:time_approval,
+                        comments: comments};
+                    let stages = [];
+                    processReport.stages.forEach((stage)=>{
+                        stages.push({roleID: stage.roleID, userEmail: stage.userEmail, stageNum: stage.stageNum, time_approval: stage.time_approval,
+                            comments: stage.comments})
+                    });
+                    stages.push(newStage);
+                    ProcessReportSchema.updateOne({process_name: process_name},{stages:stages},(err)=>{
+                        if(err) callback(err);
+                        else callback(null);
+                    });
+                }
             });
         }
     });
 };
 module.exports.getAllActiveProcessDetails = (process_name, callback) => {
     ProcessReportSchema.findOne({process_name: process_name}, (err, processReport) => {
-        let returnProcessDetails = {process_name: processReport.process_name, time_creation: processReport.time_creation,
-            status: processReport.status
-        };
-        returnStagesWithRoleName(0,processReport.stages,[],(err,newStages)=>{
-            callback(null, [returnProcessDetails, newStages]);
-        });
+        if(err) callback(err);
+        else
+        {
+            let returnProcessDetails = {process_name: processReport.process_name, time_creation: processReport.time_creation,
+                status: processReport.status
+            };
+            returnStagesWithRoleName(0,processReport.stages,[],(err,newStages)=>{
+                callback(null, [returnProcessDetails, newStages]);
+            });
+        }
     });
 };
 
@@ -303,22 +315,59 @@ const returnStagesWithRoleName = (index,stages,newStages,callback) =>{
     {
         let stage = stages[index];
         HELPER.getRoleName_by_RoleID(stage.roleID,(err,roleName)=>{
-            newStages.push({roleID: roleName, userEmail: stage.userEmail,
-                stageNum: stage.stageNum, time_approval: stage.time_approval, comments: stage.comments
-            });
-            returnStagesWithRoleName(index+1,stages,newStages,callback);
+            if(err) callback(err);
+            else
+            {
+                newStages.push({roleID: roleName, userEmail: stage.userEmail,
+                    stageNum: stage.stageNum, time_approval: stage.time_approval, comments: stage.comments
+                });
+                returnStagesWithRoleName(index+1,stages,newStages,callback);
+            }
         });
     }
 };
 
 module.exports.takePartInActiveProcess = (process_name,userEmail,callback)=>{
     HELPER.getActiveProcessByProcessName(process_name,(err,process)=>{
-        HELPER.getRoleID_by_username(userEmail,(err,roleID)=>{
+        if(err) callback(err);
+        else
+        {
+            HELPER.getRoleID_by_username(userEmail,(err,roleID)=>{
+                if(err) callback(err);
+                else
+                {
+                    let newStages = [];
+                    process.stages.forEach((stage)=>{
+                        newStages.push(
+                            {roleID: stage.roleID,
+                                userEmail: (process.current_stages.includes(stage.stageNum) && stage.roleID.id.equals(roleID.id)?userEmail:stage.userEmail),
+                                stageNum: stage.stageNum,
+                                nextStages: stage.nextStages,
+                                stagesToWaitFor: stage.stagesToWaitFor,
+                                origin_stagesToWaitFor: stage.origin_stagesToWaitFor,
+                                time_approval: stage.time_approval,
+                                online_forms: stage.online_forms,
+                                filled_online_forms: stage.filled_online_forms,
+                                attached_files_names: stage.attached_files_names,
+                                comments: stage.comments});
+                    });
+                    ActiveProcessSchema.updateOne({process_name: process_name}, {stages: newStages}, callback);
+                }
+            });
+        }
+    });
+};
+
+module.exports.unTakePartInActiveProcess = (process_name,userEmail,callback)=>{
+    HELPER.getActiveProcessByProcessName(process_name,(err,process)=>{
+        if(err) callback(err);
+        else
+        {
             let newStages = [];
             process.stages.forEach((stage)=>{
                 newStages.push(
                     {roleID: stage.roleID,
-                        userEmail: (process.current_stages.includes(stage.stageNum) && stage.roleID.id.equals(roleID.id)?userEmail:stage.userEmail),
+                        userEmail: (process.current_stages.includes(stage.stageNum) && stage.userEmail === userEmail ? null:stage.userEmail),
                         stageNum: stage.stageNum,
                         nextStages: stage.nextStages,
                         stagesToWaitFor: stage.stagesToWaitFor,
@@ -330,28 +379,7 @@ module.exports.takePartInActiveProcess = (process_name,userEmail,callback)=>{
                         comments: stage.comments});
             });
             ActiveProcessSchema.updateOne({process_name: process_name}, {stages: newStages}, callback);
-        });
-    });
-};
-
-module.exports.unTakePartInActiveProcess = (process_name,userEmail,callback)=>{
-    HELPER.getActiveProcessByProcessName(process_name,(err,process)=>{
-        let newStages = [];
-        process.stages.forEach((stage)=>{
-            newStages.push(
-                {roleID: stage.roleID,
-                    userEmail: (process.current_stages.includes(stage.stageNum) && stage.userEmail === userEmail ? null:stage.userEmail),
-                    stageNum: stage.stageNum,
-                    nextStages: stage.nextStages,
-                    stagesToWaitFor: stage.stagesToWaitFor,
-                    origin_stagesToWaitFor: stage.origin_stagesToWaitFor,
-                    time_approval: stage.time_approval,
-                    online_forms: stage.online_forms,
-                    filled_online_forms: stage.filled_online_forms,
-                    attached_files_names: stage.attached_files_names,
-                    comments: stage.comments});
-        });
-        ActiveProcessSchema.updateOne({process_name: process_name}, {stages: newStages}, callback);
+        }
     });
 };
 
