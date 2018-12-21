@@ -50,7 +50,7 @@ describe('1. add role', function () {
         });
     });
 
-    it.skip('1.3 shouldn\'t add role with INVALID father', function (done) {
+    it('1.3 shouldn\'t add role with INVALID father', function (done) {
         let roleName = "role 3";
         let fatherRoleName = "INVALID ROLE";
         UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
