@@ -159,7 +159,7 @@ describe('2. delete role', function () {
 });
 
 
-describe.skip('3. add user to role', function () {
+describe('3. add user to role', function () {
 
     let root = "role 1";
     let son_root = "role 2";
@@ -168,34 +168,44 @@ describe.skip('3. add user to role', function () {
     let role5 = "role 5";
     let username = "random@bgu.aguda.ac.il";
     let username2 = "random2@bgu.aguda.ac.il";
+    let username3 = "random3@bgu.aguda.ac.il";
 
 
-    beforeEach(async function () {
+    before(async function () {
         await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
         mongoose.set('useCreateIndex', true);
-        UsersAndRoles.addNewRole(root, "", () => {
-            UsersAndRoles.addNewRole(son_root, root, () => {
-                UsersAndRoles.addNewRole(role3, root, () => {
-                    UsersAndRoles.addNewRole(role4, son_root, () => {
-                        UsersAndRoles.addNewRole(role5, role4, () => {
+    });
 
-                        })
-                    })
-                })
-            })
-        })
+    beforeEach(function (done) {
+        UsersAndRoles.addNewRole(root, "", (err, res) => {
+            UsersAndRoles.addNewRole(son_root, root, (err, res) => {
+                UsersAndRoles.addNewRole(role3, root, (err, res) => {
+                    UsersAndRoles.addNewRole(role4, son_root, (err, res) => {
+                        UsersAndRoles.addNewRole(role5, role4, (err, res) => {
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+
+    });
+
+    afterEach(function (done) {
+        mongoose.connection.db.dropDatabase();
+        done();
     });
 
     after(function () {
-        mongoose.connection.db.dropDatabase();
         mongoose.connection.close();
+
     });
 
     it('3.1 add root user', function (done) {
         UsersAndRoles.addNewUserToRole(username, root, (err) => {
             if (err) done(err);
             else
-                UsersAndRoles.getAllRoles((err, res) => {
+                UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
                     else {
                         assert.equal(res[0].userEmail.length, 1);
@@ -211,42 +221,35 @@ describe.skip('3. add user to role', function () {
             if (err) done(err);
             else
                 UsersAndRoles.addNewUserToRole(username, (err) => {
+                    if (err) done();
+                    else done(new Error("should not happen"))
+                });
+        });
+    });
+
+    it('3.3 add multiple users to role', function (done) {
+        UsersAndRoles.addNewUserToRole(username, son_root, (err) => {
+            if (err) done(err);
+            else
+                UsersAndRoles.addNewUserToRole(username2, son_root, (err) => {
                     if (err) done(err);
                     else
-                        UsersAndRoles.getAllRolesObjects((err, res) => {
+                        UsersAndRoles.addNewUserToRole(username3, son_root, (err) => {
                             if (err) done(err);
                             else {
-                                assert.equal(res[0].userEmail.length, 1);
-                                assert.equal(res[0].children[0], res[4].id);
-                                done();
+                                UsersAndRoles.getAllRolesObjects((err, res) => {
+                                    if (err) done(err);
+                                    else {
+                                        assert.equal(res[1].userEmail.length, 3);
+                                        assert.equal(res[1].userEmail[0], username);
+                                        assert.equal(res[1].userEmail[1], username2);
+                                        assert.equal(res[1].userEmail[2], username3);
+                                        done();
+                                    }
+                                });
                             }
                         });
                 });
-        });
-    });
-
-    it('2.3 delete leaf', function (done) {
-        let roleName = "role 5";
-        UsersAndRoles.deleteRole(roleName, (err) => {
-            if (err) {
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[3].children.length, 0);
-                        res.every((row) => row.roleName !== roleName);
-                        done();
-                    }
-                });
-            } else
-                done(new Error("should not happen"))
-        });
-    });
-
-    it('2.4 invalid delete', function (done) {
-        let roleName = "role 10";
-        UsersAndRoles.deleteRole(roleName, (err) => {
-            if (err) done();
-            else done(new Error("should not happen"));
         });
     });
 });
