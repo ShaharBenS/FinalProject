@@ -5,6 +5,17 @@ let it = mocha.it;
 let assert = require('chai').assert;
 let UsersAndRoles = require('../../controllers/users/UsersAndRoles');
 
+// variables
+let noFather = "";
+let root = "role 1";
+let son_root = "role 2";
+let role3 = "role 3";
+let role4 = "role 4";
+let role5 = "role 5";
+let username = "random@bgu.aguda.ac.il";
+let username2 = "random2@bgu.aguda.ac.il";
+let username3 = "random3@bgu.aguda.ac.il";
+
 
 describe('1. add role', function () {
 
@@ -19,14 +30,13 @@ describe('1. add role', function () {
     });
 
     it('1.1 add  root role', function (done) {
-        let roleName = "role 1";
-        UsersAndRoles.addNewRole(roleName, "", (err) => {
+        UsersAndRoles.addNewRole(root, noFather, (err) => {
             if (err) done(err);
             else
                 UsersAndRoles.getAllRoles((err, res) => {
                     if (err) done(err);
                     else {
-                        assert.equal(res[0].roleName, roleName);
+                        assert.equal(res[0].roleName, root);
                         done();
                     }
                 });
@@ -34,15 +44,13 @@ describe('1. add role', function () {
     });
 
     it('1.2 add role with father', function (done) {
-        let roleName = "role 2";
-        let fatherRoleName = "role 1";
-        UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
+        UsersAndRoles.addNewRole(son_root, root, (err) => {
             if (err) done(err);
             else
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
                     else {
-                        assert.equal(res[1].roleName, roleName);
+                        assert.equal(res[1].roleName, son_root);
                         assert.equal(res[0].children[0], res[1].id);
                         done();
                     }
@@ -51,9 +59,8 @@ describe('1. add role', function () {
     });
 
     it('1.3 shouldn\'t add role with INVALID father', function (done) {
-        let roleName = "role 3";
         let fatherRoleName = "INVALID ROLE";
-        UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
+        UsersAndRoles.addNewRole(role3, fatherRoleName, (err) => {
             if (err) {
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
@@ -77,11 +84,11 @@ describe('2. delete role', function () {
 
     beforeEach(function (done) {
 
-        UsersAndRoles.addNewRole("role 1", "", (err, res) => {
-            UsersAndRoles.addNewRole("role 2", "role 1", (err, res) => {
-                UsersAndRoles.addNewRole("role 3", "role 1", (err, res) => {
-                    UsersAndRoles.addNewRole("role 4", "role 2", (err, res) => {
-                        UsersAndRoles.addNewRole("role 5", "role 4", (err, res) => {
+        UsersAndRoles.addNewRole(root, noFather, () => {
+            UsersAndRoles.addNewRole(son_root, root, () => {
+                UsersAndRoles.addNewRole(role3, root, () => {
+                    UsersAndRoles.addNewRole(role4, son_root, () => {
+                        UsersAndRoles.addNewRole(role5, role4, () => {
                             done();
                         });
                     });
@@ -161,27 +168,17 @@ describe('2. delete role', function () {
 
 describe('3. add user to role', function () {
 
-    let root = "role 1";
-    let son_root = "role 2";
-    let role3 = "role 3";
-    let role4 = "role 4";
-    let role5 = "role 5";
-    let username = "random@bgu.aguda.ac.il";
-    let username2 = "random2@bgu.aguda.ac.il";
-    let username3 = "random3@bgu.aguda.ac.il";
-
-
     before(async function () {
         await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
         mongoose.set('useCreateIndex', true);
     });
 
     beforeEach(function (done) {
-        UsersAndRoles.addNewRole(root, "", (err, res) => {
-            UsersAndRoles.addNewRole(son_root, root, (err, res) => {
-                UsersAndRoles.addNewRole(role3, root, (err, res) => {
-                    UsersAndRoles.addNewRole(role4, son_root, (err, res) => {
-                        UsersAndRoles.addNewRole(role5, role4, (err, res) => {
+        UsersAndRoles.addNewRole(root, "", () => {
+            UsersAndRoles.addNewRole(son_root, root, () => {
+                UsersAndRoles.addNewRole(role3, root, () => {
+                    UsersAndRoles.addNewRole(role4, son_root, () => {
+                        UsersAndRoles.addNewRole(role5, role4, () => {
                             done();
                         });
                     });
