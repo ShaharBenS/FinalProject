@@ -1,7 +1,7 @@
 let express = require('express');
 let HELPER = require("../controllers/processes/helperFunctions");
 let processStructure = require('../controllers/processes/processStructure');
-let userControl = require('../controllers/UsersAndRoles');
+let userControl = require('../controllers/users/UsersAndRoles');
 let router = express.Router();
 let activeProcess = require('../controllers/processes/activeProcessController');
 
