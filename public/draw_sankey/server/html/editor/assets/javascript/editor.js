@@ -523,7 +523,12 @@ sankey.View = draw2d.Canvas.extend({
      **/
     onDrop: function (droppedDomNode, x, y, shiftKey, ctrlKey) {
         var type = $(droppedDomNode).data("shape");
-        var figure = eval("new " + type + "();");
+        let color = '#ffb224';
+        if(type === "sankey.shape.Start"){
+            type = "sankey.shape.State";
+            color = '#5957ff';
+        }
+        var figure = eval("new " + type + "({bgColor:color});");
         // create a command for the undo/redo support
 
         var command = new draw2d.command.CommandAdd(this, figure, x, y);
@@ -795,7 +800,12 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         if (!(figure instanceof draw2d.Connection)) {
             items.bgcolor = {name: "Background Color", icon: "x ion-android-color-palette"};
         }
-
+        if(figure instanceof sankey.shape.State){
+            if(diagramContext === '__tree__')
+            {
+                items.users = {name:"See Users",icon: "icon ion-ios-people"}
+            }
+        }
         if ((figure instanceof sankey.shape.Start) ||
             (figure instanceof sankey.shape.End) ||
             (figure instanceof sankey.shape.State) ||
@@ -803,7 +813,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             items.label = {name: "Add Label", icon: "x ion-ios-pricetag-outline"};
             items.del = {name: "Delete", icon: "x ion-ios-close-outline"};
         }
-
 
         $.contextMenu({
             selector: 'body',
@@ -829,6 +838,37 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         break;
                     case "label":
                         this._attachLabel(figure);
+                        break;
+                    case "users":
+                        let xmlHttp = new XMLHttpRequest();
+                        xmlHttp.onreadystatechange = function() {
+                            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+                            {
+                                let response = JSON.parse(xmlHttp.responseText);
+                                let users_div = document.getElementById("users-div");
+                                response.forEach((user)=>{
+                                    let div = document.createElement("div");
+                                    let button = document.createElement("button");
+                                    button.class = "btn";
+                                    button.innerText = '-';
+                                    let label = document.createElement("label");
+                                    label.innerText = user.userEmail;
+                                    div.appendChild(button);
+                                    div.appendChild(label);
+                                    users_div.append(div);
+                                });
+                                let div = document.createElement("div");
+                                let button = document.createElement("button");
+                                button.class = "btn";
+                                button.innerText = '+';
+                                div.appendChild(button);
+                                users_div.append(div);
+                                $("#select_users_modal").modal('show');
+                            }
+                        };
+                        let role_name = figure.children.data[0].figure.text;
+                        xmlHttp.open("GET", '/usersAndRoles/getAllUsersByRole/?roleName='+role_name, true);
+                        xmlHttp.send(null);
                         break;
                     default:
                         break;

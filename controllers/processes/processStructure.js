@@ -50,5 +50,18 @@ module.exports.getProcessStructure = (name, callback) => {
         else {
             callback(null,result[0])
         }
-    })
+    });
+};
+
+module.exports.getProcessStagesFromOriginal = (oldStages, callback) => {
+    let newStages = [];
+    oldStages.forEach((stage)=>{
+       newStages.push({roleID: stage.roleID,
+        stageNum: stage.stageNum,
+            nextStages: stage.nextStages,
+            stagesToWaitFor: stage.stagesToWaitFor,
+            online_forms: stage.online_forms,
+            attached_files_names: stage.attached_files_names});
+    });
+    callback(newStages);
 };
