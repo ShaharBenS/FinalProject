@@ -8,7 +8,7 @@ let processStructureControl = require("../../controllers/processes/processStruct
 let UsersAndRoles = require('../../controllers/users/UsersAndRoles');
 let HELPER = require("../../controllers/processes/helperFunctions");
 
-describe('1. add process structure', function () {
+describe('7. add process structure', function () {
 
     before(async function () {
         await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
@@ -36,15 +36,15 @@ describe('1. add process structure', function () {
         mongoose.connection.close();
     });
 
-    it('1.1 add process structure', function (done) {
-        UsersAndRoles.addNewUserToRole('omri','r1',(err4)=>{
-            UsersAndRoles.addNewUserToRole("kuti","r2",(err5)=>{
-                UsersAndRoles.addNewUserToRole("tomer","r3",(err6)=> {
+    it('7.1 add process structure', function (done) {
+        UsersAndRoles.addNewUserToRole('omri', 'r1', (err4) => {
+            UsersAndRoles.addNewUserToRole("kuti", "r2", (err5) => {
+                UsersAndRoles.addNewUserToRole("tomer", "r3", (err6) => {
                     let structure_name = 'structure 1';
                     let initials = [1, 2];
-                    HELPER.getRoleID_by_username("omri", (err,id1) => {
-                        HELPER.getRoleID_by_username("kuti", (err1,id2) => {
-                            HELPER.getRoleID_by_username("tomer", (err2,id3) => {
+                    HELPER.getRoleID_by_username("omri", (err, id1) => {
+                        HELPER.getRoleID_by_username("kuti", (err1, id2) => {
+                            HELPER.getRoleID_by_username("tomer", (err2, id3) => {
                                 let stages = [
                                     {
                                         roleID: id1,
@@ -76,13 +76,13 @@ describe('1. add process structure', function () {
                                     initials: initials,
                                     stages: stages,
                                     sankey: '',
-                                }, (err)=>{
-                                    processStructureControl.getProcessStructure(structure_name,(err,process)=> {
+                                }, (err) => {
+                                    processStructureControl.getProcessStructure(structure_name, (err, process) => {
                                         assert.equal(process.structure_name, structure_name);
                                         assert.equal(process.initials[0], 1);
                                         assert.equal(process.initials[1], 2);
-                                        processStructureControl.getProcessStagesFromOriginal(process.stages,(newS)=>{
-                                            assert.deepEqual(newS,stages);
+                                        processStructureControl.getProcessStagesFromOriginal(process.stages, (newS) => {
+                                            assert.deepEqual(newS, stages);
                                             done();
                                         });
                                     });
@@ -92,39 +92,6 @@ describe('1. add process structure', function () {
                     });
                 });
             });
-        });
-    });
-    it('1.2 add role with father', function (done) {
-        let roleName = 'role 2';
-        let fatherRoleName = 'role 1';
-        UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[1].roleName, roleName);
-                        assert.equal(res[0].children[0], res[1].id);
-                        done();
-                    }
-                });
-        });
-    });
-
-    it.skip('1.3 shouldn\'t add role with INVALID father', function (done) {
-        let roleName = 'role 3';
-        let fatherRoleName = 'INVALID ROLE';
-        UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
-            if (err) {
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res.length, 2);
-                        done();
-                    }
-                });
-            } else
-                done(new Error('should not happen'))
         });
     });
 });
