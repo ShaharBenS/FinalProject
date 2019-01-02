@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let processStructure = require('../controllers/processes/processStructure');
-let UsersAndRolesTreeSankey = require('../controllers/UsersAndRoles');
+let UsersAndRolesTreeSankey = require('../controllers/users/UsersAndRoles');
 
 router.post('/file/save',function (req,res) {
     if(req.body.context === 'add_process_structure'){
