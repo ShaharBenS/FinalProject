@@ -1,4 +1,5 @@
 var UsersAndRoles = require("../../schemas/UsersAndRoles.js");
+let UsersAndRolesTreeSankey = require('../../schemas/UsersAndRolesTreeSankey.js');
 
 module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
     UsersAndRoles.create({roleName: newRoleName, userEmail: [], children: []}, (err) => {
@@ -191,12 +192,37 @@ module.exports.getUsersAndRolesTree = (callback)=>{
 };
 
 module.exports.setUsersAndRolesTree = (sankey,callback)=>{
+    let parsed_sankey = JSON.parse(sankey);
     UsersAndRolesTreeSankey.updateOne({},{sankey:sankey},(err)=>{
         if(err){
             callback(err);
         }
         else{
-            callback(null);
+            let roles = parsed_sankey.content.diagram.filter((figure)=>{
+                return figure.type === "sankey.shape.State";
+            });
+            let connections = parsed_sankey.content.diagram.filter((figure)=>{
+                return figure.type === "sankey.shape.Connection";
+            });
+            roles.reduce((acc,role_figure)=>{
+                return (err)=>{
+                    if(err){
+                        acc(err);
+                    }
+                    else{
+                        this.addNewRole(role_figure.labels[0].text,[],(_err)=>{
+                            acc(_err ? _err : null)
+                        })
+                    }
+                };
+            },(err)=>{
+                if(err){
+                    callback(err);
+                }
+                else{
+                    let x = 3;
+                }
+            })(null);
         }
     })
 };
