@@ -1,5 +1,4 @@
-var UsersAndRoles = require("../schemas/UsersAndRoles.js");
-let UsersAndRolesTreeSankey = require('../schemas/UsersAndRolesTreeSankey.js');
+var UsersAndRoles = require("../../schemas/UsersAndRoles.js");
 
 module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
     UsersAndRoles.create({roleName: newRoleName, userEmail: [], children: []}, (err) => {
