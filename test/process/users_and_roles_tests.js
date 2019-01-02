@@ -5,30 +5,6 @@ let it = mocha.it;
 let assert = require('chai').assert;
 let UsersAndRoles = require('../../controllers/users/UsersAndRoles');
 
-// variables
-let noFather = "";
-let root = "role 1";
-let son_root = "role 2";
-let role3 = "role 3";
-let role4 = "role 4";
-let role5 = "role 5";
-let username = "random@bgu.aguda.ac.il";
-let username2 = "random2@bgu.aguda.ac.il";
-let username3 = "random3@bgu.aguda.ac.il";
-
-let base_structure = function (done) {
-    UsersAndRoles.addNewRole(root, "", () => {
-        UsersAndRoles.addNewRole(son_root, root, () => {
-            UsersAndRoles.addNewRole(role3, root, () => {
-                UsersAndRoles.addNewRole(role4, son_root, () => {
-                    UsersAndRoles.addNewRole(role5, role4, () => {
-                        done();
-                    });
-                });
-            });
-        });
-    });
-};
 
 describe('1. add role', function () {
 
@@ -43,13 +19,14 @@ describe('1. add role', function () {
     });
 
     it('1.1 add  root role', function (done) {
-        UsersAndRoles.addNewRole(root, noFather, (err) => {
+        let roleName = 'role 1';
+        UsersAndRoles.addNewRole(roleName, '', (err) => {
             if (err) done(err);
             else
                 UsersAndRoles.getAllRoles((err, res) => {
                     if (err) done(err);
                     else {
-                        assert.equal(res[0].roleName, root);
+                        assert.equal(res[0].roleName, roleName);
                         done();
                     }
                 });
@@ -57,13 +34,15 @@ describe('1. add role', function () {
     });
 
     it('1.2 add role with father', function (done) {
-        UsersAndRoles.addNewRole(son_root, root, (err) => {
+        let roleName = 'role 2';
+        let fatherRoleName = 'role 1';
+        UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
             if (err) done(err);
             else
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
                     else {
-                        assert.equal(res[1].roleName, son_root);
+                        assert.equal(res[1].roleName, roleName);
                         assert.equal(res[0].children[0], res[1].id);
                         done();
                     }
@@ -71,9 +50,10 @@ describe('1. add role', function () {
         });
     });
 
-    it('1.3 shouldn\'t add role with INVALID father', function (done) {
-        let fatherRoleName = "INVALID ROLE";
-        UsersAndRoles.addNewRole(role3, fatherRoleName, (err) => {
+    it.skip('1.3 shouldn\'t add role with INVALID father', function (done) {
+        let roleName = 'role 3';
+        let fatherRoleName = 'INVALID ROLE';
+        UsersAndRoles.addNewRole(roleName, fatherRoleName, (err) => {
             if (err) {
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
@@ -83,7 +63,7 @@ describe('1. add role', function () {
                     }
                 });
             } else
-                done(new Error("should not happen"))
+                done(new Error('should not happen'))
         });
     });
 });
@@ -97,11 +77,11 @@ describe('2. delete role', function () {
 
     beforeEach(function (done) {
 
-        UsersAndRoles.addNewRole(root, noFather, () => {
-            UsersAndRoles.addNewRole(son_root, root, () => {
-                UsersAndRoles.addNewRole(role3, root, () => {
-                    UsersAndRoles.addNewRole(role4, son_root, () => {
-                        UsersAndRoles.addNewRole(role5, role4, () => {
+        UsersAndRoles.addNewRole('role 1', '', (err, res) => {
+            UsersAndRoles.addNewRole('role 2', 'role 1', (err, res) => {
+                UsersAndRoles.addNewRole('role 3', 'role 1', (err, res) => {
+                    UsersAndRoles.addNewRole('role 4', 'role 2', (err, res) => {
+                        UsersAndRoles.addNewRole('role 5', 'role 4', (err, res) => {
                             done();
                         });
                     });
@@ -122,7 +102,7 @@ describe('2. delete role', function () {
     });
 
     it('2.1 delete root role', function (done) {
-        let roleName = "role 1";
+        let roleName = 'role 1';
         UsersAndRoles.deleteRole(roleName, (err) => {
             if (err) done(err);
             else
@@ -137,7 +117,7 @@ describe('2. delete role', function () {
     });
 
     it('2.2 delete role that is child of another role', function (done) {
-        let roleName = "role 4";
+        let roleName = 'role 4';
         UsersAndRoles.deleteRole(roleName, (err) => {
             if (err) done(err);
             else
@@ -145,7 +125,7 @@ describe('2. delete role', function () {
                     if (err) done(err);
                     else {
                         assert.equal(res[1].children.length, 1);
-                        assert.equal(res[1].children[0], res[3].id);
+                        assert.equal(res[1].children[0], res[4].id);
                         done();
                     }
                 });
@@ -153,9 +133,9 @@ describe('2. delete role', function () {
     });
 
     it('2.3 delete leaf', function (done) {
-        let roleName = "role 5";
+        let roleName = 'role 5';
         UsersAndRoles.deleteRole(roleName, (err) => {
-            if (!err) {
+            if (err) {
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
                     else {
@@ -165,44 +145,57 @@ describe('2. delete role', function () {
                     }
                 });
             } else
-                done(err)
+                done(new Error('should not happen'))
         });
     });
 
     it('2.4 invalid delete', function (done) {
-        let roleName = "role 10";
+        let roleName = 'role 10';
         UsersAndRoles.deleteRole(roleName, (err) => {
             if (err) done();
-            else done(new Error("should not happen"));
+            else done(new Error('should not happen'));
         });
     });
 });
 
 
-describe('3. add user to role', function () {
+describe.skip('3. add user to role', function () {
 
-    before(async function () {
+    let root = 'role 1';
+    let son_root = 'role 2';
+    let role3 = 'role 3';
+    let role4 = 'role 4';
+    let role5 = 'role 5';
+    let username = 'random@bgu.aguda.ac.il';
+    let username2 = 'random2@bgu.aguda.ac.il';
+
+
+    beforeEach(async function () {
         await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
         mongoose.set('useCreateIndex', true);
-    });
+        UsersAndRoles.addNewRole(root, '', () => {
+            UsersAndRoles.addNewRole(son_root, root, () => {
+                UsersAndRoles.addNewRole(role3, root, () => {
+                    UsersAndRoles.addNewRole(role4, son_root, () => {
+                        UsersAndRoles.addNewRole(role5, role4, () => {
 
-    beforeEach((done) => base_structure(done));
-
-    afterEach(function (done) {
-        mongoose.connection.db.dropDatabase();
-        done();
+                        })
+                    })
+                })
+            })
+        })
     });
 
     after(function () {
+        mongoose.connection.db.dropDatabase();
         mongoose.connection.close();
-
     });
 
     it('3.1 add root user', function (done) {
         UsersAndRoles.addNewUserToRole(username, root, (err) => {
             if (err) done(err);
             else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
+                UsersAndRoles.getAllRoles((err, res) => {
                     if (err) done(err);
                     else {
                         assert.equal(res[0].userEmail.length, 1);
@@ -214,263 +207,46 @@ describe('3. add user to role', function () {
     });
 
     it('3.2 add user to role and than add again', function (done) {
-        UsersAndRoles.addNewUserToRole(username,role3,(err) => {
+        UsersAndRoles.addNewUserToRole(username, (err) => {
             if (err) done(err);
             else
-                UsersAndRoles.addNewUserToRole(username,role3, (err) => {
-                    if (err) done();
-                    else done(new Error("should not happen"))
-                });
-        });
-    });
-
-    it('3.3 add multiple users to role', function (done) {
-        UsersAndRoles.addNewUserToRole(username, son_root, (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.addNewUserToRole(username2, son_root, (err) => {
+                UsersAndRoles.addNewUserToRole(username, (err) => {
                     if (err) done(err);
                     else
-                        UsersAndRoles.addNewUserToRole(username3, son_root, (err) => {
+                        UsersAndRoles.getAllRolesObjects((err, res) => {
                             if (err) done(err);
                             else {
-                                UsersAndRoles.getAllRolesObjects((err, res) => {
-                                    if (err) done(err);
-                                    else {
-                                        assert.equal(res[1].userEmail.length, 3);
-                                        assert.equal(res[1].userEmail[0], username);
-                                        assert.equal(res[1].userEmail[1], username2);
-                                        assert.equal(res[1].userEmail[2], username3);
-                                        done();
-                                    }
-                                });
+                                assert.equal(res[0].userEmail.length, 1);
+                                assert.equal(res[0].children[0], res[4].id);
+                                done();
                             }
                         });
                 });
         });
     });
-});
 
-
-describe('4. change role name', function () {
-
-    before(async function () {
-        await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-        mongoose.set('useCreateIndex', true);
-    });
-
-    beforeEach((done) => base_structure(done));
-
-    afterEach(function (done) {
-        mongoose.connection.db.dropDatabase();
-        done();
-    });
-
-    after(function () {
-        mongoose.connection.close();
-
-    });
-
-    it('4.1 change root role name', function (done) {
-        UsersAndRoles.changeRoleName(root, "root", (err) => {
-            if (err) done(err);
-            else
+    it('2.3 delete leaf', function (done) {
+        let roleName = 'role 5';
+        UsersAndRoles.deleteRole(roleName, (err) => {
+            if (err) {
                 UsersAndRoles.getAllRolesObjects((err, res) => {
                     if (err) done(err);
                     else {
-                        assert.equal(res[0].roleName, "root");
+                        assert.equal(res[3].children.length, 0);
+                        res.every((row) => row.roleName !== roleName);
                         done();
                     }
                 });
+            } else
+                done(new Error('should not happen'))
         });
     });
 
-    it('4.2 change role name with father', function (done) {
-        UsersAndRoles.changeRoleName(son_root, "node 0", (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[1].roleName, "node 0");
-                        assert.equal(res[0].children[0], res[1].id);
-                        done();
-                    }
-                });
-        });
-    });
-
-    it('4.3 change role name to existing role', function (done) {
-        UsersAndRoles.changeRoleName(root, role4, (err) => {
+    it('2.4 invalid delete', function (done) {
+        let roleName = 'role 10';
+        UsersAndRoles.deleteRole(roleName, (err) => {
             if (err) done();
-            else done(new Error("should not be here"));
+            else done(new Error('should not happen'));
         });
     });
-
-    it('4.4 change role name to empty role string', function (done) {
-        UsersAndRoles.changeRoleName(root, "", (err) => {
-            if (err) done();
-            else done(new Error("should not be here"));
-        });
-    });
-});
-
-describe('5. delete user from role', function () {
-
-    before(async function () {
-        await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-        mongoose.set('useCreateIndex', true);
-    });
-
-    beforeEach((done) => {
-        base_structure(() => {
-            UsersAndRoles.addNewUserToRole(username, root, () => {
-                UsersAndRoles.addNewUserToRole(username2, son_root, () => {
-                    UsersAndRoles.addNewUserToRole(username3, son_root, () => {
-                        done()
-                    });
-                });
-            });
-        });
-    });
-
-    afterEach(function (done) {
-        mongoose.connection.db.dropDatabase();
-        done();
-    });
-
-    after(function () {
-        mongoose.connection.close();
-
-    });
-
-    it('5.1 delete user from root', function (done) {
-        UsersAndRoles.deleteUserFromRole(username, root, (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[0].userEmail.length, 0);
-                        assert.equal(res[0].roleName, root);
-                        done();
-                    }
-                });
-        });
-    });
-
-    it('5.2 delete user from multiple list', function (done) {
-        UsersAndRoles.deleteUserFromRole(username2, son_root, (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[1].userEmail.length, 1);
-                        done();
-                    }
-                });
-        });
-    });
-
-    it('5.3 delete invalid user (role have 1 username)', function (done) {
-        UsersAndRoles.deleteUserFromRole(username3, root, (err) => {
-            if (err) done();
-            else done(new Error("this should not happen"));
-        });
-    });
-
-    it('5.4 delete invalid user (role have no usernames)', function (done) {
-        UsersAndRoles.deleteUserFromRole(username3, role5, (err) => {
-            if (err) done();
-            else done(new Error("this should not happen"));
-        });
-    });
-
-});
-
-
-describe('6. change user email in role', function () {
-
-    let username4 = "random4@bgu.aguda.ac.il";
-
-    before(async function () {
-        await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-        mongoose.set('useCreateIndex', true);
-    });
-
-    beforeEach((done) => {
-        base_structure(() => {
-            UsersAndRoles.addNewUserToRole(username, root, () => {
-                UsersAndRoles.addNewUserToRole(username2, son_root, () => {
-                    UsersAndRoles.addNewUserToRole(username3, son_root, () => {
-                        done()
-                    });
-                });
-            });
-        });
-    });
-
-    afterEach(function (done) {
-        mongoose.connection.db.dropDatabase();
-        done();
-    });
-
-    after(function () {
-        mongoose.connection.close();
-
-    });
-
-    it('6.1 change user in root', function (done) {
-        UsersAndRoles.changeUserEmailInRole(root, username, username4, (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[0].userEmail.length, 1);
-                        assert.equal(res[0].userEmail[0], username4);
-                        done();
-                    }
-                });
-        });
-    });
-
-    it('6.2 change user in list', function (done) {
-        UsersAndRoles.changeUserEmailInRole(son_root, username2, username4, (err) => {
-            if (err) done(err);
-            else
-                UsersAndRoles.getAllRolesObjects((err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res[1].userEmail.length, 2);
-                        assert.equal(res[1].userEmail.includes(username4), true);
-                        assert.equal(res[1].userEmail.includes(username3), true);
-                        done();
-                    }
-                });
-        });
-    });
-
-    it('6.3 change invalid user (role have 1 username)', function (done) {
-        UsersAndRoles.changeUserEmailInRole(root, username4, username2, (err) => {
-            if (err) done();
-            else done(new Error("this should not happen"));
-        });
-    });
-
-    it('6.4 change invalid user (role have no usernames)', function (done) {
-        UsersAndRoles.changeUserEmailInRole(role4, username, username2, (err) => {
-            if (err) done();
-            else done(new Error("this should not happen"));
-        });
-    });
-
-    it('6.5 change user to existing one', function (done) {
-        UsersAndRoles.changeUserEmailInRole(son_root, username2, username3, (err) => {
-            if (err) done();
-            else done(new Error("this should not happen"));
-        });
-    });
-
 });

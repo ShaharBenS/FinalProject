@@ -12,3 +12,6 @@ function editProcessStructureClicked() {
         window.location.href = '/processStructures/editProcessStructure/?name='+structureName;
     }
 }
+function editUsersAndRolesTree() {
+    window.location.href = '/usersAndRoles/editTree/'
+}
