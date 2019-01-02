@@ -102,7 +102,7 @@ module.exports.addNewUserToRole = (userEmail, roleName, callback) => {
         if (err1) {
             console.log('Error In Add New User To Role' + err1);
         } else {
-            let emailsInRole = result1[0]._doc.userEmail;
+            let emailsInRole = result1[0].userEmail;
             if (emailsInRole.includes(userEmail)) {
                 callback(new Error());
             }
