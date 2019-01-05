@@ -5,27 +5,15 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
+let routes = require('./routes/routes');
 
-let indexRouter = require('./routes/index');
-let mainRouter = require('./routes/main');
-let testProcessStructure = require('./routes/testProcessStructures');
-let processStructuresRouter = require('./routes/processStructures');
-let sankeyRouter = require('./routes/sankey');
-
-let activeProcessesRouter = require('./routes/activeProcessesRoute');
-var UsersAndRolesRouter = require('./routes/UsersAndRoles');
-///
-let NotAgudaEmployeeRouter = require('./routes/NotAgudaEmployee');
-var usersLogin = require('./routes/usersLogin');
-var auth = require('./routes/auth');
 ///
 let app = express();
 
-//Setting up schemas
+// Connecting to DB
 mongoose.connect('mongodb://localhost:27017/Aguda', {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
-var PS = require("./schemas/ProcessStructure");
-var UAR = require("./schemas/UsersAndRoles");
+
 
 ////////////////
 var passport = require('passport');
@@ -52,18 +40,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 //Routes
-app.use('/', indexRouter);
-app.use('/main', mainRouter);
-app.use('/processStructures', processStructuresRouter);
-app.use('/testProcessStructure',testProcessStructure);
-app.use('/activeProcesses', activeProcessesRouter);
-app.use('/sankey', sankeyRouter);
-app.use('/UsersAndRoles', UsersAndRolesRouter);
-app.use('/NotAgudaEmployee', NotAgudaEmployeeRouter);
-///
-app.use('/usersLogin', usersLogin);
-app.use('/auth', auth);
-///
+routes(app);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -78,7 +56,7 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.render('errorsViews/error');
 });
 
 passport.serializeUser(function (user, done) {

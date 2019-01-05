@@ -5,7 +5,7 @@ let is_role_list_set = false;
 //TODO : add button that centers the document 'centerDocument'
 //try to use the getJSON function
 function onDrop_extension(type,command,figure){
-    if(diagramContext === 'add_process_structure' || diagramContext === 'edit_process_structure')
+    if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure')
     {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
@@ -53,7 +53,7 @@ function onDrop_extension(type,command,figure){
 
 
 function confirm() {
-    if(diagramContext === 'add_process_structure' || diagramContext === 'edit_process_structure'){
+    if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
         app.fileSave()
     }
 }

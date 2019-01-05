@@ -617,7 +617,7 @@ sankey.dialog.FileSave = Class.extend({
                 id: $("#githubSaveFileDialog .githubFileName").val(),
                 content: JSON.stringify(json, undefined, 2),
                 context: diagramContext,
-                process_structure_name: process_structure_name,
+                processStructureName: processStructureName,
             };
 
             $.ajax({
@@ -845,7 +845,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                             if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
                             {
                                 let response = JSON.parse(xmlHttp.responseText);
-                                let users_div = document.getElementById("users-div");
+                                let users_div = document.getElementById("usersControllers-div");
                                 response.forEach((user)=>{
                                     let div = document.createElement("div");
                                     let button = document.createElement("button");

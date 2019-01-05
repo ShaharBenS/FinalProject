@@ -3,7 +3,7 @@ let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
 let assert = require('chai').assert;
-let UsersAndRoles = require('../../controllers/users/UsersAndRoles');
+let UsersAndRoles = require('../../controllers/usersControllers/usersAndRolesController');
 
 // variables
 let noFather = "";
@@ -224,7 +224,7 @@ describe('3. add user to role', function () {
         });
     });
 
-    it('3.3 add multiple users to role', function (done) {
+    it('3.3 add multiple usersControllers to role', function (done) {
         UsersAndRoles.addNewUserToRole(username, son_root, (err) => {
             if (err) done(err);
             else

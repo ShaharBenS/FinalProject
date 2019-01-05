@@ -3,10 +3,10 @@ let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
 let assert = require('chai').assert;
-let processStructure = require("../../schemas/ProcessStructure");
-let processStructureControl = require("../../controllers/processes/processStructure");
-let UsersAndRoles = require('../../controllers/users/UsersAndRoles');
-let HELPER = require("../../controllers/processes/helperFunctions");
+let processStructure = require("../../models/schemas/processesSchemas/ProcessStructureSchema");
+let processStructureControl = require("../../controllers/processesControllers/processStructureController");
+let UsersAndRoles = require('../../controllers/usersControllers/usersAndRolesController');
+let HELPER = require("../../controllers/processesControllers/helperFunctions");
 
 describe('7. add process structure', function () {
 
