@@ -93,14 +93,8 @@ let sankeyToStructure = function (sankeyContent, callback)
     });
     let initials = stages.filter((figure) =>
     {
-        let isStart = true;
-        connections.forEach(connection =>
-        {
-            if (connection.target.node === figure.id) {
-                isStart = false;
-            }
-        });
-        return isStart;
+        return figure.bgColor === '#5957FF';
+
     }).map((figure) =>
     {
         let index;
