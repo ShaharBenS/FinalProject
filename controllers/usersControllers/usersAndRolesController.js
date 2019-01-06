@@ -1,6 +1,9 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
+let userAndRole = require('../../domainObjects/usersAndRole');
 
 module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
+    let role = new userAndRole(undefined ,newRoleName, [], []);
+
     userAccessor.createRole({roleName: newRoleName, userEmail: [], children: []}, (err) => {
         if (err) {
             callback(err);
@@ -10,7 +13,7 @@ module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
                     if (err) {
                         callback(err);
                     }
-                    else if (father.length === 0) {
+                    else if (father == null) {
                         userAccessor.deleteOneRole({roleName: newRoleName}, (err) => {
                             if(err){
                                 callback(err)
@@ -21,12 +24,16 @@ module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
                         });
                     }
                     else {
-                        let fatherID = father[0]._id;
+                        let fatherID = father._id;
                         userAccessor.findRole({roleName: newRoleName}, (err, son) => {
                             if (err) {
                                 callback(err)
-                            } else {
-                                let sonID = son[0]._id;
+                            }
+                            else if(son == null) {
+                                callback(new Error("ERROR: no such role found"))
+                            }
+                            else {
+                                let sonID = son._id;
                                 userAccessor.updateRole({_id: fatherID}, {$push: {children: sonID}}, callback);
                             }
                         })
