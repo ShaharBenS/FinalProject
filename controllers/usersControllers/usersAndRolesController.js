@@ -1,5 +1,72 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
 
+class UsersAndRole{
+    _id;
+    roleName;
+    userEmail;
+    children;
+
+    UsersAndRole(toFind)
+    {
+        userAccessor.findRole(toFind,(err,usersAndRole)=>{
+            if(err){
+
+            }
+            else if(usersAndRole.length === 0){
+
+            }
+            else{
+                this._id = usersAndRole[0]._id;
+                this.roleName = usersAndRole[0].roleName;
+                this.userEmail = usersAndRole[0].userEmail;
+                this.children = usersAndRole[0].children;
+            }
+        })
+    }
+
+    deleteRole(callback) {
+        userAccessor.findRole({roleName: this.roleName}, (err, role) => {
+            if (err) {
+                callback(err);
+            } else if (role.length === 0) {
+                callback(new Error('ERROR: role not found'));
+            }
+            else {
+                let toDeleteID = role[0]._id;
+                let toDeleteChildren = role[0].children;
+                userAccessor.findRole({children: toDeleteID}, (err, father) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        if (father.length !== 0) {
+                            let fatherID = father[0]._id;
+                            userAccessor.updateRole({_id: fatherID}, {$pull: {children: toDeleteID}}, (err) => {
+                                    if (err) {
+                                        callback(err)
+                                    } else {
+                                        userAccessor.updateRole({_id: fatherID}, {$push: {children: {$each: toDeleteChildren}}}, (err) => {
+                                                if (err) {
+                                                    callback(err);
+                                                } else {
+                                                    userAccessor.deleteOneRole({_id: toDeleteID}, callback)
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        } else {
+                            userAccessor.deleteOneRole({_id: toDeleteID}, callback);
+                        }
+                    }
+                });
+            }
+        })
+    };
+
+
+}
+
 module.exports.addNewRole = (newRoleName, fatherRoleName, callback) => {
     userAccessor.createRole({roleName: newRoleName, userEmail: [], children: []}, (err) => {
         if (err) {
