@@ -212,7 +212,7 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
  */
 const advanceProcess = (processName, nextStages, callback) =>
 {
-    getActiveProcessByProcessName(processName, (err, process) =>
+    processAccessor.getActiveProcessByProcessName(processName, (err, process) =>
     {
         if (err) {
             callback(err);

@@ -1,10 +1,7 @@
-class activeProcessStage extends  processStructureStage
+let processStructureStage = require("./processStructureStage");
+
+class activeProcessStage extends processStructureStage
 {
-    userEmail;
-    originStagesToWaitFor;
-    timeApproval;
-    filledOnlineForms;
-    comments;
 
     constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, timeApproval, onlineForms, filledOnlineForms, attachedFilesNames, comments)
     {
@@ -36,4 +33,9 @@ class activeProcessStage extends  processStructureStage
         else return new Error();
     }
 
+    haveNoOneToWaitFor(){
+        return this.stagesToWaitFor.length() === 0;
+    }
 }
+
+module.exports = activeProcessStage;

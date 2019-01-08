@@ -1,13 +1,6 @@
 
 class processStructureStage {
 
-    roleID;
-    stageNum;
-    nextStages;
-    stagesToWaitFor;
-    onlineForms;
-    attachedFilesNames;
-
     constructor(roleID, stageNum, nextStages, stagesToWaitFor, onlineForms, attachedFilesNames) {
         this.roleID = roleID;
         this.stageNum = stageNum;
@@ -18,4 +11,4 @@ class processStructureStage {
     }
 }
 
-export {processStructureStage}
+module.exports = processStructureStage;
