@@ -12,7 +12,7 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
         }
         else {
             let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
-            if(newProcessStructure.checkDupStagesInStructure())
+            if(newProcessStructure.checkNotDupStagesInStructure())
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {
@@ -36,7 +36,7 @@ module.exports.editProcessStructure = (structureName, sankeyContent, callback) =
         }
         else {
             let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
-            if(newProcessStructure.checkDupStagesInStructure())
+            if(newProcessStructure.checkNotDupStagesInStructure())
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {

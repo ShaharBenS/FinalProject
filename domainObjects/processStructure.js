@@ -10,7 +10,7 @@ class processStructure {
     getInitialStageByRoleID(roleID) {
         let initialStage = -1;
         this.stages.every((stage) => {
-            let roleEqual = stage.roleID.id.equals(roleID.id);
+            let roleEqual = stage.roleID.toString() === roleID.toString();
             let initialsInclude = this.initials.includes(stage.stageNum);
             if (roleEqual && initialsInclude) {
                 initialStage = stage.stageNum;
@@ -20,7 +20,7 @@ class processStructure {
         });
         return initialStage;
     }
-    checkDupStagesInStructure()
+    checkNotDupStagesInStructure()
     {
         for(let i=0;i<this.stages.length;i++)
         {
