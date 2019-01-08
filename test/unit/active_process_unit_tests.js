@@ -60,6 +60,41 @@ let createActiveProcess1 = function () {
     testProcess = new ActiveProcess(processName1, timeCreation, notificationTime, currentStages.slice(), initials, stages);
 };
 
+let createActiveProcess2 = function () {
+
+    /*
+           +---+
+           | 0 |
+           +-+-+
+             |
+             v
+           +-+-+
+      +----+ 1 +----+
+      |    +---+    |
+      |             |
+    +-v-+         +-v-+
+    | 2 |         | 3 |
+    +-+-+         +-+-+
+      |             |
+      v             v
+    +-+-+         +-+-+
+    | 4 |         | 5 |
+    +-+-+         +-+-+
+      |             |
+      |    +---+    |
+      +----> 6 <----+
+           +---+
+    */
+    stage0 = new ActiveProcessStage(0, 'a@bgu.ac.il', 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage1 = new ActiveProcessStage(1, 'b@bgu.ac.il', 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage2 = new ActiveProcessStage(2, 'c@bgu.ac.il', 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage3 = new ActiveProcessStage(3, 'd@bgu.ac.il', 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage4 = new ActiveProcessStage(4, 'e@bgu.ac.il', 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage5 = new ActiveProcessStage(5, null, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage6 = new ActiveProcessStage(6, null, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
+    testProcess = new ActiveProcess(processName1, timeCreation, notificationTime, [4,5], initials, stages);
+};
 
 describe('1.0 add to current stages', function () {
 
@@ -261,4 +296,38 @@ describe('7.0 remove path stages', function () {
     });
 
 
+});
+
+describe('9.0 check if process is waiting for the user', function () {
+
+    beforeEach(createActiveProcess2);
+
+    it('9.1 check if process is waiting for the user when user exists in a current stage', () => {
+        assert.equal(testProcess.isWaitingForUser(4,'e@bgu.ac.il'), true);
+    });
+
+    it('9.2 check if process is waiting for the user when step has no user assigned', () => {
+        assert.equal(testProcess.isWaitingForUser(5,''), true);
+    });
+
+    it('9.3 check if process is waiting for the user when role doesnt exist in stages', () => {
+        assert.equal(testProcess.isWaitingForUser(11,''), false);
+    });
+
+    it('9.4 check if process is waiting for the user when role doesnt exist in a current stage', () => {
+        assert.equal(testProcess.isWaitingForUser(3,''), false);
+    });
+});
+
+describe('10.0 check if user participates in process', function () {
+
+    beforeEach(createActiveProcess2);
+
+    it('10.1 check if user participates in process true', () => {
+        assert.equal(testProcess.isParticipatingInProcess('e@bgu.ac.il'), true);
+    });
+
+    it('10.2 check if user participates in process true', () => {
+        assert.equal(testProcess.isParticipatingInProcess('doesntparticipate@bgu.ac.il'), false);
+    });
 });

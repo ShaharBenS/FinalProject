@@ -110,10 +110,11 @@ class activeProcess {
     isWaitingForUser(roleID,userEmail){
         for(let i=0;i<this.stages.length;i++)
         {
-            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.id.equals(roleID.id) && (this.stages[i].userEmail === null || this.stages[i].userEmail === userEmail)) {
+            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.toString() === roleID.toString() && (this.stages[i].userEmail === null || this.stages[i].userEmail === userEmail)) {
                 return true;
             }
         }
+        return false;
     }
 
     isParticipatingInProcess(userEmail){
