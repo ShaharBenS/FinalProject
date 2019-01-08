@@ -51,7 +51,7 @@ class activeProcess {
         return foundStage;
     }
 
-    getAllStagesInPathFrom(stageNum) {
+    getPath(stageNum) {
         let _this = this;
         let pathStages = [];
         pathStages.push(stageNum);
@@ -60,12 +60,13 @@ class activeProcess {
     }
 
     removeStage(stageNum) {
-        this.getStageByStageNum(stageNum).nextStages.forEach((_stageNum) => {
+        let _stage = this.getStageByStageNum(stageNum);
+        _stage.nextStages.forEach((_stageNum) => {
             let stage = this.getStageByStageNum(_stageNum);
             let index = stage.stagesToWaitFor.indexOf(stageNum);
-            stage.splice(index, 1);
+            stage.stagesToWaitFor.splice(index, 1);
         });
-        let index = this.stages.indexOf(stageNum);
+        let index = this.stages.indexOf(_stage);
         this.stages.splice(index, 1);
     }
 
@@ -87,7 +88,7 @@ class activeProcess {
             if (stage.haveNoOneToWaitFor()) {
                 nextStages.forEach((stageNum) => this.addCurrentStage(stageNum));
                 this.removeCurrentStage(stage.stageNum);
-                let pathStages = this.getAllStagesInPathFrom(stageNum);
+                let pathStages = this.getPath(stageNum);
                 let removePathStages = stage.nextStages.filter((value) => !nextStages.includes(value));
                 this.removePathStages(removePathStages, pathStages);
             }
