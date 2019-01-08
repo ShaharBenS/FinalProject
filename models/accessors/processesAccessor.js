@@ -1,28 +1,45 @@
+let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
 let processStructure = require('../schemas/processesSchemas/ProcessStructureSchema.js');
 let processReport = require('../schemas/processesSchemas/ProcessReportSchema.js');
-
+let ProcessStructure = require('../../domainObjects/processStructure');
 /* processStructure */
 
-module.exports.createProcessStructure = (PS, callback) =>
+module.exports.createProcessStructure = (newProcessStructure, callback) =>
 {
-    return processStructure.create(PS, callback);
+    processStructure.create(processStructureController.getProcessStructureForDB(newProcessStructure), callback);
 };
 
-module.exports.findProcessStructure = (PS, callback) =>
+module.exports.findProcessStructure = (criteria, callback) =>
 {
-    return processStructure.find(PS, callback);
+    processStructure.findOne(criteria, (err,result)=>{
+        if(err)
+        {
+            callback(err);
+        }
+        else
+        {
+            if(result)
+            {
+                callback(null,processStructureController.getProcessStructureFromOriginal(result));
+            }
+            else
+            {
+                callback(new Error('There were no processes found.'));
+            }
+        }
+    });
 };
 
-module.exports.deleteOneProcessStructure = (PS, callback) =>
+module.exports.deleteOneProcessStructure = (criteria, callback) =>
 {
-    return processStructure.deleteOne(PS, callback);
+    return processStructure.deleteOne(criteria, callback);
 };
 
-module.exports.updateProcessStructure = (PS, update, callback) =>
+module.exports.updateProcessStructure = (criteria, newProcessStructure, callback) =>
 {
-    return processStructure.updateOne(PS, update, callback);
+    return processStructure.updateOne(criteria, newProcessStructure, callback);
 };
 
 /* activeProcess */

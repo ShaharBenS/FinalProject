@@ -25,7 +25,43 @@ class processStructure {
         });
         return initialStage !== -1;
     }
+    checkDupStagesInStructure()
+    {
+        for(let i=0;i<this.stages.length;i++)
+        {
+            for(let j=0;j<this.stages.length;j++)
+            {
+                if(i !== j)
+                {
+                    if(this.stages[i].stageNum === this.stages[j].stageNum)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    };
 
+    checkInitialsExistInProcessStages()
+    {
+        for(let i=0;i<this.initials.length;i++)
+        {
+            let found = false;
+            for(let j=0;j<this.stages.length;j++)
+            {
+                if(this.initials[i] === this.stages[j].stageNum)
+                {
+                    found = true;
+                }
+            }
+            if(!found)
+            {
+                return false;
+            }
+        }
+        return true;
+    };
 }
 
 export {processStructure};
