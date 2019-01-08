@@ -231,3 +231,34 @@ describe('6.0 remove stage', function () {
     });
 });
 
+describe('7.0 remove path stages', function () {
+
+    beforeEach(createActiveProcess1);
+
+    it('7.1 removes full process path', () => {
+        assert.equal(testProcess.stages.length, 7);
+        testProcess.removePathStages([0], []);
+        assert.equal(testProcess.stages.length, 0);
+    });
+
+    it('7.2 removes partial path', () => {
+        assert.equal(testProcess.stages.length, 7);
+        testProcess.removePathStages([3], [2,4,6]);
+        assert.equal(testProcess.stages.length, 5);
+        expect(() => testProcess.getStageByStageNum(3)).to.throw();
+        expect(() => testProcess.getStageByStageNum(5)).to.throw();
+    });
+
+    it('7.3 removes 2 paths except final stage', () => {
+        assert.equal(testProcess.stages.length, 7);
+        testProcess.removePathStages([1], [6]);
+        assert.equal(testProcess.stages.length, 2);
+        expect(() => testProcess.getStageByStageNum(1)).to.throw();
+        expect(() => testProcess.getStageByStageNum(2)).to.throw();
+        expect(() => testProcess.getStageByStageNum(3)).to.throw();
+        expect(() => testProcess.getStageByStageNum(4)).to.throw();
+        expect(() => testProcess.getStageByStageNum(5)).to.throw();
+    });
+
+
+});

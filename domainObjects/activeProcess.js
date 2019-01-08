@@ -72,6 +72,12 @@ class activeProcess {
             let index = stage.stagesToWaitFor.indexOf(stageNum);
             stage.stagesToWaitFor.splice(index, 1);
         });
+
+        this.stages.forEach((stage) => {
+            let index = stage.nextStages.indexOf(stageNum);
+            if (index >= 0) stage.nextStages.splice(index, 1);
+        });
+
         let index = this.stages.indexOf(_stage);
         this.stages.splice(index, 1);
     }
@@ -81,6 +87,7 @@ class activeProcess {
         let recursive = function (stageNum) {
             if (!exclude.includes(stageNum)) {
                 let next = _this.getStageByStageNum(stageNum).nextStages;
+                exclude.push(stageNum);
                 _this.removeStage(stageNum);
                 next.forEach((iStage) => recursive(iStage));
             }
