@@ -16,7 +16,17 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {
-                    processStructureAccessor.createProcessStructure(getProcessStructureForDB(newProcessStructure), callback);
+                    if(newProcessStructure.checkPrevNextSymetric())
+                    {
+                        if(newProcessStructure.checkNextPrevSymetric())
+                        {
+                            processStructureAccessor.createProcessStructure(getProcessStructureForDB(newProcessStructure), callback);
+                        }
+                        else
+                            callback(new Error('Some stages have next stages that dont contain them for previous'));
+                    }
+                    else
+                        callback(new Error('Some stages have previous stages that dont contain them for next'));
                 }
                 else
                     callback(new Error('Some initial stages do not exist'));
@@ -40,20 +50,28 @@ module.exports.editProcessStructure = (structureName, sankeyContent, callback) =
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {
-                    processStructureAccessor.updateProcessStructure({structureName: structureName}, {
-                        $set: {
-                            initials: structure.initials,
-                            stages: structure.stages,
-                            sankey: sankeyContent,
-                        }
-                    }, callback);
+                    if(newProcessStructure.checkPrevNextSymetric())
+                    {
+                        if(newProcessStructure.checkNextPrevSymetric())
+                        {
+                            processStructureAccessor.updateProcessStructure({structureName: structureName}, {
+                                $set: {
+                                    initials: structure.initials,
+                                    stages: structure.stages,
+                                    sankey: sankeyContent,
+                                }
+                            }, callback);                        }
+                        else
+                            callback(new Error('Some stages have next stages that dont contain them for previous'));
+                    }
+                    else
+                        callback(new Error('Some stages have previous stages that dont contain them for next'));
                 }
                 else
                     callback(new Error('Some initial stages do not exist'));
             }
             else
                 callback(new Error('There are two stages with the same number'));
-
         }
     });
 };

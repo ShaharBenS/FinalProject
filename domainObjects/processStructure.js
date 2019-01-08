@@ -57,6 +57,48 @@ class processStructure {
         }
         return true;
     };
+
+    checkPrevNextSymetric()
+    {
+        for(let i=0;i<this.stages.length;i++)
+        {
+            for(let j=0;j<this.stages[i].stagesToWaitFor.length;j++)
+            {
+                for(let k=0;k<this.stages.length;k++)
+                {
+                    if(this.stages[k].stageNum === this.stages[i].stagesToWaitFor[j])
+                    {
+                        if(!this.stages[k].nextStages.includes(this.stages[i].stageNum))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+    checkNextPrevSymetric()
+    {
+        for(let i=0;i<this.stages.length;i++)
+        {
+            for(let j=0;j<this.stages[i].nextStages.length;j++)
+            {
+                for(let k=0;k<this.stages.length;k++)
+                {
+                    if(this.stages[k].stageNum === this.stages[i].nextStages[j])
+                    {
+                        if(!this.stages[k].stagesToWaitFor.includes(this.stages[i].stageNum))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
 }
 
 module.exports = processStructure;
