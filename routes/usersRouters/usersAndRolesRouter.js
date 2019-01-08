@@ -1,5 +1,5 @@
 let express = require('express');
-let UsersAndRolesRouter = require('../../controllers/usersControllers/usersAndRolesController');
+let UsersAndRolesController = require('../../controllers/usersControllers/usersAndRolesController');
 let router = express.Router();
 
 /*
@@ -15,7 +15,7 @@ let router = express.Router();
 router.post('/addNewRole', function (req, res) {
     let newRoleName = req.body.addNewRole_newRoleName;
     let fatherRoleName = req.body.addNewRole_fatherRoleName;
-    UsersAndRolesRouter.addNewRole(newRoleName, fatherRoleName, (err) => {
+    UsersAndRolesController.addNewRole(newRoleName, fatherRoleName, (err) => {
         if (err) {
             res.send("Role Addition Failed");
         }
@@ -29,7 +29,7 @@ router.post('/addNewRole', function (req, res) {
 router.post('/addNewUserToRole', function (req, res) {
     let userEmail = req.body.addNewUserToRole_userEmail;
     let roleName = req.body.addNewUserToRole_roleName;
-    UsersAndRolesRouter.addNewUserToRole(userEmail, roleName, (err) => {
+    UsersAndRolesController.addNewUserToRole(userEmail, roleName, (err) => {
         if (err) {
             res.send("User Addition To Role Failed");
         }
@@ -42,7 +42,7 @@ router.post('/addNewUserToRole', function (req, res) {
 router.post('/changeRoleName', function (req, res) {
     let oldRoleName = req.body.changeRoleName_oldRoleName;
     let newRoleName = req.body.changeRoleName_newRoleName;
-    UsersAndRolesRouter.changeRoleName(oldRoleName, newRoleName, (err) => {
+    UsersAndRolesController.changeRoleName(oldRoleName, newRoleName, (err) => {
         if (err) {
             res.send("Role Change Name Failed");
         }
@@ -57,7 +57,7 @@ router.post('/changeUserEmailInRole', function (req, res) {
     let roleName = req.body.changeUserEmailInRole_roleName;
     let oldUserEmail = req.body.changeUserEmailInRole_oldUserEmail;
     let newUserEmail = req.body.changeUserEmailInRole_newUserEmail;
-    UsersAndRolesRouter.changeUserEmailInRole(roleName, oldUserEmail, newUserEmail, (err) => {
+    UsersAndRolesController.changeUserEmailInRole(roleName, oldUserEmail, newUserEmail, (err) => {
         if (err) {
             res.send("User Email Change In Role Failed");
         }
@@ -69,7 +69,7 @@ router.post('/changeUserEmailInRole', function (req, res) {
 
 router.post('/deleteRole', function (req, res) {
     let roleToDelete = req.body.roleToDelete;
-    UsersAndRolesRouter.deleteRole(roleToDelete, (err) => {
+    UsersAndRolesController.deleteRole(roleToDelete, (err) => {
         if (err) {
             res.send("Role Deletion Failed");
         }
@@ -82,7 +82,7 @@ router.post('/deleteRole', function (req, res) {
 router.post('/deleteUserFromRole', function (req, res) {
     let userEmail = req.body.deleteUserFromRole_userEmail;
     let roleName = req.body.deleteUserFromRole_roleName;
-    UsersAndRolesRouter.deleteUserFromRole(userEmail, roleName, (err) => {
+    UsersAndRolesController.deleteUserFromRole(userEmail, roleName, (err) => {
         if (err) {
             res.send("Delete User From Role Failed");
         }
@@ -103,7 +103,7 @@ router.post('/deleteUserFromRole', function (req, res) {
  */
 
 router.get('/getAllRoles', (req,res)=>{
-    UsersAndRolesRouter.getAllRoles((err, result)=>{
+    UsersAndRolesController.getAllRoles((err, result)=>{
         if(err){
             res.send(err);
         }
@@ -113,9 +113,20 @@ router.get('/getAllRoles', (req,res)=>{
     })
 });
 
+router.get('/getRoleToEmails',(req,res)=>{
+   UsersAndRolesController.getRoleToEmails((err,roleToEmails)=>{
+       if(err){
+           res.send(err);
+       }
+       else{
+           res.send(roleToEmails);
+       }
+   });
+});
+
 router.get('/getAllUsersByRole',(req,res)=>{
     if(req.query.roleName){
-        UsersAndRolesRouter.getAllUsersByRole(req.query.roleName, (err, users)=>{
+        UsersAndRolesController.getAllUsersByRole(req.query.roleName, (err, users)=>{
             if(err){
                 console.log(err);
                 res.send(err);

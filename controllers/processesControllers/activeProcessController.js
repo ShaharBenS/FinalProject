@@ -261,10 +261,10 @@ const advanceProcess = (processName, nextStages, callback) => {
 };
 
 const addProcessReport = (processName,timeCreation,callback)=>{
-      processAccessor.createProcessReport({processName: processName,status: 'activated',timeCreation: timeCreation, stages:[]},(err)=>{
+        processAccessor.createProcessReport({processName: processName,status: 'activated',timeCreation: timeCreation, stages:[]},(err)=>{
           if(err) callback(err);
           else callback(null);
-      });
+        });
 };
 
 const addActiveProcessDetailsToReport = (processName,userEmail,stageNum,timeApproval,comments,callback)=>{

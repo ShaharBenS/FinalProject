@@ -25,7 +25,7 @@ router.post('/file/save',function (req,res) {
         })
     }
     else if(req.body.context === '__tree__'){
-        UsersAndRolesTreeSankey.setUsersAndRolesTree(req.body.content,(err)=>{
+        UsersAndRolesTreeSankey.setUsersAndRolesTree(req.body.content,JSON.parse(req.body.roleToEmails),(err)=>{
             if(err){
                 res.send(err);
             }

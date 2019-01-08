@@ -14,6 +14,7 @@
         let diagramContext = '__tree__';
         let processStructureName = '__tree__';
     </script>
+    <script src="/javascripts/usersAndRolesTree.js"></script>
 
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
@@ -33,7 +34,6 @@
         });
 
     </script>
-    <script src="/javascripts/usersAndRolesTree.js"></script>
 
     </head>
 
@@ -50,8 +50,7 @@
             <div id="draw2dCanvasWrapper">
                 <div id="canvas"  style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
             </div>
-            <!--<div id="property">
-            </div>-->
+            <!--<div id="property"></div>-->
         </div>
     </div>
 </div>
@@ -198,7 +197,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal">Cancel</button>
-                <button onclick="" id="no-id123" class="btn btn-primary okButton"><span>Okay</span></button>
+                <button onclick="$('#select_users_modal').modal('hide');" id="no-id123" class="btn btn-primary okButton"><span>Okay</span></button>
             </div>
         </div>
     </div>

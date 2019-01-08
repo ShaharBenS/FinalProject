@@ -9,6 +9,11 @@ module.exports.findRole = (roleToFind, callback)=>{
     return usersAndRoles.find(roleToFind,callback);
 };
 
+module.exports.deleteAllRoles = (callback)=>{
+    return usersAndRoles.remove({},callback);
+};
+
+
 module.exports.deleteOneRole = (roleToDelete, callback)=>{
     return usersAndRoles.deleteOne(roleToDelete,callback);
 };

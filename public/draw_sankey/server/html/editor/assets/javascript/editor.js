@@ -10,7 +10,8 @@ sankey.Application = Class.extend(
          *
          * @param {String} canvasId the id of the DOM element to use as paint container
          */
-        init: function () {
+        init: function ()
+        {
             var _this = this;
             this.localStorage = [];
             try {
@@ -103,7 +104,8 @@ sankey.Application = Class.extend(
             this.view.centerDocument();
         },
 
-        fileNew: function (shapeTemplate) {
+        fileNew: function (shapeTemplate)
+        {
             this.currentFileHandle = {
                 title: "Untitled" + conf.fileSuffix
             };
@@ -116,26 +118,31 @@ sankey.Application = Class.extend(
             this.view.centerDocument();
         },
 
-        fileSave: function () {
+        fileSave: function ()
+        {
             var _this = this;
             var writer = new draw2d.io.json.Writer();
-            writer.marshal(this.view, function (json, base64) {
+            writer.marshal(this.view, function (json, base64)
+            {
                 var data = {
                     content: {
                         diagram: json,
                         jsonTemplate: _this.currentFileHandle.jsonTemplate
                     }
                 };
-                new sankey.dialog.FileSave(_this.currentFileHandle).show(data, function () {
+                new sankey.dialog.FileSave(_this.currentFileHandle).show(data, function ()
+                {
                     _this.view.diagramName = _this.currentFileHandle.title;
                     _this.updateWeights();
                 });
             });
         },
 
-        fileOpen: function (name) {
+        fileOpen: function (name)
+        {
             var _this = this;
-            var _open = function (fileName) {
+            var _open = function (fileName)
+            {
                 $.ajax({
                         url: conf.backend.file.get,
                         method: "POST",
@@ -146,7 +153,8 @@ sankey.Application = Class.extend(
                             id: fileName
                         }
                     }
-                ).done(function (response) {
+                ).done(function (response)
+                    {
                         try {
                             _this.view.clear();
                             var reader = new draw2d.io.json.Reader();
@@ -167,38 +175,45 @@ sankey.Application = Class.extend(
 
             if (name) {
                 _open(name);
-            } else {
+            }
+            else {
                 new sankey.dialog.FileSelect().show(_open);
             }
         },
 
-        fileShare: function () {
+        fileShare: function ()
+        {
             new sankey.dialog.FileShare(this.currentFileHandle).show();
         },
 
-        updateWeights: function () {
+        updateWeights: function ()
+        {
             var _this = this;
             $.ajax({
                 url: conf.backend.weights,
                 method: "POST",
                 data: {id: _this.currentFileHandle.title},
-                success: function (response) {
+                success: function (response)
+                {
                     _this.view.updateWeights(response);
                 }
             });
         },
 
-        getTemplate: function () {
+        getTemplate: function ()
+        {
             return this.currentFileHandle.jsonTemplate;
         },
 
-        setTemplate: function (json) {
+        setTemplate: function (json)
+        {
             this.currentFileHandle.jsonTemplate = json;
             this.currentFileHandle.autosuggest = Object.keys(this.flatten(json));
             return this;
         },
 
-        flatten: function (obj, path, result) {
+        flatten: function (obj, path, result)
+        {
             var key, val, _path;
             path = path || [];
             result = result || {};
@@ -207,14 +222,16 @@ sankey.Application = Class.extend(
                 _path = path.concat([key]);
                 if (val instanceof Object) {
                     this.flatten(val, _path, result);
-                } else {
+                }
+                else {
                     result[_path.join('.')] = val;
                 }
             }
             return result;
         },
 
-        getParam: function (name) {
+        getParam: function (name)
+        {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regexS = "[\\?&]" + name + "=([^&#]*)";
             var regex = new RegExp(regexS);
@@ -241,7 +258,8 @@ sankey.Application = Class.extend(
 
 sankey.PropertyWindow = Class.extend({
 
-    init: function (elementId, view) {
+    init: function (elementId, view)
+    {
         this.selectedFigure = null;
         this.html = $("#" + elementId);
         this.view = view;
@@ -250,7 +268,8 @@ sankey.PropertyWindow = Class.extend({
 
         // register as listener to update the property pane if anything has been changed in the model
         //
-        view.getCommandStack().addEventListener($.proxy(function (event) {
+        view.getCommandStack().addEventListener($.proxy(function (event)
+        {
             if (event.isPostChangeEvent()) {
                 this.onSelectionChanged(this, {figure: this.selectedFigure});
             }
@@ -264,7 +283,8 @@ sankey.PropertyWindow = Class.extend({
      *
      * @param {draw2d.Figure} figure
      */
-    onSelectionChanged: function (emitter, event) {
+    onSelectionChanged: function (emitter, event)
+    {
         var figure = event.figure;
 
         this.selectedFigure = figure;
@@ -299,7 +319,8 @@ sankey.PropertyWindow = Class.extend({
         }
     },
 
-    onResize: function () {
+    onResize: function ()
+    {
         if (this.pane !== null) {
             this.pane.onResize();
         }
@@ -310,7 +331,8 @@ sankey.PropertyWindow = Class.extend({
 
 sankey.Toolbar = Class.extend({
 
-    init: function (elementId, view) {
+    init: function (elementId, view)
+    {
         this.html = $("#" + elementId);
         this.view = view;
 
@@ -323,14 +345,16 @@ sankey.Toolbar = Class.extend({
 
         this.overviewButton = $("<button title='Back To Overview' class='ion-grid icon'></button>");
         this.html.append(this.overviewButton);
-        this.overviewButton.button().click($.proxy(function () {
+        this.overviewButton.button().click($.proxy(function ()
+        {
             window.location.href = "../dashboard";
         }, this));
 
 
         this.saveButton = $("<button title='Save Report' class='ion-ios-upload-outline icon'></button>");
         this.html.append(this.saveButton);
-        this.saveButton.button().click($.proxy(function () {
+        this.saveButton.button().click($.proxy(function ()
+        {
             app.fileSave();
         }, this));
 
@@ -347,7 +371,8 @@ sankey.Toolbar = Class.extend({
         //
         this.undoButton = $("<button class='ion-ios-undo-outline icon'></button>");
         this.html.append(this.undoButton);
-        this.undoButton.button().click($.proxy(function () {
+        this.undoButton.button().click($.proxy(function ()
+        {
             this.view.getCommandStack().undo();
         }, this)).prop("disabled", true);
 
@@ -355,7 +380,8 @@ sankey.Toolbar = Class.extend({
         //
         this.redoButton = $("<button class='ion-ios-redo-outline icon'></button>");
         this.html.append(this.redoButton);
-        this.redoButton.button().click($.proxy(function () {
+        this.redoButton.button().click($.proxy(function ()
+        {
             this.view.getCommandStack().redo();
         }, this)).prop("disabled", true);
 
@@ -363,7 +389,8 @@ sankey.Toolbar = Class.extend({
         //
         this.deleteButton = $("<button class='ion-android-close icon'></button>");
         this.html.append(this.deleteButton);
-        this.deleteButton.button().click($.proxy(function () {
+        this.deleteButton.button().click($.proxy(function ()
+        {
             var node = this.view.getPrimarySelection();
             var command = new draw2d.command.CommandDelete(node);
             this.view.getCommandStack().execute(command);
@@ -374,14 +401,16 @@ sankey.Toolbar = Class.extend({
         //
         this.shareButton = $("<button class='ion-android-share-alt icon'></button>");
         this.html.append(this.shareButton);
-        this.shareButton.button().click($.proxy(function () {
+        this.shareButton.button().click($.proxy(function ()
+        {
             app.fileShare();
         }, this));
 
 
         this.viewButton = $("<button class='ion-android-open icon'></button>");
         this.html.append(this.viewButton);
-        this.viewButton.button().click($.proxy(function () {
+        this.viewButton.button().click($.proxy(function ()
+        {
             window.open(getAbsoluteUrl("../viewer#diagram=" + app.currentFileHandle.title));
         }, this));
 
@@ -397,7 +426,8 @@ sankey.Toolbar = Class.extend({
      * @param {Object} event
      * @param {draw2d.Figure} event.figure
      */
-    onSelectionChanged: function (emitter, event) {
+    onSelectionChanged: function (emitter, event)
+    {
         this.deleteButton.prop("disabled", event.figure === null);
     },
 
@@ -410,7 +440,8 @@ sankey.Toolbar = Class.extend({
      *
      * @param {draw2d.command.CommandStackEvent} event
      **/
-    stackChanged: function (event) {
+    stackChanged: function (event)
+    {
         this.undoButton.prop("disabled", !event.getStack().canUndo());
         this.redoButton.prop("disabled", !event.getStack().canRedo());
     }
@@ -421,7 +452,8 @@ sankey.Toolbar = Class.extend({
 
 sankey.View = draw2d.Canvas.extend({
 
-    init: function (id) {
+    init: function (id)
+    {
         this.diagramName = "";
 
         this._super(id);
@@ -431,7 +463,8 @@ sankey.View = draw2d.Canvas.extend({
 
         // Override the default connection type. This is used during drag&drop operations of ports.
         this.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
-            createConnection: function () {
+            createConnection: function ()
+            {
                 // return my special kind of connection
                 var con = new sankey.shape.Connection();
                 return con;
@@ -451,7 +484,8 @@ sankey.View = draw2d.Canvas.extend({
         this.installEditPolicy(this.coronaFeedback);
     },
 
-    updateWeights: function (weights) {
+    updateWeights: function (weights)
+    {
 
         // no content
         //
@@ -465,10 +499,12 @@ sankey.View = draw2d.Canvas.extend({
             return;
         }
         var _this = this;
-        this.getLines().each(function (index, conn) {
+        this.getLines().each(function (index, conn)
+        {
             conn.setWeight("0");
         });
-        weights.forEach(function (weight) {
+        weights.forEach(function (weight)
+        {
             var conn = _this.getLine(weight.conn);
             if (conn !== null) {
                 conn.setWeight(weight.value);
@@ -477,14 +513,16 @@ sankey.View = draw2d.Canvas.extend({
 
         var min = Number.MAX_SAFE_INTEGER,
             max = 0;
-        this.getLines().each(function (index, conn) {
+        this.getLines().each(function (index, conn)
+        {
             min = Math.min(min, conn.getWeight());
             max = Math.max(2, Math.max(max, conn.getWeight()));
         });
 
         var minStroke = 2;
         var maxStroke = 20;
-        this.getLines().each(function (index, conn) {
+        this.getLines().each(function (index, conn)
+        {
             // [A, B] --> [a, b]
             conn.setStroke((conn.getWeight() - min) * (maxStroke - minStroke) / Math.max(1, (max - min)) + minStroke);
         });
@@ -504,7 +542,8 @@ sankey.View = draw2d.Canvas.extend({
      *
      * @template
      **/
-    onDrag: function (droppedDomNode, x, y) {
+    onDrag: function (droppedDomNode, x, y)
+    {
     },
 
     /**
@@ -521,10 +560,11 @@ sankey.View = draw2d.Canvas.extend({
      * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
      * @private
      **/
-    onDrop: function (droppedDomNode, x, y, shiftKey, ctrlKey) {
+    onDrop: function (droppedDomNode, x, y, shiftKey, ctrlKey)
+    {
         var type = $(droppedDomNode).data("shape");
         let color = '#ffb224';
-        if(type === "sankey.shape.Start"){
+        if (type === "sankey.shape.Start") {
             type = "sankey.shape.State";
             color = '#5957ff';
         }
@@ -535,10 +575,12 @@ sankey.View = draw2d.Canvas.extend({
         onDrop_extension(type, command, figure);
     },
 
-    getBoundingBox: function () {
+    getBoundingBox: function ()
+    {
         var xCoords = [];
         var yCoords = [];
-        this.getFigures().each(function (i, f) {
+        this.getFigures().each(function (i, f)
+        {
             var b = f.getBoundingBox();
             xCoords.push(b.x, b.x + b.w);
             yCoords.push(b.y, b.y + b.h);
@@ -552,7 +594,8 @@ sankey.View = draw2d.Canvas.extend({
     },
 
 
-    centerDocument: function () {
+    centerDocument: function ()
+    {
         var bb = null;
         var c = $("#draw2dCanvasWrapper");
         if (this.getFigures().getSize() > 0) {
@@ -563,7 +606,8 @@ sankey.View = draw2d.Canvas.extend({
 
             c.scrollTop(bb.y - 50);
             c.scrollLeft(bb.x - 50);
-        } else {
+        }
+        else {
             bb = {
                 x: this.getWidth() / 2,
                 y: this.getHeight() / 2
@@ -582,7 +626,8 @@ sankey.dialog.FileSave = Class.extend({
      * @constructor
      *
      */
-    init: function (fileHandler) {
+    init: function (fileHandler)
+    {
         this.currentFileHandle = fileHandler;
     },
 
@@ -596,7 +641,8 @@ sankey.dialog.FileSave = Class.extend({
      *
      * @since 4.0.0
      */
-    show: function (json, successCallback) {
+    show: function (json, successCallback)
+    {
         var _this = this;
 
         //$("#githubSaveFileDialog .githubFileName").val(_this.currentFileHandle.title);
@@ -611,15 +657,16 @@ sankey.dialog.FileSave = Class.extend({
         //$("#githubSaveFileDialog .okButton").off("click").on("click", function () {
         // function body is below
         // });
-        new draw2d.io.png.Writer().marshal(app.view, function (imageDataUrl) {
+        new draw2d.io.png.Writer().marshal(app.view, function (imageDataUrl)
+        {
             var data = {
                 base64Image: imageDataUrl,
                 id: $("#githubSaveFileDialog .githubFileName").val(),
                 content: JSON.stringify(json, undefined, 2),
                 context: diagramContext,
+                roleToEmails: JSON.stringify(roleToEmails),
                 processStructureName: processStructureName,
             };
-
             $.ajax({
                     url: conf.backend.file.save,
                     method: "POST",
@@ -628,7 +675,8 @@ sankey.dialog.FileSave = Class.extend({
                     },
                     data: data,
                 }
-            ).done(function () {
+            ).done(function ()
+            {
                 //$('#githubSaveFileDialog').modal('hide');
                 _this.currentFileHandle.title = data.id;
                 successCallback();
@@ -643,7 +691,8 @@ sankey.dialog.FileSelect = Class.extend({
      * @constructor
      *
      */
-    init: function () {
+    init: function ()
+    {
     },
 
     /**
@@ -656,24 +705,28 @@ sankey.dialog.FileSelect = Class.extend({
      *
      * @since 4.0.0
      */
-    show: function (successCallback) {
+    show: function (successCallback)
+    {
         $('#githubFileSelectDialog').modal('show');
 
         this.fetchPathContent(successCallback);
     },
 
-    fetchPathContent: function (successCallback) {
+    fetchPathContent: function (successCallback)
+    {
         $.ajax({
             url: conf.backend.file.list,
             xhrFields: {
                 withCredentials: true
             },
-            success: function (response) {
+            success: function (response)
+            {
                 var files = response.files;
                 // sort the result
                 // Directories are always on top
                 //
-                files.sort(function (a, b) {
+                files.sort(function (a, b)
+                {
                     if (a.type === b.type) {
                         if (a.id.toLowerCase() < b.id.toLowerCase())
                             return -1;
@@ -694,7 +747,8 @@ sankey.dialog.FileSelect = Class.extend({
                 );
                 var output = compiled.render({
                     files: files,
-                    draw2d: function () {
+                    draw2d: function ()
+                    {
                         return this.id.endsWith(conf.fileSuffix);
                     }
                 });
@@ -703,7 +757,8 @@ sankey.dialog.FileSelect = Class.extend({
                 $("#githubFileSelectDialog .githubNavigation").scrollTop(0);
 
 
-                $('.githubPath[data-draw2d="true"]').off("click").on("click", function () {
+                $('.githubPath[data-draw2d="true"]').off("click").on("click", function ()
+                {
                     var id = $(this).data("id");
                     $('#githubFileSelectDialog').modal('hide');
                     successCallback(id);
@@ -718,7 +773,8 @@ sankey.dialog.FileShare = Class.extend({
      * @constructor
      *
      */
-    init: function (fileHandle) {
+    init: function (fileHandle)
+    {
         this.currentFileHandle = fileHandle;
     },
 
@@ -732,7 +788,8 @@ sankey.dialog.FileShare = Class.extend({
      *
      * @since 4.0.0
      */
-    show: function () {
+    show: function ()
+    {
         var html = $('#fileShareDialog')[0].outerHTML;
 
         var compiled = Hogan.compile(html);
@@ -745,11 +802,13 @@ sankey.dialog.FileShare = Class.extend({
         output.modal('show');
 
         var clipboard = new Clipboard('.shareButton.clipboard');
-        clipboard.on('success', function (e) {
+        clipboard.on('success', function (e)
+        {
             output.find("#copiedToClipboardMessage").text("Link copied to Clipboard");
         });
 
-        output.on('hidden.bs.modal', function () {
+        output.on('hidden.bs.modal', function ()
+        {
             output.remove();
             clipboard.destroy();
         });
@@ -759,7 +818,8 @@ sankey.dialog.FileShare = Class.extend({
 sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.extend({
 
 
-    init: function () {
+    init: function ()
+    {
         this._super();
         this.mouseMoveProxy = $.proxy(this._onMouseMoveCallback, this);
         this.configIcon = null;
@@ -779,10 +839,12 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
      *
      * @since 3.0.0
      */
-    onClick: function (figure, mouseX, mouseY, shiftKey, ctrlKey) {
+    onClick: function (figure, mouseX, mouseY, shiftKey, ctrlKey)
+    {
     },
 
-    onRightMouseDown: function (figure, x, y) {
+    onRightMouseDown: function (figure, x, y)
+    {
         if (figure === null) {
             return;
         }
@@ -800,10 +862,9 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         if (!(figure instanceof draw2d.Connection)) {
             items.bgcolor = {name: "Background Color", icon: "x ion-android-color-palette"};
         }
-        if(figure instanceof sankey.shape.State){
-            if(diagramContext === '__tree__')
-            {
-                items.users = {name:"See Users",icon: "icon ion-ios-people"}
+        if (figure instanceof sankey.shape.State) {
+            if (diagramContext === '__tree__') {
+                items.users = {name: "See Users", icon: "icon ion-ios-people"}
             }
         }
         if ((figure instanceof sankey.shape.Start) ||
@@ -817,11 +878,13 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         $.contextMenu({
             selector: 'body',
             events: {
-                hide: function () {
+                hide: function ()
+                {
                     $.contextMenu('destroy');
                 }
             },
-            callback: $.proxy(function (key, options) {
+            callback: $.proxy(function (key, options)
+            {
                 switch (key) {
                     case "color":
                         this._setColor(figure, "color");
@@ -840,35 +903,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         this._attachLabel(figure);
                         break;
                     case "users":
-                        let xmlHttp = new XMLHttpRequest();
-                        xmlHttp.onreadystatechange = function() {
-                            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-                            {
-                                let response = JSON.parse(xmlHttp.responseText);
-                                let users_div = document.getElementById("usersControllers-div");
-                                response.forEach((user)=>{
-                                    let div = document.createElement("div");
-                                    let button = document.createElement("button");
-                                    button.class = "btn";
-                                    button.innerText = '-';
-                                    let label = document.createElement("label");
-                                    label.innerText = user.userEmail;
-                                    div.appendChild(button);
-                                    div.appendChild(label);
-                                    users_div.append(div);
-                                });
-                                let div = document.createElement("div");
-                                let button = document.createElement("button");
-                                button.class = "btn";
-                                button.innerText = '+';
-                                div.appendChild(button);
-                                users_div.append(div);
-                                $("#select_users_modal").modal('show');
-                            }
-                        };
-                        let role_name = figure.children.data[0].figure.text;
-                        xmlHttp.open("GET", '/usersAndRoles/getAllUsersByRole/?roleName='+role_name, true);
-                        xmlHttp.send(null);
+                        rolesToHTML(figure.children.data[0].figure.text);
+                        $("#select_users_modal").modal('show');
                         break;
                     default:
                         break;
@@ -880,7 +916,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         });
     },
 
-    onInstall: function (canvas) {
+    onInstall: function (canvas)
+    {
         this._super(canvas);
         var _this = this;
 
@@ -888,17 +925,20 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         //
         canvas.on("mousemove", this.mouseMoveProxy);
 
-        $("#figureConfigDialog .figureAddLabel").on("click", function () {
+        $("#figureConfigDialog .figureAddLabel").on("click", function ()
+        {
             _this._attachLabel(_this.configFigure);
         });
 
-        $("#figureConfigDialog .figureSetColor").on("click", function () {
+        $("#figureConfigDialog .figureSetColor").on("click", function ()
+        {
             _this._setColor(_this.configFigure, "bgColor");
         });
     },
 
 
-    onUninstall: function (canvas) {
+    onUninstall: function (canvas)
+    {
         this._super(canvas);
 
         canvas.off(this.mouseMoveProxy);
@@ -907,7 +947,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
     },
 
 
-    onMouseUp: function (canvas, x, y, shiftKey, ctrlKey) {
+    onMouseUp: function (canvas, x, y, shiftKey, ctrlKey)
+    {
         if (shiftKey === true && this.mouseDownElement === null) {
             var rx = Math.min(x, this.x);
             var ry = Math.min(y, this.y);
@@ -926,12 +967,14 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             this.boundingBoxFigure1 = null;
             this.boundingBoxFigure2.setCanvas(null);
             this.boundingBoxFigure2 = null;
-        } else {
+        }
+        else {
             this._super(canvas, x, y, shiftKey, ctrlKey);
         }
     },
 
-    _onMouseMoveCallback: function (emitter, event) {
+    _onMouseMoveCallback: function (emitter, event)
+    {
         // there is no benefit to show decorations during Drag&Drop of an shape
         //
         if (this.mouseMovedDuringMouseDown === true) {
@@ -945,7 +988,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         var hit = null;
         var _this = this;
 
-        emitter.getFigures().each(function (index, figure) {
+        emitter.getFigures().each(function (index, figure)
+        {
             if (figure.hitTest(event.x, event.y, 30)) {
                 hit = figure;
                 return false;
@@ -961,7 +1005,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                 _this.configIcon = $("<div class='ion-gear-a' id='configMenuIcon'></div>");
                 $("body").append(_this.configIcon);
                 $("#figureConfigDialog").hide();
-                _this.configIcon.on("click", function () {
+                _this.configIcon.on("click", function ()
+                {
                     $("#figureConfigDialog").show().css({top: pos.y, left: pos.x, position: 'absolute'});
                     _this.configFigure = hit;
                     if (_this.configIcon !== null) {
@@ -971,11 +1016,13 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                 });
             }
             _this.configIcon.css({top: pos.y, left: pos.x, position: 'absolute'});
-        } else {
+        }
+        else {
             if (_this.configIcon !== null) {
                 var x = _this.configIcon;
                 _this.configIcon = null;
-                x.fadeOut(500, function () {
+                x.fadeOut(500, function ()
+                {
                     x.remove();
                 });
             }
@@ -983,14 +1030,16 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
     },
 
 
-    _attachLabel: function (figure) {
+    _attachLabel: function (figure)
+    {
         var text = prompt("Label");
         var locator;
         var label = new sankey.shape.Label({text: text, stroke: 0, x: -20, y: -40});
         if (figure instanceof draw2d.Connection) {
             locator = new sankey.locator.SmartConnectionLocator();
             label.setPosition(figure.getStartPosition());
-        } else {
+        }
+        else {
             locator = new draw2d.layout.locator.SmartDraggableLocator();
         }
         if (text) {
@@ -1000,13 +1049,15 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         $("#figureConfigDialog").hide();
     },
 
-    _attachLabelWithText: function (figure, text) {
+    _attachLabelWithText: function (figure, text)
+    {
         var locator;
         var label = new sankey.shape.Label({text: text, stroke: 0, x: -20, y: -40});
         if (figure instanceof draw2d.Connection) {
             locator = new sankey.locator.SmartConnectionLocator();
             label.setPosition(figure.getStartPosition());
-        } else {
+        }
+        else {
             locator = new draw2d.layout.locator.SmartDraggableLocator();
         }
         if (text) {
@@ -1016,9 +1067,11 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         $("#figureConfigDialog").hide();
     },
 
-    _setColor: function (figure, attr) {
+    _setColor: function (figure, attr)
+    {
         var colorString = [];
-        colors.forEach(function (c) {
+        colors.forEach(function (c)
+        {
             colorString.push("<tr>");
             for (var entry in c) {
                 colorString.push("<td data-color='" + c[entry] + "' style='width:25px;height:15px;background-color:" + c[entry] + "'></td>");
@@ -1036,7 +1089,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         var configIcon = $("<div id='colorDialog'><table>" + colorString.join("") + "</table></div>");
         $("body").append(configIcon);
         configIcon.css({top: pos.y, left: pos.x, position: 'absolute'});
-        $("#colorDialog td").on("click", function () {
+        $("#colorDialog td").on("click", function ()
+        {
             figure.attr(attr, $(this).data("color"));
             $("#colorDialog").remove();
         });
@@ -1046,39 +1100,47 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
 
 sankey.property.PropertyPane = Class.extend({
 
-    init: function (figure) {
+    init: function (figure)
+    {
         this.figure = figure;
     },
 
 
-    injectPropertyView: function (domId) {
+    injectPropertyView: function (domId)
+    {
         var _this = this;
 
-        $("#transitions select").each(function (index, val) {
+        $("#transitions select").each(function (index, val)
+        {
             var $val = $(val);
             $val.find("option[value='" + $val.attr("value") + "']").attr("selected", "selected");
         });
 
-        $("#transitions input").on("keyup", function () {
+        $("#transitions input").on("keyup", function ()
+        {
             var $this = $(this);
             $this.attr("value", $this.val());
             _this.figure.setUserData(_this.getJSON());
         });
-        $("#transitions select").on("change", function () {
+        $("#transitions select").on("change", function ()
+        {
             var $this = $(this);
             $this.attr("value", $this.find(":selected").val());
             _this.figure.setUserData(_this.getJSON());
         });
 
         $('.typeahead_path').autocomplete({
-            lookup: function (query, doneCallback) {
-                _this.suggestPath(query, function (result) {
+            lookup: function (query, doneCallback)
+            {
+                _this.suggestPath(query, function (result)
+                {
                     doneCallback({suggestions: result});
                 });
             },
             noCache: true,
             orientation: "top",
-            onSelect: function (suggestion) {
+            onSelect: function (suggestion)
+            {
                 var $this = $(this);
                 $this.attr("value", suggestion.value);
                 _this.figure.setUserData(_this.getJSON());
@@ -1086,16 +1148,19 @@ sankey.property.PropertyPane = Class.extend({
         });
 
         $('.typeahead_value').autocomplete({
-            lookup: function (query, doneCallback) {
+            lookup: function (query, doneCallback)
+            {
                 var active = $(document.activeElement);
                 var path = active.closest("tr").find("td:first-child input");
-                _this.suggestValue(path.val(), query, function (result) {
+                _this.suggestValue(path.val(), query, function (result)
+                {
                     doneCallback({suggestions: result});
                 });
             },
             noCache: true,
             orientation: "top",
-            onSelect: function (suggestion) {
+            onSelect: function (suggestion)
+            {
                 var $this = $(this);
                 $this.attr("value", suggestion.value);
                 _this.figure.setUserData(_this.getJSON());
@@ -1110,7 +1175,8 @@ sankey.property.PropertyPane = Class.extend({
      * required.
      *
      */
-    onResize: function () {
+    onResize: function ()
+    {
     },
 
 
@@ -1119,10 +1185,12 @@ sankey.property.PropertyPane = Class.extend({
      * called by the framework before the pane will be removed from the DOM tree
      *
      */
-    onHide: function () {
+    onHide: function ()
+    {
     },
 
-    getJSON: function () {
+    getJSON: function ()
+    {
         var table = $('#transitions')[0];
         var headers = [];
         var data = []; // first row needs to be headers var headers = [];
@@ -1139,33 +1207,39 @@ sankey.property.PropertyPane = Class.extend({
             data.push(rowData);
         }
         // strip empty entries;
-        data = data.filter(function (e) {
+        data = data.filter(function (e)
+        {
             return e.jsonPath !== "";
         });
-        data = data.filter(function (e) {
+        data = data.filter(function (e)
+        {
             return e.jsonPath;
         });
         return {transitions: data};
     },
 
 
-    suggestPath: function (query, callback) {
+    suggestPath: function (query, callback)
+    {
         $.ajax({
             url: conf.backend.suggestPath,
             method: "POST",
             data: {query: query},
-            success: function (response) {
+            success: function (response)
+            {
                 callback(response);
             }
         });
     },
 
-    suggestValue: function (path, query, callback) {
+    suggestValue: function (path, query, callback)
+    {
         $.ajax({
             url: conf.backend.suggestValue,
             method: "POST",
             data: {query: query, path: path},
-            success: function (response) {
+            success: function (response)
+            {
                 callback(response);
             }
         });
@@ -1175,12 +1249,14 @@ sankey.property.PropertyPane = Class.extend({
 
 sankey.property.PropertyPaneConnection = sankey.property.PropertyPane.extend({
 
-    init: function (figure) {
+    init: function (figure)
+    {
         this._super(figure);
     },
 
 
-    injectPropertyView: function (domId) {
+    injectPropertyView: function (domId)
+    {
         var compile = Hogan.compile($("#template_connection").text());
 
         var dom = compile.render(this.figure.getUserData());
@@ -1193,11 +1269,13 @@ sankey.property.PropertyPaneConnection = sankey.property.PropertyPane.extend({
 
 sankey.property.PropertyPaneStart = sankey.property.PropertyPane.extend({
 
-    init: function (figure) {
+    init: function (figure)
+    {
         this._super(figure);
     },
 
-    injectPropertyView: function (domId) {
+    injectPropertyView: function (domId)
+    {
         var compile = Hogan.compile($("#template_startNode").text());
 
         var dom = compile.render(this.figure.getUserData());
@@ -1210,12 +1288,14 @@ sankey.property.PropertyPaneStart = sankey.property.PropertyPane.extend({
 
 sankey.property.PropertyPaneState = sankey.property.PropertyPane.extend({
 
-    init: function (figure) {
+    init: function (figure)
+    {
         this._super(figure);
     },
 
 
-    injectPropertyView: function (domId) {
+    injectPropertyView: function (domId)
+    {
         var view = $(
             "<div class='control-group'>" +
             "   <label class='control-label'>State Node </label>" +
