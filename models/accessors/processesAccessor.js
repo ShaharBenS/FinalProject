@@ -1,19 +1,21 @@
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
-let processStructure = require('../schemas/processesSchemas/ProcessStructureSchema.js');
-let processReport = require('../schemas/processesSchemas/ProcessReportSchema.js');
-let ProcessStructure = require('../../domainObjects/processStructure');
+let processStructureSchema = require('../schemas/processesSchemas/ProcessStructureSchema.js');
+let activeProcessSchema = require('../schemas/processesSchemas/ProcessStructureSchema.js');
+let processReportSchema = require('../schemas/processesSchemas/ProcessReportSchema.js');
+
 /* processStructure */
 
 module.exports.createProcessStructure = (newProcessStructure, callback) =>
 {
-    processStructure.create(processStructureController.getProcessStructureForDB(newProcessStructure), callback);
+    processStructureSchema.create(newProcessStructure, callback);
 };
 
 module.exports.findProcessStructure = (criteria, callback) =>
 {
-    processStructure.findOne(criteria, (err,result)=>{
+    processStructureSchema.findOne(criteria, (err,result)=>{
         if(err)
         {
             callback(err);
@@ -34,85 +36,85 @@ module.exports.findProcessStructure = (criteria, callback) =>
 
 module.exports.deleteOneProcessStructure = (criteria, callback) =>
 {
-    return processStructure.deleteOne(criteria, callback);
+    return processStructureSchema.deleteOne(criteria, callback);
 };
 
 module.exports.updateProcessStructure = (criteria, newProcessStructure, callback) =>
 {
-    return processStructure.updateOne(criteria, newProcessStructure, callback);
+    return processStructureSchema.updateOne(criteria, newProcessStructure, callback);
 };
 
 /* activeProcess */
 
 module.exports.getActiveProcessByProcessName = (processName, callback) =>
 {
-    activeProcess.find({processName: processName}, (err, process) =>
+    activeProcessSchema.findOne({processName: processName}, (err, process) =>
     {
-        let processObj;
-        if (err) callback(err);
+        if (err)
+            callback(err);
         else {
-            if (process.length === 0) callback(null, null);
-            else {
-                processObj = new activeProcess(process.processName, process.timeCreation, process.notificationTime, process.currentStages, process.initials, []);
-                process.stages.forEach((stage) =>
-                {
-                    processObj.stages.push(
-                        new activeProcessStage(
-                            stage.roleID,
-                            stage.userEmail,
-                            stage.stageNum,
-                            stage.nextStages,
-                            stage.stagesToWaitFor,
-                            stage.originStagesToWaitFor,
-                            stage.timeApproval,
-                            stage.onlineForms,
-                            stage.filledOnlineForms,
-                            stage.attachedFilesNames,
-                            stage.comments))
-                })
+            if (process)
+                callback(null,activeProcessController.getActiveProcessFromOriginal(process));
+            else
+                callback(null, null);
             }
-            callback(null, processObj);
-        }
     });
 };
 
 module.exports.createActiveProcess = (AP, callback) =>
 {
-    return activeProcess.create(AP, callback);
+    return activeProcessSchema.create(AP, callback);
 };
 
-module.exports.findActiveProcess = (AP, callback) =>
+module.exports.findActiveProcesses = (AP, callback) =>
 {
-    return activeProcess.find(AP, callback);
+    return activeProcessSchema.find(AP, (err,activeProcessArray)=>{
+        if(err)
+            callback(err);
+        else
+        {
+            if(activeProcessArray.length > 0)
+            {
+                let newActiveProcessArray = [];
+                activeProcessArray.forEach((process)=>
+                {
+                    newActiveProcessArray.push(processStructureController.getProcessStructureFromOriginal(process));
+                });
+                callback(null,newActiveProcessArray);
+            }
+            else
+                callback(null,null);
+        }
+    });
 };
 
 module.exports.deleteOneActiveProcess = (AP, callback) =>
 {
-    return activeProcess.deleteOne(AP, callback);
+    return activeProcessSchema.deleteOne(AP, callback);
 };
 
 module.exports.updateActiveProcess = (AP, update, callback) =>
 {
-    return activeProcess.updateOne(AP, update, callback);
+    return activeProcessSchema.updateOne(AP, update, callback);
 };
 
 /* processReport */
 module.exports.createProcessReport = (PR, callback) =>
 {
-    return processReport.create(PR, callback);
+    return processReportSchema.create(PR, callback);
 };
 
 module.exports.findProcessReport = (PR, callback) =>
 {
-    return processReport.find(PR, callback);
+    return processReportSchema.find(PR, callback);
 };
 
 module.exports.deleteOneProcessReport = (PR, callback) =>
 {
-    return processReport.deleteOne(PR, callback);
+    return processReportSchema.deleteOne(PR, callback);
 };
 
 module.exports.updateProcessReport = (PR, update, callback) =>
 {
-    return processReport.updateOne(PR, update, callback);
+    return processReportSchema.updateOne(PR, update, callback);
 };

@@ -38,7 +38,7 @@ class activeProcess {
     }
 
     getStageByStageNum(stageNum) {
-        let foundStage;
+        let foundStage = null;
         this.stages.every((stage) => {
             if (stage.stageNum === stageNum) {
                 foundStage = stage;
@@ -46,7 +46,7 @@ class activeProcess {
             }
             return true;
         });
-        if (foundStage === undefined)
+        if (foundStage === null)
             throw new Error("stage does not exist");
         return foundStage;
     }
@@ -54,11 +54,8 @@ class activeProcess {
     getAllStagesInPathFrom(stageNum) {
         let _this = this;
         let pathStages = [];
-        let recursive = function (stageNum) {
-            pathStages.push(stageNum);
-            _this.getStageByStageNum(stageNum).nextStages.forEach((iStage) => recursive(iStage));
-        };
-        this.currentStages.forEach((currStage) => recursive(currStage));
+        pathStages.push(stageNum);
+        _this.getStageByStageNum(stageNum).nextStages.forEach((iStage) => pathStages = pathStages.concat(this.getAllStagesInPathFrom(iStage)));
         return pathStages;
     }
 
@@ -95,6 +92,26 @@ class activeProcess {
                 this.removePathStages(removePathStages, pathStages);
             }
         });
+    }
+
+    isWaitingForUser(roleID,userEmail){
+        for(let i=0;i<this.stages.length;i++)
+        {
+            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.id.equals(roleID.id) && (this.stages[i].userEmail === null || this.stages[i].userEmail === userEmail)) {
+                return true;
+            }
+        }
+    }
+
+    isParticipatingInProcess(userEmail){
+        for(let i=0;i<this.stages.length;i++)
+        {
+            if(stage.userEmail === userEmail)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
