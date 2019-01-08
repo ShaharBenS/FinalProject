@@ -1,10 +1,5 @@
 class processStructure {
 
-    structureName;
-    initials;
-    stages;
-    sankey;
-
     constructor(structureName, initials, stages, sankey) {
         this.structureName = structureName;
         this.initials = initials;
@@ -12,7 +7,7 @@ class processStructure {
         this.sankey = sankey;
     }
 
-    canStartProcess(roleID) {
+    getInitialStageByRoleID(roleID) {
         let initialStage = -1;
         this.stages.every((stage) => {
             let roleEqual = stage.roleID.id.equals(roleID.id);
@@ -23,7 +18,7 @@ class processStructure {
             }
             return true;
         });
-        return initialStage !== -1;
+        return initialStage;
     }
     checkDupStagesInStructure()
     {
@@ -64,4 +59,4 @@ class processStructure {
     };
 }
 
-export {processStructure};
+module.exports = processStructure;

@@ -12,7 +12,6 @@ class activeProcess {
 
     }
 
-
     addCurrentStage(stageNum) {
         if (stageNum === undefined || this.currentStages.includes(stageNum))
             throw new Error("invalid stage number");
@@ -39,7 +38,7 @@ class activeProcess {
     }
 
     getStageByStageNum(stageNum) {
-        let foundStage;
+        let foundStage = null;
         this.stages.every((stage) => {
             if (stage.stageNum === stageNum) {
                 foundStage = stage;
@@ -47,7 +46,7 @@ class activeProcess {
             }
             return true;
         });
-        if (foundStage === undefined)
+        if (foundStage === null)
             throw new Error("stage does not exist");
         return foundStage;
     }
@@ -106,6 +105,26 @@ class activeProcess {
                 this.removePathStages(removePathStages, pathStages);
             }
         });
+    }
+
+    isWaitingForUser(roleID,userEmail){
+        for(let i=0;i<this.stages.length;i++)
+        {
+            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.id.equals(roleID.id) && (this.stages[i].userEmail === null || this.stages[i].userEmail === userEmail)) {
+                return true;
+            }
+        }
+    }
+
+    isParticipatingInProcess(userEmail){
+        for(let i=0;i<this.stages.length;i++)
+        {
+            if(this.stages[i].userEmail === userEmail)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

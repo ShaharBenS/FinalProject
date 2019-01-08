@@ -16,7 +16,7 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {
-                    processStructureAccessor.createProcessStructure(newProcessStructure, callback);
+                    processStructureAccessor.createProcessStructure(getProcessStructureForDB(newProcessStructure), callback);
                 }
                 else
                     callback(new Error('Some initial stages do not exist'));
