@@ -1,3 +1,5 @@
+let processStructureStage = require("./activeProcessStage");
+
 class activeProcessStage extends  processStructureStage
 {
     userEmail;
@@ -35,5 +37,10 @@ class activeProcessStage extends  processStructureStage
         }
         else return new Error();
     }
+
+    haveNoOneToWaitFor(){
+        return this.stagesToWaitFor.length() === 0;
+    }
+
 
 }
