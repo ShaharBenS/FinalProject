@@ -60,20 +60,26 @@ describe('1.0 add to current stages', function () {
     });
 });
 
-describe('2.0 add to current stages', function () {
+describe('2.0 remove current stages', function () {
 
     beforeEach(createActiveProcess1);
     afterEach(resetActiveProcess1);
 
-    it('1.1 checks for existing stage', () => {
+    it('2.1 checks for existing stage', () => {
         assert.deepEqual([0], testProcess.currentStages);
-        testProcess.addCurrentStage(1);
-        assert.deepEqual([0, 1], testProcess.currentStages);
+        testProcess.removeCurrentStage(0);
+        assert.deepEqual([], testProcess.currentStages);
     });
 
-    it('1.2 checks for existing stage in current stages', () => {
+    it('2.2 checks for not existing stage in current stages', () => {
         assert.deepEqual([0], testProcess.currentStages);
-        expect(() => testProcess.addCurrentStage(0)).to.throw();
+        expect(() => testProcess.removeCurrentStage(1)).to.throw();
+        assert.deepEqual([0], testProcess.currentStages);
+    });
+
+    it('2.3 checks for undefined value', () => {
+        assert.deepEqual([0], testProcess.currentStages);
+        expect(() => testProcess.removeCurrentStage(undefined)).to.throw();
         assert.deepEqual([0], testProcess.currentStages);
     });
 });

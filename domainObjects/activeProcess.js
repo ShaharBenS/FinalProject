@@ -20,7 +20,7 @@ class activeProcess {
 
     removeCurrentStage(stageNum) {
         if (stageNum === undefined || !this.currentStages.includes(stageNum))
-            return new Error("invalid stage number");
+            throw new Error("invalid stage number");
         else {
             let index = this.currentStages.indexOf(stageNum);
             this.currentStages.splice(index, 1);
