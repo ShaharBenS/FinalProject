@@ -1,5 +1,7 @@
 let processStructureAccessor = require('../../models/accessors/processesAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
+let processStructureStage = require('../../domainObjects/processStructureStage');
+let ProcessStructure = require('../../domainObjects/processStructure');
 
 module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
 {
@@ -9,12 +11,18 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
             callback(err);
         }
         else {
-            processStructureAccessor.createProcessStructure({
-                structureName: structureName,
-                initials: structure.initials,
-                stages: structure.stages,
-                sankey: sankeyContent,
-            }, callback)
+            let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
+            if(newProcessStructure.checkNotDupStagesInStructure())
+            {
+                if(newProcessStructure.checkInitialsExistInProcessStages())
+                {
+                    processStructureAccessor.createProcessStructure(getProcessStructureForDB(newProcessStructure), callback);
+                }
+                else
+                    callback(new Error('Some initial stages do not exist'));
+            }
+            else
+                callback(new Error('There are two stages with the same number'));
         }
     });
 };
@@ -27,13 +35,25 @@ module.exports.editProcessStructure = (structureName, sankeyContent, callback) =
             callback(err);
         }
         else {
-            processStructureAccessor.updateProcessStructure({structureName: structureName}, {
-                $set: {
-                    initials: structure.initials,
-                    stages: structure.stages,
-                    sankey: sankeyContent,
+            let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
+            if(newProcessStructure.checkNotDupStagesInStructure())
+            {
+                if(newProcessStructure.checkInitialsExistInProcessStages())
+                {
+                    processStructureAccessor.updateProcessStructure({structureName: structureName}, {
+                        $set: {
+                            initials: structure.initials,
+                            stages: structure.stages,
+                            sankey: sankeyContent,
+                        }
+                    }, callback);
                 }
-            }, callback);
+                else
+                    callback(new Error('Some initial stages do not exist'));
+            }
+            else
+                callback(new Error('There are two stages with the same number'));
+
         }
     });
 };
@@ -45,40 +65,62 @@ module.exports.removeProcessStructure = (structureName, callback) =>
 
 module.exports.getProcessStructure = (name, callback) =>
 {
-    processStructureAccessor.findProcessStructure({structureName: name}, (err, result) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else if (result.length === 0) {
-            callback(new Error("No process structures named " + name + " found"))
-        }
-        else {
-            callback(null, result[0])
-        }
-    });
+    processStructureAccessor.findProcessStructure({structureName: name}, callback);
 };
 
-module.exports.getProcessStagesFromOriginal = (oldStages, callback) =>
+module.exports.getProcessStructureForDB = function (originProcessStructure)
+{
+    return {structureName: originProcessStructure.structureName,
+        initials : originProcessStructure.initials,
+        stages : getProcessStructureStagesForDB(originProcessStructure.stages),
+        sankey : originProcessStructure.sankey};
+};
+
+module.exports.getProcessStructureStagesForDB = function (originStages)
+{
+    let returnStages = [];
+    for(let i=0;i<originStages.length;i++)
+    {
+        returnStages.push({roleID : originStages[i].roleID,
+        stageNum : originStages[i].stageNum,
+        nextStages : originStages[i].nextStages,
+        stagesToWaitFor : originStages[i].stagesToWaitFor,
+        onlineForms : originStages[i].onlineForms,
+        attachedFilesNames : originStages[i].attachedFilesNames});
+    }
+    return returnStages;
+};
+
+module.exports.getProcessStructureFromOriginal = (oldProcessStructure) =>
+{
+    return {structureName: oldProcessStructure.structureName,
+        initials : oldProcessStructure.initials,
+        stages : getProcessStagesFromOriginal(oldProcessStructure.stages),
+        sankey : oldProcessStructure.sankey};
+};
+
+module.exports.getProcessStagesFromOriginal = (oldStages) =>
 {
     let newStages = [];
     oldStages.forEach((stage) =>
     {
-        newStages.push({
-            roleID: stage.roleID,
-            stageNum: stage.stageNum,
-            nextStages: stage.nextStages,
-            stagesToWaitFor: stage.stagesToWaitFor,
-            onlineForms: stage.onlineForms,
-            attachedFilesNames: stage.attachedFilesNames
-        });
+        newStages.push(new processStructureStage(
+            stage.roleID,
+            stage.stageNum,
+            stage.nextStages,
+            stage.stagesToWaitFor,
+            stage.onlineForms,
+            stage.attachedFilesNames
+        ));
     });
-    callback(newStages);
+    return newStages;
 };
 
 /*********************/
 /* Private Functions */
 /*********************/
+
+
 
 let sankeyToStructure = function (sankeyContent, callback)
 {
