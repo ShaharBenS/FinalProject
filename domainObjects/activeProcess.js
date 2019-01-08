@@ -54,8 +54,13 @@ class activeProcess {
     getPath(stageNum) {
         let _this = this;
         let pathStages = [];
-        pathStages.push(stageNum);
-        _this.getStageByStageNum(stageNum).nextStages.forEach((iStage) => pathStages = pathStages.concat(this.getAllStagesInPathFrom(iStage)));
+        let recursive = function (stageNum) {
+            if (!pathStages.includes(stageNum)) {
+                pathStages.push(stageNum);
+                _this.getStageByStageNum(stageNum).nextStages.forEach((iStage) => recursive(iStage));
+            }
+        };
+        recursive(stageNum);
         return pathStages;
     }
 
@@ -107,7 +112,7 @@ class activeProcess {
     isParticipatingInProcess(userEmail){
         for(let i=0;i<this.stages.length;i++)
         {
-            if(stage.userEmail === userEmail)
+            if(this.stages[i].userEmail === userEmail)
             {
                 return true;
             }
