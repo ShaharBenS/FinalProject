@@ -1,9 +1,6 @@
+"use strict";
+
 class activeProcess {
-    processName;
-    notificationTime;
-    currentStages;
-    initials;
-    stages;
 
     constructor(processName, timeCreation, notificationTime, currentStages, initials, stages) {
         this.processName = processName;
@@ -17,7 +14,7 @@ class activeProcess {
 
     addCurrentStage(stageNum) {
         if (stageNum === undefined || this.currentStages.includes(stageNum))
-            return new Error("invalid stage number");
+            throw new Error("invalid stage number");
         else this.currentStages.push(stageNum);
     }
 
@@ -101,4 +98,4 @@ class activeProcess {
     }
 }
 
-export {activeProcess};
+module.exports = activeProcess;
