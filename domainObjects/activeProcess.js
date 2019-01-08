@@ -1,21 +1,10 @@
 class activeProcess
 {
-
     processName;
     notificationTime;
     currentStages;
     initials;
     stages;
-
-    get timeCreation()
-    {
-        return this._timeCreation;
-    }
-
-    set timeCreation(value)
-    {
-        this._timeCreation = value;
-    }
 
     constructor(processName, timeCreation, notificationTime, currentStages, initials, stages)
     {
@@ -44,6 +33,19 @@ class activeProcess
             this.currentStages.splice(index, 1);
         }
     }
+
+    get timeCreation()
+    {
+        return this._timeCreation;
+    }
+
+    set timeCreation(value)
+    {
+        if(this.timeCreation === undefined)
+            this._timeCreation = value;
+        else throw new Error();
+    }
+
 
 
 }

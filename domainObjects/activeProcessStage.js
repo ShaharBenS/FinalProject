@@ -1,29 +1,18 @@
-class activeProcessStage
+class activeProcessStage extends  processStructureStage
 {
-    roleID;
     userEmail;
-    stageNum;
-    nextStages;
-    stagesToWaitFor;
     originStagesToWaitFor;
     timeApproval;
-    onlineForms;
     filledOnlineForms;
-    attachedFilesNames;
     comments;
 
     constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, timeApproval, onlineForms, filledOnlineForms, attachedFilesNames, comments)
     {
-        this.roleID = roleID;
+        super(roleID, stageNum, nextStages, stagesToWaitFor, onlineForms, attachedFilesNames);
         this.userEmail = userEmail;
-        this.stageNum = stageNum;
-        this.nextStages = nextStages;
-        this.stagesToWaitFor = stagesToWaitFor;
         this.originStagesToWaitFor = originStagesToWaitFor;
         this.timeApproval = timeApproval;
-        this.onlineForms = onlineForms;
         this.filledOnlineForms = filledOnlineForms;
-        this.attachedFilesNames = attachedFilesNames;
         this.comments = comments;
     }
 

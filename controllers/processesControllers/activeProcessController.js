@@ -25,13 +25,13 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                     callback(err);
                 }
                 else {
-                    getActiveProcessByProcessName(processName, (err, activeProcesses) =>
+                    processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) =>
                     {
                         if (err) {
                             callback(err);
                         }
                         else {
-                            if (!activeProcesses) {
+                            if (activeProcesses === null) {
                                 let initialStage = -1;
                                 processStructure.stages.every((stage) =>
                                 {
