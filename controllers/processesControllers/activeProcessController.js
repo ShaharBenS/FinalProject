@@ -161,10 +161,7 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
     {
         if (err) callback(err);
         else {
-            process.stages.forEach((stage) =>
-            {
-                stage.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
-            });
+            process.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
             processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages},
                 (err) =>
                 {
