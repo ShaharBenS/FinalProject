@@ -664,7 +664,7 @@ sankey.dialog.FileSave = Class.extend({
                 id: $("#githubSaveFileDialog .githubFileName").val(),
                 content: JSON.stringify(json, undefined, 2),
                 context: diagramContext,
-                roleToEmails: JSON.stringify(roleToEmails),
+                roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
                 processStructureName: processStructureName,
             };
             $.ajax({

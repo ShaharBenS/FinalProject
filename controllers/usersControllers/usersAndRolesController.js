@@ -1,66 +1,20 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
+let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
+let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 
-module.exports.addNewRole = (newRoleName, fatherRoleName, callback) =>
+module.exports.getRoleToEmails = (callback) =>
 {
-    userAccessor.createRole({roleName: newRoleName, userEmail: [], children: []}, (err) =>
+    userAccessor.findRole({}, (err, roles) =>
     {
         if (err) {
             callback(err);
         }
-        else {
-            if (fatherRoleName.localeCompare("") !== 0) {
-                userAccessor.findRole({roleName: fatherRoleName}, (err, father) =>
-                {
-                    if (err) {
-                        callback(err);
-                    }
-                    else if (father.length === 0) {
-                        userAccessor.deleteOneRole({roleName: newRoleName}, (err) =>
-                        {
-                            if (err) {
-                                callback(err)
-                            }
-                            else {
-                                callback(new Error("ERROR: father name does not exists"));
-                            }
-                        });
-                    }
-                    else {
-                        let fatherID = father[0]._id;
-                        userAccessor.findRole({roleName: newRoleName}, (err, son) =>
-                        {
-                            if (err) {
-                                callback(err)
-                            }
-                            else {
-                                let sonID = son[0]._id;
-                                userAccessor.updateRole({_id: fatherID}, {$push: {children: sonID}}, callback);
-                            }
-                        })
-                    }
-                })
-            }
-            else {
-                callback(err);
-            }
-        }
-    });
-};
-
-module.exports.getRoleToEmails = (callback)=>{
-    userAccessor.findRole({},(err,roles)=>
-    {
-        if(err){
-            callback(err);
-        }
-        callback(null,roles.reduce((acc,role)=>{
-            acc[role.roleName] = role.userEmail;
-            return acc;
-        },{}))
+        callback(null, new usersAndRolesTree(roles).getRoleToEmails())
     })
 };
 
-module.exports.addChildrenToRole = (roleObjectID,childrenObjectID, callback)=>{
+module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
+{
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 };
 
@@ -72,179 +26,14 @@ module.exports.addUsersAndRole = (roleName, usersEmail, callback) =>
             callback(err);
         }
         else {
-            callback(null,usersAndRole)
+            callback(null, usersAndRole)
         }
     });
-};
-
-module.exports.deleteRole = (roleToDelete, callback) =>
-{
-    userAccessor.findRole({roleName: roleToDelete}, (err, role) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else if (role.length === 0) {
-            callback(new Error('ERROR: role not found'));
-        }
-        else {
-            let toDeleteID = role[0]._id;
-            let toDeleteChildren = role[0].children;
-            userAccessor.findRole({children: toDeleteID}, (err, father) =>
-            {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    if (father.length !== 0) {
-                        let fatherID = father[0]._id;
-                        userAccessor.updateRole({_id: fatherID}, {$pull: {children: toDeleteID}}, (err) =>
-                            {
-                                if (err) {
-                                    callback(err)
-                                }
-                                else {
-                                    userAccessor.updateRole({_id: fatherID}, {$push: {children: {$each: toDeleteChildren}}}, (err) =>
-                                        {
-                                            if (err) {
-                                                callback(err);
-                                            }
-                                            else {
-                                                userAccessor.deleteOneRole({_id: toDeleteID}, callback)
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        )
-                    }
-                    else {
-                        userAccessor.deleteOneRole({_id: toDeleteID}, callback);
-                    }
-                }
-            });
-        }
-    })
-};
-
-module.exports.changeRoleName = (oldRoleName, newRoleName, callback) =>
-{
-    if (newRoleName !== "") {
-        userAccessor.findRole({roleName: oldRoleName}, (err, roleToChange) =>
-        {
-            if (err) {
-                callback(err)
-            }
-            else {
-                userAccessor.findRole({roleName: newRoleName}, (err, newRole) =>
-                {
-                    if (err) {
-                        callback(err);
-                    }
-                    else if (newRole.length === 0) {
-                        let toChangeID = roleToChange[0]._id;
-                        userAccessor.updateRole({_id: toChangeID}, {roleName: newRoleName}, callback)
-                    }
-                    else {
-                        callback(new Error("ERROR: name already exists"));
-                    }
-                })
-            }
-        })
-    }
-    else {
-        callback(new Error("ERROR: name is empty"))
-    }
-};
-
-module.exports.addNewUserToRole = (userEmail, roleName, callback) =>
-{
-    userAccessor.findRole({roleName: roleName}, (err, role) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else {
-            let emailsInRole = role[0].userEmail;
-            if (emailsInRole.includes(userEmail)) {
-                callback(new Error("ERROR: user already in that role"));
-            }
-            else {
-                let toChangeID = role[0]._id;
-                userAccessor.updateRole({_id: toChangeID}, {$push: {userEmail: userEmail}}, callback);
-            }
-        }
-    })
-};
-
-module.exports.deleteUserFromRole = (userEmail, roleName, callback) =>
-{
-    userAccessor.findRole({roleName: roleName}, (err, role) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else {
-            let emailsInRole = role[0].userEmail;
-            if (!emailsInRole.includes(userEmail)) {
-                callback(new Error("ERROR: can't find user in emails"));
-            }
-            else {
-                let toChangeID = role[0]._id;
-                userAccessor.updateRole({_id: toChangeID}, {$pull: {userEmail: userEmail}}, callback);
-            }
-        }
-    })
-};
-
-module.exports.changeUserEmailInRole = (roleName, oldUserEmail, newUserEmail, callback) =>
-{
-    userAccessor.findRole({userEmail: {"$in": [newUserEmail]}}, (err, role) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        if (role.length === 0) {
-            userAccessor.findRole({roleName: roleName}, (err, role) =>
-            {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    let emailsInRole = role[0].userEmail;
-                    if (!emailsInRole.includes(oldUserEmail)) {
-                        callback(new Error("ERROR: can't find user in role"));
-                    }
-                    else {
-                        let toChangeID = role[0]._id;
-                        userAccessor.updateRole({_id: toChangeID}, {$pull: {userEmail: oldUserEmail}}, (err) =>
-                            {
-                                if (err) {
-                                    callback(err);
-                                }
-                                else {
-                                    userAccessor.updateRole({_id: toChangeID}, {$push: {userEmail: newUserEmail}}, callback)
-                                }
-                            }
-                        )
-                    }
-                }
-            })
-        }
-        else {
-            callback(new Error("ERROR: email already exists"));
-        }
-    })
 };
 
 module.exports.getAllRoles = (callback) =>
 {
     return userAccessor.findRole({}, callback).select('roleName');
-};
-
-module.exports.getAllRolesObjects = (callback) =>
-{
-    return userAccessor.findRole({}, callback);
 };
 
 module.exports.getUsersAndRolesTree = (callback) =>
@@ -273,26 +62,22 @@ module.exports.getUsersAndRolesTree = (callback) =>
 
 module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
 {
-    let parsed_sankey = JSON.parse(sankey);
+    let sankeyTree = new usersAndRolesTreeSankey(JSON.parse(sankey));
+
     userAccessor.updateSankeyTree({}, {sankey: sankey}, (err) =>
     {
         if (err) {
             callback(err);
         }
         else {
-            userAccessor.deleteAllRoles((err)=>{
-                if(err){
+            userAccessor.deleteAllRoles((err) =>
+            {
+                if (err) {
                     callback(err);
                 }
-                else{
-                    let roles = parsed_sankey.content.diagram.filter((figure) =>
-                    {
-                        return figure.type === "sankey.shape.State";
-                    });
-                    let connections = parsed_sankey.content.diagram.filter((figure) =>
-                    {
-                        return figure.type === "sankey.shape.Connection";
-                    });
+                else {
+                    let roles = sankeyTree.getRoles();
+                    let connections = sankeyTree.getConnections();
                     let usersAndRoleDocuments = [];
                     roles.reduce((acc, role_figure) =>
                     {
@@ -305,10 +90,10 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                 let roleName = role_figure.labels[0].text;
                                 this.addUsersAndRole(roleName, roleToEmails[roleName], (_err, usersAndRole) =>
                                 {
-                                    if(err){
+                                    if (err) {
                                         acc(err);
                                     }
-                                    else{
+                                    else {
                                         usersAndRoleDocuments.push(usersAndRole);
                                         acc(null)
                                     }
@@ -321,10 +106,11 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                             callback(err);
                         }
                         else {
-                            let roleNames = usersAndRoleDocuments.map(usersAndRoleDocument=>{
+                            let roleNames = usersAndRoleDocuments.map(usersAndRoleDocument =>
+                            {
                                 return usersAndRoleDocument.roleName;
                             });
-                            let roleIDs = roles.map(role=>role.id);
+                            let roleIDs = roles.map(role => role.id);
 
                             connections.reduce((acc, connection) =>
                             {
@@ -346,19 +132,23 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                         let fromNodeID = usersAndRoleDocuments[fromNodeRoleIndex]._id;
                                         let toNodeID = usersAndRoleDocuments[toNodeRoleIndex]._id;
 
-                                        this.addChildrenToRole(fromNodeID,toNodeID,(err)=>{
-                                            if(err){
+                                        this.addChildrenToRole(fromNodeID, toNodeID, (err) =>
+                                        {
+                                            if (err) {
                                                 acc(err);
                                             }
-                                            else{
+                                            else {
                                                 acc(null);
                                             }
                                         })
                                     }
                                 };
-                            },(err)=>{
-                                if(err){callback(err);}
-                                else{
+                            }, (err) =>
+                            {
+                                if (err) {
+                                    callback(err);
+                                }
+                                else {
                                     // All done here
                                     callback(null);
                                 }
@@ -367,37 +157,6 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                     })(null);
                 }
             });
-        }
-    })
-};
-
-module.exports.getAllUsersByRole = (roleName, callback) =>
-{
-    userAccessor.findRole({roleName: roleName}, (err, result) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else {
-            callback(null, result);
-        }
-    })
-};
-
-module.exports.getRoleByName = (name, callback) =>
-{
-    return userAccessor.findRole({roleName: name}, callback);
-};
-
-module.exports.getUsernameByRoleID = (roleID, callback) =>
-{
-    userAccessor.findRole({_id: roleID}, (err, res) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else {
-            callback(null, res[0].userEmail[0]);
         }
     })
 };
@@ -425,3 +184,9 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
         }
     });
 };
+
+
+
+
+
+
