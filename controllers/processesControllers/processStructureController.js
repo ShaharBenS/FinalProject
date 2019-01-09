@@ -21,7 +21,7 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
                     {
                         if(newProcessStructure.checkNextPrevSymetric())
                         {
-                            processStructureAccessor.createProcessStructure(getProcessStructureForDB(newProcessStructure), callback);
+                            processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), callback);
                         }
                         else
                             callback(new Error('Some stages have next stages that dont contain them for previous'));
@@ -91,7 +91,7 @@ module.exports.getProcessStructureForDB = function (originProcessStructure)
 {
     return {structureName: originProcessStructure.structureName,
         initials : originProcessStructure.initials,
-        stages : getProcessStructureStagesForDB(originProcessStructure.stages),
+        stages : this.getProcessStructureStagesForDB(originProcessStructure.stages),
         sankey : originProcessStructure.sankey};
 };
 
@@ -114,7 +114,7 @@ module.exports.getProcessStructureFromOriginal = (oldProcessStructure) =>
 {
     return {structureName: oldProcessStructure.structureName,
         initials : oldProcessStructure.initials,
-        stages : getProcessStagesFromOriginal(oldProcessStructure.stages),
+        stages : this.getProcessStagesFromOriginal(oldProcessStructure.stages),
         sankey : oldProcessStructure.sankey};
 };
 
