@@ -14,15 +14,10 @@ const attachedFilesNames = [];
 const comments = "";
 const roleID = 0;
 
-let stage0, stage1, stage2, stage3, stage4, stage5, stage6;
+let stage0, stage1;
 let initStages = function () {
     stage0 = new ActiveProcessStage(roleID, undefined, 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage1 = new ActiveProcessStage(roleID, undefined, 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage2 = new ActiveProcessStage(roleID, undefined, 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage3 = new ActiveProcessStage(roleID, undefined, 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage4 = new ActiveProcessStage(roleID, undefined, 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage5 = new ActiveProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage6 = new ActiveProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
 };
 
 
@@ -79,12 +74,12 @@ describe('3.0 have no one to wait for', function () {
 
     beforeEach(initStages);
 
-    it('3.1 handles unhandled stage', () => {
-
+    it('3.1 have someone to wait for', () => {
+        assert.equal(stage0.haveNoOneToWaitFor(), true)
     });
 
-    it('3.2 handles and than handles again', () => {
-
+    it('3.2 have no one to wait for', () => {
+        assert.equal(stage1.haveNoOneToWaitFor(), false)
     });
 });
 
