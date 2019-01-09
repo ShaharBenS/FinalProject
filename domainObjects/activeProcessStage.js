@@ -18,23 +18,21 @@ class activeProcessStage extends processStructureStage
         if (stageNum !== undefined && this.stagesToWaitFor.includes(stageNum)) {
             let index = this.stagesToWaitFor.indexOf(stageNum);
             this.stagesToWaitFor.splice(index, 1);
-        }
-        else return new Error("invalid stage num");
+        } else throw new Error("invalid stage num");
     }
 
-    handleStage(stageNum, filledForms, fileNames, comments)
+    handleStage(filledForms, fileNames, comments)
     {
-        if (this.stageNum === stageNum && this.timeApproval === undefined) {
+        if (this.timeApproval === undefined && this.stagesToWaitFor.length === 0) {
             this.timeApproval = new Date();
             this.filledOnlineForms = this.filledOnlineForms.concat(filledForms);
             this.attachedFilesNames = this.attachedFilesNames.concat(fileNames);
             this.comments = comments;
-        }
-        else return new Error();
+        } else throw new Error();
     }
 
     haveNoOneToWaitFor(){
-        return this.stagesToWaitFor.length() === 0;
+        return this.stagesToWaitFor.length === 0;
     }
 }
 
