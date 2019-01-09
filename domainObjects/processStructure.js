@@ -4,7 +4,6 @@ class processStructure {
         this.structureName = structureName;
         this.initials = initials;
         this.stages = stages;
-        this.sankey = sankey;
     }
 
     getInitialStageByRoleID(roleID) {
@@ -58,7 +57,7 @@ class processStructure {
         return true;
     };
 
-    checkPrevNextSymetric()
+    checkPrevNextSymmetric()
     {
         for(let i=0;i<this.stages.length;i++)
         {
@@ -79,7 +78,7 @@ class processStructure {
         return true;
     };
 
-    checkNextPrevSymetric()
+    checkNextPrevSymmetric()
     {
         for(let i=0;i<this.stages.length;i++)
         {

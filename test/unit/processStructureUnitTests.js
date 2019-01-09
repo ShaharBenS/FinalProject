@@ -139,22 +139,22 @@ describe('4.0 check if all next stages contain their previous stages', function 
 
     it('4.1 check if all previous are included in their next true', () => {
         createProcessStructure1();
-        assert.deepEqual(true, testProcess.checkPrevNextSymetric());
+        assert.deepEqual(true, testProcess.checkPrevNextSymmetric());
     });
 
     it('4.2 check if all previous are included in their next false', () => {
         createProcessStructure3();
-        assert.deepEqual(false, testProcess.checkPrevNextSymetric());
+        assert.deepEqual(false, testProcess.checkPrevNextSymmetric());
     });
 
     it('4.3 check if all next are included in their previous true', () => {
         createProcessStructure1();
-        assert.deepEqual(true, testProcess.checkNextPrevSymetric());
+        assert.deepEqual(true, testProcess.checkNextPrevSymmetric());
     });
 
     it('4.4 check if all next are included in their previous false', () => {
         createProcessStructure4();
-        assert.deepEqual(false, testProcess.checkNextPrevSymetric());
+        assert.deepEqual(false, testProcess.checkNextPrevSymmetric());
     });
 });
 
