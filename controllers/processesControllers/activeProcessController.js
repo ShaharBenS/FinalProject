@@ -163,7 +163,6 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
         else {
             process.stages.forEach((stage) =>
             {
-                stage.removeStagesToWaitFor(stageDetails.stageNum);
                 stage.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
             });
             processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages},
