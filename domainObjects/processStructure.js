@@ -4,6 +4,7 @@ class processStructure {
         this.structureName = structureName;
         this.initials = initials;
         this.stages = stages;
+        this.sankey = sankey;
     }
 
     getInitialStageByRoleID(roleID) {

@@ -13,7 +13,7 @@ class processStructureSankey
         });
     }
 
-    getStages(roleNameToIdFunc)
+        getStages(roleNameToIdFunc)
     {
         let sankeyStages = this.getSankeyStages();
         return sankeyStages.map((stage, index) =>
