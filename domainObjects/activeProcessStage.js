@@ -1,11 +1,16 @@
 let processStructureStage = require("./processStructureStage");
 
-class activeProcessStage extends processStructureStage
+class activeProcessStage
 {
 
     constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, timeApproval, onlineForms, filledOnlineForms, attachedFilesNames, comments)
     {
-        super(roleID, stageNum, nextStages, stagesToWaitFor, onlineForms, attachedFilesNames);
+        this.roleID = roleID;
+        this.stageNum = stageNum;
+        this.nextStages = nextStages;
+        this.stagesToWaitFor = stagesToWaitFor;
+        this.onlineForms = onlineForms;
+        this.attachedFilesNames = attachedFilesNames;
         this.userEmail = userEmail;
         this.originStagesToWaitFor = originStagesToWaitFor;
         this.timeApproval = timeApproval;
