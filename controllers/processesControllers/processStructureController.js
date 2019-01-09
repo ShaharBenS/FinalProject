@@ -17,9 +17,9 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {
-                    if(newProcessStructure.checkPrevNextSymetric())
+                    if(newProcessStructure.checkPrevNextSymmetric())
                     {
-                        if(newProcessStructure.checkNextPrevSymetric())
+                        if(newProcessStructure.checkNextPrevSymmetric())
                         {
                             processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), callback);
                         }
@@ -51,9 +51,9 @@ module.exports.editProcessStructure = (structureName, sankeyContent, callback) =
             {
                 if(newProcessStructure.checkInitialsExistInProcessStages())
                 {
-                    if(newProcessStructure.checkPrevNextSymetric())
+                    if(newProcessStructure.checkPrevNextSymmetric())
                     {
-                        if(newProcessStructure.checkNextPrevSymetric())
+                        if(newProcessStructure.checkNextPrevSymmetric())
                         {
                             processStructureAccessor.updateProcessStructure({structureName: structureName}, {
                                 $set: {

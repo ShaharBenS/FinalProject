@@ -1,8 +1,10 @@
 class usersAndRolesTreeSankey{
+
     constructor(sankey)
     {
         this.sankey = sankey;
     }
+
     getRoles(){
         return this.sankey.content.diagram.filter((figure) =>
         {
