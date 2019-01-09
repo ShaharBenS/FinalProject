@@ -9,8 +9,7 @@ module.exports.getRoleToEmails = (callback) =>
         if (err) {
             callback(err);
         }
-        let usersAndRolesTree = new usersAndRolesTree(roles);
-        callback(null, usersAndRolesTree.getRoleToEmails())
+        callback(null, new usersAndRolesTree(roles).getRoleToEmails())
     })
 };
 
@@ -63,7 +62,7 @@ module.exports.getUsersAndRolesTree = (callback) =>
 
 module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
 {
-    let usersAndRolesTreeSankey = new usersAndRolesTreeSankey(JSON.parse(sankey));
+    let sankeyTree = new usersAndRolesTreeSankey(JSON.parse(sankey));
 
     userAccessor.updateSankeyTree({}, {sankey: sankey}, (err) =>
     {
@@ -77,8 +76,8 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                     callback(err);
                 }
                 else {
-                    let roles = usersAndRolesTreeSankey.getRoles();
-                    let connections = usersAndRolesTreeSankey.getConnections();
+                    let roles = sankeyTree.getRoles();
+                    let connections = sankeyTree.getConnections();
                     let usersAndRoleDocuments = [];
                     roles.reduce((acc, role_figure) =>
                     {

@@ -7,7 +7,7 @@ class processStructureSankey
 
     getSankeyStages()
     {
-        this.sankey.content.diagram.filter((figure) =>
+        return this.sankey.content.diagram.filter((figure) =>
         {
             return figure.type !== "sankey.shape.Connection";
         });
@@ -15,11 +15,12 @@ class processStructureSankey
 
     getStages(roleNameToIdFunc)
     {
-        let stages = this.getSankeyStages().map((stage, index) =>
+        let sankeyStages = this.getSankeyStages();
+        return sankeyStages.map((stage, index) =>
         {
             let roleName = stage.labels[0].text;
             let stageToReturn = {
-                roleName: roleNameToIdFunc(roleName),
+                roleID: roleNameToIdFunc(roleName),
                 stageNum: index,
                 nextStages: [],
                 stagesToWaitFor: [],
@@ -31,7 +32,7 @@ class processStructureSankey
                 // connection.source.node , connection.target.node
                 // figure.id
                 if (connection.source.node === stage.id) {
-                    let indexToPush = stages.indexOf(stages.find(_stage =>
+                    let indexToPush = sankeyStages.indexOf(sankeyStages.find(_stage =>
                     {
                         return _stage.id === connection.target.node;
                     }));
@@ -40,7 +41,7 @@ class processStructureSankey
                     }
                 }
                 if (connection.target.node === stage.id) {
-                    let indexToPush = stages.indexOf(stages.find(_stage =>
+                    let indexToPush = sankeyStages.indexOf(sankeyStages.find(_stage =>
                     {
                         return _stage.id === connection.source.node;
                     }));
@@ -51,12 +52,11 @@ class processStructureSankey
             });
             return stageToReturn;
         });
-        return stages;
     }
 
     getConnections()
     {
-        this.sankey.content.diagram.filter((figure) =>
+        return this.sankey.content.diagram.filter((figure) =>
         {
             return figure.type === "sankey.shape.Connection";
         });
@@ -64,7 +64,7 @@ class processStructureSankey
 
     getInitials()
     {
-        this.getSankeyStages().filter((figure) =>
+        return this.getSankeyStages().filter((figure) =>
         {
             return figure.bgColor === '#5957FF';
 

@@ -4,7 +4,7 @@ class usersAndRolesTreeSankey{
         this.sankey = sankey;
     }
     getRoles(){
-        this.sankey.content.diagram.filter((figure) =>
+        return this.sankey.content.diagram.filter((figure) =>
         {
             return figure.type === "sankey.shape.State";
         });
@@ -12,7 +12,7 @@ class usersAndRolesTreeSankey{
 
     getConnections()
     {
-        this.sankey.content.diagram.filter((figure) =>
+        return this.sankey.content.diagram.filter((figure) =>
         {
             return figure.type === "sankey.shape.Connection";
         });

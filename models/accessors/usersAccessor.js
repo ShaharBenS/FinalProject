@@ -10,7 +10,7 @@ module.exports.findRole = (roleToFind, callback)=>{
 };
 
 module.exports.deleteAllRoles = (callback)=>{
-    return usersAndRoles.remove({},callback);
+    return usersAndRoles.deleteMany({},callback);
 };
 
 

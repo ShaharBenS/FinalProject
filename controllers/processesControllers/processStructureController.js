@@ -125,8 +125,8 @@ module.exports.getProcessStagesFromOriginal = (oldStages) =>
 
 let sankeyToStructure = function (sankeyContent, callback)
 {
-    let processStructureSankey = new processStructureSankey(JSON.parse(sankeyContent));
-    let initials = processStructureSankey.getInitials();
+    let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
+    let initials = processStructureSankeyObject.getInitials();
 
     usersAndRolesController.getAllRoles((err, roles) =>
     {
@@ -138,7 +138,7 @@ let sankeyToStructure = function (sankeyContent, callback)
         {
             rolesMap[role.roleName] = role._id;
         });
-        let stages = processStructureSankey.getStages((roleName)=>{return rolesMap[roleName]});
+        let stages = processStructureSankeyObject.getStages((roleName)=>{return rolesMap[roleName]});
         callback(null,
             {
                 initials: initials,
