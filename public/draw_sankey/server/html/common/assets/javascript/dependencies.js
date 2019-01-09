@@ -4388,14 +4388,14 @@
         return getPointAtLength(path, length);
     };
     /*\
-     * Element.getCoverage
+     * Element.getPath
      [ method ]
      **
      * Returns path of the element. Only works for elements of “path” type and simple elements like circle.
      = (object) path
      **
      \*/
-    elproto.getCoverage = function () {
+    elproto.getPath = function () {
         var path,
             getPath = R._getPath[this.type];
 

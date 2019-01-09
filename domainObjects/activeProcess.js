@@ -51,7 +51,7 @@ class activeProcess {
         return foundStage;
     }
 
-    getCoverage(startingStages) {
+    getPath(stageNum) {
         let _this = this;
         let pathStages = [];
         let recursive = function (stageNum) {
@@ -60,7 +60,7 @@ class activeProcess {
                 _this.getStageByStageNum(stageNum).nextStages.forEach((iStage) => recursive(iStage));
             }
         };
-        startingStages.forEach((stageNum) => recursive(stageNum));
+        recursive(stageNum);
         return pathStages;
     }
 
@@ -94,22 +94,13 @@ class activeProcess {
         removePathStages.forEach((stageNum) => recursive(stageNum));
     }
 
-    handleStage(stageNum, filledForms, fileNames, comments) {
-        let stage = this.getStageByStageNum(stageNum);
-        stage.handleStage(filledForms, fileNames, comments);
-        stage.nextStages.forEach((_stageNum) => {
-            let _stage = this.getStageByStageNum((_stageNum));
-            _stage.removeStagesToWaitFor(stageNum);
-        })
-    }
-
     advanceProcess(nextStages) {
         this.currentStages.forEach((stageNum) => {
             let stage = this.getStageByStageNum(stageNum);
             if (stage.haveNoOneToWaitFor()) {
                 nextStages.forEach((stageNum) => this.addCurrentStage(stageNum));
                 this.removeCurrentStage(stage.stageNum);
-                let pathStages = this.getCoverage(nextStages);
+                let pathStages = this.getPath(stageNum);
                 let removePathStages = stage.nextStages.filter((value) => !nextStages.includes(value));
                 this.removePathStages(removePathStages, pathStages);
             }
