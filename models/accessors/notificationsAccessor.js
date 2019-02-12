@@ -4,7 +4,7 @@ module.exports.addNotification = (newNotification,callback)=>{
     return notifications.create(newNotification,callback);
 };
 
-module.exports.findNotification = (criteria, callback)=>{
+module.exports.findNotifications = (criteria, callback)=>{
     return notifications.find(criteria,callback);
 };
 
