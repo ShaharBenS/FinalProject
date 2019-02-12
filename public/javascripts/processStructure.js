@@ -4,6 +4,23 @@ let is_role_list_set = false;
 
 //TODO : add button that centers the document 'centerDocument'
 //try to use the getJSON function
+
+$( document ).ready(function() {
+    var modal = document.getElementById('select_role_modal');
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+});
+
 function onDrop_extension(type,command,figure){
     if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure')
     {
@@ -22,11 +39,11 @@ function onDrop_extension(type,command,figure){
             figure.add( figure.label, new draw2d.layout.locator.CenterLocator());
             app.view.getCommandStack().execute(command);
             figure.setHeight(Math.max(figure.getHeight(),figure.label.getWidth()));
-            $("#select_role_modal").modal("hide");
+            document.getElementById("select_role_modal").style.display = "none";
         };
 
         if(is_role_list_set){
-            $("#select_role_modal").modal("show");
+            document.getElementById("select_role_modal").style.display = "block";
         }
         else{
             var xmlHttp = new XMLHttpRequest();
@@ -42,7 +59,7 @@ function onDrop_extension(type,command,figure){
                         selector.appendChild(option);
                     });
                     is_role_list_set = true;
-                    $("#select_role_modal").modal("show");
+                    document.getElementById("select_role_modal").style.display = "block";
                 }
             };
             xmlHttp.open("GET", '/usersAndRoles/getAllRoles/', true);

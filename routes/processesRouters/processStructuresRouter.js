@@ -46,4 +46,15 @@ router.get('/editProcessStructure',function (req,res){
     }
 });
 
+router.get('/getAllProcessStructures', function (req,res) {
+    processStructure.getAllProcessStructures((err,result)=>{
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+        }
+    })
+});
+
 module.exports = router;

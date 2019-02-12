@@ -20,14 +20,21 @@ module.exports.findProcessStructure = (criteria, callback) =>
         }
         else
         {
-            if(result)
-            {
-                callback(null,processStructureController.getProcessStructureFromOriginal(result));
-            }
-            else
-            {
-                callback(new Error('There were no processes found.'));
-            }
+            callback(null,processStructureController.getProcessStructureFromOriginal(result));
+        }
+    });
+};
+
+module.exports.findProcessStructures = (callback) =>
+{
+    processStructureSchema.find({}, (err,result)=>{
+        if(err)
+        {
+            callback(err);
+        }
+        else
+        {
+            callback(null,result);
         }
     });
 };

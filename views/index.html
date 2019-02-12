@@ -3,18 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
+    <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
     <script src="/javascripts/main.js"></script>
+
+    <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
 </head>
-<body>
-<div>
-    <button>start process</button>
-    <button>notifications</button>
-    <button onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">my processes</button>
-    <button onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">processes waiting for me</button>
-    <button>processes waiting for me</button>
-    <button onclick="addProcessStructureClicked()">add process structure</button>
-    <button onclick="editProcessStructureClicked()">edit process structure</button>
-    <button onclick="editUsersAndRolesTree()">edit users and roles tree</button>
+<body dir="rtl">
+<div align="center">
+    <br><br>
+    <h1>מערכת לניהול תהליכים</h1>
+    <br><br><br>
+    <div>
+        <button class="btn btn-default">התחל תהליך</button>
+        <button class="btn btn-default">התראות</button>
+        <button class="btn btn-default" onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">התהליכים
+            שלי
+        </button>
+        <button class="btn btn-default" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
+            תהליכים שממתינים לי
+        </button>
+    </div>
+    <br><br><br>
+    <h4>לפי הרשאות:</h4>
+    <br>
+    <div>
+        <button class="btn btn-default" onclick="addProcessStructureClicked()">הוספת מבנה תהליך</button>
+        <button class="btn btn-default" onclick="editProcessStructureClicked()">עריכת מבנה תהליך</button>
+        <button class="btn btn-default" onclick="editUsersAndRolesTree()">עריכת עץ המשתמשים</button>
+    </div>
+
+
+    <div id="add-process-structure-modal" class="modal">
+
+        <div class="modal-content">
+            <span id="close-add" class="close">&times;</span>
+
+            <h4>שם התהליך:</h4>
+            <input id="new-process-structure-name" type="text" style="width:50%">
+            <br><br>
+            <button id="new-process-structure-button" class="btn btn-default">הוסף</button>
+        </div>
+
+    </div>
+
+    <div id="edit-process-structure-modal" class="modal">
+
+        <div class="modal-content">
+            <span id="close-edit" class="close">&times;</span>
+
+            <h4>בחר תהליך</h4>
+            <select id="processes_selector">
+            </select>
+            <br><br>
+            <button id="edit-process-structure-button" onclick="confirmEditProcessStructureClicked()" class="btn btn-default">ערוך</button>
+        </div>
+
+    </div>
 </div>
+
 </body>
 </html>
