@@ -26,7 +26,24 @@ $( document ).ready(function() {
 
 function confirmAddProcessStructureClicked() {
     let name = document.getElementById("new-process-structure-name").value;
-    window.location.href = '/processStructures/addProcessStructure/?name='+name;
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+        {
+            JSON.parse(xmlHttp.responseText).forEach((structure)=>{
+
+                if(structure.structureName === name){
+                    alert("תהליך בעל שם זה כבר קיים");
+                }
+                else{
+                    window.location.href = '/processStructures/addProcessStructure/?name='+name;
+                }
+            });
+        }
+    };
+    xmlHttp.open("GET", '/processStructures/getAllProcessStructures/', true);
+    xmlHttp.send(null);
 }
 
 function addProcessStructureClicked() {

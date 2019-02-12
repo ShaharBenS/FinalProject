@@ -4,6 +4,7 @@ let sankeyRouter = require('./sankeyRouter');
 let activeProcessesRouter = require('./processesRouters/activeProcessesRouter');
 let permissionErrorsRouter = require('./errorsRouters/permissionErrorsRouter');
 let processStructuresRouter = require('./processesRouters/processStructuresRouter');
+let processNotificationRouter = require('./notificationRouters/notificationsRouter');
 
 let auth = require('./usersRouters/auth');
 let usersAndRolesRouter = require('./usersRouters/usersAndRolesRouter');
@@ -18,7 +19,7 @@ module.exports = (app)=>{
     app.use('/permissionErrors', permissionErrorsRouter);
 
     app.use('/processStructures', processStructuresRouter);
-
+    app.use('/notifications', processNotificationRouter);
     app.use('/usersAndRoles', usersAndRolesRouter);
     app.use('/usersLogin', usersLoginRouter);
     app.use('/auth', auth);

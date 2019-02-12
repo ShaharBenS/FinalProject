@@ -13,8 +13,6 @@ xmlHttp.open("GET", '/usersAndRoles/getRoleToEmails/', true);
 xmlHttp.send(null);
 
 
-//TODO : add button that centers the document 'centerDocument'
-//try to use the getJSON function
 function onDrop_extension(type, command, figure) {
     let role_name = prompt("Enter Role Name Here");
     if(role_name != null){

@@ -855,13 +855,13 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             color: {name: "Line Color", icon: "x ion-android-color-palette"}
         };
 
-        if (figure instanceof draw2d.shape.basic.Label) {
+        /*if (figure instanceof draw2d.shape.basic.Label) {
             items.fontcolor = {name: "Font Color", icon: "x ion-android-color-palette"};
         }
 
         if (!(figure instanceof draw2d.Connection)) {
             items.bgcolor = {name: "Background Color", icon: "x ion-android-color-palette"};
-        }
+        }*/
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
                 items.users = {name: "See Users", icon: "icon ion-ios-people"}
@@ -871,7 +871,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             (figure instanceof sankey.shape.End) ||
             (figure instanceof sankey.shape.State) ||
             (figure instanceof sankey.shape.Connection)) {
-            items.label = {name: "Add Label", icon: "x ion-ios-pricetag-outline"};
+            //items.label = {name: "Add Label", icon: "x ion-ios-pricetag-outline"};
             items.del = {name: "Delete", icon: "x ion-ios-close-outline"};
         }
 
@@ -940,7 +940,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
     onUninstall: function (canvas)
     {
         this._super(canvas);
-
         canvas.off(this.mouseMoveProxy);
         $("#figureConfigDialog .figureAddLabel").off("click");
         $("#figureConfigDialog .figureSetColor").off("click");
@@ -1002,10 +1001,10 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             pos.y -= 30;
 
             if (_this.configIcon === null) {
-                _this.configIcon = $("<div class='ion-gear-a' id='configMenuIcon'></div>");
+                _this.configIcon = $("<div class='ion-gear-a' hidden id='configMenuIcon'></div>");
                 $("body").append(_this.configIcon);
                 $("#figureConfigDialog").hide();
-                _this.configIcon.on("click", function ()
+                /*_this.configIcon.on("click", function ()
                 {
                     $("#figureConfigDialog").show().css({top: pos.y, left: pos.x, position: 'absolute'});
                     _this.configFigure = hit;
@@ -1013,7 +1012,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         _this.configIcon.remove();
                         _this.configIcon = null;
                     }
-                });
+                });*/
             }
             _this.configIcon.css({top: pos.y, left: pos.x, position: 'absolute'});
         }

@@ -49570,7 +49570,6 @@ draw2d.ui.LabelInplaceEditor =  draw2d.ui.LabelEditor.extend({
     start: function( label)
     {
         this.label = label;
-
         this.commitCallback = $.proxy(this.commit,this);
         
         // commit the editor if the user clicks anywhere in the document
@@ -49649,6 +49648,7 @@ draw2d.ui.LabelInplaceEditor =  draw2d.ui.LabelEditor.extend({
             this.html = null;
             this.listener.onCommit(this.label.getText());
         },this));
+
     },
     
     /**
@@ -49666,7 +49666,7 @@ draw2d.ui.LabelInplaceEditor =  draw2d.ui.LabelEditor.extend({
             this.html = null;
             this.listener.onCancel();
         },this));
-        
+
     }
 });
 

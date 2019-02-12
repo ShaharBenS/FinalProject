@@ -1,8 +1,8 @@
 let express = require('express');
 let router = express.Router();
 
-router.get('/notificationPage', function (req, res) {
-    res.render('NotificationPage');
+router.get('/myNotifications', function (req, res) {
+    res.render('notificationsViews/notifications');
 });
 
 module.exports = router;
