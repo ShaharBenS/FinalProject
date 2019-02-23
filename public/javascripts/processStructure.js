@@ -69,6 +69,11 @@ function onDrop_extension(type,command,figure){
 }
 
 
+function deleteRoleById(id)
+{
+
+}
+
 function confirm() {
     if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
         app.fileSave()
