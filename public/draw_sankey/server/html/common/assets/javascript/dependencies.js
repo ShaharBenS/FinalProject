@@ -40136,6 +40136,10 @@ draw2d.Figure = Class.extend({
         if(!this.isDeleteable()){
            return null;
         }
+        // Our Change
+        if(deleteRoleById !== undefined){
+            deleteRoleById(this.id)
+        }
         return new draw2d.command.CommandDelete(this);
       }
       

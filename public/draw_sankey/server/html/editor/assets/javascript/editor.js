@@ -897,6 +897,9 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         break;
                     case "del":
                         var cmd = new draw2d.command.CommandDelete(figure);
+                        if(deleteRoleById !== undefined){
+                            deleteRoleById(figure.id);
+                        }
                         this.canvas.getCommandStack().execute(cmd);
                         break;
                     case "label":
@@ -904,7 +907,8 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         break;
                     case "users":
                         rolesToHTML(figure.children.data[0].figure.text);
-                        $("#select_users_modal").modal('show');
+                        document.getElementById("select_users_modal").style.display = "block";
+
                         break;
                     default:
                         break;

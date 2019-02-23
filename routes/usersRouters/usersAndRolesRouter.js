@@ -13,7 +13,6 @@ let router = express.Router();
  */
 
 
-
 /*
    _____ ______ _______
   / ____|  ____|__   __|
@@ -24,30 +23,48 @@ let router = express.Router();
 
  */
 
-router.get('/getAllRoles', (req,res)=>{
-    UsersAndRolesController.getAllRoles((err, result)=>{
-        if(err){
+router.get('/getAllRoles', (req, res) =>
+{
+    UsersAndRolesController.getAllRoles((err, result) =>
+    {
+        if (err) {
             res.send(err);
         }
-        else{
+        else {
             res.send(result);
         }
     })
 });
 
-router.get('/getRoleToEmails',(req,res)=>{
-   UsersAndRolesController.getRoleToEmails((err,roleToEmails)=>{
-       if(err){
-           res.send(err);
-       }
-       else{
-           res.send(roleToEmails);
-       }
-   });
+router.get('/getRoleToEmails', (req, res) =>
+{
+    UsersAndRolesController.getRoleToEmails((err, roleToEmails) =>
+    {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send(roleToEmails);
+        }
+    });
+});
+
+router.get('/getIdToRole', (req, res) =>
+{
+    UsersAndRolesController.getIdToRole((err, idToRole) =>
+    {
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.send(idToRole);
+        }
+    });
 });
 
 
-router.get('/editTree',(req,res)=>{
+router.get('/editTree', (req, res) =>
+{
     res.render('userViews/usersAndRolesTree');
 });
 

@@ -1,6 +1,7 @@
 let add_label = function () {};
 
 let roleToEmails = {};     // roleName to usersEmail
+let idToRole = {};
 
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.onreadystatechange = function() {
@@ -12,11 +13,33 @@ xmlHttp.onreadystatechange = function() {
 xmlHttp.open("GET", '/usersAndRoles/getRoleToEmails/', true);
 xmlHttp.send(null);
 
+$(document).ready(()=>{
+    var modal = document.getElementById('select_users_modal');
+
+    window.onclick = function(event)
+    {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    var xmlHttp2 = new XMLHttpRequest();
+    xmlHttp2.onreadystatechange = function() {
+        if (xmlHttp2.readyState === 4 && xmlHttp2.status === 200)
+        {
+            idToRole = JSON.parse(xmlHttp2.responseText);
+        }
+    };
+    xmlHttp2.open("GET", '/usersAndRoles/getIdToRole/', true);
+    xmlHttp2.send(null);
+
+});
 
 function onDrop_extension(type, command, figure) {
     let role_name = prompt("Enter Role Name Here");
     if(role_name != null){
         if(roleToEmails[role_name] === undefined){
+            idToRole[figure.id] = role_name;
             roleToEmails[role_name] = [];
             figure.label = figure.label = new draw2d.shape.basic.Label({
                 text: role_name,
@@ -93,6 +116,10 @@ function rolesToHTML(roleName)
     users_div.append(div);
 }
 
+function deleteRoleById(id){
+    delete roleToEmails[idToRole[id]];
+    delete idToRole[id];
+}
 
 function confirm() {
     app.fileSave()

@@ -13,6 +13,18 @@ module.exports.getRoleToEmails = (callback) =>
     })
 };
 
+module.exports.getIdToRole = (callback) =>{
+    userAccessor.findInSankeyTree({},(err,sankeyTree)=>{
+        if(err) {
+            callback(err);
+        }
+        else{
+            let sankey = new usersAndRolesTreeSankey(JSON.parse(sankeyTree[0].sankey));
+            callback(null,sankey.getIdToRole())
+        }
+    });
+};
+
 module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
 {
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
