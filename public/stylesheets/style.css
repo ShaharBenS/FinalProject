@@ -1,9 +1,15 @@
 body {
-    background-color: #ffcd98;
+    background-color: ghostwhite;
 }
 
 .btn-default {
-    background-color: orange;
+    background-color: #0956ff;
+    color: white;
+    border-color: black;
+}
+
+.btn-default:hover {
+    background-color: #2ED3FF;
     color: white;
     border-color: black;
 }
@@ -15,7 +21,7 @@ body {
 }*/
 
 #palette{
-    background-color: #ffb97c;
+    background-color: #c7c7c7;
 }
 
 /* The Modal (background) */
