@@ -3,7 +3,6 @@ let activeProcess = require('../../controllers/processesControllers/activeProces
 
 let router = express.Router();
 
-
 /*
   _____   ____   _____ _______
  |  __ \ / __ \ / ____|__   __|
@@ -56,9 +55,13 @@ router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
     let username = req.body.username;
+    console.log("test: BODY: " + req.body.tex);
+    console.log("test: structureName: " + structureName);
+    console.log("test: processName: " + processName);
+    console.log("test: username: " + username);
     activeProcess.startProcessByUsername(username, structureName, processName, (err, activeProcess) => {
         if (err) {
-            res.send(err);
+            res.send(err.message);
         } else {
             res.send("success");
         }
