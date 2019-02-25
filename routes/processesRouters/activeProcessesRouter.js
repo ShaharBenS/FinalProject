@@ -59,13 +59,16 @@ router.post('/startProcess', function (req, res) {
     console.log("test: structureName: " + structureName);
     console.log("test: processName: " + processName);
     console.log("test: username: " + username);
-    activeProcess.startProcessByUsername(username, structureName, processName, (err, activeProcess) => {
+
+    res.send("result");
+
+    /*activeProcess.startProcessByUsername(username, structureName, processName, (err, activeProcess) => {
         if (err) {
             res.send(err.message);
         } else {
             res.send("success");
         }
-    });
+    });*/
 });
 
 /*

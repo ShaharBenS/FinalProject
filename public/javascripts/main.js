@@ -128,28 +128,22 @@ function confirmStartProcess() {
         alert("שם לא יכול להיות ריק");
         return;
     }
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", '/activeProcesses/startProcess/', true);
 
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            if (name === "") {
-                alert("שם לא יכול להיות ריק");
-                return;
-            }
-            if (xmlHttp.responseText === "success") {
-                alert("תהליך נוצר בהצלחה");
-                window.location.href = '/';
-            } else {
-                alert(xmlHttp.responseText);
-            }
-
+    $.ajax({
+            url: '/activeProcesses/startProcess/',
+            method: "POST",
+            xhrFields: {
+                withCredentials: true
+            },
+            data: data,
         }
-    };
-    let data = new FormData();
-    data.append('structureName', selector.options[selector.selectedIndex].innerText);
-    data.append('processName', name);
-    data.append('username', '');
-
-    xmlHttp.send(data);
+    ).done(function (responseText,status)
+    {
+        if (responseText === "success") {
+            alert("תהליך נוצר בהצלחה");
+            window.location.href = '/';
+        } else {
+            alert(xmlHttp.responseText);
+        }
+    });
 }
