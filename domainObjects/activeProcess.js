@@ -12,6 +12,16 @@ class activeProcess {
 
     }
 
+    updateStage(stageNum, newStage) {
+        let stage = this.getStageByStageNum(stageNum);
+        let index = this.stages.indexOf(stage);
+        if (index < 0) throw new Error("stage not found");
+        if (stage.isValidStage(newStage))
+            this.stages[index] = newStage;
+        else
+            throw new Error("too much difference");
+    }
+
     addCurrentStage(stageNum) {
         if (stageNum === undefined || this.currentStages.includes(stageNum))
             throw new Error("invalid stage number");
@@ -116,9 +126,8 @@ class activeProcess {
         });
     }
 
-    isWaitingForUser(roleID,userEmail){
-        for(let i=0;i<this.stages.length;i++)
-        {
+    isWaitingForUser(roleID, userEmail) {
+        for (let i = 0; i < this.stages.length; i++) {
             if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.toString() === roleID.toString() && (this.stages[i].userEmail === null || this.stages[i].userEmail === userEmail)) {
                 return true;
             }
@@ -126,11 +135,9 @@ class activeProcess {
         return false;
     }
 
-    isParticipatingInProcess(userEmail){
-        for(let i=0;i<this.stages.length;i++)
-        {
-            if(this.stages[i].userEmail === userEmail)
-            {
+    isParticipatingInProcess(userEmail) {
+        for (let i = 0; i < this.stages.length; i++) {
+            if (this.stages[i].userEmail === userEmail) {
                 return true;
             }
         }
