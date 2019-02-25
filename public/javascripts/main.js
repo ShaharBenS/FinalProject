@@ -130,6 +130,7 @@ function confirmStartProcess() {
     }
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", '/activeProcesses/startProcess/', true);
+    xmlHttp.setRequestHeader('enctype-type', 'multipart/form-data');
 
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
@@ -146,6 +147,7 @@ function confirmStartProcess() {
 
         }
     };
+    let FormData = require('form-data');
     let data = new FormData();
     data.append('structureName', selector.options[selector.selectedIndex].innerText);
     data.append('processName', name);

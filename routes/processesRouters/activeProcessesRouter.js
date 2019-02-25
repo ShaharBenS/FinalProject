@@ -55,7 +55,7 @@ router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
     let username = req.body.username;
-    console.log("test: BODY: " + req.body.tex);
+    console.log("test: BODY: " + req.body.name);
     console.log("test: structureName: " + structureName);
     console.log("test: processName: " + processName);
     console.log("test: username: " + username);
