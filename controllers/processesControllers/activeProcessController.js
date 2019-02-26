@@ -3,19 +3,37 @@ let usersAndRolesController = require('../usersControllers/usersAndRolesControll
 let processStructureController = require('./processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
+let onlineFormController = require('../onlineFormsControllers/onlineFormController');
 
+
+/**
+ * attach form to process stage
+ *
+ * @param activeProcessName | the process to attach the form
+ * @param stageNum | the stage in the process to attach the form
+ * @param formName | the name of the from from a predefined forms
+ * @param callback
+ */
 
 module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName, callback) => {
-
     processAccessor.getActiveProcessByProcessName(activeProcessName, (err, process) => {
         if (err) callback(err);
         else {
-            try {
-                process.attachOnlineFormToStage(stageNum, formName);
-                processAccessor.updateActiveProcess({processName: activeProcessName}, {stages: process.stages}, callback)
-            } catch (e) {
-                callback(e);
-            }
+            onlineFormController.getOnlineFormByName(formName, (err, form) => {
+                if (err) callback(err);
+                else {
+                    if (form === null)
+                        callback(new Error("no online form was found on db with the name: " + formName));
+                    else {
+                        try {
+                            process.attachOnlineFormToStage(stageNum, formName);
+                            processAccessor.updateActiveProcess({processName: activeProcessName}, {stages: process.stages}, callback)
+                        } catch (e) {
+                            callback(e);
+                        }
+                    }
+                }
+            });
         }
     })
 };
