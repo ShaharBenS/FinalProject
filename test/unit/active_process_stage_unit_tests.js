@@ -87,7 +87,7 @@ describe('4.0 attach Online Form', function () {
 
     beforeEach(initStages);
 
-    it('11.1  add online form to stage', () => {
+    it('4.1  add online form to stage', () => {
         stage0.attachOnlineForm('form1');
         assert.equal(JSON.stringify(stage0.onlineForms), JSON.stringify(['form1']));
     });

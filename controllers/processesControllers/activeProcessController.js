@@ -10,11 +10,8 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
     processAccessor.getActiveProcessByProcessName(activeProcessName, (err, process) => {
         if (err) callback(err);
         else {
-            let activeProcessStage;
             try {
-                activeProcessStage = process.getStageByStageNum(stageNum);
-                activeProcessStage.attachOnlineForm(formName);
-                process.updateStage(stageNum, activeProcessStage);
+                process.attachOnlineFormToStage(stageNum, formName);
                 processAccessor.updateActiveProcess({processName: activeProcessName}, {stages: process.stages}, callback)
             } catch (e) {
                 callback(e);

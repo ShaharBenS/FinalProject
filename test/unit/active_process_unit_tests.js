@@ -23,7 +23,7 @@ const comments = "";
 const roleID = 0;
 
 
-let stage0, stage1, stage2, stage2updated, stage3, stage4, stage5, stage6;
+let stage0, stage1, stage2, stage3, stage4, stage5, stage6;
 
 let createActiveProcess1 = function () {
 
@@ -53,7 +53,6 @@ let createActiveProcess1 = function () {
     stage0 = new ActiveProcessStage(roleID, undefined, 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage1 = new ActiveProcessStage(roleID, undefined, 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage2 = new ActiveProcessStage(roleID, undefined, 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage2updated = new ActiveProcessStage(roleID, undefined, 2, [4], [1], [1], undefined, onlineFormsUpdated, filledOnlineForms, attachedFilesNames, comments);
     stage3 = new ActiveProcessStage(roleID, undefined, 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage4 = new ActiveProcessStage(roleID, undefined, 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage5 = new ActiveProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
@@ -363,7 +362,8 @@ describe('11.0 update stage', function () {
     beforeEach(createActiveProcess1);
 
     it('11.1  add online form to stage', () => {
-        testProcess.updateStage(2, stage2updated);
-        assert.equal(onlineFormsUpdated, testProcess.stages[2].onlineForms);
+        testProcess.attachOnlineFormToStage(2, onlineFormsUpdated[0]);
+        assert.equal(1, testProcess.stages[2].onlineForms.length);
+        assert.equal(onlineFormsUpdated[0], testProcess.stages[2].onlineForms[0]);
     });
 });

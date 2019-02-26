@@ -12,14 +12,9 @@ class activeProcess {
 
     }
 
-    updateStage(stageNum, newStage) {
+    attachOnlineFormToStage(stageNum, formName) {
         let stage = this.getStageByStageNum(stageNum);
-        let index = this.stages.indexOf(stage);
-        if (index < 0) throw new Error("stage not found");
-        if (stage.isValidStage(newStage))
-            this.stages[index] = newStage;
-        else
-            throw new Error("too much difference");
+        stage.attachOnlineForm(formName);
     }
 
     addCurrentStage(stageNum) {

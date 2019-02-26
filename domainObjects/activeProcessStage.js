@@ -49,14 +49,6 @@ class activeProcessStage {
             this.onlineForms = this.onlineForms.concat([formName]);
         }
     }
-
-    isValidStage(stage) {
-        let ifStageNum = this.stageNum === stage.stageNum;
-        let ifnextStages = JSON.stringify(this.nextStages) === JSON.stringify(stage.nextStages);
-        let ifstagesToWaitFor = JSON.stringify(this.stagesToWaitFor) === JSON.stringify(stage.stagesToWaitFor);
-        let iforiginStagesToWaitFor = JSON.stringify(this.originStagesToWaitFor) === JSON.stringify(stage.originStagesToWaitFor);
-        return ifStageNum && ifnextStages && ifstagesToWaitFor && iforiginStagesToWaitFor;
-    }
 }
 
 module.exports = activeProcessStage;
