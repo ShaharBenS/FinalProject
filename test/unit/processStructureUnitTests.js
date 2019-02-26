@@ -1,9 +1,7 @@
-let mongoose = require('mongoose');
 let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
 let assert = require('chai').assert;
-let expect = require('chai').expect;
 let ProcessStructure = require('../../domainObjects/processStructure');
 let ProcessStructureStage = require('../../domainObjects/processStructureStage');
 
