@@ -1,8 +1,20 @@
 let onlineFormSchema = require('../schemas/onlineFormsSchemas/OnlineFormSchema');
 let onlineFormController = require('../../controllers/onlineFormsControllers/onlineFormController');
+let fs = require('fs');
 
 module.exports.createOnlineForm = (newOnlineForm, callback) => {
-    onlineFormSchema.create(newOnlineForm, callback);
+    const path = '../../views/onlineFormViews/' + newOnlineForm.srcFileName + '.html';
+    try {
+        fs.access(path, fs.F_OK, (err) => {
+            if (err) {
+                callback(err)
+            }
+            //file exists
+            onlineFormSchema.create(newOnlineForm, callback);
+        });
+    } catch (e) {
+        callback(e);
+    }
 };
 
 module.exports.findOnlineFormByName = (formName, callback) => {
