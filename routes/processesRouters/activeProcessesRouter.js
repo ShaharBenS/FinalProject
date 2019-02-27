@@ -54,21 +54,15 @@ router.post('/unTakePartInProcess', function (req, res) {
 router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
-    let username = req.body.username;
-    console.log("test: BODY: " + req.body.name);
-    console.log("test: structureName: " + structureName);
-    console.log("test: processName: " + processName);
-    console.log("test: username: " + username);
+    let username = req.user.emails[0].value;
 
-    res.send("result");
-
-    /*activeProcess.startProcessByUsername(username, structureName, processName, (err, activeProcess) => {
+    activeProcess.startProcessByUsername(username, structureName, processName, (err) => {
         if (err) {
             res.send(err.message);
         } else {
             res.send("success");
         }
-    });*/
+    });
 });
 
 /*

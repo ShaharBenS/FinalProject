@@ -48,14 +48,17 @@ function confirmAddProcessStructureClicked() {
                 alert("שם לא יכול להיות ריק");
                 return;
             }
+            let isProcessExists = false;
             JSON.parse(xmlHttp.responseText).forEach((structure) => {
-
                 if (structure.structureName === name) {
+                    isProcessExists = true;
                     alert("תהליך בעל שם זה כבר קיים");
-                } else {
-                    window.location.href = '/processStructures/addProcessStructure/?name=' + name;
                 }
             });
+
+            if (!isProcessExists) {
+                window.location.href = '/processStructures/addProcessStructure/?name=' + name;
+            }
         }
     };
     xmlHttp.open("GET", '/processStructures/getAllProcessStructures/', true);
@@ -123,8 +126,10 @@ function startActiveProcess() {
 
 function confirmStartProcess() {
     let selector = document.getElementById("start-processes-selector");
-    let name = document.getElementById("start-processes-name").value;
-    if (name === "") {
+    let structureName = selector.options[selector.selectedIndex].innerText;
+    let processName = document.getElementById("start-processes-name").value;
+    let data = {processName: processName, structureName: structureName};
+    if (processName === "") {
         alert("שם לא יכול להיות ריק");
         return;
     }
@@ -137,13 +142,14 @@ function confirmStartProcess() {
             },
             data: data,
         }
-    ).done(function (responseText,status)
-    {
-        if (responseText === "success") {
-            alert("תהליך נוצר בהצלחה");
-            window.location.href = '/';
-        } else {
-            alert(xmlHttp.responseText);
+    ).done(function (responseText, status) {
+        if (status === "success") {
+            if (responseText === "success") {
+                alert("תהליך נוצר בהצלחה");
+                window.location.href = '/';
+            } else {
+                alert(xmlHttp.responseText);
+            }
         }
     });
 }
