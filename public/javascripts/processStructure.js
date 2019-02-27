@@ -19,6 +19,18 @@ $( document ).ready(function() {
         }
     };
 
+    var modal1 = document.getElementById('see_forms_modal');
+    var span1 = document.getElementsByClassName("close")[0];
+
+    span1.onclick = function() {
+        modal1.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal1) {
+            modal1.style.display = "none";
+        }
+    };
 });
 
 function onDrop_extension(type,command,figure){
@@ -78,4 +90,14 @@ function confirm() {
     if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
         app.fileSave()
     }
+}
+
+
+function seeFormsOpened(){
+    //TODO: omri
+    // you can add things to:
+    document.getElementById("forms-div");
+    // append to children, see: usersAndRolesTree.js line 69
+
+    document.getElementById("see_forms_modal").style.display = "block";
 }
