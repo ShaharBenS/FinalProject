@@ -3,7 +3,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('index');
+    res.redirect('http://localhost:3000/auth/google');
 });
 
 module.exports = router;

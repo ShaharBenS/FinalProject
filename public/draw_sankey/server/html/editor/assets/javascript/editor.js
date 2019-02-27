@@ -866,6 +866,9 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             if (diagramContext === '__tree__') {
                 items.users = {name: "See Users", icon: "icon ion-ios-people"}
             }
+            else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+                items.users = {name: "See Forms", icon: "icon ion-ios-browsers"}
+            }
         }
         if ((figure instanceof sankey.shape.Start) ||
             (figure instanceof sankey.shape.End) ||
@@ -906,9 +909,13 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         this._attachLabel(figure);
                         break;
                     case "users":
-                        rolesToHTML(figure.children.data[0].figure.text);
-                        document.getElementById("select_users_modal").style.display = "block";
-
+                        if (diagramContext === '__tree__') {
+                            rolesToHTML(figure.children.data[0].figure.text);
+                            document.getElementById("select_users_modal").style.display = "block";
+                        }
+                        else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+                            seeFormsOpened();
+                        }
                         break;
                     default:
                         break;
