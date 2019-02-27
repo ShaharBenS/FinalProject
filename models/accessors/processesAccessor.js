@@ -1,7 +1,7 @@
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processStructureSchema = require('../schemas/processesSchemas/ProcessStructureSchema.js');
-let activeProcessSchema = require('../schemas/processesSchemas/ProcessStructureSchema.js');
+let activeProcessSchema = require('../schemas/processesSchemas/ActiveProcessSchema.js');
 let processReportSchema = require('../schemas/processesSchemas/ProcessReportSchema.js');
 
 /* processStructure */
@@ -83,7 +83,7 @@ module.exports.findActiveProcesses = (AP, callback) =>
                 let newActiveProcessArray = [];
                 activeProcessArray.forEach((process)=>
                 {
-                    newActiveProcessArray.push(processStructureController.getProcessStructureFromOriginal(process));
+                    newActiveProcessArray.push(activeProcessController.getActiveProcessFromOriginal(process));
                 });
                 callback(null,newActiveProcessArray);
             }

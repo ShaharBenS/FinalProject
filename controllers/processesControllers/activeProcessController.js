@@ -132,9 +132,49 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                 if (err) callback(err);
                 else {
                     let toReturnActiveProcesses = [];
+                    /////////////
+                    const processName1 = "TheProcessName";
+                    const timeCreation = new Date();
+                    const notificationTime = 10;
+                    const currentStages = [0];
+                    const initials = [0, 1];
+                    let testProcess;
+                    const onlineForms = [];
+                    const filledOnlineForms = [];
+                    const attachedFilesNames = [];
+                    const comments = "";
+                    const roleID = 0;
+                    let stage0, stage1, stage2, stage3, stage4, stage5, stage6;
+                    stage0 = new activeProcessStage(roleID, undefined, 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    stage1 = new activeProcessStage(roleID, undefined, 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    stage2 = new activeProcessStage(roleID, undefined, 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    stage3 = new activeProcessStage(roleID, undefined, 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    stage4 = new activeProcessStage(roleID, undefined, 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    stage5 = new activeProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    stage6 = new activeProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+                    let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
+                    testProcess = new activeProcess(processName1, timeCreation, notificationTime, currentStages.slice(), initials, stages);
+                    activeProcesses = [testProcess];
+                    let rolesOfCurrentStages = [];
+                    activeProcesses.forEach((process1) =>
+                    {
+                        let currentRoles = [];
+                        process1.currentStages.forEach((process2) => {
+                            usersAndRolesController.getRoleNameByRoleID(process2, (err, roleName) =>
+                            {
+                                if (err) callback(err);
+                                else {
+                                    currentRoles.push(roleName);
+                                }
+                            });
+                        });
+                        rolesOfCurrentStages.push(currentRoles);
+                    }
+                    );
+                    /////////////
                     activeProcesses.forEach((process) =>
                     {
-                        //if(process.isParticipatingInProcess(userEmail))
+                       // if(process.isParticipatingInProcess(userEmail))
                             toReturnActiveProcesses.push(process);
                     });
                     callback(null, toReturnActiveProcesses);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>התהליכים שלי</title>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -24,9 +24,9 @@
             <%table.forEach(function(process){%>
             <tr>
                 <td><button id="<%=process[0]%>" class="btn btn-default" onclick="generateSummary(this.id)">הפק דו"ח</button></td>
-                <td><%=process[0]%></td>
-                <td><%=process[0]%></td>
-                <td><%=process[0]%></td>
+                <td><%=process.processName%></td>
+                <td><%=process.processName%></td>
+                <td><%=process.processName%></td>
             </tr>
             <%})%>
         </table>

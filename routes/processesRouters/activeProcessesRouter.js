@@ -82,10 +82,9 @@ router.post('/startProcess', function (req, res) {
  */
 
 router.get('/getAllActiveProcessesByUser', function (req, res) {
-    let userName = req.query.userName;
+    let userName = req.user.emails[0].value;
     activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
-        array = [['TomerKing',24,[],[],[],1500]];
-        res.render('activeProcessesViews/myActiveProcessesPage', {table: array});
+         res.render('activeProcessesViews/myActiveProcessesPage', {table: array});
     });
 });
 
