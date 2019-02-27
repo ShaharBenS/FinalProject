@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Me Please</title>
+    <link rel="stylesheet" href="/stylesheets/upload_css.css">
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="/javascripts/upload_js.js"></script>
+</head>
+<body>
+<form action="/uploadFile/upload_file" method="post" enctype="multipart/form-data">
+    <input type="file" name="filetoupload"><br>
+    <input type="submit">
+</form>
+<form action="/uploadFile/download_file" method="post" enctype="multipart/form-data">
+    <input name="filetodownload"><br>
+    <input type="submit">
+</form>
+</body>
+</html>

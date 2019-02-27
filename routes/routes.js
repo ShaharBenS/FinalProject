@@ -10,6 +10,8 @@ let auth = require('./usersRouters/auth');
 let usersAndRolesRouter = require('./usersRouters/usersAndRolesRouter');
 let usersLoginRouter = require('./usersRouters/usersLoginRouter');
 
+let uploadFilesRouter = require('./uploadFiles/uploadFilesRouter');
+
 module.exports = (app)=>{
     app.use('/', indexRouter);
     app.use('/sankey', sankeyRouter);
@@ -23,4 +25,5 @@ module.exports = (app)=>{
     app.use('/usersAndRoles', usersAndRolesRouter);
     app.use('/usersLogin', usersLoginRouter);
     app.use('/auth', auth);
+    app.use('/uploadFile', uploadFilesRouter)
 };
