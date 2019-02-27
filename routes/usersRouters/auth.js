@@ -23,7 +23,7 @@ router.get('/google/callback',
     passportGoogle.authenticate('google', {failureRedirect: '/NotAgudaEmployee'}),
     function (req, res)
     {
-        res.redirect('/usersLogin');
+        res.redirect('/userLoggedIn');
     });
 
 module.exports = router;

@@ -84,7 +84,8 @@ router.post('/startProcess', function (req, res) {
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.query.userName;
     activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
-        res.render('activeProcesses/myActiveProcessesPage', {table: array});
+        array = [['TomerKing',24,[],[],[],1500]];
+        res.render('activeProcessesViews/myActiveProcessesPage', {table: array});
     });
 });
 
@@ -116,9 +117,9 @@ router.get('/reportProcess', function (req, res) {
 router.get('/processStartPage', function (req, res) {
     res.render('processStartPage');
 });
-router.get('/myActiveProcessesPage', function (req, res) {
+/*router.get('/myActiveProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myActiveProcessesPage');
-});
+});*/
 router.get('/myWaitingProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myWaitingProcessesPage');
 });

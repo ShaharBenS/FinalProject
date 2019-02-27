@@ -8,7 +8,7 @@ router.get('/', ensureAuthenticated, function (req, res, next) {
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return next();
+        return res.render('index');
     }
     res.redirect('/auth/login')
 }

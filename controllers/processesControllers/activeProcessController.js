@@ -134,7 +134,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                     let toReturnActiveProcesses = [];
                     activeProcesses.forEach((process) =>
                     {
-                        if(process.isParticipatingInProcess(userEmail))
+                        //if(process.isParticipatingInProcess(userEmail))
                             toReturnActiveProcesses.push(process);
                     });
                     callback(null, toReturnActiveProcesses);
