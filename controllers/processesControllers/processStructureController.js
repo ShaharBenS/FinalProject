@@ -93,12 +93,8 @@ module.exports.getProcessStructureStagesForDB = function (originStages) {
 };
 
 module.exports.getProcessStructureFromOriginal = (oldProcessStructure) => {
-    return {
-        structureName: oldProcessStructure.structureName,
-        initials: oldProcessStructure.initials,
-        stages: this.getProcessStagesFromOriginal(oldProcessStructure.stages),
-        sankey: oldProcessStructure.sankey
-    };
+    return new ProcessStructure(oldProcessStructure.structureName, oldProcessStructure.initials,
+        this.getProcessStagesFromOriginal(oldProcessStructure.stages), oldProcessStructure.sankey);
 };
 
 module.exports.getProcessStagesFromOriginal = (oldStages) => {
