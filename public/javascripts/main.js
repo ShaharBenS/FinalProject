@@ -148,7 +148,7 @@ function confirmStartProcess() {
                 alert("תהליך נוצר בהצלחה");
                 window.location.href = '/';
             } else {
-                alert(xmlHttp.responseText);
+                alert(responseText);
             }
         }
     });

@@ -1,7 +1,7 @@
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processStructureSchema = require('../schemas/processesSchemas/ProcessStructureSchema.js');
-let activeProcessSchema = require('../schemas/processesSchemas/ProcessStructureSchema.js');
+let activeProcessSchema = require('../schemas/processesSchemas/ActiveProcessSchema.js');
 let processReportSchema = require('../schemas/processesSchemas/ProcessReportSchema.js');
 
 /* processStructure */
