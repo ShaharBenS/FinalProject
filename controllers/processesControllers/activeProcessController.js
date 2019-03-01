@@ -57,11 +57,12 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
-                                    creationTime: today,
+                                    timeCreation: today,
                                     currentStages: [initialStage],
                                     processName: processName,
                                     initials: processStructure.initials,
                                     stages: newStages,
+                                    lastApproached: today,
                                 }, (err) =>
                                 {
                                     if (err) callback(err);
@@ -134,7 +135,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                     let toReturnActiveProcesses = [];
                     /////////////
                     const processName1 = "TheProcessName";
-                    const creationTime = new Date();
+                    const timeCreation = new Date();
                     const notificationTime = 10;
                     const currentStages = [0];
                     const initials = [0, 1];
@@ -153,7 +154,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                     stage5 = new activeProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
                     stage6 = new activeProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
                     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-                    testProcess = new activeProcess(processName1, creationTime, notificationTime, currentStages.slice(), initials, stages);
+                    testProcess = new activeProcess(processName1, timeCreation, notificationTime, currentStages.slice(), initials, stages);
                     activeProcesses = [testProcess];
                     let rolesOfCurrentStages = [];
                     activeProcesses.forEach((process1) =>
@@ -202,7 +203,8 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
         if (err) callback(err);
         else {
             process.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
-            processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages},
+            let today = new Date();
+            processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages, lastApproached: today},
                 (err) =>
                 {
                     if (err) callback(err);
@@ -248,12 +250,12 @@ const advanceProcess = (processName, nextStages, callback) =>
     });
 };
 
-const addProcessReport = (processName, creationTime, callback) =>
+const addProcessReport = (processName, timeCreation, callback) =>
 {
     processAccessor.createProcessReport({
         processName: processName,
         status: 'activated',
-        creationTime: creationTime,
+        timeCreation: timeCreation,
         stages: []
     }, (err) =>
     {
@@ -306,7 +308,7 @@ module.exports.getAllActiveProcessDetails = (processName, callback) =>
         if (err) callback(err);
         else {
             let returnProcessDetails = {
-                processName: processReport.processName, creationTime: processReport.creationTime,
+                processName: processReport.processName, timeCreation: processReport.timeCreation,
                 status: processReport.status
             };
             returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) =>
@@ -414,11 +416,11 @@ module.exports.getActiveProcessByProcessName = function (processName, callback)
     });
 };
 
-module.exports.getActiveProcessFromOriginal = function (oldProcessStructure)
+module.exports.getActiveProcessFromOriginal = function (oldActiveProcess)
 {
-    let processObj = new activeProcess(oldProcessStructure.processName, oldProcessStructure.creationTime,
-        oldProcessStructure.notificationTime, oldProcessStructure.currentStages, oldProcessStructure.initials, []);
-    oldProcessStructure.stages.forEach((stage) =>
+    let processObj = new activeProcess(oldActiveProcess.processName, oldActiveProcess.timeCreation,
+        oldActiveProcess.notificationTime, oldActiveProcess.currentStages, oldActiveProcess.initials, [], oldActiveProcess.lastApproached);
+    oldActiveProcess.stages.forEach((stage) =>
     {
         processObj.stages.push(
             new activeProcessStage(
