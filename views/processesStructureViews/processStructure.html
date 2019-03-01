@@ -1,14 +1,14 @@
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
     <title>מבנה תהליך</title>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="width=device-width, minimum-scale=1.0" name="viewport"/>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway:100,200,300" >
+    <link href="//fonts.googleapis.com/css?family=Raleway:100,200,300" rel="stylesheet">
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css" />
-    <link rel="stylesheet" href="/draw_sankey/server/html/editor/assets/css/main.css" >
+    <link href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/draw_sankey/server/html/editor/assets/css/main.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/stylesheets/style.css">
 
@@ -33,15 +33,15 @@
 
         $(window).load(function () {
             socket = io();
-            app  = new sankey.Application(socket);
-            if(diagramContext === 'editProcessStructure'){
+            app = new sankey.Application(socket);
+            if (diagramContext === 'editProcessStructure') {
                 app.fileOpen(processStructureName);
             }
         });
 
     </script>
 
-    </head>
+</head>
 
 <body id="container">
 
@@ -49,17 +49,20 @@
     <div id="editor">
         <div id="palette" align="center">
             <h6>הוסף שלב התחלתי</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.Start"   class="palette_node_element draw2d_droppable">
+            <img class="palette_node_element draw2d_droppable" data-shape="sankey.shape.Start"
+                 src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png">
             <h6>הוסף שלב</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.State"   class="palette_node_element draw2d_droppable">
+            <img class="palette_node_element draw2d_droppable" data-shape="sankey.shape.State"
+                 src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png">
             <div style="height: 100px"></div>
-            <button onclick="confirm()" title="Save Report" class="btn btn-default ion-ios-upload-outline icon"> שמור</button>
+            <button class="btn btn-default ion-ios-upload-outline icon" onclick="confirm()" title="Save Report"> שמור
+            </button>
             <div style="height: 20px"></div>
-            <button class="btn btn-default" onclick="app.view.centerDocument();" >מרכז</button>
+            <button class="btn btn-default" onclick="app.view.centerDocument();">מרכז</button>
         </div>
         <div id="view">
             <div id="draw2dCanvasWrapper">
-                <div id="canvas"  style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
+                <div id="canvas" style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
             </div>
             <!--<div id="property">
             </div>-->
@@ -69,7 +72,6 @@
 <!--<div id="toolbar">
     <a class="navbar-brand brand highlight"  href="../index" target="_index"><img src="../../draw_sankey/server/html/common/assets/img/logo.png">Sankey <i>state</i></a>
 </div>-->
-
 
 
 <!--
@@ -87,7 +89,7 @@
                 <div class="media">
                     <div class="media-left media-middle">
                         <a href="#">
-                            <div class="media-object githubFilePreview ion-ios-upload-outline" ></div>
+                            <div class="media-object githubFilePreview ion-ios-upload-outline"></div>
                         </a>
                     </div>
                     <div class="media-body">
@@ -101,7 +103,7 @@
                                     <input type="text"
                                            class="form-control floating-label githubFileName"
                                            value=""
-                                            >
+                                    >
                                 </div>
                             </div>
                         </fieldset>
@@ -148,7 +150,6 @@
 </div>
 
 
-
 <!--
   #  Select Role Modal
   #
@@ -180,7 +181,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button onclick="select_role_clicked()" id="select_role_okay_button" class="btn btn-default okButton"><span>הוסף</span></button>
+            <button class="btn btn-default okButton" id="select_role_okay_button" onclick="select_role_clicked()"><span>הוסף</span>
+            </button>
         </div>
     </div>
 
@@ -212,7 +214,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button onclick="document.getElementById('see_forms_modal').style.display = 'none'" id="no-id124" class="btn btn-primary okButton"><span>Okay</span></button>
+                <button class="btn btn-primary okButton" id="no-id124"
+                        onclick="document.getElementById('see_forms_modal').style.display = 'none'"><span>Okay</span>
+                </button>
             </div>
         </div>
     </div>
@@ -227,25 +231,32 @@
 
 <script id="template_startNode" type="hogan/template">
     <table class="table" id="transitions">
-        <thead><tr><th data-path="jsonPath">JSON Path</th><th data-path="operation">Operation</th><th data-path="value">Value</th></tr></thead>
+        <thead>
+        <tr>
+            <th data-path="jsonPath">JSON Path</th>
+            <th data-path="operation">Operation</th>
+            <th data-path="value">Value</th>
+        </tr>
+        </thead>
         <tbody>
         {{#transitions}}
-            <tr>
-                <td><input type="text"  value="{{jsonPath}}"  placeholder="JSON path" class="typeahead_path form-control"></td>
-                <td>
-                    <select value="{{operation}}" class="form-control">
-                        <option value="equals">is equal</option>
-                        <option value="!equals">not equal</option>
-                        <option value="null">is null</option>
-                        <option value="!null">not null</option>
-                        <option value="undefined">undefined</option>
-                    </select>
-                </td>
-                <td><input type="text" value="{{value}}" class="typeahead_value form-control"></td>
-            </tr>
+        <tr>
+            <td><input type="text" value="{{jsonPath}}" placeholder="JSON path" class="typeahead_path form-control">
+            </td>
+            <td>
+                <select value="{{operation}}" class="form-control">
+                    <option value="equals">is equal</option>
+                    <option value="!equals">not equal</option>
+                    <option value="null">is null</option>
+                    <option value="!null">not null</option>
+                    <option value="undefined">undefined</option>
+                </select>
+            </td>
+            <td><input type="text" value="{{value}}" class="typeahead_value form-control"></td>
+        </tr>
         {{/transitions}}
         <tr>
-            <td><input type="text"  value=""  placeholder="JSON path" class="typeahead_path form-control"></td>
+            <td><input type="text" value="" placeholder="JSON path" class="typeahead_path form-control"></td>
             <td>
                 <select class="form-control" value="equals">
                     <option value="equals">is equal</option>
@@ -264,11 +275,18 @@
 
 <script id="template_connection" type="hogan/template">
     <table class="table" id="transitions">
-        <thead><tr><th data-path="jsonPath">JSON Path</th><th data-path="operation">Operation</th><th data-path="value">Value</th></tr></thead>
+        <thead>
+        <tr>
+            <th data-path="jsonPath">JSON Path</th>
+            <th data-path="operation">Operation</th>
+            <th data-path="value">Value</th>
+        </tr>
+        </thead>
         <tbody>
         {{#transitions}}
         <tr>
-            <td><input value="{{jsonPath}}"  type="text" placeholder="JSON path" class="typeahead_path form-control"></td>
+            <td><input value="{{jsonPath}}" type="text" placeholder="JSON path" class="typeahead_path form-control">
+            </td>
             <td>
                 <select value="{{operation}}" class="form-control">
                     <option value="equals">is equal</option>

@@ -99,5 +99,50 @@ function seeFormsOpened(){
     document.getElementById("forms-div");
     // append to children, see: usersAndRolesTree.js line 69
 
-    document.getElementById("see_forms_modal").style.display = "block";
+
+    users_div.innerHTML = '';
+
+    roleToEmails[roleName].forEach((userEmail) => {
+        let div = document.createElement("div");
+        let button = document.createElement("button");
+        button.class = "btn";
+        button.innerText = '-';
+        button.onclick = () => {
+            let index = roleToEmails[roleName].indexOf(userEmail);
+            if (index > -1) {
+                roleToEmails[roleName].splice(index, 1);
+            }
+            rolesToHTML(roleName);
+        };
+
+        let label = document.createElement("label");
+        label.innerText = userEmail;
+        div.appendChild(button);
+        div.appendChild(label);
+        users_div.append(div);
+    });
+    let div = document.createElement("div");
+    let button = document.createElement("button");
+    button.class = "btn";
+    button.innerText = '+';
+    button.onclick = () => {
+        let email = prompt("Enter user email :");
+        if (email != null) {
+            let found = false;
+            Object.keys(roleToEmails).forEach(roleName => {
+                roleToEmails[roleName].forEach(userEmail => {
+                    if (email === userEmail) {
+                        found = true;
+                        alert('email already in use, in role: ' + roleName)
+                    }
+                })
+            });
+            if (!found) {
+                roleToEmails[roleName].push(email);
+                rolesToHTML(roleName);
+            }
+        }
+    };
+    div.appendChild(button);
+    users_div.append(div);
 }
