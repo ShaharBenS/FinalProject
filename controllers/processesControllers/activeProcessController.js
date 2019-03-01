@@ -57,7 +57,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
-                                    timeCreation: today,
+                                    creationTime: today,
                                     currentStages: [initialStage],
                                     processName: processName,
                                     initials: processStructure.initials,
@@ -134,7 +134,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                     let toReturnActiveProcesses = [];
                     /////////////
                     const processName1 = "TheProcessName";
-                    const timeCreation = new Date();
+                    const creationTime = new Date();
                     const notificationTime = 10;
                     const currentStages = [0];
                     const initials = [0, 1];
@@ -153,7 +153,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                     stage5 = new activeProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
                     stage6 = new activeProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
                     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-                    testProcess = new activeProcess(processName1, timeCreation, notificationTime, currentStages.slice(), initials, stages);
+                    testProcess = new activeProcess(processName1, creationTime, notificationTime, currentStages.slice(), initials, stages);
                     activeProcesses = [testProcess];
                     let rolesOfCurrentStages = [];
                     activeProcesses.forEach((process1) =>
@@ -248,12 +248,12 @@ const advanceProcess = (processName, nextStages, callback) =>
     });
 };
 
-const addProcessReport = (processName, timeCreation, callback) =>
+const addProcessReport = (processName, creationTime, callback) =>
 {
     processAccessor.createProcessReport({
         processName: processName,
         status: 'activated',
-        timeCreation: timeCreation,
+        creationTime: creationTime,
         stages: []
     }, (err) =>
     {
@@ -306,7 +306,7 @@ module.exports.getAllActiveProcessDetails = (processName, callback) =>
         if (err) callback(err);
         else {
             let returnProcessDetails = {
-                processName: processReport.processName, timeCreation: processReport.timeCreation,
+                processName: processReport.processName, creationTime: processReport.creationTime,
                 status: processReport.status
             };
             returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) =>
@@ -416,7 +416,7 @@ module.exports.getActiveProcessByProcessName = function (processName, callback)
 
 module.exports.getActiveProcessFromOriginal = function (oldProcessStructure)
 {
-    let processObj = new activeProcess(oldProcessStructure.processName, oldProcessStructure.timeCreation,
+    let processObj = new activeProcess(oldProcessStructure.processName, oldProcessStructure.creationTime,
         oldProcessStructure.notificationTime, oldProcessStructure.currentStages, oldProcessStructure.initials, []);
     oldProcessStructure.stages.forEach((stage) =>
     {

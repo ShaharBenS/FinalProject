@@ -9,7 +9,7 @@ let ActiveProcessStage = require('../../domainObjects/activeProcessStage');
 
 
 const processName1 = "proc name 1";
-const timeCreation = new Date();
+const creationTime = new Date();
 const notificationTime = 10;
 const currentStages = [0];
 const initials = [0, 1];
@@ -57,7 +57,7 @@ let createActiveProcess1 = function () {
     stage5 = new ActiveProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage6 = new ActiveProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess(processName1, timeCreation, notificationTime, currentStages.slice(), initials, stages);
+    testProcess = new ActiveProcess(processName1, creationTime, notificationTime, currentStages.slice(), initials, stages);
 };
 
 let createActiveProcess2 = function () {
@@ -93,7 +93,7 @@ let createActiveProcess2 = function () {
     stage5 = new ActiveProcessStage(5, null, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage6 = new ActiveProcessStage(6, null, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess(processName1, timeCreation, notificationTime, [4,5], initials, stages);
+    testProcess = new ActiveProcess(processName1, creationTime, notificationTime, [4, 5], initials, stages);
 };
 
 describe('1.0 add to current stages', function () {
@@ -147,14 +147,14 @@ describe('3.0 set time creation', function () {
     beforeEach(createActiveProcess1);
 
     it('3.1 checks for initial define', () => {
-        assert.deepEqual(timeCreation, testProcess.timeCreation);
+        assert.deepEqual(creationTime, testProcess.creationTime);
     });
 
     it('3.2 define time again', () => {
         expect(() => {
-            testProcess.timeCreation = new Date()
+            testProcess.creationTime = new Date()
         }).to.throw();
-        assert.deepEqual(timeCreation, testProcess.timeCreation);
+        assert.deepEqual(creationTime, testProcess.creationTime);
     });
 });
 

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const activeProcessSchema = new Schema({
     processName: {type: String, unique: true},
-    timeCreation: Date,
+    creationTime: Date,
     notificationTime: Number,
     currentStages: [Number],
     initials: [Number],
