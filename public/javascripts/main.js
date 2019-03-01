@@ -48,14 +48,17 @@ function confirmAddProcessStructureClicked() {
                 alert("שם לא יכול להיות ריק");
                 return;
             }
+            let isProcessExists = false;
             JSON.parse(xmlHttp.responseText).forEach((structure) => {
-
                 if (structure.structureName === name) {
+                    isProcessExists = true;
                     alert("תהליך בעל שם זה כבר קיים");
-                } else {
-                    window.location.href = '/processStructures/addProcessStructure/?name=' + name;
                 }
             });
+
+            if (!isProcessExists) {
+                window.location.href = '/processStructures/addProcessStructure/?name=' + name;
+            }
         }
     };
     xmlHttp.open("GET", '/processStructures/getAllProcessStructures/', true);
@@ -123,33 +126,30 @@ function startActiveProcess() {
 
 function confirmStartProcess() {
     let selector = document.getElementById("start-processes-selector");
-    let name = document.getElementById("start-processes-name").value;
-    if (name === "") {
+    let structureName = selector.options[selector.selectedIndex].innerText;
+    let processName = document.getElementById("start-processes-name").value;
+    let data = {processName: processName, structureName: structureName};
+    if (processName === "") {
         alert("שם לא יכול להיות ריק");
         return;
     }
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", '/activeProcesses/startProcess/', true);
 
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            if (name === "") {
-                alert("שם לא יכול להיות ריק");
-                return;
-            }
-            if (xmlHttp.responseText === "success") {
+    $.ajax({
+            url: '/activeProcesses/startProcess/',
+            method: "POST",
+            xhrFields: {
+                withCredentials: true
+            },
+            data: data,
+        }
+    ).done(function (responseText, status) {
+        if (status === "success") {
+            if (responseText === "success") {
                 alert("תהליך נוצר בהצלחה");
                 window.location.href = '/';
             } else {
-                alert(xmlHttp.responseText);
+                alert(responseText);
             }
-
         }
-    };
-    let data = new FormData();
-    data.append('structureName', selector.options[selector.selectedIndex].innerText);
-    data.append('processName', name);
-    data.append('username', '');
-
-    xmlHttp.send(data);
+    });
 }

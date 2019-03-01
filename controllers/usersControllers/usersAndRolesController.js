@@ -19,8 +19,13 @@ module.exports.getIdToRole = (callback) =>{
             callback(err);
         }
         else{
-            let sankey = new usersAndRolesTreeSankey(JSON.parse(sankeyTree[0].sankey));
-            callback(null,sankey.getIdToRole())
+            if(sankeyTree.length === 0){
+                callback(null,{})
+            }
+            else{
+                let sankey = new usersAndRolesTreeSankey(JSON.parse(sankeyTree[0].sankey));
+                callback(null,sankey.getIdToRole())
+            }
         }
     });
 };

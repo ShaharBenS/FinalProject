@@ -54,12 +54,9 @@ router.post('/unTakePartInProcess', function (req, res) {
 router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
-    let username = req.body.username;
-    console.log("test: BODY: " + req.body.tex);
-    console.log("test: structureName: " + structureName);
-    console.log("test: processName: " + processName);
-    console.log("test: username: " + username);
-    activeProcess.startProcessByUsername(username, structureName, processName, (err, activeProcess) => {
+    let username = req.user.emails[0].value;
+
+    activeProcess.startProcessByUsername(username, structureName, processName, (err) => {
         if (err) {
             res.send(err.message);
         } else {
@@ -79,9 +76,9 @@ router.post('/startProcess', function (req, res) {
  */
 
 router.get('/getAllActiveProcessesByUser', function (req, res) {
-    let userName = req.query.userName;
+    let userName = req.user.emails[0].value;
     activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
-        res.render('activeProcesses/myActiveProcessesPage', {table: array});
+         res.render('activeProcessesViews/myActiveProcessesPage', {table: array});
     });
 });
 
@@ -113,9 +110,9 @@ router.get('/reportProcess', function (req, res) {
 router.get('/processStartPage', function (req, res) {
     res.render('processStartPage');
 });
-router.get('/myActiveProcessesPage', function (req, res) {
+/*router.get('/myActiveProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myActiveProcessesPage');
-});
+});*/
 router.get('/myWaitingProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myWaitingProcessesPage');
 });
