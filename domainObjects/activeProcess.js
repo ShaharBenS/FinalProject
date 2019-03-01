@@ -2,14 +2,14 @@
 
 class activeProcess {
 
-    constructor(processName, timeCreation, notificationTime, currentStages, initials, stages, last_approached) {
+    constructor(processName, timeCreation, notificationTime, currentStages, initials, stages, lastApproached) {
         this._processName = processName;
+        this._timeCreation = timeCreation;
         this._notificationTime = notificationTime;
         this._currentStages = currentStages;
         this._initials = initials;
         this._stages = stages;
-        this._timeCreation = timeCreation;
-        this._last_approached = last_approached;
+        this._lastApproached = lastApproached;
     }
 
     addCurrentStage(stageNum) {
@@ -33,6 +33,16 @@ class activeProcess {
 
     set processName(value) {
         this._processName = value;
+    }
+
+    get timeCreation() {
+        return this._timeCreation;
+    }
+
+    set timeCreation(value) {
+        if (this.timeCreation === undefined)
+            this._timeCreation = value;
+        else throw new Error();
     }
 
     get notificationTime() {
@@ -67,22 +77,12 @@ class activeProcess {
         this._stages = value;
     }
 
-    get timeCreation() {
-        return this._timeCreation;
+    get lastApproached() {
+        return this._lastApproached;
     }
 
-    set timeCreation(value) {
-        if (this.timeCreation === undefined)
-            this._timeCreation = value;
-        else throw new Error();
-    }
-
-    get last_approached() {
-        return this._last_approached;
-    }
-
-    set last_approached(value) {
-        this._last_approached = value;
+    set lastApproached(value) {
+        this._lastApproached = value;
     }
 
     getStageByStageNum(stageNum) {

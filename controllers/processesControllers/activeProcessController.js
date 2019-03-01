@@ -62,6 +62,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     processName: processName,
                                     initials: processStructure.initials,
                                     stages: newStages,
+                                    lastApproached: today,
                                 }, (err) =>
                                 {
                                     if (err) callback(err);
@@ -162,7 +163,8 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
         if (err) callback(err);
         else {
             process.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
-            processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages},
+            let today = new Date();
+            processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages, lastApproached: today},
                 (err) =>
                 {
                     if (err) callback(err);
@@ -374,11 +376,11 @@ module.exports.getActiveProcessByProcessName = function (processName, callback)
     });
 };
 
-module.exports.getActiveProcessFromOriginal = function (oldProcessStructure)
+module.exports.getActiveProcessFromOriginal = function (oldActiveProcess)
 {
-    let processObj = new activeProcess(oldProcessStructure.processName, oldProcessStructure.timeCreation,
-        oldProcessStructure.notificationTime, oldProcessStructure.currentStages, oldProcessStructure.initials, []);
-    oldProcessStructure.stages.forEach((stage) =>
+    let processObj = new activeProcess(oldActiveProcess.processName, oldActiveProcess.timeCreation,
+        oldActiveProcess.notificationTime, oldActiveProcess.currentStages, oldActiveProcess.initials, [], oldActiveProcess.lastApproached);
+    oldActiveProcess.stages.forEach((stage) =>
     {
         processObj.stages.push(
             new activeProcessStage(
