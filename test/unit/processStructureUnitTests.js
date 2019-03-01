@@ -19,6 +19,15 @@ let testProcess;
 
 let stage0, stage1, stage2, stage3, stage4, stage5, stage6;
 
+let roleID0 = {id: 0};
+let roleID1 = {id: 1};
+let roleID2 = {id: 2};
+let roleID3 = {id: 3};
+let roleID4 = {id: 4};
+let roleID5 = {id: 5};
+let roleID6 = {id: 6};
+let roleID11 = {id: 11};
+
 let createProcessStructure1 = function () {
 
     /*
@@ -44,50 +53,50 @@ let createProcessStructure1 = function () {
       +----> 6 <----+
            +---+
     */
-    stage0 = new ProcessStructureStage(0, 0, [1], [], onlineForms, attachedFilesNames);
-    stage1 = new ProcessStructureStage(1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
-    stage2 = new ProcessStructureStage(2, 2, [4], [1], [1], onlineForms, attachedFilesNames);
-    stage3 = new ProcessStructureStage(3, 3, [5], [1], [1], onlineForms, attachedFilesNames);
-    stage4 = new ProcessStructureStage(4, 4, [6], [2], [2], onlineForms, attachedFilesNames);
-    stage5 = new ProcessStructureStage(5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
-    stage6 = new ProcessStructureStage(6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
+    stage0 = new ProcessStructureStage(roleID0, 0, [1], [], onlineForms, attachedFilesNames);
+    stage1 = new ProcessStructureStage(roleID1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
+    stage2 = new ProcessStructureStage(roleID2, 2, [4], [1], [1], onlineForms, attachedFilesNames);
+    stage3 = new ProcessStructureStage(roleID3, 3, [5], [1], [1], onlineForms, attachedFilesNames);
+    stage4 = new ProcessStructureStage(roleID4, 4, [6], [2], [2], onlineForms, attachedFilesNames);
+    stage5 = new ProcessStructureStage(roleID5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
+    stage6 = new ProcessStructureStage(roleID6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
     testProcess = new ProcessStructure(structureName, initials, stages, '');
 };
 
 let createProcessStructure2 = function () {
-    stage0 = new ProcessStructureStage(0, 0, [1], [], onlineForms, attachedFilesNames);
-    stage1 = new ProcessStructureStage(1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
-    stage2 = new ProcessStructureStage(2, 2, [4], [1], [1], onlineForms, attachedFilesNames);
-    stage3 = new ProcessStructureStage(3, 0, [5], [1], [1], onlineForms, attachedFilesNames);
-    stage4 = new ProcessStructureStage(4, 4, [6], [2], [2], onlineForms, attachedFilesNames);
-    stage5 = new ProcessStructureStage(5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
-    stage6 = new ProcessStructureStage(6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
+    stage0 = new ProcessStructureStage(roleID0, 0, [1], [], onlineForms, attachedFilesNames);
+    stage1 = new ProcessStructureStage(roleID1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
+    stage2 = new ProcessStructureStage(roleID2, 2, [4], [1], [1], onlineForms, attachedFilesNames);
+    stage3 = new ProcessStructureStage(roleID3, 0, [5], [1], [1], onlineForms, attachedFilesNames);
+    stage4 = new ProcessStructureStage(roleID4, 4, [6], [2], [2], onlineForms, attachedFilesNames);
+    stage5 = new ProcessStructureStage(roleID5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
+    stage6 = new ProcessStructureStage(roleID6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
     testProcess = new ProcessStructure(structureName, [8,1,11], stages, '');
 };
 
 let createProcessStructure3 = function () {
-    stage0 = new ProcessStructureStage(0, 0, [1], [], onlineForms, attachedFilesNames);
-    stage1 = new ProcessStructureStage(1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
-    stage2 = new ProcessStructureStage(2, 2, [], [1], [1], onlineForms, attachedFilesNames);
-    stage3 = new ProcessStructureStage(3, 3, [5], [1], [1], onlineForms, attachedFilesNames);
-    stage4 = new ProcessStructureStage(4, 4, [6], [2], [2], onlineForms, attachedFilesNames);
-    stage5 = new ProcessStructureStage(5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
-    stage6 = new ProcessStructureStage(6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
+    stage0 = new ProcessStructureStage(roleID0, 0, [1], [], onlineForms, attachedFilesNames);
+    stage1 = new ProcessStructureStage(roleID1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
+    stage2 = new ProcessStructureStage(roleID2, 2, [], [1], [1], onlineForms, attachedFilesNames);
+    stage3 = new ProcessStructureStage(roleID3, 3, [5], [1], [1], onlineForms, attachedFilesNames);
+    stage4 = new ProcessStructureStage(roleID4, 4, [6], [2], [2], onlineForms, attachedFilesNames);
+    stage5 = new ProcessStructureStage(roleID5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
+    stage6 = new ProcessStructureStage(roleID6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
     testProcess = new ProcessStructure(structureName, [0], stages, '');
 };
 
 
 let createProcessStructure4 = function () {
-    stage0 = new ProcessStructureStage(0, 0, [1], [], onlineForms, attachedFilesNames);
-    stage1 = new ProcessStructureStage(1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
-    stage2 = new ProcessStructureStage(2, 2, [4], [1], [1], onlineForms, attachedFilesNames);
-    stage3 = new ProcessStructureStage(3, 3, [5], [1], [1], onlineForms, attachedFilesNames);
-    stage4 = new ProcessStructureStage(4, 4, [6], [], [], onlineForms, attachedFilesNames);
-    stage5 = new ProcessStructureStage(5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
-    stage6 = new ProcessStructureStage(6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
+    stage0 = new ProcessStructureStage(roleID0, 0, [1], [], onlineForms, attachedFilesNames);
+    stage1 = new ProcessStructureStage(roleID1, 1, [2, 3], [0], [0], onlineForms, attachedFilesNames);
+    stage2 = new ProcessStructureStage(roleID2, 2, [4], [1], [1], onlineForms, attachedFilesNames);
+    stage3 = new ProcessStructureStage(roleID3, 3, [5], [1], [1], onlineForms, attachedFilesNames);
+    stage4 = new ProcessStructureStage(roleID4, 4, [6], [], [], onlineForms, attachedFilesNames);
+    stage5 = new ProcessStructureStage(roleID5, 5, [6], [3], [3], onlineForms, attachedFilesNames);
+    stage6 = new ProcessStructureStage(roleID6, 6, [], [4, 5], [4, 5], onlineForms, attachedFilesNames);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
     testProcess = new ProcessStructure(structureName, [0], stages, '');
 };
@@ -97,15 +106,15 @@ describe('1.0 get initial stage by roleID', function () {
     beforeEach(createProcessStructure1);
 
     it('1.1 get initial stage for an existing role in an initial stage', () => {
-        assert.deepEqual(1, testProcess.getInitialStageByRoleID(1));
+        assert.deepEqual(1, testProcess.getInitialStageByRoleID(roleID1));
     });
 
     it('1.2 get initial stage for a not existing role in an initial stage', () => {
-        assert.deepEqual(-1, testProcess.getInitialStageByRoleID(2));
+        assert.deepEqual(-1, testProcess.getInitialStageByRoleID(roleID2));
     });
 
     it('1.3 get initial stage for non existent roleID', () => {
-        assert.deepEqual(-1, testProcess.getInitialStageByRoleID(11));
+        assert.deepEqual(-1, testProcess.getInitialStageByRoleID(roleID11));
     });
 });
 

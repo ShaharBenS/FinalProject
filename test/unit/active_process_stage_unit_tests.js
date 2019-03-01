@@ -49,9 +49,9 @@ describe('2.0 handle stage', function () {
     beforeEach(initStages);
 
     it('2.1 handles unhandled stage', () => {
-        assert.equal(stage0.timeApproval, undefined);
+        assert.equal(stage0.approvalTime, undefined);
         stage0.handleStage([1], ["file1.txt"], "this is a comment");
-        assert.notEqual(stage0.timeApproval, undefined);
+        assert.notEqual(stage0.approvalTime, undefined);
         assert.deepEqual(stage0.filledOnlineForms, [1]);
         assert.deepEqual(stage0.attachedFilesNames, ["file1.txt"]);
         assert.deepEqual(stage0.comments, "this is a comment");
@@ -59,7 +59,7 @@ describe('2.0 handle stage', function () {
     });
 
     it('2.2 handles and than handles again', () => {
-        assert.equal(stage0.timeApproval, undefined);
+        assert.equal(stage0.approvalTime, undefined);
         stage0.handleStage([1], ["file1.txt"], "this is a comment");
         expect(() => stage0.handleStage([1], ["file1.txt"], "this is a comment")).to.throw();
     });

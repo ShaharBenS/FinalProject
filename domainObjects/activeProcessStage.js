@@ -3,7 +3,7 @@ let processStructureStage = require("./processStructureStage");
 class activeProcessStage
 {
 
-    constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, timeApproval, onlineForms, filledOnlineForms, attachedFilesNames, comments)
+    constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, approvalTime, onlineForms, filledOnlineForms, attachedFilesNames, comments)
     {
         this.roleID = roleID;
         this.stageNum = stageNum;
@@ -13,7 +13,7 @@ class activeProcessStage
         this.attachedFilesNames = attachedFilesNames;
         this.userEmail = userEmail;
         this.originStagesToWaitFor = originStagesToWaitFor;
-        this.timeApproval = timeApproval;
+        this.approvalTime = approvalTime;
         this.filledOnlineForms = filledOnlineForms;
         this.comments = comments;
     }
@@ -28,8 +28,8 @@ class activeProcessStage
 
     handleStage(filledForms, fileNames, comments)
     {
-        if (this.timeApproval === undefined && this.stagesToWaitFor.length === 0) {
-            this.timeApproval = new Date();
+        if (this.approvalTime === undefined && this.stagesToWaitFor.length === 0) {
+            this.approvalTime = new Date();
             this.filledOnlineForms = this.filledOnlineForms.concat(filledForms);
             this.attachedFilesNames = this.attachedFilesNames.concat(fileNames);
             this.comments = comments;

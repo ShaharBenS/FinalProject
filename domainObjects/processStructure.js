@@ -10,7 +10,7 @@ class processStructure {
     getInitialStageByRoleID(roleID) {
         let initialStage = -1;
         this.stages.every((stage) => {
-            let roleEqual = stage.roleID.toString() === roleID.toString();
+            let roleEqual = stage.roleID.id.toString() === roleID.id.toString();
             let initialsInclude = this.initials.includes(stage.stageNum);
             if (roleEqual && initialsInclude) {
                 initialStage = stage.stageNum;

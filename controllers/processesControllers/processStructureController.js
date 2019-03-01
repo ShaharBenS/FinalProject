@@ -93,11 +93,17 @@ module.exports.getProcessStructureStagesForDB = function (originStages) {
 };
 
 module.exports.getProcessStructureFromOriginal = (oldProcessStructure) => {
-    return new ProcessStructure(oldProcessStructure.structureName, oldProcessStructure.initials,
-        this.getProcessStagesFromOriginal(oldProcessStructure.stages), oldProcessStructure.sankey);
+    return new ProcessStructure(oldProcessStructure.structureName,
+        oldProcessStructure.initials,
+        getProcessStagesFromOriginal(oldProcessStructure.stages),
+        oldProcessStructure.sankey);
 };
 
-module.exports.getProcessStagesFromOriginal = (oldStages) => {
+/*********************/
+/* Private Functions */
+/*********************/
+
+let getProcessStagesFromOriginal = function (oldStages) {
     let newStages = [];
     oldStages.forEach((stage) => {
         newStages.push(new processStructureStage(
@@ -111,11 +117,6 @@ module.exports.getProcessStagesFromOriginal = (oldStages) => {
     });
     return newStages;
 };
-
-/*********************/
-/* Private Functions */
-/*********************/
-
 
 let sankeyToStructure = function (sankeyContent, callback) {
     let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));

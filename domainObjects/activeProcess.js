@@ -1,8 +1,8 @@
 class activeProcess {
 
-    constructor(processName, timeCreation, notificationTime, currentStages, initials, stages, lastApproached) {
+    constructor(processName, creationTime, notificationTime, currentStages, initials, stages, lastApproached) {
         this._processName = processName;
-        this._timeCreation = timeCreation;
+        this._creationTime = creationTime;
         this._notificationTime = notificationTime;
         this._currentStages = currentStages;
         this._initials = initials;
@@ -33,13 +33,13 @@ class activeProcess {
         this._processName = value;
     }
 
-    get timeCreation() {
-        return this._timeCreation;
+    get creationTime() {
+        return this._creationTime;
     }
 
-    set timeCreation(value) {
-        if (this.timeCreation === undefined)
-            this._timeCreation = value;
+    set creationTime(value) {
+        if (this.creationTime === undefined)
+            this._creationTime = value;
         else throw new Error();
     }
 

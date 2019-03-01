@@ -14,7 +14,7 @@ const activeProcessSchema = new Schema({
         nextStages: [Number],
         stagesToWaitFor: [Number],
         originStagesToWaitFor: [Number],
-        timeApproval: Date,
+        approvalTime: Date,
         onlineForms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
         filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
         attachedFilesNames: [String],

@@ -11,7 +11,7 @@ const processReportSchema = new Schema({
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
         stageNum: Number,
-        timeApproval: Date,
+        approvalTime: Date,
         comments: String,
     }],
 });
