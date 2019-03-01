@@ -1,6 +1,5 @@
-let processStructureAccessor = require('../../models/accessors/processesAccessor');
+let processStructureAccessor = require('../../models/accessors/processStructureAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
-let processStructureStage = require('../../domainObjects/processStructureStage');
 let ProcessStructure = require('../../domainObjects/processStructure');
 let processStructureSankey = require('../../domainObjects/processStructureSankey');
 
@@ -92,31 +91,10 @@ module.exports.getProcessStructureStagesForDB = function (originStages) {
     return returnStages;
 };
 
-module.exports.getProcessStructureFromOriginal = (oldProcessStructure) => {
-    return new ProcessStructure(oldProcessStructure.structureName,
-        oldProcessStructure.initials,
-        getProcessStagesFromOriginal(oldProcessStructure.stages),
-        oldProcessStructure.sankey);
-};
 
 /*********************/
 /* Private Functions */
 /*********************/
-
-let getProcessStagesFromOriginal = function (oldStages) {
-    let newStages = [];
-    oldStages.forEach((stage) => {
-        newStages.push(new processStructureStage(
-            stage.roleID,
-            stage.stageNum,
-            stage.nextStages,
-            stage.stagesToWaitFor,
-            stage.onlineForms,
-            stage.attachedFilesNames
-        ));
-    });
-    return newStages;
-};
 
 let sankeyToStructure = function (sankeyContent, callback) {
     let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));

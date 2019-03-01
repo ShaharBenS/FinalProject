@@ -1,4 +1,4 @@
-let processAccessor = require('../../models/accessors/processesAccessor');
+let processAccessor = require('../../models/accessors/activeProcessesAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let processStructureController = require('./processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
@@ -186,7 +186,7 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
                 (err) => {
                     if (err) callback(err);
                     else {
-                        addActiveProcessDetailsToReport(processName, userEmail, stages.stageNum, today, stageDetails.comments, (err) => {
+                        addActiveProcessDetailsToReport(processName, userEmail, stageDetails.stageNum, today, stageDetails.comments, (err) => {
                             if (err) callback(err);
                             else {
                                 advanceProcess(processName, stageDetails.nextStages, callback);
@@ -364,25 +364,4 @@ module.exports.getActiveProcessByProcessName = function (processName, callback) 
             else callback(null, processArray[0]);
         }
     });
-};
-
-module.exports.getActiveProcessFromOriginal = function (oldActiveProcess) {
-    let processObj = new activeProcess(oldActiveProcess.processName, oldActiveProcess.creationTime,
-        oldActiveProcess.notificationTime, oldActiveProcess.currentStages, oldActiveProcess.initials, [], oldActiveProcess.lastApproached);
-    oldActiveProcess.stages.forEach((stage) => {
-        processObj.stages.push(
-            new activeProcessStage(
-                stage.roleID,
-                stage.userEmail,
-                stage.stageNum,
-                stage.nextStages,
-                stage.stagesToWaitFor,
-                stage.originStagesToWaitFor,
-                stage.approvalTime,
-                stage.onlineForms,
-                stage.filledOnlineForms,
-                stage.attachedFilesNames,
-                stage.comments))
-    });
-    return processObj;
 };
