@@ -13,7 +13,7 @@ class processStructureSankey
         });
     }
 
-        getStages(roleNameToIdFunc)
+    getStages(roleNameToIdFunc)
     {
         let sankeyStages = this.getSankeyStages();
         return sankeyStages.map((stage, index) =>
@@ -79,6 +79,107 @@ class processStructureSankey
             });
             return index;
         });
+    }
+
+    hasMoreThanOneFlow(){
+        let connections = this.getConnections();
+        let flows = 0;
+        this.getSankeyStages().forEach((role)=>{
+            let result = true;
+            connections.forEach((connection)=>{
+                if(connection.target.node === role.id){
+                    result = false;
+                }
+            });
+            if(result){
+                flows++;
+            }
+        });
+        return flows > 1;
+    }
+
+    hasMultipleConnections(){
+        let result = false;
+        this.getConnections().forEach(connection=>{
+            this.getConnections().forEach(_connection=>{
+                if(_connection.id !== connection.id){
+                    if(_connection.source.node === connection.source.node){
+                        if(_connection.target.node === connection.target.node){
+                            result = true;
+                        }
+                    }
+                }
+            })
+        });
+        return result;
+    }
+
+    hasCycles(){
+        let connections = this.getConnections();
+        let flows = [];
+        this.getSankeyStages().forEach((role)=>{
+            let result = true;
+            connections.forEach((connection)=>{
+                if(connection.target.node === role.id){
+                    result = false;
+                }
+            });
+            if(result){
+                flows.push(role.id);
+            }
+        });
+
+        var isCyclic = function (stack,node_id){
+            stack.push(node_id);
+            let result = !connections.every((connection)=>{
+                if(connection.source.node ===  node_id){
+                    if(stack.includes(connection.target.node)){
+                        return false;
+                    }
+                    else{
+                        return !isCyclic(stack,connection.target.node);
+                    }
+                }
+                return true;
+            });
+            stack.pop();
+            return result;
+        };
+
+        return !this.getSankeyStages().every((role)=>{
+            if(flows.includes(role.id)){
+                //Start scanning the tree from this root
+                return !isCyclic([], role.id);
+
+            }
+            return true;
+        });
+    }
+
+    firstStageIsNotInitial(){
+        let connections = this.getConnections();
+        let flows = [];
+        this.getSankeyStages().forEach((role)=>{
+            let result = true;
+            connections.forEach((connection)=>{
+                if(connection.target.node === role.id){
+                    result = false;
+                }
+            });
+            if(result){
+                flows.push(role.id)
+            }
+        });
+        return flows.every((flow)=>{
+            let initials = this.getSankeyStages().filter((figure) =>
+            {
+                return figure.bgColor === '#5957FF';
+
+            }).map(stage=>{
+                return stage.id;
+            });
+            return !initials.includes(flow);
+        })
     }
 }
 

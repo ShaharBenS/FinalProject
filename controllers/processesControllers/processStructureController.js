@@ -100,21 +100,35 @@ let sankeyToStructure = function (sankeyContent, callback) {
     let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
     let initials = processStructureSankeyObject.getInitials();
 
-    usersAndRolesController.getAllRoles((err, roles) => {
-        if (err) {
-            callback(err);
-        }
-        let rolesMap = {};
-        roles.forEach(role => {
-            rolesMap[role.roleName] = role._id;
-        });
-        let stages = processStructureSankeyObject.getStages((roleName) => {
-            return rolesMap[roleName]
-        });
-        callback(null,
-            {
-                initials: initials,
-                stages: stages,
+    if(processStructureSankeyObject.hasMoreThanOneFlow()){
+        callback('ERROR: there are two flows in the graph');
+    }
+    else if(processStructureSankeyObject.hasMultipleConnections()){
+        callback('ERROR: there are multiple connections between two nodes')
+    }
+    else if(processStructureSankeyObject.firstStageIsNotInitial()){
+        callback('ERROR: first stage must be an initial stage')
+    }
+    else if(processStructureSankeyObject.hasCycles()){
+        callback('ERROR: structure contains cycles');
+    }
+    else{
+        usersAndRolesController.getAllRoles((err, roles) => {
+            if (err) {
+                callback(err);
+            }
+            let rolesMap = {};
+            roles.forEach(role => {
+                rolesMap[role.roleName] = role._id;
             });
-    });
+            let stages = processStructureSankeyObject.getStages((roleName) => {
+                return rolesMap[roleName]
+            });
+            callback(null,
+                {
+                    initials: initials,
+                    stages: stages,
+                });
+        });
+    }
 };
