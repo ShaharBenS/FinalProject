@@ -96,11 +96,9 @@ function confirm() {
 function seeFormsOpened(){
     //TODO: omri
     // you can add things to:
-    document.getElementById("forms-div");
-    // append to children, see: usersAndRolesTree.js line 69
-
-
-    users_div.innerHTML = '';
+    let formsDiv = document.getElementById("forms-div");
+    // append to children, see: usersAndRolesTree.js line 6
+    formsDiv.innerHTML = '';
 
     roleToEmails[roleName].forEach((userEmail) => {
         let div = document.createElement("div");
