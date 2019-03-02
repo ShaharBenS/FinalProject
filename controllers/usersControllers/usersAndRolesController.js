@@ -31,13 +31,26 @@ module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
 };
 
 module.exports.addUsersAndRole = (roleName, usersEmail, callback) => {
-    userAccessor.createRole({roleName: roleName, userEmail: usersEmail, children: []}, (err, usersAndRole) => {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, usersAndRole)
+    let isDuplicatedEmails = false;
+    let i = 0;
+    usersEmail.every((email) => {
+        if (usersEmail.slice(i + 1, usersEmail.length).includes(email)) {
+            isDuplicatedEmails = true;
+            return false;
         }
+        i++;
+        return true;
     });
+    if (isDuplicatedEmails)
+        callback(new Error("duplicated emails are not allowed"));
+    else
+        userAccessor.createRole({roleName: roleName, userEmail: usersEmail, children: []}, (err, usersAndRole) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, usersAndRole)
+            }
+        });
 };
 
 module.exports.getAllRoles = (callback) => {
@@ -162,6 +175,14 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
             else callback(null, user[0].roleName);
         }
     });
+};
+
+module.exports.getRoleByRoleName = function (roleName, callback) {
+    userAccessor.findRole({roleName: roleName}, (err, role) => {
+        if (err) callback(err);
+        else if (role.length === 0) callback(null, null);
+        else callback(null, role[0]);
+    })
 };
 
 

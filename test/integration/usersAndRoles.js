@@ -12,7 +12,7 @@ let globalBefore = async function () {
 };
 
 let globalBeforeEach = function () {
-    modelUsersAndRoles.ensureIndexes();
+    modelUsersAndRoles.createIndexes();
 };
 
 let globalAfter = function () {
@@ -21,12 +21,6 @@ let globalAfter = function () {
 
 let globalAfterEach = function () {
     mongoose.connection.db.dropDatabase();
-};
-
-let compareRoles = function (role1, role2) {
-    assert.equal(role1.roleName, role2.roleName);
-    assert.deepEqual(role1.children, role2.children);
-    assert.deepEqual(role1.userEmail, role2.userEmail);
 };
 
 describe('1. addUsersAndRole', function () {
@@ -111,7 +105,149 @@ describe('2. getAllRoles', function () {
             });
         });
     });
-
-
 });
 
+describe('3. addChildrenToRole', function () {
+
+    before(globalBefore);
+    beforeEach(globalBeforeEach);
+    afterEach(globalAfterEach);
+    after(globalAfter);
+
+    it('3.1 adds one child', function (done) {
+        usersAndRolesController.addUsersAndRole('role0', [], (_, role0) => {
+            usersAndRolesController.addUsersAndRole('childOfRole0', [], (_, child) => {
+                usersAndRolesController.addChildrenToRole(role0._id, child._id, (err, modificationMsg) => {
+                    if (err) done(err);
+                    else {
+                        assert.equal(1, modificationMsg.ok);
+                        usersAndRolesController.getRoleByRoleName('role0', (err, role) => {
+                            if (err) done(err);
+                            else if (role === null) done(new Error("role does not exists"));
+                            else {
+                                assert.deepEqual([child._id], role.children);
+                                assert.deepEqual([], role.userEmail);
+                                assert.equal('role0', role.roleName);
+                                done();
+                            }
+                        });
+                    }
+                })
+            })
+        });
+    });
+
+    it('3.2 adds several children', function (done) {
+        usersAndRolesController.addUsersAndRole('role0', [], (_, role0) => {
+            usersAndRolesController.addUsersAndRole('child1OfRole0', [], (_, child1) => {
+                usersAndRolesController.addUsersAndRole('child2OfRole0', [], (_, child2) => {
+                    usersAndRolesController.addUsersAndRole('child3OfRole0', [], (_, child3) => {
+                        usersAndRolesController.addChildrenToRole(role0._id, child1._id, (_, modificationMsg1) => {
+                            usersAndRolesController.addChildrenToRole(role0._id, child2._id, (_, modificationMsg2) => {
+                                usersAndRolesController.addChildrenToRole(role0._id, child3._id, (_, modificationMsg3) => {
+                                    assert.equal(1, modificationMsg1.ok);
+                                    assert.equal(1, modificationMsg2.ok);
+                                    assert.equal(1, modificationMsg3.ok);
+                                    usersAndRolesController.getRoleByRoleName('role0', (err, role) => {
+                                        if (err) done(err);
+                                        else if (role === null) done(new Error("role does not exists"));
+                                        else {
+                                            assert.deepEqual([child1._id, child2._id, child3._id], role.children);
+                                            assert.deepEqual([], role.userEmail);
+                                            assert.equal('role0', role.roleName);
+                                            done();
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
+describe('4. getRoleByRoleName', function () {
+
+    before(globalBefore);
+    beforeEach(globalBeforeEach);
+    afterEach(globalAfterEach);
+    after(globalAfter);
+
+    it('4.1 checks on invalid role', function (done) {
+        usersAndRolesController.getRoleByRoleName('MyNotExistingRole', (err, res) => {
+            if (err === null && res === null) done();
+            else done(new Error("should not return a thing"));
+        });
+    });
+
+    it('4.2 checks on existing role', function (done) {
+        usersAndRolesController.addUsersAndRole('role0', ['email1', 'email2'], (err, role0) => {
+            if (err) done(err);
+            else {
+                assert.equal('role0', role0.roleName);
+                assert.deepEqual(['email1', 'email2'], role0.userEmail);
+                assert.deepEqual([], role0.children);
+                done();
+            }
+        });
+    });
+});
+
+
+describe('5. getRoleIdByUsername', function () {
+
+    before(globalBefore);
+    beforeEach(globalBeforeEach);
+    afterEach(globalAfterEach);
+    after(globalAfter);
+
+    it('5.1 checks on invalid role', function (done) {
+        usersAndRolesController.getRoleIdByUsername('MyNotExistingRole', (err) => {
+            if (err) done();
+            else done(new Error("should not return a thing"));
+        });
+    });
+
+    it('5.2 checks on existing role', function (done) {
+        usersAndRolesController.addUsersAndRole('role0', ['email1', 'email2'], (_, role0) => {
+            usersAndRolesController.getRoleIdByUsername('email1', (err, roleID) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(role0._id, roleID);
+                    done()
+                }
+            });
+        });
+    });
+});
+
+describe('6. getRoleNameByRoleID', function () {
+
+    before(globalBefore);
+    beforeEach(globalBeforeEach);
+    afterEach(globalAfterEach);
+    after(globalAfter);
+
+    it('6.1 checks on invalid role', function (done) {
+        usersAndRolesController.getRoleNameByRoleID('MyNotExistingRole', (err) => {
+            if (err) done();
+            else done(new Error("should not return a thing"));
+        });
+    });
+
+    it('6.2 checks on existing role', function (done) {
+        this.timeout(5000);
+        usersAndRolesController.addUsersAndRole('role0', ['email1', 'email2'], (_, role0) => {
+            usersAndRolesController.getRoleNameByRoleID(role0._id, (err, roleName) => {
+                if (err) done(err);
+                else {
+                    assert.equal('role0', roleName);
+                    done()
+                }
+            });
+        });
+    });
+});
