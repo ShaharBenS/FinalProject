@@ -875,7 +875,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         //  var y = event.y;
 
         var items = {
-            color: {name: "Line Color", icon: "x ion-android-color-palette"}
+            //color: {name: "Line Color", icon: "x ion-android-color-palette"}
         };
 
         /*if (figure instanceof draw2d.shape.basic.Label) {

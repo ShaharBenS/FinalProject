@@ -41378,7 +41378,7 @@ draw2d.shape.basic.Rectangle = draw2d.VectorFigure.extend({
         attributes =$.extend({},{
             width : this.getWidth(),
             height: this.getHeight(),
-            r     : this.getRadius()
+            r     : this.getRadius(),
         },attributes);
 
         if(this.dasharray!==null){
@@ -65097,7 +65097,7 @@ draw2d.shape.state.State = draw2d.shape.layout.VerticalLayout.extend({
         //
         this.add(top);
         this.add(center);
-        this.add(bottom);        
+        this.add(bottom);
      },
      
      /**
@@ -65413,7 +65413,7 @@ draw2d.ui.LabelInplaceEditor =  draw2d.ui.LabelEditor.extend({
         this.html = $('<input id="inplaceeditor">');
         this.html.val(label.getText());
         this.html.hide();
-        
+
         $("body").append(this.html);
         
         this.html.autoResize({animate:false});
@@ -65472,8 +65472,34 @@ draw2d.ui.LabelInplaceEditor =  draw2d.ui.LabelEditor.extend({
         this.html.unbind("blur",this.commitCallback);
         $("body").unbind("click",this.commitCallback);
         var label = this.html.val();
+
+        let success = false;
+        if(diagramContext === '__tree__'){
+            success = Object.keys(idToRole).every(id=>{
+                if(idToRole[id] === label){
+                    if(label !== this.label.text){
+                        alert("A role with that name already exists");
+                    }
+                    return false;
+                }
+                return true;
+            });
+            if(success){
+                Object.keys(idToRole).forEach(id=>{
+                    if(idToRole[id] === this.label.text){
+                        idToRole[id] = label;
+                        let emails = roleToEmails[this.label.text];
+                        delete roleToEmails[this.label.text];
+                        roleToEmails[label] = emails;
+                        success = true;
+                    }
+                });
+            }
+        }
         var cmd =new draw2d.command.CommandAttr(this.label, {text:label});
-        this.label.getCanvas().getCommandStack().execute(cmd);
+        if(success){
+            this.label.getCanvas().getCommandStack().execute(cmd);
+        }
         this.html.fadeOut($.proxy(function(){
             this.html.remove();
             this.html = null;
