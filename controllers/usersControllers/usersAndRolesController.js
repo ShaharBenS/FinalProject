@@ -202,6 +202,25 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
     });
 };
 
+module.exports.getAllUsers = (callback) =>
+{
+    let toReturn = [];
+    userAccessor.findUser({}, (err,res)=>{
+        if(err) callback(err);
+        else
+        {
+            for(let i=0;i< res.length;i++)
+            {
+                for(let j=0;j < res[i].length;j++)
+                {
+                    toReturn.push(res[i][j].userEmail);
+                }
+            }
+            callback(null,toReturn);
+        }
+    });
+};
+
 
 
 

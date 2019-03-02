@@ -1,25 +1,35 @@
 class UserPermissions {
 
-    constructor(usersPermission, structurePermission,observerPermission) {
-        this._usersPermission = usersPermission;
-        this._structurePermission = structurePermission;
-        this._observerPermission = observerPermission;
+    constructor(userEmail, permissionsArray) {
+        this._userEmail = userEmail;
+        this._usersManagementPermission = permissionsArray[0];
+        this._structureManagementPermission = permissionsArray[1];
+        this._observerPermission = permissionsArray[2];
+        this._permissionsManagementPermission = permissionsArray[3];
     }
 
-    get usersPermission() {
-        return this._usersPermission;
+    get userEmail() {
+        return this._userEmail;
     }
 
-    set usersPermission(value) {
-        this._usersPermission = value;
+    set userEmail(value) {
+        this._userEmail = value;
     }
 
-    get structurePermission() {
-        return this._structurePermission;
+    get usersManagementPermission() {
+        return this._usersManagementPermission;
     }
 
-    set structurePermission(value) {
-        this._structurePermission = value;
+    set usersManagementPermission(value) {
+        this._usersManagementPermission = value;
+    }
+
+    get structureManagementPermission() {
+        return this._structureManagementPermission;
+    }
+
+    set structureManagementPermission(value) {
+        this._structureManagementPermission = value;
 
     }
 
@@ -27,8 +37,27 @@ class UserPermissions {
         return this._observerPermission;
     }
 
-    set currentStages(value) {
+    set observerPermission(value) {
         this._observerPermission = value;
+    }
+
+    get permissionsManagementPermission() {
+        return this._permissionsManagementPermission;
+    }
+
+    set permissionsManagementPermission(value) {
+        this._permissionsManagementPermission = value;
+    }
+
+    getPermissionsArray(){
+        return [this._usersManagementPermission, this._structureManagementPermission, this._observerPermission,
+            this._permissionsManagementPermission];
+    }
+
+    atLeastOneTruePermission(){
+        return this._usersManagementPermission === true || this._structureManagementPermission === true
+            || this._observerPermission === true;
+
     }
 }
 
