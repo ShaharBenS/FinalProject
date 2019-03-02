@@ -79,7 +79,7 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcess.getAllActiveProcessesByUser(userName, (err1, array1) => {
         activeProcess.convertActiveProcessesWithRoleIDToRoleName(array1, (err2, array2) => {
-            res.render('activeProcessesViews/myActiveProcessesPage', {table: [array1,array2]});
+            res.render('activeProcessesViews/myActiveProcessesPage', {table: array2});
         });
     });
 });
