@@ -1,4 +1,4 @@
-let processAccessor = require('../../models/accessors/processesAccessor');
+let processAccessor = require('../../models/accessors/activeProcessesAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let processStructureController = require('./processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
@@ -48,35 +48,27 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
  * @param callback
  */
 
-module.exports.startProcessByUsername = (userEmail, processStructureName, processName, callback) =>
-{
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) =>
-    {
+module.exports.startProcessByUsername = (userEmail, processStructureName, processName, callback) => {
+    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
         if (err) {
             callback(err);
-        }
-        else {
-            processStructureController.getProcessStructure(processStructureName, (err, processStructure) =>
-            {
+        } else {
+            processStructureController.getProcessStructure(processStructureName, (err, processStructure) => {
                 if (err) {
                     callback(err);
-                }
-                else {
-                    processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) =>
-                    {
+                } else {
+                    processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
                         if (err) {
                             callback(err);
-                        }
-                        else {
+                        } else {
                             if (activeProcesses === null) {
-                                let initialStage = processStructure.getInitialStageByRoleID(roleID.id);
+                                let initialStage = processStructure.getInitialStageByRoleID(roleID);
                                 if (initialStage === -1) {
                                     callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
                                     return;
                                 }
                                 let newStages = [];
-                                processStructure.stages.forEach((stage) =>
-                                {
+                                processStructure.stages.forEach((stage) => {
                                     newStages.push({
                                         roleID: stage.roleID,
                                         userEmail: stage.stageNum === initialStage ? userEmail : null,
@@ -84,7 +76,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         nextStages: stage.nextStages,
                                         stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
                                         originStagesToWaitFor: stage.stagesToWaitFor,
-                                        timeApproval: null, //TODO: check if can be null | ORIGIN :new Date(-8640000000000000)
+                                        approvalTime: null,
                                         onlineForms: stage.onlineForms,
                                         filledOnlineForms: [],
                                         attachedFilesNames: stage.attachedFilesNames,
@@ -92,18 +84,17 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
-                                    timeCreation: today,
+                                    creationTime: today,
                                     currentStages: [initialStage],
                                     processName: processName,
                                     initials: processStructure.initials,
                                     stages: newStages,
-                                }, (err) =>
-                                {
+                                    lastApproached: today,
+                                }, (err) => {
                                     if (err) callback(err);
                                     else addProcessReport(processName, today, callback);
                                 });
-                            }
-                            else {
+                            } else {
                                 callback(new Error(">>> ERROR: there is already process with the name: " + processName));
                             }
                         }
@@ -120,23 +111,17 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
  * @param userEmail
  * @param callback
  */
-module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) =>
-{
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) =>
-    {
+module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
+    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
         if (err) {
             callback(err);
-        }
-        else {
+        } else {
             let waitingActiveProcesses = [];
-            processAccessor.findActiveProcesses({}, (err, activeProcesses) =>
-            {
+            processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
-                    activeProcesses.forEach((process) =>
-                    {
-                        if(process.isWaitingForUser(roleID,userEmail))
-                        {
+                    activeProcesses.forEach((process) => {
+                        if (process.isWaitingForUser(roleID, userEmail)) {
                             waitingActiveProcesses.push(process);
                         }
                     });
@@ -154,22 +139,18 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) =>
  * @param userEmail
  * @param callback
  */
-module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
-{
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err) =>
-    {
+module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
+    usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
             callback(err);
-        }
-        else {
-            processAccessor.findActiveProcesses({}, (err, activeProcesses) =>
-            {
+        } else {
+            processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
                     let toReturnActiveProcesses = [];
                     /////////////
                     const processName1 = "TheProcessName";
-                    const timeCreation = new Date();
+                    const creationTime = new Date();
                     const notificationTime = 10;
                     const currentStages = [0];
                     const initials = [0, 1];
@@ -188,29 +169,26 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
                     stage5 = new activeProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
                     stage6 = new activeProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
                     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-                    testProcess = new activeProcess(processName1, timeCreation, notificationTime, currentStages.slice(), initials, stages);
+                    testProcess = new activeProcess(processName1, creationTime, notificationTime, currentStages.slice(), initials, stages);
                     activeProcesses = [testProcess];
                     let rolesOfCurrentStages = [];
-                    activeProcesses.forEach((process1) =>
-                    {
-                        let currentRoles = [];
-                        process1.currentStages.forEach((process2) => {
-                            usersAndRolesController.getRoleNameByRoleID(process2, (err, roleName) =>
-                            {
-                                if (err) callback(err);
-                                else {
-                                    currentRoles.push(roleName);
-                                }
+                    activeProcesses.forEach((process1) => {
+                            let currentRoles = [];
+                            process1.currentStages.forEach((process2) => {
+                                usersAndRolesController.getRoleNameByRoleID(process2, (err, roleName) => {
+                                    if (err) callback(err);
+                                    else {
+                                        currentRoles.push(roleName);
+                                    }
+                                });
                             });
-                        });
-                        rolesOfCurrentStages.push(currentRoles);
-                    }
+                            rolesOfCurrentStages.push(currentRoles);
+                        }
                     );
                     /////////////
-                    activeProcesses.forEach((process) =>
-                    {
-                       // if(process.isParticipatingInProcess(userEmail))
-                            toReturnActiveProcesses.push(process);
+                    activeProcesses.forEach((process) => {
+                        // if(process.isParticipatingInProcess(userEmail))
+                        toReturnActiveProcesses.push(process);
                     });
                     callback(null, toReturnActiveProcesses);
                 }
@@ -230,20 +208,20 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) =>
  * @param fileNames | added files
  * @param callback
  */
-module.exports.handleProcess = (userEmail, processName, stageDetails, filledForms, fileNames, callback) =>
-{
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) =>
-    {
+module.exports.handleProcess = (userEmail, processName, stageDetails, filledForms, fileNames, callback) => {
+    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
             process.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
-            processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages},
-                (err) =>
-                {
+            let today = new Date();
+            processAccessor.updateActiveProcess({processName: processName}, {
+                    stages: process.stages,
+                    lastApproached: today
+                },
+                (err) => {
                     if (err) callback(err);
                     else {
-                        addActiveProcessDetailsToReport(processName, userEmail, stages.stageNum, today, stageDetails.comments, (err) =>
-                        {
+                        addActiveProcessDetailsToReport(processName, userEmail, stageDetails.stageNum, today, stageDetails.comments, (err) => {
                             if (err) callback(err);
                             else {
                                 advanceProcess(processName, stageDetails.nextStages, callback);
@@ -262,20 +240,16 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
  * @param nextStages
  * @param callback
  */
-const advanceProcess = (processName, nextStages, callback) =>
-{
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) =>
-    {
+const advanceProcess = (processName, nextStages, callback) => {
+    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) {
             callback(err);
-        }
-        else {
+        } else {
             process.advanceProcess(nextStages);
             processAccessor.updateActiveProcess({processName: processName}, {
                     currentStages: process.currentStages, stages: process.stages
                 },
-                (err, res) =>
-                {
+                (err, res) => {
                     if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
                     else callback(null, res);
                 });
@@ -283,48 +257,41 @@ const advanceProcess = (processName, nextStages, callback) =>
     });
 };
 
-const addProcessReport = (processName, timeCreation, callback) =>
-{
+const addProcessReport = (processName, creationTime, callback) => {
     processAccessor.createProcessReport({
         processName: processName,
         status: 'activated',
-        timeCreation: timeCreation,
+        creationTime: creationTime,
         stages: []
-    }, (err) =>
-    {
+    }, (err) => {
         if (err) callback(err);
         else callback(null);
     });
 };
 
-const addActiveProcessDetailsToReport = (processName, userEmail, stageNum, timeApproval, comments, callback) =>
-{
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) =>
-    {
+const addActiveProcessDetailsToReport = (processName, userEmail, stageNum, approvalTime, comments, callback) => {
+    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
-            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) =>
-            {
+            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) callback(err);
                 else {
                     let newStage = {
-                        roleID: roleID, userEmail: userEmail, stageNum: stageNum, timeApproval: timeApproval,
+                        roleID: roleID, userEmail: userEmail, stageNum: stageNum, approvalTime: approvalTime,
                         comments: comments
                     };
                     let stages = [];
-                    processReport.stages.forEach((stage) =>
-                    {
+                    processReport.stages.forEach((stage) => {
                         stages.push({
                             roleID: stage.roleID,
                             userEmail: stage.userEmail,
                             stageNum: stage.stageNum,
-                            timeApproval: stage.timeApproval,
+                            approvalTime: stage.approvalTime,
                             comments: stage.comments
                         })
                     });
                     stages.push(newStage);
-                    processAccessor.updateProcessReport({processName: processName}, {stages: stages}, (err) =>
-                    {
+                    processAccessor.updateProcessReport({processName: processName}, {stages: stages}, (err) => {
                         if (err) callback(err);
                         else callback(null);
                     });
@@ -334,38 +301,32 @@ const addActiveProcessDetailsToReport = (processName, userEmail, stageNum, timeA
     });
 };
 
-module.exports.getAllActiveProcessDetails = (processName, callback) =>
-{
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) =>
-    {
+module.exports.getAllActiveProcessDetails = (processName, callback) => {
+    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
             let returnProcessDetails = {
-                processName: processReport.processName, timeCreation: processReport.timeCreation,
+                processName: processReport.processName, creationTime: processReport.creationTime,
                 status: processReport.status
             };
-            returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) =>
-            {
+            returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
                 callback(null, [returnProcessDetails, newStages]);
             });
         }
     });
 };
 
-const returnStagesWithRoleName = (index, stages, newStages, callback) =>
-{
+const returnStagesWithRoleName = (index, stages, newStages, callback) => {
     if (index === stages.length) {
         callback(null, newStages);
-    }
-    else {
+    } else {
         let stage = stages[index];
-        usersAndRolesController.getRoleNameByRoleID(stage.roleID, (err, roleName) =>
-        {
+        usersAndRolesController.getRoleNameByRoleID(stage.roleID, (err, roleName) => {
             if (err) callback(err);
             else {
                 newStages.push({
                     roleID: roleName, userEmail: stage.userEmail,
-                    stageNum: stage.stageNum, timeApproval: stage.timeApproval, comments: stage.comments
+                    stageNum: stage.stageNum, approvalTime: stage.approvalTime, comments: stage.comments
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }
@@ -373,19 +334,15 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) =>
     }
 };
 
-module.exports.takePartInActiveProcess = (processName, userEmail, callback) =>
-{
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) =>
-    {
+module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
+    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) =>
-            {
+            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) callback(err);
                 else {
                     let newStages = [];
-                    process.stages.forEach((stage) =>
-                    {
+                    process.stages.forEach((stage) => {
                         newStages.push(
                             {
                                 roleID: stage.roleID,
@@ -394,7 +351,7 @@ module.exports.takePartInActiveProcess = (processName, userEmail, callback) =>
                                 nextStages: stage.nextStages,
                                 stagesToWaitFor: stage.stagesToWaitFor,
                                 originStagesToWaitFor: stage.originStagesToWaitFor,
-                                timeApproval: stage.timeApproval,
+                                approvalTime: stage.approvalTime,
                                 onlineForms: stage.onlineForms,
                                 filledOnlineForms: stage.filledOnlineForms,
                                 attachedFilesNames: stage.attachedFilesNames,
@@ -408,15 +365,12 @@ module.exports.takePartInActiveProcess = (processName, userEmail, callback) =>
     });
 };
 
-module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
-{
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) =>
-    {
+module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) => {
+    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
             let newStages = [];
-            process.stages.forEach((stage) =>
-            {
+            process.stages.forEach((stage) => {
                 newStages.push(
                     {
                         roleID: stage.roleID,
@@ -425,7 +379,7 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
                         nextStages: stage.nextStages,
                         stagesToWaitFor: stage.stagesToWaitFor,
                         originStagesToWaitFor: stage.originStagesToWaitFor,
-                        timeApproval: stage.timeApproval,
+                        approvalTime: stage.approvalTime,
                         onlineForms: stage.onlineForms,
                         filledOnlineForms: stage.filledOnlineForms,
                         attachedFilesNames: stage.attachedFilesNames,
@@ -437,37 +391,12 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
     });
 };
 
-module.exports.getActiveProcessByProcessName = function (processName, callback)
-{
-    processAccessor.findActiveProcesses({processName: processName}, (err, processArray) =>
-    {
+module.exports.getActiveProcessByProcessName = function (processName, callback) {
+    processAccessor.findActiveProcesses({processName: processName}, (err, processArray) => {
         if (err) callback(err);
         else {
             if (processArray.length === 0) callback(null, null);
             else callback(null, processArray[0]);
         }
     });
-};
-
-module.exports.getActiveProcessFromOriginal = function (oldProcessStructure)
-{
-    let processObj = new activeProcess(oldProcessStructure.processName, oldProcessStructure.timeCreation,
-        oldProcessStructure.notificationTime, oldProcessStructure.currentStages, oldProcessStructure.initials, []);
-    oldProcessStructure.stages.forEach((stage) =>
-    {
-        processObj.stages.push(
-            new activeProcessStage(
-                stage.roleID,
-                stage.userEmail,
-                stage.stageNum,
-                stage.nextStages,
-                stage.stagesToWaitFor,
-                stage.originStagesToWaitFor,
-                stage.timeApproval,
-                stage.onlineForms,
-                stage.filledOnlineForms,
-                stage.attachedFilesNames,
-                stage.comments))
-    });
-    return processObj;
 };
