@@ -675,8 +675,31 @@ sankey.dialog.FileSave = Class.extend({
                     },
                     data: data,
                 }
-            ).done(function ()
+            ).done(function (text,status)
             {
+                if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+                    if(text === 'success'){
+                        if(status === 'success'){
+                            alert('Process Structure Saved Successfully');
+                            window.location.href = '/userLoggedIn';
+                        }
+                    }
+                    else{
+                        alert(text);
+                    }
+                }
+                else if(diagramContext === '__tree__'){
+                    if(text === 'success'){
+                        if(status === 'success'){
+                            alert('Tree Saved Successfully');
+                            window.location.href = '/userLoggedIn';
+                        }
+                    }
+                    else{
+                        alert(text);
+                    }
+                }
+
                 //$('#githubSaveFileDialog').modal('hide');
                 _this.currentFileHandle.title = data.id;
                 successCallback();

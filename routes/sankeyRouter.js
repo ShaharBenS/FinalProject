@@ -10,7 +10,7 @@ router.post('/file/save',function (req,res) {
                 res.send(err);
             }
             else{
-                res.send('okay'); //TODO: redirect to index
+                res.send('success'); //TODO: redirect to index
             }
         });
     }
@@ -20,7 +20,7 @@ router.post('/file/save',function (req,res) {
                 res.send(err);
             }
             else{
-                res.send('okay');
+                res.send('success');
             }
         })
     }
@@ -30,7 +30,7 @@ router.post('/file/save',function (req,res) {
                 res.send(err);
             }
             else{
-                res.send("okay");
+                res.send('success');
             }
         })
     }

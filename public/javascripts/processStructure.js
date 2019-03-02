@@ -20,7 +20,7 @@ $( document ).ready(function() {
     };
 
     var modal1 = document.getElementById('see_forms_modal');
-    var span1 = document.getElementsByClassName("close")[0];
+    var span1 = document.getElementsByClassName("close")[1];
 
     span1.onclick = function() {
         modal1.style.display = "none";
