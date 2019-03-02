@@ -41,6 +41,7 @@ module.exports.addUsersAndRole = (roleName, usersEmail, callback) => {
 };
 
 module.exports.getAllRoles = (callback) => {
+
     return userAccessor.findRole({}, callback).select('roleName');
 };
 
