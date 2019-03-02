@@ -106,20 +106,22 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
  */
 
 module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
-    activeProcesses.forEach((process)=>{
-        process._currentStages.forEach((currentStage)=>{
-            usersAndRolesController.getRoleNameByRoleID(currentStage.roleID,(err,roleName)=>
-            {
-                if(err){
+    for (let i = 0; i <activeProcesses.length; i++) {
+        for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
+            let currentStageNumber = activeProcesses[i]._currentStages[j];
+            let currentStage = activeProcesses[i].stages[currentStageNumber];
+            let roleID = currentStage.roleID;
+            usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+                if (err) {
                     callback(err);
                 }
                 else
                 {
-                    currentStage.roleID = roleName;
+                    activeProcesses[i].stages[currentStageNumber].roleID = roleName;
                 }
-            })
-        });
-    });
+            });
+        }
+    }
     callback(null, activeProcesses);
 };
 
@@ -133,8 +135,8 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                 else {
                     let toReturnActiveProcesses = [];
                     activeProcesses.forEach((process) => {
-                        if(process.isParticipatingInProcess(userEmail))
-                        toReturnActiveProcesses.push(process);
+                        if (process.isParticipatingInProcess(userEmail))
+                            toReturnActiveProcesses.push(process);
                     });
                     callback(null, toReturnActiveProcesses);
                 }
