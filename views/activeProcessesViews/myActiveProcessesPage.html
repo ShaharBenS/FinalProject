@@ -23,7 +23,7 @@
             </tr>
             <%table.forEach(function(process){%>
             <tr>
-                <td><button id="<%=process[0]%>" class="btn btn-default" onclick="generateSummary(this.id)">הפק דו"ח</button></td>
+                <td><button id="<%=process._processName%>" class="btn btn-default" onclick="generateSummary(this.id)">הפק דו"ח</button></td>
                 <td><%=process._lastApproached%></td>
                 <td><%=process._currentStages[0].roleID%></td>
                 <td><%=process._processName%></td>
