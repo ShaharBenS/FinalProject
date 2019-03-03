@@ -1,5 +1,3 @@
 function generateSummary(processName) {
-    alert(processName);
-    window.location.href = '/reportsViews/processReport/?name=' + processName;
-
+    window.location.href = 'reportProcess/?process_name=' + processName;
 }
