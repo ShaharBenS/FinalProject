@@ -146,7 +146,7 @@ function confirmStartProcess() {
         if (status === "success") {
             if (responseText === "success") {
                 alert("תהליך נוצר בהצלחה");
-                window.location.href = '/userLoggedIn';
+                window.location.href = '/';
             } else {
                 alert(responseText);
             }

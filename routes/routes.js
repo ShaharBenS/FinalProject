@@ -8,7 +8,6 @@ let processNotificationRouter = require('./notificationRouters/notificationsRout
 
 let auth = require('./usersRouters/auth');
 let usersAndRolesRouter = require('./usersRouters/usersAndRolesRouter');
-let userLoggedInRouter = require('./usersRouters/userLoggedInRouter');
 
 let uploadFilesRouter = require('./uploadFiles/uploadFilesRouter');
 
@@ -23,7 +22,6 @@ module.exports = (app)=>{
     app.use('/processStructures', processStructuresRouter);
     app.use('/notifications', processNotificationRouter);
     app.use('/usersAndRoles', usersAndRolesRouter);
-    app.use('/userLoggedIn', userLoggedInRouter);
     app.use('/auth', auth);
     app.use('/uploadFile', uploadFilesRouter)
 };
