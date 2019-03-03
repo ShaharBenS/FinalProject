@@ -106,7 +106,9 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
  */
 
 module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
+    var arrayOfRoles = [];
     for (let i = 0; i <activeProcesses.length; i++) {
+        var arrayOfCurrentRolesInProcess = [];
         for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
             let currentStageNumber = activeProcesses[i]._currentStages[j];
             let currentStage = activeProcesses[i].stages[currentStageNumber];
@@ -117,13 +119,21 @@ module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, ca
                 }
                 else
                 {
-                    activeProcesses[i].stages[currentStageNumber].roleID = roleName;
+                    console.log('RoleName : ' + roleName);
+                    arrayOfCurrentRolesInProcess.push(roleName);
+                    console.log('Array1 : ' + arrayOfCurrentRolesInProcess.toString());
                 }
             });
         }
+        arrayOfRoles.push(arrayOfCurrentRolesInProcess);
     }
-    callback(null, activeProcesses);
+    console.log('Array2 : ' + arrayOfRoles[0].toString());
+    callback(null, arrayOfRoles);
 };
+
+function insert(arrayDest, index, arraySrc) {
+    Array.prototype.splice.apply(arrayDest, [index, 0].concat(arraySrc));
+}
 
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
