@@ -1,5 +1,4 @@
 let usersPermissionsSchema = require('../schemas/usersSchemas/usersPermissionsSchema.js');
-let usersPermissionsController = require('../../controllers/usersControllers/UsersPermissionsController.js');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 
 module.exports.addUserPermissions = (userEmail, userPermissions, callback) =>
@@ -22,7 +21,7 @@ module.exports.findUserPermissions = (userEmail, callback) =>
             }
             else
             {
-                callback(null,null);
+                callback(null,new UserPermissions(userEmail));
             }
         }
     });

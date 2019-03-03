@@ -211,9 +211,9 @@ module.exports.getAllUsers = (callback) =>
         {
             for(let i=0;i< res.length;i++)
             {
-                for(let j=0;j < res[i].length;j++)
+                for(let j=0;j < res[i].userEmail.length;j++)
                 {
-                    toReturn.push(res[i][j].userEmail);
+                    toReturn.push(res[i].userEmail[j]);
                 }
             }
             callback(null,toReturn);

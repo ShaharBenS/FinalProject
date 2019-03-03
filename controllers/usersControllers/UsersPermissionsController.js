@@ -8,7 +8,7 @@ module.exports.setUserPermissions = function (userPermissions,callback)
         }
         else
         {
-            if(res)
+            if(res.atLeastOneTruePermission())
             {
                 if(userPermissions.atLeastOneTruePermission())
                 {
@@ -32,4 +32,9 @@ module.exports.setUserPermissions = function (userPermissions,callback)
             }
         }
     });
+};
+
+module.exports.getUserPermissions = function (userEmail,callback)
+{
+    userPermissionsAccessor.findUserPermissions(userEmail,callback);
 };

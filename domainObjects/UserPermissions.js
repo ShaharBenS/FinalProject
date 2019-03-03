@@ -2,10 +2,10 @@ class UserPermissions {
 
     constructor(userEmail, permissionsArray) {
         this._userEmail = userEmail;
-        this._usersManagementPermission = permissionsArray[0];
-        this._structureManagementPermission = permissionsArray[1];
-        this._observerPermission = permissionsArray[2];
-        this._permissionsManagementPermission = permissionsArray[3];
+        this._usersManagementPermission = permissionsArray?permissionsArray[0]:false;
+        this._structureManagementPermission = permissionsArray?permissionsArray[1]:false;
+        this._observerPermission = permissionsArray?permissionsArray[2]:false;
+        this._permissionsManagementPermission = permissionsArray?permissionsArray[3]:false;
     }
 
     get userEmail() {

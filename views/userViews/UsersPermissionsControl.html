@@ -3,15 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script>
+        function showPermissionsByUser(selectObject)
+        {
+            let userEmail = selectObject.value;
+            let xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "/permissionsControl/getUserPermissions?userEmail=" + userEmail, false);
+            xmlHttp.send();
+            let response = xmlHttp.responseText;
+            let permissionsArray = JSON.parse(response);
+            document.getElementsByName("UserManagementsPermission")[0].checked = permissionsArray[0];
+            document.getElementsByName("StructureManagementsPermission")[0].checked = permissionsArray[1];
+            document.getElementsByName("ObserverPermission")[0].checked = permissionsArray[2];
+            document.getElementsByName("PermissionManagementPermission")[0].checked = permissionsArray[3];
+        }
+    </script>
 </head>
 <body>
-<form>
+<form action="/permissionsControl/setUserPermissions" method="post">
     <label>
-        <select>
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="opel">Opel</option>
-            <option value="audi">Audi</option>
+        <select name="userEmail" onchange="showPermissionsByUser(this)">
+            <%users.forEach(function(user){%>
+            <option value="<%=user%>"><%=user%></option>
+            <%})%>
         </select>
     </label>
     <br>
