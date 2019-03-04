@@ -1,19 +1,43 @@
-let select_role_clicked = function() {};
-let add_label = function () {};
+let select_role_clicked = function () {
+};
+let add_label = function () {
+};
 let is_role_list_set = false;
 
 //TODO : add button that centers the document 'centerDocument'
 //try to use the getJSON function
 
-$( document ).ready(function() {
+let formsOfStage = {};
+let onlineForms = {};
+
+let xmlHttpFromsOfStages = new XMLHttpRequest();
+xmlHttpFromsOfStages.onreadystatechange = function () {
+    if (xmlHttpFromsOfStages.readyState === 4 && xmlHttpFromsOfStages.status === 200) {
+        formsOfStage = JSON.parse(xmlHttpFromsOfStages.responseText)
+    }
+};
+xmlHttpFromsOfStages.open("GET", '/processStructures/getFormsToStages/', true);
+xmlHttpFromsOfStages.send("processStructureName=" + processStructureName);
+
+let xmlHttpOnlineForms = new XMLHttpRequest();
+xmlHttpOnlineForms.onreadystatechange = function () {
+    if (xmlHttpOnlineForms.readyState === 4 && xmlHttpOnlineForms.status === 200) {
+        forms = JSON.parse(xmlHttpOnlineForms.responseText)
+    }
+};
+xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineForms/', true);
+xmlHttpOnlineForms.send(null);
+
+
+$(document).ready(function () {
     var modal = document.getElementById('select_role_modal');
     var span = document.getElementsByClassName("close")[0];
 
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     };
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
@@ -22,49 +46,48 @@ $( document ).ready(function() {
     var modal1 = document.getElementById('see_forms_modal');
     var span1 = document.getElementsByClassName("close")[0];
 
-    span1.onclick = function() {
+    span1.onclick = function () {
         modal1.style.display = "none";
     };
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal1) {
             modal1.style.display = "none";
         }
     };
 });
 
-function onDrop_extension(type,command,figure){
-    if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure')
-    {
+function onDrop_extension(type, command, figure) {
+    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure') {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
             figure.label = figure.label = new draw2d.shape.basic.Label({
                 text: selector.options[selector.selectedIndex].innerText,
-                angle:270,
-                fontColor:"#FFFFFF",
-                fontSize:18,
-                stroke:0,
-                editor: new draw2d.ui.LabelInplaceEditor({onCommit:function(){
-                        figure.setHeight(Math.max(figure.getHeight(),figure.label.getWidth()));
-                    }})
+                angle: 270,
+                fontColor: "#FFFFFF",
+                fontSize: 18,
+                stroke: 0,
+                editor: new draw2d.ui.LabelInplaceEditor({
+                    onCommit: function () {
+                        figure.setHeight(Math.max(figure.getHeight(), figure.label.getWidth()));
+                    }
+                })
             });
-            figure.add( figure.label, new draw2d.layout.locator.CenterLocator());
+            figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
             app.view.getCommandStack().execute(command);
-            figure.setHeight(Math.max(figure.getHeight(),figure.label.getWidth()));
+            figure.setHeight(Math.max(figure.getHeight(), figure.label.getWidth()));
             document.getElementById("select_role_modal").style.display = "none";
         };
 
-        if(is_role_list_set){
+        if (is_role_list_set) {
             document.getElementById("select_role_modal").style.display = "block";
-        }
-        else{
+        } else {
             var xmlHttp = new XMLHttpRequest();
-            xmlHttp.onreadystatechange = function() {
-                if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-                {
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                     let selector = document.getElementById("role_selector");
 
-                    JSON.parse(xmlHttp.responseText).forEach((role)=>{
+                    JSON.parse(xmlHttp.responseText).forEach((role) => {
                         let option = document.createElement('option');
                         option.value = role._id;
                         option.innerText = role.roleName;
@@ -81,66 +104,71 @@ function onDrop_extension(type,command,figure){
 }
 
 
-function deleteRoleById(id)
-{
+function deleteRoleById(id) {
 
 }
 
 function confirm() {
-    if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure') {
         app.fileSave()
     }
 }
 
 
-function seeFormsOpened(){
+function seeFormsOpened(roleName) {
     //TODO: omri
     // you can add things to:
     let formsDiv = document.getElementById("forms-div");
     // append to children, see: usersAndRolesTree.js line 6
     formsDiv.innerHTML = '';
 
-    roleToEmails[roleName].forEach((userEmail) => {
+    formsOfStage[roleName].forEach((formName) => {
         let div = document.createElement("div");
         let button = document.createElement("button");
         button.class = "btn";
         button.innerText = '-';
         button.onclick = () => {
-            let index = roleToEmails[roleName].indexOf(userEmail);
+            let index = formsOfStage[roleName].indexOf(formName);
             if (index > -1) {
-                roleToEmails[roleName].splice(index, 1);
+                formsOfStage[roleName].splice(index, 1);
             }
-            rolesToHTML(roleName);
+            seeFormsOpened(formName);
         };
 
         let label = document.createElement("label");
-        label.innerText = userEmail;
+        label.innerText = formName;
         div.appendChild(button);
         div.appendChild(label);
-        users_div.append(div);
+        formsDiv.append(div);
     });
     let div = document.createElement("div");
+    div.setAttribute("style", "display:flex; flex-direction: row;");
+    let select = document.createElement("select");
+    select.setAttribute("id", "selectForm");
+    Object.keys(onlineForms).forEach((formName) => {
+        let optionElement = document.createElement('option');
+        optionElement.appendChild(document.createTextNode(formName));
+        select.appendChild(optionElement);
+    });
+
     let button = document.createElement("button");
     button.class = "btn";
     button.innerText = '+';
     button.onclick = () => {
-        let email = prompt("Enter user email :");
-        if (email != null) {
-            let found = false;
-            Object.keys(roleToEmails).forEach(roleName => {
-                roleToEmails[roleName].forEach(userEmail => {
-                    if (email === userEmail) {
-                        found = true;
-                        alert('email already in use, in role: ' + roleName)
-                    }
-                })
-            });
-            if (!found) {
-                roleToEmails[roleName].push(email);
-                rolesToHTML(roleName);
+        let selectValue = select.options[select.selectedIndex].innerText;
+        let found = false;
+        formsOfStage[roleName].forEach(formName => {
+            if (formName === selectValue) {
+                found = true;
+                alert('טופס כבר קיים בשלב זה');
             }
+        });
+        if (!found) {
+            formsOfStage[roleName].push(selectValue);
+            seeFormsOpened(roleName);
         }
     };
     div.appendChild(button);
-    users_div.append(div);
+    div.appendChild(select);
+    formsDiv.append(div);
 }
