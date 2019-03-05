@@ -1,11 +1,10 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
+let processStructureController = require('../processesControllers/processStructureController');
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 
-module.exports.getRoleToEmails = (callback) =>
-{
-    userAccessor.findRole({}, (err, roles) =>
-    {
+module.exports.getRoleToEmails = (callback) => {
+    userAccessor.findRole({}, (err, roles) => {
         if (err) {
             callback(err);
         }
@@ -13,18 +12,14 @@ module.exports.getRoleToEmails = (callback) =>
     })
 };
 
-module.exports.getIdToRole = (callback) =>
-{
-    userAccessor.findInSankeyTree({}, (err, sankeyTree) =>
-    {
+module.exports.getIdToRole = (callback) => {
+    userAccessor.findInSankeyTree({}, (err, sankeyTree) => {
         if (err) {
             callback(err);
-        }
-        else {
+        } else {
             if (sankeyTree.length === 0) {
                 callback(null, {})
-            }
-            else {
+            } else {
                 let sankey = new usersAndRolesTreeSankey(JSON.parse(sankeyTree[0].sankey));
                 callback(null, sankey.getIdToRole())
             }
@@ -32,138 +27,115 @@ module.exports.getIdToRole = (callback) =>
     });
 };
 
-module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
-{
+module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) => {
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 };
 
-module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) =>
-{
+module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) => {
     let params = {roleName: roleName, userEmail: usersEmail, children: []};
     let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail, children: []};
-    userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
-    {
+    userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) => {
         if (err) {
             callback(err);
-        }
-        else {
+        } else {
             callback(null, usersAndRole)
         }
     });
 };
 
-module.exports.getAllRoles = (callback) =>
-{
+module.exports.getAllRoles = (callback) => {
     return userAccessor.findRole({}, callback).select('roleName');
 };
 
-module.exports.getUsersAndRolesTree = (callback) =>
-{
-    userAccessor.findInSankeyTree({}, (err, result) =>
-    {
+module.exports.getUsersAndRolesTree = (callback) => {
+    userAccessor.findInSankeyTree({}, (err, result) => {
         if (err) {
             callback(err);
-        }
-        else if (result.length === 0) {
-            userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) =>
-            {
+        } else if (result.length === 0) {
+            userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) => {
                 if (err) {
                     callback(err);
-                }
-                else {
+                } else {
                     callback(null, result);
                 }
             });
-        }
-        else {
+        } else {
             callback(null, result[0]);
         }
     });
 };
 
-module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
-{
+module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) => {
     let sankeyTree = new usersAndRolesTreeSankey(JSON.parse(sankey));
 
     if (sankeyTree.hasMoreThanOneTree()) {
         callback('ERROR: there are two trees in the graph');
-    }
-    else if (sankeyTree.hasMultipleConnections()) {
+    } else if (sankeyTree.hasMultipleConnections()) {
         callback('ERROR: there are multiple connections between two nodes')
-    }
-    else if (sankeyTree.hasCycles()) {
+    } else if (sankeyTree.hasCycles()) {
         callback('ERROR: tree contains cycles');
-    }
-    else {
-        userAccessor.findRole({}, (err, roles) =>
-        {
+    } else {
+        userAccessor.findRole({}, (err, roles) => {
             if (err) {
                 callback(err);
-            }
-            else {
-                let oldUsersAndRoles = usersAndRolesTree(roles);
-                userAccessor.findInSankeyTree({},(err,sankeyTree)=>{
-                    if(err){
+            } else {
+                let oldUsersAndRoles = new usersAndRolesTree(roles);
+                userAccessor.findInSankeyTree({}, (err, _sankeyTree) => {
+                    if (err) {
                         callback(err);
-                    }
-                    else{
-                        let oldSankey = JSON.parse(sankeyTree[0].sankey);
-                        userAccessor.updateSankeyTree({}, {sankey: sankey}, (err) =>
-                        {
+                    } else {
+                        let oldSankey = new usersAndRolesTreeSankey(JSON.parse(_sankeyTree[0].sankey));
+                        userAccessor.updateSankeyTree({}, {sankey: sankey}, (err) => {
                             if (err) {
                                 callback(err);
-                            }
-                            else {
-                                userAccessor.deleteAllRoles((err) =>
-                                {
+                            } else {
+                                userAccessor.deleteAllRoles((err) => {
                                     if (err) {
                                         callback(err);
-                                    }
-                                    else {
+                                    } else {
                                         let roles = sankeyTree.getRoles();
                                         let connections = sankeyTree.getConnections();
                                         let usersAndRoleDocuments = [];
-                                        roles.reduce((acc, role_figure) =>
-                                        {
-                                            return (err) =>
-                                            {
+                                        roles.reduce((acc, role_figure) => {
+                                            return (err) => {
                                                 if (err) {
                                                     acc(err);
-                                                }
-                                                else {
+                                                } else {
+                                                    let _id = undefined;
                                                     let roleName = role_figure.labels[0].text;
-                                                    this.addUsersAndRole(roleName, roleToEmails[roleName], (_err, usersAndRole) =>
-                                                    {
+                                                    let existingRoleIndex = oldSankey.getRoles().findIndex(role => {
+                                                        return role.id === role_figure.id;
+
+                                                    });
+                                                    if (existingRoleIndex > -1) {
+                                                        let _roleName = oldSankey.getRoles()[existingRoleIndex].labels[0].text;
+                                                        _id = oldUsersAndRoles.getIdByRoleName(_roleName);
+
+                                                    }
+                                                    this.addUsersAndRole(_id, roleName, roleToEmails[roleName], (_err, usersAndRole) => {
                                                         if (err) {
                                                             acc(err);
-                                                        }
-                                                        else {
+                                                        } else {
                                                             usersAndRoleDocuments.push(usersAndRole);
                                                             acc(null)
                                                         }
                                                     })
                                                 }
                                             };
-                                        }, (err) =>
-                                        {
+                                        }, (err) => {
                                             if (err) {
                                                 callback(err);
-                                            }
-                                            else {
-                                                let roleNames = usersAndRoleDocuments.map(usersAndRoleDocument =>
-                                                {
+                                            } else {
+                                                let roleNames = usersAndRoleDocuments.map(usersAndRoleDocument => {
                                                     return usersAndRoleDocument.roleName;
                                                 });
                                                 let roleIDs = roles.map(role => role.id);
 
-                                                connections.reduce((acc, connection) =>
-                                                {
-                                                    return (err) =>
-                                                    {
+                                                connections.reduce((acc, connection) => {
+                                                    return (err) => {
                                                         if (err) {
                                                             acc(err);
-                                                        }
-                                                        else {
+                                                        } else {
                                                             let fromNodeIndex = roleIDs.indexOf(connection.source.node);
                                                             let toNodeIndex = roleIDs.indexOf(connection.target.node);
 
@@ -176,25 +148,41 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                             let fromNodeID = usersAndRoleDocuments[fromNodeRoleIndex]._id;
                                                             let toNodeID = usersAndRoleDocuments[toNodeRoleIndex]._id;
 
-                                                            this.addChildrenToRole(fromNodeID, toNodeID, (err) =>
-                                                            {
+                                                            this.addChildrenToRole(fromNodeID, toNodeID, (err) => {
                                                                 if (err) {
                                                                     acc(err);
-                                                                }
-                                                                else {
+                                                                } else {
                                                                     acc(null);
                                                                 }
                                                             })
                                                         }
                                                     };
-                                                }, (err) =>
-                                                {
+                                                }, (err) => {
                                                     if (err) {
                                                         callback(err);
-                                                    }
-                                                    else {
+                                                    } else {
                                                         // All done here
-                                                        callback(null);
+
+                                                        // Looking for roles that have been removed.
+                                                        let deletedRoles = [];
+                                                        oldSankey.getRoles().forEach(role => {
+                                                            if (sankeyTree.getRoles().every(n_role => {
+                                                                return role.id !== n_role.id;
+                                                            })) {
+                                                                deletedRoles.push(role);
+                                                            }
+                                                        });
+                                                        let deletedRolesIds = deletedRoles.map(role => {
+                                                            return oldUsersAndRoles.getIdByRoleName(role.labels[0].text);
+                                                        });
+                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds,(err)=>{
+                                                            if(err){
+                                                                callback(err);
+                                                            }
+                                                            else{
+                                                                callback(null);
+                                                            }
+                                                        });
                                                     }
                                                 })(null);
                                             }
@@ -210,10 +198,8 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
     }
 };
 
-module.exports.getRoleIdByUsername = function (username, callback)
-{
-    userAccessor.findRole({userEmail: username}, (err, user) =>
-    {
+module.exports.getRoleIdByUsername = function (username, callback) {
+    userAccessor.findRole({userEmail: username}, (err, user) => {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(new Error("no role found for username: " + username));
@@ -222,10 +208,8 @@ module.exports.getRoleIdByUsername = function (username, callback)
     });
 };
 
-module.exports.getRoleNameByRoleID = function (roleID, callback)
-{
-    userAccessor.findRole({_id: roleID}, (err, user) =>
-    {
+module.exports.getRoleNameByRoleID = function (roleID, callback) {
+    userAccessor.findRole({_id: roleID}, (err, user) => {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(null, null);
@@ -233,9 +217,3 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
         }
     });
 };
-
-
-
-
-
-

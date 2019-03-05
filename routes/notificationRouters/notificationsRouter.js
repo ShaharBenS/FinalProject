@@ -7,16 +7,14 @@ router.get('/myNotifications', function (req, res) {
 });
 
 router.get('/getNotifications',function (req,res) {
-    if(req.query.userEmail){
-        notificationsController.getUserNotifications(req.query.userEmail,(err,result)=>{
-            if(err){
-                res.send(err);
-            }
-            else{
-                res.send(result);
-            }
-        })
-    }
+    notificationsController.getUserNotifications(req.user.emails[0].value,(err,result)=>{
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.send(result);
+        }
+    })
 });
 
 module.exports = router;
