@@ -10,7 +10,7 @@ let auth = require('./usersRouters/auth');
 let usersAndRolesRouter = require('./usersRouters/usersAndRolesRouter');
 
 let uploadFilesRouter = require('./uploadFiles/uploadFilesRouter');
-
+let userPermissionsControl = require('./usersRouters/permissionsControlRouter');
 module.exports = (app)=>{
     app.use('/', indexRouter);
     app.use('/sankey', sankeyRouter);
@@ -23,5 +23,6 @@ module.exports = (app)=>{
     app.use('/notifications', processNotificationRouter);
     app.use('/usersAndRoles', usersAndRolesRouter);
     app.use('/auth', auth);
-    app.use('/uploadFile', uploadFilesRouter)
+    app.use('/uploadFile', uploadFilesRouter);
+    app.use('/permissionsControl', userPermissionsControl);
 };
