@@ -35,16 +35,16 @@ router.get('/getUserPermissions', (req, res) =>
 
 router.post('/setUserPermissions', (req, res) =>
 {
-    let userPermissions = new UserPermissions(req.body.userEmail,[!!req.body.UserManagementsPermission,
-        !!req.body.StructureManagementsPermission,!!req.body.ObserverPermission,!!req.body.PermissionManagementPermission]);
-    usersPermissionsController.setUserPermissions(userPermissions,(err,result)=>{
+    let userPermissions = new UserPermissions(req.body.userEmail,[req.body.userManagementPermission === "true",
+        req.body.structureManagementPermission === "true" ,req.body.observerPermission === "true",req.body.permissionManagementPermission === "true"]);
+    usersPermissionsController.setUserPermissions(userPermissions,(err)=>{
         if(err)
         {
-
+            res.send('error');
         }
         else
         {
-            res.redirect('/permissionsControl');
+            res.send('success');
         }
     });
 });

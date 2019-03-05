@@ -29,6 +29,10 @@ module.exports.setUserPermissions = function (userPermissions,callback)
                         }
                     });
                 }
+                else
+                {
+                    callback(null);
+                }
             }
         }
     });
