@@ -1,9 +1,13 @@
-let notification = require('../notifications/notification');
+let notification = require('./notification');
 
 class waitingActiveProcessNotification extends notification{
 
     constructor(description) {
         super(description,"waitingActiveProcess");
+    }
+
+    getNotification(){
+        return super.getNotification();
     }
 }
 

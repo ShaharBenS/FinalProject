@@ -31,6 +31,8 @@ $( document ).ready(function() {
             modal1.style.display = "none";
         }
     };
+
+
 });
 
 function onDrop_extension(type,command,figure){

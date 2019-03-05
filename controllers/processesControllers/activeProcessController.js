@@ -3,6 +3,8 @@ let usersAndRolesController = require('../usersControllers/usersAndRolesControll
 let processStructureController = require('./processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
+let notificationsController = require('../notificationsControllers/notificationController');
+let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 
 /**
  * Starts new process from a defined structure
@@ -57,7 +59,17 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else addProcessReport(processName, today, callback);
+                                    else addProcessReport(processName, today, (err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            // Notify first role
+                                            notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
+                                                "The process: " + processStructureName + ", named: " + processName + " is waiting for your approval"
+                                            ),callback)
+                                        }
+                                    });
                                 });
                             } else {
                                 callback(new Error(">>> ERROR: there is already process with the name: " + processName));

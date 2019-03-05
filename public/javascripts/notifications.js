@@ -5,15 +5,16 @@ $(document).ready(()=>{
         {
             let notifications = JSON.parse(xmlHttp.responseText);
             var table = document.getElementById("notifications-table");
-            notifications.forEach((notification)=>{
+            notifications.forEach((notificationObject,index)=>{
+                let notification = notificationObject.notification;
 
-                var row = table.insertRow(0);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
+                let row = table.insertRow(index+1);
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
 
                 // Add some text to the new cells:
-                cell1.innerHTML = notification.type;
+                cell1.innerHTML = notification.notificationType;
                 cell2.innerHTML = notification.description;
                 cell3.innerHTML = notification.date;
             })

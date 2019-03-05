@@ -10,3 +10,11 @@ module.exports.getUserNotifications = (userEmail,callback)=>{
         }
     })
 };
+
+module.exports.addNotificationToUser = (email, notification, callback)=>{
+    let notificationObject = notification.getNotification();
+    notificationAccessor.addNotification({
+        userEmail:email,
+        notification:notification.getNotification(),
+    }, callback);
+};
