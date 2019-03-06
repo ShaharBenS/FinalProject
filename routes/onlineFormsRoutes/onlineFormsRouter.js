@@ -2,6 +2,13 @@ let express = require('express');
 let onlineFormsController = require('../../controllers/onlineFormsControllers/onlineFormController');
 let router = express.Router();
 
+router.post('/createAllOnlineForms', function (req, res) {
+    onlineFormsController.createOnlineFrom("the form 1", "file1", (err) => {
+        if (err) res.send(err);
+        else res.redirect('/userLoggedIn');
+    });
+});
+
 /*
    _____ ______ _______
   / ____|  ____|__   __|
@@ -18,8 +25,9 @@ router.get('/getAllOnlineForms', function (req, res) {
         else {
             let onlineForms = {};
             forms.forEach((form) => {
-                onlineForms[form.formName] = form.srcFileName;
+                onlineForms[form.formName] = form.HTMLSource;
             });
+
             res.send(onlineForms);
         }
     });

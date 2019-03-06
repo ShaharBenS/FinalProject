@@ -4,25 +4,23 @@ let add_label = function () {
 };
 let is_role_list_set = false;
 
-//TODO : add button that centers the document 'centerDocument'
-//try to use the getJSON function
 
 let formsOfStage = {};
 let onlineForms = {};
 
-let xmlHttpFromsOfStages = new XMLHttpRequest();
-xmlHttpFromsOfStages.onreadystatechange = function () {
-    if (xmlHttpFromsOfStages.readyState === 4 && xmlHttpFromsOfStages.status === 200) {
-        formsOfStage = JSON.parse(xmlHttpFromsOfStages.responseText)
+let xmlHttpFormsOfStages = new XMLHttpRequest();
+xmlHttpFormsOfStages.onreadystatechange = function () {
+    if (xmlHttpFormsOfStages.readyState === 4 && xmlHttpFormsOfStages.status === 200) {
+        formsOfStage = JSON.parse(xmlHttpFormsOfStages.responseText)
     }
 };
-xmlHttpFromsOfStages.open("GET", '/processStructures/getFormsToStages/', true);
-xmlHttpFromsOfStages.send("processStructureName=" + processStructureName);
+xmlHttpFormsOfStages.open("GET", '/processStructures/getFormsToStages/', true);
+xmlHttpFormsOfStages.send("processStructureName=" + processStructureName);
 
 let xmlHttpOnlineForms = new XMLHttpRequest();
 xmlHttpOnlineForms.onreadystatechange = function () {
     if (xmlHttpOnlineForms.readyState === 4 && xmlHttpOnlineForms.status === 200) {
-        forms = JSON.parse(xmlHttpOnlineForms.responseText)
+        onlineForms = JSON.parse(xmlHttpOnlineForms.responseText);
     }
 };
 xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineForms/', true);
@@ -63,7 +61,7 @@ function onDrop_extension(type, command, figure) {
             let selector = document.getElementById("role_selector");
             figure.label = figure.label = new draw2d.shape.basic.Label({
                 text: selector.options[selector.selectedIndex].innerText,
-                angle: 270,
+                angle: 0,
                 fontColor: "#FFFFFF",
                 fontSize: 18,
                 stroke: 0,
@@ -116,35 +114,34 @@ function confirm() {
 
 
 function seeFormsOpened(roleName) {
-    //TODO: omri
-    // you can add things to:
     let formsDiv = document.getElementById("forms-div");
-    // append to children, see: usersAndRolesTree.js line 6
     formsDiv.innerHTML = '';
+    if (formsOfStage[roleName] !== undefined)
+        formsOfStage[roleName].forEach((formName) => {
+            let div = document.createElement("div");
+            let button = document.createElement("button");
+            button.class = "btn";
+            button.innerText = '-';
+            button.onclick = () => {
+                let index = formsOfStage[roleName].indexOf(formName);
+                if (index > -1) {
+                    formsOfStage[roleName].splice(index, 1);
+                }
+                seeFormsOpened(formName);
+            };
 
-    formsOfStage[roleName].forEach((formName) => {
-        let div = document.createElement("div");
-        let button = document.createElement("button");
-        button.class = "btn";
-        button.innerText = '-';
-        button.onclick = () => {
-            let index = formsOfStage[roleName].indexOf(formName);
-            if (index > -1) {
-                formsOfStage[roleName].splice(index, 1);
-            }
-            seeFormsOpened(formName);
-        };
-
-        let label = document.createElement("label");
-        label.innerText = formName;
-        div.appendChild(button);
-        div.appendChild(label);
-        formsDiv.append(div);
-    });
+            let label = document.createElement("label");
+            label.innerText = formName;
+            div.appendChild(button);
+            div.appendChild(label);
+            formsDiv.append(div);
+        });
+    else formsOfStage[roleName] = [];
     let div = document.createElement("div");
     div.setAttribute("style", "display:flex; flex-direction: row;");
     let select = document.createElement("select");
     select.setAttribute("id", "selectForm");
+
     Object.keys(onlineForms).forEach((formName) => {
         let optionElement = document.createElement('option');
         optionElement.appendChild(document.createTextNode(formName));

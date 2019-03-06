@@ -914,7 +914,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                             document.getElementById("select_users_modal").style.display = "block";
                         }
                         else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
-                            seeFormsOpened();
+                            seeFormsOpened(figure.children.data[0].figure.text);
                             document.getElementById("see_forms_modal").style.display = "block";
 
                         }

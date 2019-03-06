@@ -43,7 +43,7 @@ function onDrop_extension(type, command, figure) {
             roleToEmails[role_name] = [];
             figure.label = figure.label = new draw2d.shape.basic.Label({
                 text: role_name,
-                angle: 270,
+                angle: 0,
                 fontColor: "#FFFFFF",
                 fontSize: 18,
                 stroke: 0,

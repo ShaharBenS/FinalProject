@@ -63,14 +63,14 @@ router.get('/getAllProcessStructures', function (req, res) {
 router.get('/getFormsToStages', function (req, res) {
     processStructure.getProcessStructure(req.body.processStructureName, (err, processStructure) => {
         if (err) res.send(err);
-        else {
+        else if (processStructure !== null) {
             let formsToStages = {};
             let formsOfStages = processStructure.getFormsOfStage();
             formsOfStages.keys().forEach((key) => {
                 formsToStages[userAndRoles.getRoleNameByRoleID(key)] = formsOfStages[key];
             });
             res.send(formsToStages);
-        }
+        } else res.send({});
     })
 });
 
