@@ -14,18 +14,28 @@
     <h1>התהליכים שלי</h1>
     <br><br>
     <div>
-        <table style="width: 50%;" class="table table-striped table-bordered">
+        <table style="width: 70%;" class="table table-striped table-bordered">
             <tr>
                 <th>דו"ח סיכום</th>
-                <th>עדכון אחרון</th>
-                <th>נמצא אצל</th>
+                <th>הזמן בו עודכן לאחרונה</th>
+                <th>התפקיד אצלו נמצא התהליך כרגע</th>
+                <th>האדם אצלו נמצא התהליך כרגע</th>
                 <th>שם התהליך</th>
             </tr>
-            <%table.forEach(function(process){%>
+            <%activeProcesses.forEach(function(process){%>
             <tr>
                 <td><button id="<%=process._processName%>" class="btn btn-default" onclick="generateSummary(this.id)">הפק דו"ח</button></td>
                 <td><%=process._lastApproached%></td>
-                <td><%=process._stages[0].roleID%></td>
+                <td>
+                <%process._currentStages.forEach(function(stage){%>
+                <%=stage.roleID%>
+                <%})%>
+                </td>
+                <td>
+                    <%process._currentStages.forEach(function(stage){%>
+                    <%=stage.userEmail%>
+                    <%})%>
+                </td>
                 <td><%=process._processName%></td>
             </tr>
             <%})%>
@@ -34,3 +44,5 @@
 </div>
 </body>
 </html>
+
+

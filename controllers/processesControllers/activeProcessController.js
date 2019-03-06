@@ -102,51 +102,24 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
                             waitingActiveProcesses.push(process);
                         }
                     });
-                    callback(null, waitingActiveProcesses);
+                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
+                        callback(null, [waitingActiveProcesses,arrayOfRoles]);
+                    });
                 }
             });
         }
     });
 };
 
-/**
- * returns all active process for specific user
- * > FOR MONITORING <
- *
- * @param activeProcesses
- * @param callback
- */
-
-module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
-    let arrayOfRoles = [];
-    for (let i = 0; i <activeProcesses.length; i++) {
-        let arrayOfCurrentRolesInProcess = [];
-        for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
-            let currentStageNumber = activeProcesses[i]._currentStages[j];
-            let currentStage = activeProcesses[i].stages[currentStageNumber];
-            let roleID = currentStage.roleID;
-            usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-                if (err) callback(err);
-                else
-                {
-                    arrayOfCurrentRolesInProcess.push(roleName);
-                }
-            });
-        }
-        arrayOfRoles.push(arrayOfCurrentRolesInProcess);
-    }
-    callback(null, arrayOfRoles);
-};
-
-function try1(small, big, i, j, activeProcesses, callback)
+function bringRoles(subArray, fullArray, i, j, activeProcesses, callback)
 {
     if(i === activeProcesses.length) {
-        callback(null,big);
+        callback(null,fullArray);
         return;
     }
     if(j === activeProcesses[i]._currentStages.length){
-        big.push(small);
-        try1([],big,i+1,0,activeProcesses,callback);
+        fullArray.push(subArray);
+        bringRoles([],fullArray,i+1,0,activeProcesses,callback);
         return;
     }
     let currentStageNumber = activeProcesses[i]._currentStages[j];
@@ -158,10 +131,10 @@ function try1(small, big, i, j, activeProcesses, callback)
             else
             {
                 variable.push(roleName);
-                try1(small,big,i,j+1,activeProcesses,callback);
+                bringRoles(subArray,fullArray,i,j+1,activeProcesses,callback);
             }
         });
-    })(small);
+    })(subArray);
 }
 
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
@@ -177,7 +150,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                         if (process.isParticipatingInProcess(userEmail))
                             toReturnActiveProcesses.push(process);
                     });
-                    try1([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
+                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
                         callback(null, [toReturnActiveProcesses,arrayOfRoles]);
                     });
                 }
