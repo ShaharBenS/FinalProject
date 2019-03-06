@@ -16,8 +16,7 @@ let router = express.Router();
 router.post('/handleProcess', function (req, res) {
     let userName = req.body.userName;
     let processName = req.body.processName;
-    let next = [parseInt(req.body.next)];
-    let stage = {stageNum: parseInt(req.body.stageNum), nextStages: next, comments: ""};
+    let stage = {stageNum: parseInt(req.body.stageNum), comments: "" , filledForms : "", fileNames : ""};
     activeProcess.handleProcess(userName, processName, stage, [""], [""], (err, ret) => {
         if (err) {
             res.send(err);
@@ -85,17 +84,16 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
 });
 
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
-    let userName = req.query.userName;
+    let userName = req.user.emails[0].value;
     activeProcess.getWaitingActiveProcessesByUser(userName, (err, array) => {
-        res.render('activeProcesses/myWaitingProcessesPage', {table: array});
+        res.render('activeProcessesViews/myWaitingProcessesPage', {table: array , username : userName});
     });
 });
 
-router.get('/reportMePlease', function (req, res) {
-    let processName = req.query.processName;
-    activeProcess.getAllActiveProcessDetails(processName, (err, array) => {
-        res.render('reportsViews/processReport', {processDetails: array[0], table: array[1]});
-    });
+router.get('/handleProcessView', function (req, res) {
+    let userName = req.user.emails[0].value;
+    let processName = req.query.process_name;
+    res.render('activeProcessesViews/handleProcess', {userName: userName , processName : processName})
 });
 
 router.get('/reportProcess', function (req, res) {

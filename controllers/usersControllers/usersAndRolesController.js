@@ -210,11 +210,20 @@ module.exports.getRoleIdByUsername = function (username, callback) {
 
 module.exports.getRoleNameByRoleID = function (roleID, callback) {
     userAccessor.findRole({_id: roleID}, (err, user) => {
-        console.log('Search For : >>>>>' + roleID);
         if (err) callback(err);
         else {
             if (user.length === 0) callback(null, null);
             else callback(null, user[0].roleName);
+        }
+    });
+};
+
+module.exports.getRoleNameByRoleID2 = function (roleID,arrayOfCurrentRolesInProcess, callback) {
+    userAccessor.findRole({_id: roleID}, (err, user) => {
+        if (err) callback(err);
+        else {
+            if (user.length === 0) callback(null, null);
+            else callback(null, arrayOfCurrentRolesInProcess.push(user[0].roleName));
         }
     });
 };

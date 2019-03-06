@@ -143,10 +143,6 @@ module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, ca
     callback(null, arrayOfRoles);
 };
 
-function insert(arrayDest, index, arraySrc) {
-    Array.prototype.splice.apply(arrayDest, [index, 0].concat(arraySrc));
-}
-
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
