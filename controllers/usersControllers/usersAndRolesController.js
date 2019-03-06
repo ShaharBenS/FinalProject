@@ -218,15 +218,6 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
     });
 };
 
-module.exports.getRoleNameByRoleID2 = function (roleID,arrayOfCurrentRolesInProcess, callback) {
-    userAccessor.findRole({_id: roleID}, (err, user) => {
-        if (err) callback(err);
-        else {
-            if (user.length === 0) callback(null, null);
-            else callback(null, arrayOfCurrentRolesInProcess.push(user[0].roleName));
-        }
-    });
-};
 
 module.exports.getAllUsers = (callback) =>
 {

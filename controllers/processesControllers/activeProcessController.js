@@ -118,28 +118,23 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
  */
 
 module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
-    var arrayOfRoles = [];
+    let arrayOfRoles = [];
     for (let i = 0; i <activeProcesses.length; i++) {
-        var arrayOfCurrentRolesInProcess = [];
+        let arrayOfCurrentRolesInProcess = [];
         for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
             let currentStageNumber = activeProcesses[i]._currentStages[j];
             let currentStage = activeProcesses[i].stages[currentStageNumber];
             let roleID = currentStage.roleID;
             usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-                if (err) {
-                    callback(err);
-                }
+                if (err) callback(err);
                 else
                 {
-                    console.log('RoleName : ' + roleName);
                     arrayOfCurrentRolesInProcess.push(roleName);
-                    console.log('Array1 : ' + arrayOfCurrentRolesInProcess.toString());
                 }
             });
         }
         arrayOfRoles.push(arrayOfCurrentRolesInProcess);
     }
-    console.log('Array2 : ' + arrayOfRoles[0].toString());
     callback(null, arrayOfRoles);
 };
 
@@ -151,12 +146,27 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
+                    let arrayOfRoles = [];
                     let toReturnActiveProcesses = [];
                     activeProcesses.forEach((process) => {
+                        let arrayOfCurrentRolesInProcess = [];
+                        for (let j = 0; j < process._currentStages.length; j++) {
+                            let currentStageNumber = process._currentStages[j];
+                            let currentStage = process.stages[currentStageNumber];
+                            let roleID = currentStage.roleID;
+                            usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+                                if (err) callback(err);
+                                else
+                                {
+                                    arrayOfCurrentRolesInProcess.push(roleName);
+                                }
+                            });
+                            arrayOfRoles.push(arrayOfCurrentRolesInProcess);
+                        }
                         if (process.isParticipatingInProcess(userEmail))
                             toReturnActiveProcesses.push(process);
                     });
-                    callback(null, toReturnActiveProcesses);
+                    callback(null, [toReturnActiveProcesses,arrayOfRoles]);
                 }
             });
         }
