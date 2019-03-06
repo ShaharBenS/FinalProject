@@ -170,15 +170,13 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
  * @param userEmail | the user that approved
  * @param processName | the process name that approved
  * @param stageDetails | all the stage details
- * @param filledForms | the filled forms
- * @param fileNames | added files
  * @param callback
  */
-module.exports.handleProcess = (userEmail, processName, stageDetails, filledForms, fileNames, callback) => {
+module.exports.handleProcess = (userEmail, processName, stageDetails, callback) => {
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            process.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
+            process.handleStage(stageDetails);
             let today = new Date();
             processAccessor.updateActiveProcess({processName: processName}, {
                     stages: process.stages,

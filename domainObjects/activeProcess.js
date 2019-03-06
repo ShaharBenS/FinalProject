@@ -140,13 +140,14 @@ class activeProcess {
         removePathStages.forEach((stageNum) => recursive(stageNum));
     }
 
-    handleStage(stageNum, filledForms, fileNames, comments) {
-        let stage = this.getStageByStageNum(stageNum);
-        stage.handleStage(filledForms, fileNames, comments);
-        stage.nextStages.forEach((_stageNum) => {
-            let _stage = this.getStageByStageNum((_stageNum));
-            _stage.removeStagesToWaitFor(stageNum);
-        })
+    handleStage(stageDetails) {
+        let stage = this.getStageByStageNum(stageDetails.stageNum);
+        stage.handleStage(stageDetails.filledForms, stageDetails.fileNames, stageDetails.comments);
+        for(let i=0;i<stage.nextStages.length;i++)
+        {
+            let currentStage = this.getStageByStageNum((stage.nextStages[i]));
+            currentStage.removeStagesToWaitFor(stageDetails.stageNum);
+        }
     }
 
     advanceProcess(nextStages) {
