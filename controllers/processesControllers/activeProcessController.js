@@ -207,10 +207,11 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, callback) 
                 (err) => {
                     if (err) callback(err);
                     else {
-                        addActiveProcessDetailsToReport(processName, userEmail, stageDetails.stageNum, today, stageDetails.comments, (err) => {
+                        advanceProcess(processName, stageDetails.nextStages, (err)=>{
                             if (err) callback(err);
-                            else {
-                                advanceProcess(processName, stageDetails.nextStages, callback);
+                            else
+                            {
+                                addActiveProcessDetailsToReport(processName, userEmail, stageDetails.stageNum, today, stageDetails.comments,callback);
                             }
                         });
                     }
@@ -234,8 +235,7 @@ const advanceProcess = (processName, nextStages, callback) => {
             process.advanceProcess(nextStages);
             processAccessor.updateActiveProcess({processName: processName}, {
                     currentStages: process.currentStages, stages: process.stages
-                },
-                (err, res) => {
+                }, (err, res) => {
                     if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
                     else callback(null, res);
                 });
@@ -378,7 +378,7 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
     });
 };
 
-module.exports.getActiveProcessByProcessName = function (processName, callback) {
+function getActiveProcessByProcessName(processName, callback) {
     processAccessor.findActiveProcesses({processName: processName}, (err, processArray) => {
         if (err) callback(err);
         else {
@@ -386,4 +386,56 @@ module.exports.getActiveProcessByProcessName = function (processName, callback) 
             else callback(null, processArray[0]);
         }
     });
+}
+
+function getRoleNamesForArray(stages,index,roleNamesArray,callback){
+    if(index === stages.length) {
+        callback(null,roleNamesArray);
+        return;
+    }
+    let roleID = stages[index].roleID;
+    (function(variable){
+        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+            if (err) callback(err);
+            else
+            {
+                variable.push(roleName);
+                getRoleNamesForArray(stages,index+1,roleNamesArray,callback);
+            }
+        });
+    })(roleNamesArray);
+}
+
+module.exports.getNextStagesRoles = function(processName, userEmail, callback){
+    getActiveProcessByProcessName(processName,(err,process)=>{
+        if(err) callback(err);
+        else
+        {
+            if(!process)
+            {
+                callback(new Error("Couldn't find process"));
+            }
+            else
+            {
+                let i,currentStage;
+                for(i=0;i<process.currentStages.length;i++)
+                {
+                    currentStage = process.getStageByStageNum(process.currentStages[i]);
+                    if(currentStage.userEmail === userEmail)
+                    {
+                        break;
+                    }
+                }
+                let nextStagesArr = [];
+                for(let j=0;j<currentStage.nextStages.length;j++)
+                {
+                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[i]));
+                }
+                getRoleNamesForArray(nextStagesArr,0,[],callback);
+            }
+        }
+    });
+
 };
+
+module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;

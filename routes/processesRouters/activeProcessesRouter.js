@@ -93,7 +93,18 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
 router.get('/handleProcessView', function (req, res) {
     let userName = req.user.emails[0].value;
     let processName = req.query.process_name;
-    res.render('activeProcessesViews/handleProcess', {userName: userName , processName : processName})
+    activeProcess.getNextStagesRoles(processName,userName,(err,rolesArr)=>{
+        if(err)
+        {
+            res.send(err);
+        }
+        else
+        {
+            res.render('activeProcessesViews/handleProcess', {userName: userName , processName : processName,
+            nextRoles: rolesArr});
+        }
+    });
+
 });
 
 router.get('/reportProcess', function (req, res) {
