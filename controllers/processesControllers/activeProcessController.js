@@ -138,7 +138,8 @@ module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, ca
     callback(null, arrayOfRoles);
 };
 
-module.exports.try1 = (small, big, i, j, activeProcesses, callback) =>{
+function try1(small, big, i, j, activeProcesses, callback)
+{
     if(i === activeProcesses.length) {
         callback(null,big);
         return;
@@ -161,7 +162,7 @@ module.exports.try1 = (small, big, i, j, activeProcesses, callback) =>{
             }
         });
     })(small);
-};
+}
 
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
