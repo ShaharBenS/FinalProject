@@ -76,17 +76,53 @@ router.post('/startProcess', function (req, res) {
 
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    activeProcess.getAllActiveProcessesByUser(userName, (err1, array1) => {
-        activeProcess.convertActiveProcessesWithRoleIDToRoleName(array1, (err2, array2) => {
-            res.render('activeProcessesViews/myActiveProcessesPage', {table: array1});
-        });
+    activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
+        for(let i = 0; i<array[0].length;i++)
+        {
+            let currentStages = array[0][i]._currentStages;
+            array[0][i]._currentStages = [];
+            for(let j = 0;j<array[0][i]._stages.length;j++)
+            {
+                if(currentStages.includes(array[0][i]._stages[j].stageNum))
+                {
+                    array[0][i]._currentStages.push(array[0][i]._stages[j]);
+                }
+            }
+        }
+        for(let i = 0; i<array[0].length;i++)
+        {
+            for(let j = 0;j<array[0][i]._currentStages.length;j++)
+            {
+                array[0][i]._currentStages[j].roleID = array[1][i][j];
+            }
+        }
+            res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
     });
 });
 
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcess.getWaitingActiveProcessesByUser(userName, (err, array) => {
-        res.render('activeProcessesViews/myWaitingProcessesPage', {table: array , username : userName});
+        for(let i = 0; i<array[0].length;i++)
+        {
+            let currentStages = array[0][i]._currentStages;
+            array[0][i]._currentStages = [];
+            for(let j = 0;j<array[0][i]._stages.length;j++)
+            {
+                if(currentStages.includes(array[0][i]._stages[j].stageNum))
+                {
+                    array[0][i]._currentStages.push(array[0][i]._stages[j]);
+                }
+            }
+        }
+        for(let i = 0; i<array[0].length;i++)
+        {
+            for(let j = 0;j<array[0][i]._currentStages.length;j++)
+            {
+                array[0][i]._currentStages[j].roleID = array[1][i][j];
+            }
+        }
+        res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0] , username : userName});
     });
 });
 
