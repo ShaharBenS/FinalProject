@@ -4,7 +4,6 @@ let add_label = function () {
 };
 let is_role_list_set = false;
 
-
 let formsOfStage = {};
 let onlineForms = {};
 
@@ -27,7 +26,6 @@ xmlHttpOnlineForms.onreadystatechange = function () {
 xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineForms/', true);
 xmlHttpOnlineForms.send(null);
 
-
 $(document).ready(function () {
     var modal = document.getElementById('select_role_modal');
     var span = document.getElementsByClassName("close")[0];
@@ -43,13 +41,14 @@ $(document).ready(function () {
     };
 
     var modal1 = document.getElementById('see_forms_modal');
-    var span1 = document.getElementsByClassName("close")[1];
+    var span1 = document.getElementsByClassName("close")[0];
 
     span1.onclick = function () {
         modal1.style.display = "none";
     };
 
     window.onclick = function (event) {
+
         if (event.target === modal1) {
             modal1.style.display = "none";
         }
@@ -62,32 +61,30 @@ function onDrop_extension(type, command, figure) {
             let selector = document.getElementById("role_selector");
             figure.label = figure.label = new draw2d.shape.basic.Label({
                 text: selector.options[selector.selectedIndex].innerText,
-                angle:0,
-                fontColor:"#FFFFFF",
-                fontSize:18,
-                stroke:0,
+                angle: 0,
+                fontColor: "#FFFFFF",
+                fontSize: 18,
+                stroke: 0,
                 /*editor: new draw2d.ui.LabelInplaceEditor({onCommit:function(){
                         figure.setHeight(Math.max(figure.getHeight(),figure.label.getWidth()));
                     }})*/
             });
-            figure.add( figure.label, new draw2d.layout.locator.CenterLocator());
+            figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
             app.view.getCommandStack().execute(command);
-            figure.setWidth(Math.max(figure.label.getWidth(),figure.getWidth()));
-            figure.setHeight(figure.height+30);
+            figure.setWidth(Math.max(figure.label.getWidth(), figure.getWidth()));
+            figure.setHeight(figure.height + 30);
             document.getElementById("select_role_modal").style.display = "none";
         };
 
-        if(is_role_list_set){
+        if (is_role_list_set) {
             document.getElementById("select_role_modal").style.display = "block";
-        }
-        else{
+        } else {
             var xmlHttp = new XMLHttpRequest();
-            xmlHttp.onreadystatechange = function() {
-                if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-                {
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                     let selector = document.getElementById("role_selector");
 
-                    JSON.parse(xmlHttp.responseText).forEach((role)=>{
+                    JSON.parse(xmlHttp.responseText).forEach((role) => {
                         let option = document.createElement('option');
                         option.value = role._id;
                         option.innerText = role.roleName;
@@ -114,13 +111,13 @@ function confirm() {
     }
 }
 
-
 function seeFormsOpened(roleName) {
     let formsDiv = document.getElementById("forms-div");
     formsDiv.innerHTML = '';
     if (formsOfStage[roleName] !== undefined) {
         formsOfStage[roleName].forEach((formName) => {
             let div = document.createElement("div");
+            div.style.marginTop = "5px";
             let button = document.createElement("button");
             button.class = "btn";
             button.innerText = '-';
@@ -129,20 +126,30 @@ function seeFormsOpened(roleName) {
                 if (index > -1) {
                     formsOfStage[roleName].splice(index, 1);
                 }
-                seeFormsOpened(formName);
+                seeFormsOpened(roleName);
             };
 
-            let label = document.createElement("label");
-            label.style.color = "#00DD00";
-            label.style.marginLeft = "10px";
-            label.innerText = formName;
+            let a = document.createElement("a");
+            a.style.color = "#00BB00";
+            a.style.marginLeft = "10px";
+            a.innerText = formName;
+            a.title = formName;
+            a.href = "";
+
+            a.onclick = function () {
+                window.open("/onlineForms/display?formName=" + formName);
+                return false;
+            };
+
             div.appendChild(button);
-            div.appendChild(label);
+            div.appendChild(a);
             formsDiv.append(div);
+
+
         });
     } else formsOfStage[roleName] = [];
     let div = document.createElement("div");
-    div.setAttribute("style", "display:flex; flex-direction: row;");
+    div.setAttribute("style", "display:flex; flex-direction: row; margin-top: 5px");
     let select = document.createElement("select");
     select.setAttribute("id", "selectForm");
     select.style.marginLeft = "10px";

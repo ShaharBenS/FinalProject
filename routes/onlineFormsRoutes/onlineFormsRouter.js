@@ -40,4 +40,14 @@ router.get('/getAllOnlineForms', function (req, res) {
     });
 });
 
+router.get('/display', function (req, res) {
+    onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
+        if (err) res.send(err);
+        else {
+            res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: true});
+        }
+    })
+
+
+});
 module.exports = router;
