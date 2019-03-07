@@ -28,7 +28,7 @@ module.exports.getOnlineFormByName = (formName, callback) => {
 };
 
 module.exports.getOnlineFormFromSchemaRecord = (form) => {
-    return new OnlineForm(form.formName, form.HTMLSource)
+    return new OnlineForm(form.formName, form.HTMLSource, form._id)
 };
 
 module.exports.getSchemaRecordFromOnlineForm = (form) => {

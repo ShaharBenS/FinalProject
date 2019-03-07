@@ -665,6 +665,8 @@ sankey.dialog.FileSave = Class.extend({
                 content: JSON.stringify(json, undefined, 2),
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
+                onlineFormsOfStage: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure')
+                    ? JSON.stringify(formsOfStage) : undefined,
                 processStructureName: processStructureName,
             };
             $.ajax({

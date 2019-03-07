@@ -1,6 +1,8 @@
 let express = require('express');
 let processStructure = require('../../controllers/processesControllers/processStructureController');
 let userAndRoles = require('../../controllers/usersControllers/usersAndRolesController');
+let onlineFormsController = require('../../controllers/onlineFormsControllers/onlineFormController');
+
 let router = express.Router();
 
 /*
@@ -61,15 +63,30 @@ router.get('/getAllProcessStructures', function (req, res) {
 });
 
 router.get('/getFormsToStages', function (req, res) {
-    processStructure.getProcessStructure(req.body.processStructureName, (err, processStructure) => {
+    processStructure.getProcessStructure(req.query.processStructureName, (err, processStructure) => {
         if (err) res.send(err);
         else if (processStructure !== null) {
-            let formsToStages = {};
-            let formsOfStages = processStructure.getFormsOfStage();
-            formsOfStages.keys().forEach((key) => {
-                formsToStages[userAndRoles.getRoleNameByRoleID(key)] = formsOfStages[key];
+            onlineFormsController.getAllOnlineForms((err, onlineFormsObjects) => {
+                if (err) res.send(err);
+                else {
+                    let formsToStages = {};
+                    let formsIDsOfStages = processStructure.getFormsOfStage();
+                    let formsOfStages = {};
+                    onlineFormsObjects.forEach((form) => formsOfStages[form.formID] = form.formName);
+                    let count = Object.keys(formsIDsOfStages).length;
+                    Object.keys(formsIDsOfStages).forEach((key) => {
+                        userAndRoles.getRoleNameByRoleID(key, (err, roleName) => {
+                            //formsToStages[roleName] = formsIDsOfStages[key];
+                            formsToStages[roleName] = [];
+                            formsIDsOfStages[key].forEach((formID) => formsToStages[roleName].push(formsOfStages[formID]));
+                            count--;
+                            if (count === 0)
+                                res.send(formsToStages);
+                        });
+                    });
+                }
             });
-            res.send(formsToStages);
+
         } else res.send({});
     })
 });

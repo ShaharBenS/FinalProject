@@ -102,7 +102,7 @@ class processStructure {
 
     getFormsOfStage() {
         return this.stages.reduce((acc, stage) => {
-            acc[stage.roleID] = role.onlineForms;
+            acc[stage.roleID] = stage.onlineForms;
             return acc;
         }, {})
     }

@@ -1,39 +1,31 @@
-class processStructureSankey
-{
-    constructor(sankey)
-    {
+class processStructureSankey {
+    constructor(sankey) {
         this.sankey = sankey;
     }
 
-    getSankeyStages()
-    {
-        return this.sankey.content.diagram.filter((figure) =>
-        {
+    getSankeyStages() {
+        return this.sankey.content.diagram.filter((figure) => {
             return figure.type !== "sankey.shape.Connection";
         });
     }
 
-        getStages(roleNameToIdFunc)
-    {
+    getStages(roleNameToIdFunc, onlineFormsOfStage) {
         let sankeyStages = this.getSankeyStages();
-        return sankeyStages.map((stage, index) =>
-        {
+        return sankeyStages.map((stage, index) => {
             let roleName = stage.labels[0].text;
             let stageToReturn = {
                 roleID: roleNameToIdFunc(roleName),
                 stageNum: index,
                 nextStages: [],
                 stagesToWaitFor: [],
-                onlineForms: [],
+                onlineForms: onlineFormsOfStage(roleName),
                 attachedFilesNames: []
             };
-            this.getConnections().forEach(connection =>
-            {
+            this.getConnections().forEach(connection => {
                 // connection.source.node , connection.target.node
                 // figure.id
                 if (connection.source.node === stage.id) {
-                    let indexToPush = sankeyStages.indexOf(sankeyStages.find(_stage =>
-                    {
+                    let indexToPush = sankeyStages.indexOf(sankeyStages.find(_stage => {
                         return _stage.id === connection.target.node;
                     }));
                     if (indexToPush > -1) {
@@ -41,8 +33,7 @@ class processStructureSankey
                     }
                 }
                 if (connection.target.node === stage.id) {
-                    let indexToPush = sankeyStages.indexOf(sankeyStages.find(_stage =>
-                    {
+                    let indexToPush = sankeyStages.indexOf(sankeyStages.find(_stage => {
                         return _stage.id === connection.source.node;
                     }));
                     if (indexToPush > -1) {
@@ -54,25 +45,19 @@ class processStructureSankey
         });
     }
 
-    getConnections()
-    {
-        return this.sankey.content.diagram.filter((figure) =>
-        {
+    getConnections() {
+        return this.sankey.content.diagram.filter((figure) => {
             return figure.type === "sankey.shape.Connection";
         });
     }
 
-    getInitials()
-    {
-        return this.getSankeyStages().filter((figure) =>
-        {
+    getInitials() {
+        return this.getSankeyStages().filter((figure) => {
             return figure.bgColor === '#5957FF';
 
-        }).map((figure) =>
-        {
+        }).map((figure) => {
             let index;
-            this.getSankeyStages().forEach((stage, _index) =>
-            {
+            this.getSankeyStages().forEach((stage, _index) => {
                 if (stage.id === figure.id) {
                     index = _index;
                 }

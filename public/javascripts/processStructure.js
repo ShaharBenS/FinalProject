@@ -9,13 +9,14 @@ let formsOfStage = {};
 let onlineForms = {};
 
 let xmlHttpFormsOfStages = new XMLHttpRequest();
+let params = "?processStructureName=" + processStructureName;
 xmlHttpFormsOfStages.onreadystatechange = function () {
     if (xmlHttpFormsOfStages.readyState === 4 && xmlHttpFormsOfStages.status === 200) {
         formsOfStage = JSON.parse(xmlHttpFormsOfStages.responseText)
     }
 };
-xmlHttpFormsOfStages.open("GET", '/processStructures/getFormsToStages/', true);
-xmlHttpFormsOfStages.send("processStructureName=" + processStructureName);
+xmlHttpFormsOfStages.open("GET", '/processStructures/getFormsToStages/' + params, true);
+xmlHttpFormsOfStages.send(null);
 
 let xmlHttpOnlineForms = new XMLHttpRequest();
 xmlHttpOnlineForms.onreadystatechange = function () {
@@ -116,7 +117,7 @@ function confirm() {
 function seeFormsOpened(roleName) {
     let formsDiv = document.getElementById("forms-div");
     formsDiv.innerHTML = '';
-    if (formsOfStage[roleName] !== undefined)
+    if (formsOfStage[roleName] !== undefined) {
         formsOfStage[roleName].forEach((formName) => {
             let div = document.createElement("div");
             let button = document.createElement("button");
@@ -136,6 +137,7 @@ function seeFormsOpened(roleName) {
             div.appendChild(label);
             formsDiv.append(div);
         });
+    }
     else formsOfStage[roleName] = [];
     let div = document.createElement("div");
     div.setAttribute("style", "display:flex; flex-direction: row;");
