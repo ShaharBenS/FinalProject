@@ -106,7 +106,10 @@ function updateOnlineForms() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            //TODO: should we do something here ?
+            if (xmlHttp.responseText === "success") {
+                alert("טפסים נוצרו בהצלחה");
+                window.location.href = '/Home'
+            }
         }
     };
     xmlHttp.open("POST", '/onlineForms/createAllOnlineForms/', true);

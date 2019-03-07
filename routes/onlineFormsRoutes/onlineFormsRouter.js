@@ -5,7 +5,14 @@ let router = express.Router();
 router.post('/createAllOnlineForms', function (req, res) {
     onlineFormsController.createOnlineFrom("the form 1", "file1", (err) => {
         if (err) res.send(err);
-        else res.redirect('/userLoggedIn');
+        else {
+            onlineFormsController.createOnlineFrom("the form 2", "file2", (err) => {
+                if (err) res.send(err);
+                else {
+                    res.send("success")
+                }
+            });
+        }
     });
 });
 
