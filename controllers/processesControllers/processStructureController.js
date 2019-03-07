@@ -101,7 +101,10 @@ let sankeyToStructure = function (sankeyContent, callback) {
     let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
     let initials = processStructureSankeyObject.getInitials();
 
-    if(processStructureSankeyObject.hasMoreThanOneFlow()){
+    if(processStructureSankeyObject.hasNoStages()){
+        callback('ERROR: there are no stages (need at least one)');
+    }
+    else if(processStructureSankeyObject.hasMoreThanOneFlow()){
         callback('ERROR: there are two flows in the graph');
     }
     else if(processStructureSankeyObject.hasMultipleConnections()){

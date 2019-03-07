@@ -181,6 +181,12 @@ class processStructureSankey
             return !initials.includes(flow);
         })
     }
+
+    hasNoStages()
+    {
+        return this.getSankeyStages().length === 0;
+
+    }
 }
 
 module.exports = processStructureSankey;

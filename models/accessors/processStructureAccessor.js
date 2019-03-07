@@ -43,7 +43,7 @@ let getProcessStructureFromOriginal = function (processStructure) {
     return new ProcessStructure(processStructure.structureName,
         processStructure.initials,
         getProcessStructureStagesFromOriginal(processStructure.stages),
-        processStructure.sankey);
+        processStructure.sankey, processStructure.available);
 };
 
 let getProcessStructureStagesFromOriginal = function (stages) {
