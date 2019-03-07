@@ -140,7 +140,6 @@ router.get('/reportProcess', function (req, res) {
         if (err) {
             res.send(err);
         } else {
-            //convertDate([result[0]]);
             convertJustCreationTime(result[0]);
             res.render('reportsViews/ProcessReport', {processDetails: result[0], table: result[1]});
         }
@@ -150,9 +149,7 @@ router.get('/reportProcess', function (req, res) {
 router.get('/processStartPage', function (req, res) {
     res.render('processStartPage');
 });
-/*router.get('/myActiveProcessesPage', function (req, res) {
-    res.render('activeProcessesViews/myActiveProcessesPage');
-});*/
+
 router.get('/myWaitingProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myWaitingProcessesPage');
 });
