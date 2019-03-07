@@ -14,9 +14,17 @@ let router = express.Router();
  */
 
 router.post('/handleProcess', function (req, res) {
-    let userName = req.body.userName;
+    let userName = req.user.emails[0].value;
     let processName = req.body.processName;
-    let stage = {stageNum: parseInt(req.body.stageNum), comments: "" , filledForms : "", fileNames : ""};
+    let nextStageRoles = [];
+    for(let attr in req.body)
+    {
+        if(attr !== "processName")
+        {
+            nextStageRoles.push(attr);
+        }
+    }
+    let stage = {comments: "" , filledForms : "", fileNames : ""};
     activeProcess.handleProcess(userName, processName, stage, [""], [""], (err, ret) => {
         if (err) {
             res.send(err);
