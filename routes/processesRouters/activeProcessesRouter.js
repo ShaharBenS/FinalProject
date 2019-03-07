@@ -100,6 +100,56 @@ function handleRolesAndStages(array) {
     }
 }
 
+router.get('/getWaitingActiveProcessesByUser', function (req, res) {
+    let userName = req.user.emails[0].value;
+    activeProcess.getWaitingActiveProcessesByUser(userName, (err, array) => {
+        handleRolesAndStages(array);
+        convertDate(array[0]);
+        res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
+    });
+});
+
+router.get('/handleProcessView', function (req, res) {
+    let userName = req.user.emails[0].value;
+    let processName = req.query.process_name;
+    activeProcess.getNextStagesRoles(processName, userName, (err, rolesArr) => {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.render('activeProcessesViews/handleProcess', {
+                userName: userName, processName: processName,
+                nextRoles: rolesArr
+            });
+        }
+    });
+
+});
+
+router.get('/reportProcess', function (req, res) {
+    let process_name = req.query.process_name;
+    activeProcess.getAllActiveProcessDetails(process_name, (err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            //convertDate([result[0]]);
+            convertJustCreationTime(result[0]);
+            res.render('reportsViews/ProcessReport', {processDetails: result[0], table: result[1]});
+        }
+    });
+});
+
+router.get('/processStartPage', function (req, res) {
+    res.render('processStartPage');
+});
+/*router.get('/myActiveProcessesPage', function (req, res) {
+    res.render('activeProcessesViews/myActiveProcessesPage');
+});*/
+router.get('/myWaitingProcessesPage', function (req, res) {
+    res.render('activeProcessesViews/myWaitingProcessesPage');
+});
+
+/////Helper Functions
 function convertDate(array) {
     for (let i = 0; i < array.length; i++) {
         let creationTime = array[i]._creationTime;
@@ -149,52 +199,29 @@ function convertDate(array) {
     }
 }
 
-
-router.get('/getWaitingActiveProcessesByUser', function (req, res) {
-    let userName = req.user.emails[0].value;
-    activeProcess.getWaitingActiveProcessesByUser(userName, (err, array) => {
-        handleRolesAndStages(array);
-        convertDate(array[0]);
-        res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
-    });
-});
-
-router.get('/handleProcessView', function (req, res) {
-    let userName = req.user.emails[0].value;
-    let processName = req.query.process_name;
-    activeProcess.getNextStagesRoles(processName, userName, (err, rolesArr) => {
-        if (err) {
-            res.send(err);
-        }
-        else {
-            res.render('activeProcessesViews/handleProcess', {
-                userName: userName, processName: processName,
-                nextRoles: rolesArr
-            });
-        }
-    });
-
-});
-
-router.get('/reportProcess', function (req, res) {
-    let process_name = req.query.process_name;
-    activeProcess.getAllActiveProcessDetails(process_name, (err, result) => {
-        if (err) {
-            res.send(err);
-        } else {
-            res.render('reportsViews/ProcessReport', {processDetails: result[0], table: result[1]});
-        }
-    });
-});
-
-router.get('/processStartPage', function (req, res) {
-    res.render('processStartPage');
-});
-/*router.get('/myActiveProcessesPage', function (req, res) {
-    res.render('activeProcessesViews/myActiveProcessesPage');
-});*/
-router.get('/myWaitingProcessesPage', function (req, res) {
-    res.render('activeProcessesViews/myWaitingProcessesPage');
-});
-
+function convertJustCreationTime(process) {
+    let creationTime = process.creationTime;
+    let dayOfCreationTime = creationTime.getDate();
+    let monthOfCreationTime = creationTime.getMonth() + 1;
+    let yearOfCreationTime = creationTime.getFullYear();
+    if (dayOfCreationTime < 10) {
+        dayOfCreationTime = '0' + dayOfCreationTime;
+    }
+    if (monthOfCreationTime < 10) {
+        monthOfCreationTime = '0' + monthOfCreationTime;
+    }
+    let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
+    let hourOfCreationTime = creationTime.getHours();
+    let minuteOfCreationTime = creationTime.getMinutes();
+    let secondsOfCreationTime = creationTime.getSeconds();
+    if (hourOfCreationTime.toString().length === 1)
+        hourOfCreationTime = '0' + hourOfCreationTime;
+    if (minuteOfCreationTime.toString().length === 1)
+        minuteOfCreationTime = '0' + minuteOfCreationTime;
+    if (secondsOfCreationTime.toString().length === 1)
+        secondsOfCreationTime = '0' + secondsOfCreationTime;
+    dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
+    process.creationTime = dateOfCreationTime;
+}
+/////
 module.exports = router;
