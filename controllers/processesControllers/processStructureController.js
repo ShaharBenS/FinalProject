@@ -1,10 +1,11 @@
 let processStructureAccessor = require('../../models/accessors/processStructureAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
+let onlineFormsController = require('../onlineFormsControllers/onlineFormController');
 let ProcessStructure = require('../../domainObjects/processStructure');
 let processStructureSankey = require('../../domainObjects/processStructureSankey');
 
-module.exports.addProcessStructure = (structureName, sankeyContent, callback) => {
-    sankeyToStructure(sankeyContent, (err, structure) => {
+module.exports.addProcessStructure = (structureName, sankeyContent, onlineFormsOfStage, callback) => {
+    sankeyToStructure(sankeyContent, onlineFormsOfStage, (err, structure) => {
         if (err) {
             callback(err);
         } else {
@@ -26,8 +27,8 @@ module.exports.addProcessStructure = (structureName, sankeyContent, callback) =>
     });
 };
 
-module.exports.editProcessStructure = (structureName, sankeyContent, callback) => {
-    sankeyToStructure(sankeyContent, (err, structure) => {
+module.exports.editProcessStructure = (structureName, sankeyContent, onlineFormsOfStage, callback) => {
+    sankeyToStructure(sankeyContent, onlineFormsOfStage, (err, structure) => {
         if (err) {
             callback(err);
         } else {
@@ -38,6 +39,7 @@ module.exports.editProcessStructure = (structureName, sankeyContent, callback) =
                         if (newProcessStructure.checkNextPrevSymmetric()) {
                             processStructureAccessor.updateProcessStructure({structureName: structureName}, {
                                 $set: {
+                                    available:true,
                                     initials: structure.initials,
                                     stages: structure.stages,
                                     sankey: sankeyContent,
@@ -96,25 +98,97 @@ module.exports.getProcessStructureStagesForDB = function (originStages) {
 /* Private Functions */
 /*********************/
 
-let sankeyToStructure = function (sankeyContent, callback) {
+let sankeyToStructure = function (sankeyContent, onlineFormsOfStage, callback) {
     let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
     let initials = processStructureSankeyObject.getInitials();
 
-    usersAndRolesController.getAllRoles((err, roles) => {
-        if (err) {
+    if(processStructureSankeyObject.hasMoreThanOneFlow()){
+        callback('ERROR: there are two flows in the graph');
+    }
+    else if(processStructureSankeyObject.hasMultipleConnections()){
+        callback('ERROR: there are multiple connections between two nodes')
+    }
+    else if(processStructureSankeyObject.firstStageIsNotInitial()){
+        callback('ERROR: first stage must be an initial stage')
+    }
+    else if(processStructureSankeyObject.hasCycles()){
+        callback('ERROR: structure contains cycles');
+    }
+    else{
+        usersAndRolesController.getAllRoles((err, roles) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            onlineFormsController.getAllOnlineForms((err, formsObjects) => {
+                if (err) callback(err);
+                else {
+                    let rolesMap = {};
+                    let onlineFormsMap = {};
+                    let objectsMap = {};
+                    formsObjects.forEach((obj) => objectsMap[obj.formName] = obj);
+                    roles.forEach((role) => {
+                        rolesMap[role.roleName] = role._id;
+                        let formsArray = [];
+                        let formIDsArray = [];
+                        if (onlineFormsOfStage[role.roleName] !== undefined)
+                            formsArray = onlineFormsOfStage[role.roleName];
+                        formsArray.forEach((formName) => {
+                            if (err) callback(err);
+                            else {
+                                formIDsArray.push(objectsMap[formName].formID);
+                            }
+                        });
+                        onlineFormsMap[role._id] = formIDsArray
+                    });
+
+                    // Check if there are stages with no role.
+                    let rolesName = roles.map(role => {
+                        return role.roleName
+                    });
+                    if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().map(sankeyStage => {
+                        return sankeyStage.labels[0].text;
+                    }))).every(roleName => {
+                        return rolesName.includes(roleName);
+                    })) {
+                        callback('ERROR: there is a stage with an undefined role');
+                        return;
+                    }
+
+                    let stages = processStructureSankeyObject.getStages((roleName) => {
+                        return rolesMap[roleName]
+                    }, (roleName) => {
+                        return onlineFormsMap[rolesMap[roleName]]
+                    });
+                    callback(null, {initials: initials, stages: stages,});
+                }
+            });
+        })
+    }
+};
+
+
+
+module.exports.setProcessStructuresUnavailable = function (deletedRolesIds,callback) {
+    processStructureAccessor.findProcessStructures((err,processStructures)=>{
+        if(err){
             callback(err);
         }
-        let rolesMap = {};
-        roles.forEach(role => {
-            rolesMap[role.roleName] = role._id;
-        });
-        let stages = processStructureSankeyObject.getStages((roleName) => {
-            return rolesMap[roleName]
-        });
-        callback(null,
-            {
-                initials: initials,
-                stages: stages,
+        else{
+            let processStructuresToSetUnavailable = processStructures.filter(processStructure=>{
+                return processStructure.stages.findIndex(stage => {
+                    return deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString());
+                }) > -1;
+            }).map(processStructure=>{return processStructure._id});
+
+            processStructureAccessor.updateProcessStructure({_id:{$in:processStructuresToSetUnavailable}},{$set: {available:false}},(err)=>{
+               if(err) {
+                   callback(err);
+               }
+               else{
+                   callback(null);
+               }
             });
+        }
     });
 };

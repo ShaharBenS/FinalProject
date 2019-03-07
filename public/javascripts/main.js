@@ -102,6 +102,20 @@ function editUsersAndRolesTree() {
     window.location.href = '/usersAndRoles/editTree/'
 }
 
+function updateOnlineForms() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (xmlHttp.responseText === "success") {
+                alert("טפסים נוצרו בהצלחה");
+                window.location.href = '/Home'
+            }
+        }
+    };
+    xmlHttp.open("POST", '/onlineForms/createAllOnlineForms/', true);
+    xmlHttp.send(null);
+}
+
 function startActiveProcess() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
@@ -146,7 +160,7 @@ function confirmStartProcess() {
         if (status === "success") {
             if (responseText === "success") {
                 alert("תהליך נוצר בהצלחה");
-                window.location.href = '/userLoggedIn';
+                window.location.href = '/';
             } else {
                 alert(responseText);
             }

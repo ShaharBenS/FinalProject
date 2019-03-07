@@ -3,6 +3,43 @@ let usersAndRolesController = require('../usersControllers/usersAndRolesControll
 let processStructureController = require('./processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
+let notificationsController = require('../notificationsControllers/notificationController');
+let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
+let onlineFormController = require('../onlineFormsControllers/onlineFormController');
+
+
+/**
+ * attach form to process stage
+ *
+ * @param activeProcessName | the process to attach the form
+ * @param stageNum | the stage in the process to attach the form
+ * @param formName | the name of the from from a predefined forms
+ * @param callback
+ */
+
+module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName, callback) => {
+    processAccessor.getActiveProcessByProcessName(activeProcessName, (err, process) => {
+        if (err) callback(err);
+        else {
+            onlineFormController.getOnlineFormByName(formName, (err, form) => {
+                if (err) callback(err);
+                else {
+                    if (form === null)
+                        callback(new Error("no online form was found on db with the name: " + formName));
+                    else {
+                        try {
+                            process.attachOnlineFormToStage(stageNum, formName);
+                            processAccessor.updateActiveProcess({processName: activeProcessName}, {stages: process.stages}, callback)
+                        } catch (e) {
+                            callback(e);
+                        }
+                    }
+                }
+            });
+        }
+    })
+};
+
 
 /**
  * Starts new process from a defined structure
@@ -57,7 +94,17 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else addProcessReport(processName, today, callback);
+                                    else addProcessReport(processName, today, (err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            // Notify first role
+                                            notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
+                                                "The process: " + processStructureName + ", named: " + processName + " is waiting for your approval"
+                                            ),callback)
+                                        }
+                                    });
                                 });
                             } else {
                                 callback(new Error(">>> ERROR: there is already process with the name: " + processName));
@@ -101,9 +148,40 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
  * returns all active process for specific user
  * > FOR MONITORING <
  *
- * @param userEmail
+ * @param activeProcesses
  * @param callback
  */
+
+module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
+    var arrayOfRoles = [];
+    for (let i = 0; i <activeProcesses.length; i++) {
+        var arrayOfCurrentRolesInProcess = [];
+        for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
+            let currentStageNumber = activeProcesses[i]._currentStages[j];
+            let currentStage = activeProcesses[i].stages[currentStageNumber];
+            let roleID = currentStage.roleID;
+            usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+                if (err) {
+                    callback(err);
+                }
+                else
+                {
+                    console.log('RoleName : ' + roleName);
+                    arrayOfCurrentRolesInProcess.push(roleName);
+                    console.log('Array1 : ' + arrayOfCurrentRolesInProcess.toString());
+                }
+            });
+        }
+        arrayOfRoles.push(arrayOfCurrentRolesInProcess);
+    }
+    console.log('Array2 : ' + arrayOfRoles[0].toString());
+    callback(null, arrayOfRoles);
+};
+
+function insert(arrayDest, index, arraySrc) {
+    Array.prototype.splice.apply(arrayDest, [index, 0].concat(arraySrc));
+}
+
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
@@ -113,47 +191,9 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                 if (err) callback(err);
                 else {
                     let toReturnActiveProcesses = [];
-                    /////////////
-                    const processName1 = "TheProcessName";
-                    const creationTime = new Date();
-                    const notificationTime = 10;
-                    const currentStages = [0];
-                    const initials = [0, 1];
-                    let testProcess;
-                    const onlineForms = [];
-                    const filledOnlineForms = [];
-                    const attachedFilesNames = [];
-                    const comments = "";
-                    const roleID = 0;
-                    let stage0, stage1, stage2, stage3, stage4, stage5, stage6;
-                    stage0 = new activeProcessStage(roleID, undefined, 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    stage1 = new activeProcessStage(roleID, undefined, 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    stage2 = new activeProcessStage(roleID, undefined, 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    stage3 = new activeProcessStage(roleID, undefined, 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    stage4 = new activeProcessStage(roleID, undefined, 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    stage5 = new activeProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    stage6 = new activeProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-                    let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-                    testProcess = new activeProcess(processName1, creationTime, notificationTime, currentStages.slice(), initials, stages);
-                    activeProcesses = [testProcess];
-                    let rolesOfCurrentStages = [];
-                    activeProcesses.forEach((process1) => {
-                            let currentRoles = [];
-                            process1.currentStages.forEach((process2) => {
-                                usersAndRolesController.getRoleNameByRoleID(process2, (err, roleName) => {
-                                    if (err) callback(err);
-                                    else {
-                                        currentRoles.push(roleName);
-                                    }
-                                });
-                            });
-                            rolesOfCurrentStages.push(currentRoles);
-                        }
-                    );
-                    /////////////
                     activeProcesses.forEach((process) => {
-                        // if(process.isParticipatingInProcess(userEmail))
-                        toReturnActiveProcesses.push(process);
+                        if (process.isParticipatingInProcess(userEmail))
+                            toReturnActiveProcesses.push(process);
                     });
                     callback(null, toReturnActiveProcesses);
                 }
@@ -270,6 +310,7 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
     processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
+            processReport = processReport[0]._doc;
             let returnProcessDetails = {
                 processName: processReport.processName, creationTime: processReport.creationTime,
                 status: processReport.status

@@ -1,6 +1,5 @@
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-//var User = require('../models/User');
 
 passport.use(new GoogleStrategy({
         clientID: "332799736831-mcj8eu9ocjaj89kaasde3j6rf6tugtt8.apps.googleusercontent.com",
@@ -17,10 +16,6 @@ passport.use(new GoogleStrategy({
         else {
             done(null, null);
         }
-        //
-        //User.findOrCreate({userid: profile.id}, {name: profile.displayName, userid: profile.id}, function (err, user) {
-        //  return done(err, user);
-        //});
     }
 ));
 

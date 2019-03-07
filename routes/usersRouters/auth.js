@@ -2,12 +2,6 @@ let express = require('express');
 let router = express.Router();
 let passportGoogle = require('../../auth/google');
 
-/* LOGIN ROUTER */
-router.get('/login', function (req, res, next)
-{
-    res.render('login', {title: 'Please Sign In with:'});
-});
-
 /* LOGOUT ROUTER */
 router.get('/logout', function (req, res)
 {
@@ -23,7 +17,13 @@ router.get('/google/callback',
     passportGoogle.authenticate('google', {failureRedirect: '/NotAgudaEmployee'}),
     function (req, res)
     {
-        res.redirect('/userLoggedIn');
+        if (req.isAuthenticated()) {
+            res.redirect('/Home')
+        }
+        else
+        {
+            res.redirect('userViews/login')
+        }
     });
 
 module.exports = router;

@@ -11,7 +11,8 @@ module.exports.findProcessStructure = (criteria, callback) => {
         if (err) {
             callback(err);
         } else {
-            callback(null, getProcessStructureFromOriginal(result));
+            if (result === null || result.length === 0) callback(null, null);
+            else callback(null, getProcessStructureFromOriginal(result));
         }
     });
 };

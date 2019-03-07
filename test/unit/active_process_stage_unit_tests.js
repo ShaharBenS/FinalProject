@@ -1,10 +1,8 @@
-let mongoose = require('mongoose');
 let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
 let assert = require('chai').assert;
 let expect = require('chai').expect;
-let ActiveProcess = require('../../domainObjects/activeProcess');
 let ActiveProcessStage = require('../../domainObjects/activeProcessStage');
 
 
@@ -83,3 +81,12 @@ describe('3.0 have no one to wait for', function () {
     });
 });
 
+describe('4.0 attach Online Form', function () {
+
+    beforeEach(initStages);
+
+    it('4.1  add online form to stage', () => {
+        stage0.attachOnlineForm('form1');
+        assert.equal(JSON.stringify(stage0.onlineForms), JSON.stringify(['form1']));
+    });
+});

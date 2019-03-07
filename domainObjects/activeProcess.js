@@ -10,6 +10,11 @@ class activeProcess {
         this._lastApproached = lastApproached;
     }
 
+    attachOnlineFormToStage(stageNum, formName) {
+        let stage = this.getStageByStageNum(stageNum);
+        stage.attachOnlineForm(formName);
+    }
+
     addCurrentStage(stageNum) {
         if (stageNum === undefined || this._currentStages.includes(stageNum))
             throw new Error("invalid stage number");

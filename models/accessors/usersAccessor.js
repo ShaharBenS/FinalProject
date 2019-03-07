@@ -33,3 +33,7 @@ module.exports.createSankeyTree = (sankeyTree,callback)=>{
 module.exports.updateSankeyTree = (whatToUpdate, theUpdate, callback)=>{
     return usersAndRolesTreeSankey.updateOne(whatToUpdate,theUpdate,callback);
 };
+
+module.exports.findUser = (userToFind, callback)=>{
+    return usersAndRoles.find(userToFind,callback);
+};

@@ -99,6 +99,13 @@ class processStructure {
         }
         return true;
     };
+
+    getFormsOfStage() {
+        return this.stages.reduce((acc, stage) => {
+            acc[stage.roleID] = stage.onlineForms;
+            return acc;
+        }, {})
+    }
 }
 
 module.exports = processStructure;

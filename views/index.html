@@ -29,6 +29,9 @@
             <button class="btn btn-default" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
                 תהליכים שממתינים לי
             </button>
+            <button class="btn btn-default" onclick="updateOnlineForms()">
+                עדכן טפסים
+            </button>
         </div>
         <br><br>
         <h3>לפי הרשאות</h3>
@@ -38,8 +41,6 @@
             <button class="btn btn-default" onclick="editProcessStructureClicked()">עריכת מבנה תהליך</button>
             <button class="btn btn-default" onclick="editUsersAndRolesTree()">עריכת עץ המשתמשים</button>
         </div>
-
-
         <div id="add-process-structure-modal" class="modal">
 
             <div class="modal-content" style="width: 30%">
@@ -52,14 +53,11 @@
                 <br><br>
                 <button id="new-process-structure-button" class="btn btn-default">הוסף</button>
             </div>
-
         </div>
-
         <div id="edit-process-structure-modal" class="modal">
 
             <div class="modal-content">
                 <span id="close-edit" class="close">&times;</span>
-
                 <h4>בחר תהליך</h4>
                 <select id="processes_selector">
                 </select>
@@ -68,11 +66,8 @@
                         class="btn btn-default">ערוך
                 </button>
             </div>
-
         </div>
-
         <div id="start-active-process-modal" class="modal">
-
             <div class="modal-content">
                 <span id="close-start" class="close">&times;</span>
                 <h2>התחלת תהליך</h2><br>
@@ -80,12 +75,10 @@
                     <tr>
                         <td style="width: 50%"><label for="start-processes-name">שם תהליך</label></td>
                         <td><input id="start-processes-name" style="width:100%" type="text"></td>
-
                     </tr>
                     <tr>
                         <td><br></td>
                     </tr>
-
                     <tr>
                         <td style="width: 50%"><label for="start-processes-selector">בחר מבנה להתחלה</label></td>
                         <td><select id="start-processes-selector" style="width:100%"></select></td>
@@ -96,6 +89,10 @@
                 </button>
             </div>
         </div>
+        <br>
+        <br>
+        <br>
+        <div class="form-group"><a class="btn btn-default" href="/">Sign out</a></div>
     </div>
 </div>
 

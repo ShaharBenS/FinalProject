@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        window.onload = function () {
+            let formName = '<%=formName%>';
+            document.title = formName;
+            document.getElementById("formTitle").appendChild(document.createTextNode(formName));
+            let isForShow = '<%=isForShow%>';
+            if (isForShow) {
+                let info = "טופס דמו של " + formName;
+                document.getElementById("info").appendChild(document.createTextNode(info));
+                document.getElementById("fieldset").setAttribute("disabled", "disabled");
+                document.getElementById("submitButton").setAttribute("disabled", "disabled");
+            }
+        };
+    </script>
+    <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+
+    <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <title>DefaultTitle</title>
+</head>
+<body dir="rtl">
+<div align="center">
+    <br><br>
+    <div class="main-div">
+        <h1>מערכת לניהול תהליכים ארגוניים</h1>
+        <u><h2 id="formTitle"></h2></u>
+        <br>
+        <h3 id="info"></h3>
+        <br>
+        <div>
+            <form action="../index.html" id="form">
+                <fieldset id="fieldset">
+                    שם ממלא
+                    <br>
+                    <input name="firstname" type="text" value="Mickey">
+                    <br>
+                    מספר הזמנה
+                    <br>
+                    <input name="lastname" type="text" value="Mouse">
+                    <br><br>
+                    <input class="btn-default" id="submitButton" type="submit" value="שלח">
+                </fieldset>
+            </form>
+        </div>
+        <br><br>
+        <button class="btn-default" onclick="window.close()">סגור טופס</button>
+    </div>
+
+</div>
+
+</body>
+</html>

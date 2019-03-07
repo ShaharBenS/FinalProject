@@ -665,6 +665,8 @@ sankey.dialog.FileSave = Class.extend({
                 content: JSON.stringify(json, undefined, 2),
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
+                onlineFormsOfStage: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure')
+                    ? JSON.stringify(formsOfStage) : undefined,
                 processStructureName: processStructureName,
             };
             $.ajax({
@@ -675,8 +677,31 @@ sankey.dialog.FileSave = Class.extend({
                     },
                     data: data,
                 }
-            ).done(function ()
+            ).done(function (text,status)
             {
+                if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+                    if(text === 'success'){
+                        if(status === 'success'){
+                            alert('Process Structure Saved Successfully');
+                            window.location.href = '/';
+                        }
+                    }
+                    else{
+                        alert(text);
+                    }
+                }
+                else if(diagramContext === '__tree__'){
+                    if(text === 'success'){
+                        if(status === 'success'){
+                            alert('Tree Saved Successfully');
+                            window.location.href = '/';
+                        }
+                    }
+                    else{
+                        alert(text);
+                    }
+                }
+
                 //$('#githubSaveFileDialog').modal('hide');
                 _this.currentFileHandle.title = data.id;
                 successCallback();
@@ -852,7 +877,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         //  var y = event.y;
 
         var items = {
-            color: {name: "Line Color", icon: "x ion-android-color-palette"}
+            //color: {name: "Line Color", icon: "x ion-android-color-palette"}
         };
 
         /*if (figure instanceof draw2d.shape.basic.Label) {
@@ -914,7 +939,9 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                             document.getElementById("select_users_modal").style.display = "block";
                         }
                         else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
-                            seeFormsOpened();
+                            seeFormsOpened(figure.children.data[0].figure.text);
+                            document.getElementById("see_forms_modal").style.display = "block";
+
                         }
                         break;
                     default:

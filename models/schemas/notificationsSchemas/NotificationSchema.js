@@ -5,7 +5,7 @@ var NotificationSchema = new Schema({
     userEmail: String,
     notification:
         {
-            type: String,
+            notificationType: String,
             description: String,
             date: Date,
         }

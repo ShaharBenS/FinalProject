@@ -3,69 +3,63 @@ var router = express.Router();
 let processStructure = require('../controllers/processesControllers/processStructureController');
 let UsersAndRolesTreeSankey = require('../controllers/usersControllers/usersAndRolesController');
 
-router.post('/file/save',function (req,res) {
-    if(req.body.context === 'addProcessStructure'){
-        processStructure.addProcessStructure(req.body.processStructureName,req.body.content,(err)=>{
-            if(err){
+router.post('/file/save', function (req, res) {
+    if (req.body.context === 'addProcessStructure') {
+        processStructure.addProcessStructure(req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err) => {
+            if (err) {
                 res.send(err);
             }
             else{
-                res.send('okay'); //TODO: redirect to index
+                res.send('success'); //TODO: redirect to index
             }
         });
-    }
-    else if(req.body.context === 'editProcessStructure'){
-        processStructure.editProcessStructure(req.body.processStructureName,req.body.content, (err)=>{
-            if(err){
+    } else if (req.body.context === 'editProcessStructure') {
+        processStructure.editProcessStructure(req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err) => {
+            if (err) {
                 res.send(err);
             }
             else{
-                res.send('okay');
+                res.send('success');
             }
         })
-    }
-    else if(req.body.context === '__tree__'){
-        UsersAndRolesTreeSankey.setUsersAndRolesTree(req.body.content,JSON.parse(req.body.roleToEmails),(err)=>{
-            if(err){
+    } else if (req.body.context === '__tree__') {
+        UsersAndRolesTreeSankey.setUsersAndRolesTree(req.body.content, JSON.parse(req.body.roleToEmails), (err) => {
+            if (err) {
                 res.send(err);
             }
             else{
-                res.send("okay");
+                res.send('success');
             }
         })
     }
 });
 
-router.post('/file/get',function (req,res) {
-    if(req.body.id === '__tree__'){
-        UsersAndRolesTreeSankey.getUsersAndRolesTree((err,result)=>{
-           if(err){
-               res.send(err);
-           }
-           else{
-               res.send(JSON.parse(result.sankey))
-           }
+router.post('/file/get', function (req, res) {
+    if (req.body.id === '__tree__') {
+        UsersAndRolesTreeSankey.getUsersAndRolesTree((err, result) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send(JSON.parse(result.sankey))
+            }
         });
-    }
-    else{
-        processStructure.getProcessStructure(req.body.id,(err,result)=>{
-            if(err){
+    } else {
+        processStructure.getProcessStructure(req.body.id, (err, result) => {
+            if (err) {
                 console.log(err);
                 res.send(err);
-            }
-            else{
+            } else {
                 res.send(JSON.parse(result.sankey));
             }
         });
     }
 });
 
-router.post('/sankey/weights',function (req,res,next) {
+router.post('/sankey/weights', function (req, res, next) {
     res.send([{
         file: req.body.id
     }]);
 });
-
 
 
 module.exports = router;

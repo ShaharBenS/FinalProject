@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/javascripts/permissionsControlScript.js">
+
+    </script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body dir="rtl">
+<div align="center">
+<form name ="permissionForm" onsubmit="submitPermissionsForm()">
+    <label>
+        <select name="userEmail" onchange="showPermissionsByUser(this)">
+            <option value="choose_user">בחר משתמש</option>
+            <%users.forEach(function(user){%>
+            <option value="<%=user%>"><%=user%></option>
+            <%})%>
+        </select>
+    </label>
+    <table id="all_checkbox" style="display: none">
+        <tr><td><label>
+            <input type="checkbox" name="UserManagementsPermission">
+        </label>הרשאת ניהול משתמשים<br></td></tr>
+        <tr><td><label>
+            <input type="checkbox" name="StructureManagementsPermission">
+        </label>הרשאת ניהול מבני תהליכים<br></td></tr>
+        <tr><td><label>
+            <input type="checkbox" name="ObserverPermission">
+        </label>הרשאת צופה<br></td></tr>
+        <tr><td><label>
+            <input type="checkbox" name="PermissionManagementPermission">
+        </label>הרשאת נתינת הרשאות<br></td></tr>
+        <tr><td><input type="submit" value="עדכן הרשאות"></td></tr>
+    </table>
+</form>
+</div>
+</body>
+</html>

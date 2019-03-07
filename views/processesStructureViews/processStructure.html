@@ -1,14 +1,14 @@
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
     <title>מבנה תהליך</title>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway:100,200,300" >
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway:100,200,300">
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css" />
-    <link rel="stylesheet" href="/draw_sankey/server/html/editor/assets/css/main.css" >
+    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="/draw_sankey/server/html/editor/assets/css/main.css">
 
     <link rel="stylesheet" href="/stylesheets/style.css">
 
@@ -31,17 +31,18 @@
         var app,
             socket;
 
-        $(window).load(function () {
+        $(window).load(function ()
+        {
             socket = io();
-            app  = new sankey.Application(socket);
-            if(diagramContext === 'editProcessStructure'){
+            app = new sankey.Application(socket);
+            if (diagramContext === 'editProcessStructure') {
                 app.fileOpen(processStructureName);
             }
         });
 
     </script>
 
-    </head>
+</head>
 
 <body id="container">
 
@@ -49,17 +50,20 @@
     <div id="editor">
         <div id="palette" align="center">
             <h6>הוסף שלב התחלתי</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.Start"   class="palette_node_element draw2d_droppable">
+            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.Start"
+                 class="palette_node_element draw2d_droppable">
             <h6>הוסף שלב</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"   data-shape="sankey.shape.State"   class="palette_node_element draw2d_droppable">
+            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.State"
+                 class="palette_node_element draw2d_droppable">
             <div style="height: 100px"></div>
-            <button onclick="confirm()" title="Save Report" class="btn btn-default ion-ios-upload-outline icon"> שמור</button>
+            <button onclick="confirm()" title="Save Report" class="btn btn-default ion-ios-upload-outline icon"> שמור
+            </button>
             <div style="height: 20px"></div>
-            <button class="btn btn-default" onclick="app.view.centerDocument();" >מרכז</button>
+            <button class="btn btn-default" onclick="app.view.centerDocument();">מרכז</button>
         </div>
         <div id="view">
             <div id="draw2dCanvasWrapper">
-                <div id="canvas"  style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
+                <div id="canvas" style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
             </div>
             <!--<div id="property">
             </div>-->
@@ -87,7 +91,7 @@
                 <div class="media">
                     <div class="media-left media-middle">
                         <a href="#">
-                            <div class="media-object githubFilePreview ion-ios-upload-outline" ></div>
+                            <div class="media-object githubFilePreview ion-ios-upload-outline"></div>
                         </a>
                     </div>
                     <div class="media-body">
@@ -101,7 +105,7 @@
                                     <input type="text"
                                            class="form-control floating-label githubFileName"
                                            value=""
-                                            >
+                                    >
                                 </div>
                             </div>
                         </fieldset>
@@ -148,7 +152,6 @@
 </div>
 
 
-
 <!--
   #  Select Role Modal
   #
@@ -167,8 +170,8 @@
                     <fieldset>
                         <div class="form-group">
                             <div class="col-lg-12">
+                                <h5>בחר תפקיד:</h5>
                                 <select id="role_selector">
-                                    <option value="0">בחר תפקיד:</option>
                                 </select>
                             </div>
                         </div>
@@ -180,7 +183,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button onclick="select_role_clicked()" id="select_role_okay_button" class="btn btn-default okButton"><span>הוסף</span></button>
+            <button onclick="select_role_clicked()" id="select_role_okay_button" class="btn btn-default okButton"><span>הוסף</span>
+            </button>
         </div>
     </div>
 
@@ -195,7 +199,7 @@
     <div class="modal-content">
         <div>
             <div class="modal-header">
-                <h4 class="media-heading">Forms</h4>
+                <h4 class="media-heading">ניהול טפסים מקוונים לשלב</h4>
             </div>
             <div class="modal-body">
                 <div class="media">
@@ -212,7 +216,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button onclick="document.getElementById('see_forms_modal').style.display = 'none'" id="no-id124" class="btn btn-primary okButton"><span>Okay</span></button>
+                <button class="btn btn-primary okButton" id="no-id124"
+                        onclick="document.getElementById('see_forms_modal').style.display = 'none'"><span>אישור</span>
+                </button>
             </div>
         </div>
     </div>
@@ -227,25 +233,32 @@
 
 <script id="template_startNode" type="hogan/template">
     <table class="table" id="transitions">
-        <thead><tr><th data-path="jsonPath">JSON Path</th><th data-path="operation">Operation</th><th data-path="value">Value</th></tr></thead>
+        <thead>
+        <tr>
+            <th data-path="jsonPath">JSON Path</th>
+            <th data-path="operation">Operation</th>
+            <th data-path="value">Value</th>
+        </tr>
+        </thead>
         <tbody>
         {{#transitions}}
-            <tr>
-                <td><input type="text"  value="{{jsonPath}}"  placeholder="JSON path" class="typeahead_path form-control"></td>
-                <td>
-                    <select value="{{operation}}" class="form-control">
-                        <option value="equals">is equal</option>
-                        <option value="!equals">not equal</option>
-                        <option value="null">is null</option>
-                        <option value="!null">not null</option>
-                        <option value="undefined">undefined</option>
-                    </select>
-                </td>
-                <td><input type="text" value="{{value}}" class="typeahead_value form-control"></td>
-            </tr>
+        <tr>
+            <td><input type="text" value="{{jsonPath}}" placeholder="JSON path" class="typeahead_path form-control">
+            </td>
+            <td>
+                <select value="{{operation}}" class="form-control">
+                    <option value="equals">is equal</option>
+                    <option value="!equals">not equal</option>
+                    <option value="null">is null</option>
+                    <option value="!null">not null</option>
+                    <option value="undefined">undefined</option>
+                </select>
+            </td>
+            <td><input type="text" value="{{value}}" class="typeahead_value form-control"></td>
+        </tr>
         {{/transitions}}
         <tr>
-            <td><input type="text"  value=""  placeholder="JSON path" class="typeahead_path form-control"></td>
+            <td><input type="text" value="" placeholder="JSON path" class="typeahead_path form-control"></td>
             <td>
                 <select class="form-control" value="equals">
                     <option value="equals">is equal</option>
@@ -264,11 +277,18 @@
 
 <script id="template_connection" type="hogan/template">
     <table class="table" id="transitions">
-        <thead><tr><th data-path="jsonPath">JSON Path</th><th data-path="operation">Operation</th><th data-path="value">Value</th></tr></thead>
+        <thead>
+        <tr>
+            <th data-path="jsonPath">JSON Path</th>
+            <th data-path="operation">Operation</th>
+            <th data-path="value">Value</th>
+        </tr>
+        </thead>
         <tbody>
         {{#transitions}}
         <tr>
-            <td><input value="{{jsonPath}}"  type="text" placeholder="JSON path" class="typeahead_path form-control"></td>
+            <td><input value="{{jsonPath}}" type="text" placeholder="JSON path" class="typeahead_path form-control">
+            </td>
             <td>
                 <select value="{{operation}}" class="form-control">
                     <option value="equals">is equal</option>
