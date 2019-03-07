@@ -21,11 +21,11 @@ router.post('/handleProcess', function (req, res) {
     {
         if(attr !== "processName")
         {
-            nextStageRoles.push(attr);
+            nextStageRoles.push(parseInt(attr));
         }
     }
-    let stage = {comments: "" , filledForms : "", fileNames : ""};
-    activeProcess.handleProcess(userName, processName, stage, [""], [""], (err, ret) => {
+    let stage = {comments: "" , filledForms : [], fileNames : "", nextStageRoles: nextStageRoles};
+    activeProcess.handleProcess(userName, processName, stage, (err, ret) => {
         if (err) {
             res.send(err);
         } else {

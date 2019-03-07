@@ -26,9 +26,9 @@
 <br>
 <button id="cancel" class="btn btn-default">ביטול  </button>
 <br>
-    <%nextRoles.forEach(function(role){%>
-    <label><%=role%>
-        <input type="checkbox" name="<%=role%>">
+    <%nextRoles.forEach(function(roleIdAndName){%>
+    <label><%=roleIdAndName[0]%>
+        <input type="checkbox" name="<%=roleIdAndName[1]%>">
     </label>
     <%})%>
     </form>
