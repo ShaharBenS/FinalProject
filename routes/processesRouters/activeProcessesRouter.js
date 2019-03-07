@@ -85,67 +85,50 @@ router.post('/startProcess', function (req, res) {
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
-        for(let i = 0; i<array[0].length;i++)
-        {
-            let currentStages = array[0][i]._currentStages;
-            array[0][i]._currentStages = [];
-            for(let j = 0;j<array[0][i]._stages.length;j++)
-            {
-                if(currentStages.includes(array[0][i]._stages[j].stageNum))
-                {
-                    array[0][i]._currentStages.push(array[0][i]._stages[j]);
-                }
-            }
-        }
-        for(let i = 0; i<array[0].length;i++)
-        {
-            for(let j = 0;j<array[0][i]._currentStages.length;j++)
-            {
-                array[0][i]._currentStages[j].roleID = array[1][i][j];
-            }
-        }
-            res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
+        handleRolesAndStages(array);
+        convertDate(array[0]);
+        res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
     });
 });
+
+function handleRolesAndStages(array) {
+    for (let i = 0; i < array[0].length; i++) {
+        let currentStages = array[0][i]._currentStages;
+        array[0][i]._currentStages = [];
+        for (let j = 0; j < array[0][i]._stages.length; j++) {
+            if (currentStages.includes(array[0][i]._stages[j].stageNum)) {
+                array[0][i]._currentStages.push(array[0][i]._stages[j]);
+            }
+        }
+    }
+    for (let i = 0; i < array[0].length; i++) {
+        for (let j = 0; j < array[0][i]._currentStages.length; j++) {
+            array[0][i]._currentStages[j].roleID = array[1][i][j];
+        }
+    }
+}
 
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcess.getWaitingActiveProcessesByUser(userName, (err, array) => {
-        for(let i = 0; i<array[0].length;i++)
-        {
-            let currentStages = array[0][i]._currentStages;
-            array[0][i]._currentStages = [];
-            for(let j = 0;j<array[0][i]._stages.length;j++)
-            {
-                if(currentStages.includes(array[0][i]._stages[j].stageNum))
-                {
-                    array[0][i]._currentStages.push(array[0][i]._stages[j]);
-                }
-            }
-        }
-        for(let i = 0; i<array[0].length;i++)
-        {
-            for(let j = 0;j<array[0][i]._currentStages.length;j++)
-            {
-                array[0][i]._currentStages[j].roleID = array[1][i][j];
-            }
-        }
-        res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0] , username : userName});
+        handleRolesAndStages(array);
+        convertDate(array[0]);
+        res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
     });
 });
 
 router.get('/handleProcessView', function (req, res) {
     let userName = req.user.emails[0].value;
     let processName = req.query.process_name;
-    activeProcess.getNextStagesRoles(processName,userName,(err,rolesArr)=>{
-        if(err)
-        {
+    activeProcess.getNextStagesRoles(processName, userName, (err, rolesArr) => {
+        if (err) {
             res.send(err);
         }
-        else
-        {
-            res.render('activeProcessesViews/handleProcess', {userName: userName , processName : processName,
-            nextRoles: rolesArr});
+        else {
+            res.render('activeProcessesViews/handleProcess', {
+                userName: userName, processName: processName,
+                nextRoles: rolesArr
+            });
         }
     });
 
@@ -157,6 +140,8 @@ router.get('/reportProcess', function (req, res) {
         if (err) {
             res.send(err);
         } else {
+            //convertDate([result[0]]);
+            convertJustCreationTime(result[0]);
             res.render('reportsViews/ProcessReport', {processDetails: result[0], table: result[1]});
         }
     });
@@ -172,4 +157,79 @@ router.get('/myWaitingProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myWaitingProcessesPage');
 });
 
+/////Helper Functions
+function convertDate(array) {
+    for (let i = 0; i < array.length; i++) {
+        let creationTime = array[i]._creationTime;
+        let lastApproached = array[i]._lastApproached;
+        let dayOfCreationTime = creationTime.getDate();
+        let dayOfLastApproached = lastApproached.getDate();
+        let monthOfCreationTime = creationTime.getMonth() + 1;
+        let monthOfLastApproached = lastApproached.getMonth() + 1;
+        let yearOfCreationTime = creationTime.getFullYear();
+        let yearOfLastApproached = lastApproached.getFullYear();
+        if (dayOfCreationTime < 10) {
+            dayOfCreationTime = '0' + dayOfCreationTime;
+        }
+        if (dayOfLastApproached < 10) {
+            dayOfLastApproached = '0' + dayOfLastApproached;
+        }
+        if (monthOfCreationTime < 10) {
+            monthOfCreationTime = '0' + monthOfCreationTime;
+        }
+        if (monthOfLastApproached < 10) {
+            monthOfLastApproached = '0' + monthOfLastApproached;
+        }
+        let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
+        let dateOfLastApproached = dayOfLastApproached + '/' + monthOfLastApproached + '/' + yearOfLastApproached;
+        let hourOfCreationTime = creationTime.getHours();
+        let hourOfLastApproached = lastApproached.getHours();
+        let minuteOfCreationTime = creationTime.getMinutes();
+        let minuteOfLastApproached = lastApproached.getMinutes();
+        let secondsOfCreationTime = creationTime.getSeconds();
+        let secondsOfLastApproached = lastApproached.getSeconds();
+        if (hourOfCreationTime.toString().length === 1)
+            hourOfCreationTime = '0' + hourOfCreationTime;
+        if (hourOfLastApproached.toString().length === 1)
+            hourOfLastApproached = '0' + hourOfLastApproached;
+        if (minuteOfCreationTime.toString().length === 1)
+            minuteOfCreationTime = '0' + minuteOfCreationTime;
+        if (minuteOfLastApproached.toString().length === 1)
+            minuteOfLastApproached = '0' + minuteOfLastApproached;
+        if (secondsOfCreationTime.toString().length === 1)
+            secondsOfCreationTime = '0' + secondsOfCreationTime;
+        if (secondsOfLastApproached.toString().length === 1)
+            secondsOfLastApproached = '0' + secondsOfLastApproached;
+        dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
+        dateOfLastApproached = dateOfLastApproached + ' ' + hourOfLastApproached + ':' + minuteOfLastApproached + ':' + secondsOfLastApproached;
+        array[i]._creationTime = dateOfCreationTime;
+        array[i]._lastApproached = dateOfLastApproached;
+    }
+}
+
+function convertJustCreationTime(process) {
+    let creationTime = process.creationTime;
+    let dayOfCreationTime = creationTime.getDate();
+    let monthOfCreationTime = creationTime.getMonth() + 1;
+    let yearOfCreationTime = creationTime.getFullYear();
+    if (dayOfCreationTime < 10) {
+        dayOfCreationTime = '0' + dayOfCreationTime;
+    }
+    if (monthOfCreationTime < 10) {
+        monthOfCreationTime = '0' + monthOfCreationTime;
+    }
+    let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
+    let hourOfCreationTime = creationTime.getHours();
+    let minuteOfCreationTime = creationTime.getMinutes();
+    let secondsOfCreationTime = creationTime.getSeconds();
+    if (hourOfCreationTime.toString().length === 1)
+        hourOfCreationTime = '0' + hourOfCreationTime;
+    if (minuteOfCreationTime.toString().length === 1)
+        minuteOfCreationTime = '0' + minuteOfCreationTime;
+    if (secondsOfCreationTime.toString().length === 1)
+        secondsOfCreationTime = '0' + secondsOfCreationTime;
+    dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
+    process.creationTime = dateOfCreationTime;
+}
+/////
 module.exports = router;
