@@ -31,15 +31,31 @@ module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
 };
 
 module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) => {
-    let params = {roleName: roleName, userEmail: usersEmail, children: []};
-    let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail, children: []};
-    userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) => {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, usersAndRole)
-        }
+    let countsArray = {};
+    usersEmail.forEach((email) => {
+        if (countsArray[email] === undefined)
+            countsArray[email] = 1;
+        else countsArray[email] = countsArray[email] + 1
     });
+    let dupEmails = false;
+    usersEmail.every((email) => {
+        if (countsArray[email] > 1) dupEmails = true;
+        return !dupEmails;
+    });
+
+    if (dupEmails)
+        callback(new Error("should not allow duplicated emails"));
+    else {
+        let params = {roleName: roleName, userEmail: usersEmail, children: []};
+        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail, children: []};
+        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) => {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, usersAndRole)
+            }
+        });
+    }
 };
 
 module.exports.getAllRoles = (callback) => {
@@ -174,11 +190,10 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) => {
                                                         let deletedRolesIds = deletedRoles.map(role => {
                                                             return oldUsersAndRoles.getIdByRoleName(role.labels[0].text);
                                                         });
-                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds,(err)=>{
-                                                            if(err){
+                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds, (err) => {
+                                                            if (err) {
                                                                 callback(err);
-                                                            }
-                                                            else{
+                                                            } else {
                                                                 callback(null);
                                                             }
                                                         });
@@ -218,21 +233,17 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
     });
 };
 
-module.exports.getAllUsers = (callback) =>
-{
+module.exports.getAllUsers = (callback) => {
     let toReturn = [];
-    userAccessor.findUser({}, (err,res)=>{
-        if(err) callback(err);
-        else
-        {
-            for(let i=0;i< res.length;i++)
-            {
-                for(let j=0;j < res[i].userEmail.length;j++)
-                {
+    userAccessor.findUser({}, (err, res) => {
+        if (err) callback(err);
+        else {
+            for (let i = 0; i < res.length; i++) {
+                for (let j = 0; j < res[i].userEmail.length; j++) {
                     toReturn.push(res[i].userEmail[j]);
                 }
             }
-            callback(null,toReturn);
+            callback(null, toReturn);
         }
     });
 };
