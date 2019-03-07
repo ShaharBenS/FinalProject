@@ -36658,8 +36658,8 @@ draw2d.shape.node.Between = draw2d.shape.basic.Rectangle.extend({
             height: 50,
         }, attr), setter, getter);
 
-        this.createPort("output");
-        this.createPort("input");
+        this.createPort("output", new draw2d.layout.locator.BottomLocator());
+        this.createPort("input", new draw2d.layout.locator.TopLocator());
 
     }
 });
