@@ -1,6 +1,7 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
+let processStructureController = require('../processesControllers/processStructureController');
 
 module.exports.getRoleToEmails = (callback) => {
     userAccessor.findRole({}, (err, roles) => {

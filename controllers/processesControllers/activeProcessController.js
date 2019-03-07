@@ -94,15 +94,14 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else addProcessReport(processName, today, (err)=>{
-                                        if(err){
+                                    else addProcessReport(processName, today, (err) => {
+                                        if (err) {
                                             callback(err);
-                                        }
-                                        else{
+                                        } else {
                                             // Notify first role
                                             notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
                                                 "The process: " + processStructureName + ", named: " + processName + " is waiting for your approval"
-                                            ),callback)
+                                            ), callback)
                                         }
                                     });
                                 });
@@ -154,7 +153,7 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
 
 module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
     var arrayOfRoles = [];
-    for (let i = 0; i <activeProcesses.length; i++) {
+    for (let i = 0; i < activeProcesses.length; i++) {
         var arrayOfCurrentRolesInProcess = [];
         for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
             let currentStageNumber = activeProcesses[i]._currentStages[j];
@@ -163,9 +162,7 @@ module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, ca
             usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
                 if (err) {
                     callback(err);
-                }
-                else
-                {
+                } else {
                     console.log('RoleName : ' + roleName);
                     arrayOfCurrentRolesInProcess.push(roleName);
                     console.log('Array1 : ' + arrayOfCurrentRolesInProcess.toString());
@@ -190,6 +187,8 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
+                    if (activeProcesses === null)
+                        activeProcesses = [];
                     let toReturnActiveProcesses = [];
                     activeProcesses.forEach((process) => {
                         if (process.isParticipatingInProcess(userEmail))

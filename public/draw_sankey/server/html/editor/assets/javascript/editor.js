@@ -683,7 +683,7 @@ sankey.dialog.FileSave = Class.extend({
                     if(text === 'success'){
                         if(status === 'success'){
                             alert('Process Structure Saved Successfully');
-                            window.location.href = '/';
+                            window.location.href = '/Home';
                         }
                     }
                     else{
@@ -694,7 +694,7 @@ sankey.dialog.FileSave = Class.extend({
                     if(text === 'success'){
                         if(status === 'success'){
                             alert('Tree Saved Successfully');
-                            window.location.href = '/';
+                            window.location.href = '/Home';
                         }
                     }
                     else{
