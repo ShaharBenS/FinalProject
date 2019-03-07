@@ -1,19 +1,42 @@
-let select_role_clicked = function() {};
-let add_label = function () {};
+let select_role_clicked = function () {
+};
+let add_label = function () {
+};
 let is_role_list_set = false;
 
-//TODO : add button that centers the document 'centerDocument'
-//try to use the getJSON function
 
-$( document ).ready(function() {
+let formsOfStage = {};
+let onlineForms = {};
+
+let xmlHttpFormsOfStages = new XMLHttpRequest();
+let params = "?processStructureName=" + processStructureName;
+xmlHttpFormsOfStages.onreadystatechange = function () {
+    if (xmlHttpFormsOfStages.readyState === 4 && xmlHttpFormsOfStages.status === 200) {
+        formsOfStage = JSON.parse(xmlHttpFormsOfStages.responseText)
+    }
+};
+xmlHttpFormsOfStages.open("GET", '/processStructures/getFormsToStages/' + params, true);
+xmlHttpFormsOfStages.send(null);
+
+let xmlHttpOnlineForms = new XMLHttpRequest();
+xmlHttpOnlineForms.onreadystatechange = function () {
+    if (xmlHttpOnlineForms.readyState === 4 && xmlHttpOnlineForms.status === 200) {
+        onlineForms = JSON.parse(xmlHttpOnlineForms.responseText);
+    }
+};
+xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineForms/', true);
+xmlHttpOnlineForms.send(null);
+
+
+$(document).ready(function () {
     var modal = document.getElementById('select_role_modal');
     var span = document.getElementsByClassName("close")[0];
 
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     };
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
@@ -22,22 +45,19 @@ $( document ).ready(function() {
     var modal1 = document.getElementById('see_forms_modal');
     var span1 = document.getElementsByClassName("close")[1];
 
-    span1.onclick = function() {
+    span1.onclick = function () {
         modal1.style.display = "none";
     };
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal1) {
             modal1.style.display = "none";
         }
     };
-
-
 });
 
-function onDrop_extension(type,command,figure){
-    if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure')
-    {
+function onDrop_extension(type, command, figure) {
+    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure') {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
             figure.label = figure.label = new draw2d.shape.basic.Label({
@@ -84,23 +104,73 @@ function onDrop_extension(type,command,figure){
 }
 
 
-function deleteRoleById(id)
-{
+function deleteRoleById(id) {
 
 }
 
 function confirm() {
-    if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure') {
         app.fileSave()
     }
 }
 
 
-function seeFormsOpened(){
-    //TODO: omri
-    // you can add things to:
-    document.getElementById("forms-div");
-    // append to children, see: usersAndRolesTree.js line 69
+function seeFormsOpened(roleName) {
+    let formsDiv = document.getElementById("forms-div");
+    formsDiv.innerHTML = '';
+    if (formsOfStage[roleName] !== undefined) {
+        formsOfStage[roleName].forEach((formName) => {
+            let div = document.createElement("div");
+            let button = document.createElement("button");
+            button.class = "btn";
+            button.innerText = '-';
+            button.onclick = () => {
+                let index = formsOfStage[roleName].indexOf(formName);
+                if (index > -1) {
+                    formsOfStage[roleName].splice(index, 1);
+                }
+                seeFormsOpened(formName);
+            };
 
-    document.getElementById("see_forms_modal").style.display = "block";
+            let label = document.createElement("label");
+            label.style.color = "#00DD00";
+            label.style.marginLeft = "10px";
+            label.innerText = formName;
+            div.appendChild(button);
+            div.appendChild(label);
+            formsDiv.append(div);
+        });
+    } else formsOfStage[roleName] = [];
+    let div = document.createElement("div");
+    div.setAttribute("style", "display:flex; flex-direction: row;");
+    let select = document.createElement("select");
+    select.setAttribute("id", "selectForm");
+    select.style.marginLeft = "10px";
+
+    Object.keys(onlineForms).forEach((formName) => {
+        let optionElement = document.createElement('option');
+        optionElement.appendChild(document.createTextNode(formName));
+        select.appendChild(optionElement);
+    });
+
+    let button = document.createElement("button");
+    button.class = "btn";
+    button.innerText = '+';
+    button.onclick = () => {
+        let selectValue = select.options[select.selectedIndex].innerText;
+        let found = false;
+        formsOfStage[roleName].forEach(formName => {
+            if (formName === selectValue) {
+                found = true;
+                alert('טופס כבר קיים בשלב זה');
+            }
+        });
+        if (!found) {
+            formsOfStage[roleName].push(selectValue);
+            seeFormsOpened(roleName);
+        }
+    };
+    div.appendChild(button);
+    div.appendChild(select);
+    formsDiv.append(div);
 }

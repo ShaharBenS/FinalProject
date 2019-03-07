@@ -1,4 +1,3 @@
-let mongoose = require('mongoose');
 let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
@@ -17,10 +16,12 @@ const initials = [0, 1];
 let testProcess;
 
 const onlineForms = [];
+const onlineFormsUpdated = ['file1'];
 const filledOnlineForms = [];
 const attachedFilesNames = [];
 const comments = "";
 const roleID = 0;
+
 
 let stage0, stage1, stage2, stage3, stage4, stage5, stage6;
 
@@ -353,5 +354,16 @@ describe('10.0 check if user participates in process', function () {
 
     it('10.2 check if user participates in process true', () => {
         assert.equal(testProcess.isParticipatingInProcess('doesntparticipate@bgu.ac.il'), false);
+    });
+});
+
+describe('11.0 update stage', function () {
+
+    beforeEach(createActiveProcess1);
+
+    it('11.1  add online form to stage', () => {
+        testProcess.attachOnlineFormToStage(2, onlineFormsUpdated[0]);
+        assert.equal(1, testProcess.stages[2].onlineForms.length);
+        assert.equal(onlineFormsUpdated[0], testProcess.stages[2].onlineForms[0]);
     });
 });

@@ -665,6 +665,8 @@ sankey.dialog.FileSave = Class.extend({
                 content: JSON.stringify(json, undefined, 2),
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
+                onlineFormsOfStage: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure')
+                    ? JSON.stringify(formsOfStage) : undefined,
                 processStructureName: processStructureName,
             };
             $.ajax({
@@ -937,7 +939,9 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                             document.getElementById("select_users_modal").style.display = "block";
                         }
                         else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
-                            seeFormsOpened();
+                            seeFormsOpened(figure.children.data[0].figure.text);
+                            document.getElementById("see_forms_modal").style.display = "block";
+
                         }
                         break;
                     default:

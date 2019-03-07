@@ -1,5 +1,7 @@
 let express = require('express');
 let processStructure = require('../../controllers/processesControllers/processStructureController');
+let userAndRoles = require('../../controllers/usersControllers/usersAndRolesController');
+let onlineFormsController = require('../../controllers/onlineFormsControllers/onlineFormController');
 
 let router = express.Router();
 
@@ -29,31 +31,63 @@ router.post('/removeProcessStructure', function (req, res) {
  */
 
 router.get('/addProcessStructure', function (req, res) {
-    if(req.query.name){
-        res.render('processesStructureViews/ProcessStructure',{processStructureName:req.query.name,pageContext: 'addProcessStructure'});
-    }
-    else{
+    if (req.query.name) {
+        res.render('processesStructureViews/ProcessStructure', {
+            processStructureName: req.query.name,
+            pageContext: 'addProcessStructure'
+        });
+    } else {
         res.send("Missing structure name.")
     }
 });
 
-router.get('/editProcessStructure',function (req,res){
-    if(req.query.name){
-        res.render('processesStructureViews/ProcessStructure',{processStructureName: req.query.name, pageContext: 'editProcessStructure'})
-    }
-    else{
+router.get('/editProcessStructure', function (req, res) {
+    if (req.query.name) {
+        res.render('processesStructureViews/ProcessStructure', {
+            processStructureName: req.query.name,
+            pageContext: 'editProcessStructure'
+        })
+    } else {
         res.send("Missing structure name.")
     }
 });
 
-router.get('/getAllProcessStructures', function (req,res) {
-    processStructure.getAllProcessStructures((err,result)=>{
-        if(err){
+router.get('/getAllProcessStructures', function (req, res) {
+    processStructure.getAllProcessStructures((err, result) => {
+        if (err) {
             res.send(err);
-        }
-        else{
+        } else {
             res.send(result);
         }
+    })
+});
+
+router.get('/getFormsToStages', function (req, res) {
+    processStructure.getProcessStructure(req.query.processStructureName, (err, processStructure) => {
+        if (err) res.send(err);
+        else if (processStructure !== null) {
+            onlineFormsController.getAllOnlineForms((err, onlineFormsObjects) => {
+                if (err) res.send(err);
+                else {
+                    let formsToStages = {};
+                    let formsIDsOfStages = processStructure.getFormsOfStage();
+                    let formsOfStages = {};
+                    onlineFormsObjects.forEach((form) => formsOfStages[form.formID] = form.formName);
+                    let count = Object.keys(formsIDsOfStages).length;
+                    Object.keys(formsIDsOfStages).forEach((key) => {
+                        userAndRoles.getRoleNameByRoleID(key, (err, roleName) => {
+                            //formsToStages[roleName] = formsIDsOfStages[key];
+                            formsToStages[roleName] = [];
+                            formsIDsOfStages[key].forEach((formID) => formsToStages[roleName].push(formsOfStages[formID]));
+                            count--;
+                            if (count === 0)
+                                res.send(formsToStages);
+                        });
+                    });
+                }
+            });
+
+        } else res.send({});
     })
 });
 

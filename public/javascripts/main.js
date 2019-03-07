@@ -102,6 +102,17 @@ function editUsersAndRolesTree() {
     window.location.href = '/usersAndRoles/editTree/'
 }
 
+function updateOnlineForms() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            //TODO: should we do something here ?
+        }
+    };
+    xmlHttp.open("POST", '/onlineForms/createAllOnlineForms/', true);
+    xmlHttp.send(null);
+}
+
 function startActiveProcess() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {

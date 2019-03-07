@@ -11,6 +11,9 @@ let usersAndRolesRouter = require('./usersRouters/usersAndRolesRouter');
 
 let uploadFilesRouter = require('./uploadFiles/uploadFilesRouter');
 let userPermissionsControl = require('./usersRouters/permissionsControlRouter');
+
+let onlineFormsRouter = require('./onlineFormsRoutes/onlineFormsRouter');
+
 module.exports = (app)=>{
     app.use('/', indexRouter);
     app.use('/sankey', sankeyRouter);
@@ -25,4 +28,6 @@ module.exports = (app)=>{
     app.use('/auth', auth);
     app.use('/uploadFile', uploadFilesRouter);
     app.use('/permissionsControl', userPermissionsControl);
+    app.use('/uploadFile', uploadFilesRouter);
+    app.use('/onlineForms', onlineFormsRouter)
 };

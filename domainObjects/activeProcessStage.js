@@ -1,7 +1,6 @@
 let processStructureStage = require("./processStructureStage");
 
-class activeProcessStage
-{
+class activeProcessStage {
 
     constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, approvalTime, onlineForms, filledOnlineForms, attachedFilesNames, comments)
     {
@@ -18,8 +17,7 @@ class activeProcessStage
         this.comments = comments;
     }
 
-    removeStagesToWaitFor(stageNum)
-    {
+    removeStagesToWaitFor(stageNum) {
         if (stageNum !== undefined && this.stagesToWaitFor.includes(stageNum)) {
             let index = this.stagesToWaitFor.indexOf(stageNum);
             this.stagesToWaitFor.splice(index, 1);
@@ -36,8 +34,22 @@ class activeProcessStage
         } else throw new Error();
     }
 
-    haveNoOneToWaitFor(){
+    haveNoOneToWaitFor() {
         return this.stagesToWaitFor.length === 0;
+    }
+
+    attachOnlineForm(formName) {
+        let alreadyExist = false;
+        this.onlineForms.every((formName2) => {
+            if (formName === formName2) {
+                alreadyExist = true;
+                return false;
+            }
+            return true;
+        });
+        if (!alreadyExist) {
+            this.onlineForms = this.onlineForms.concat([formName]);
+        }
     }
 }
 

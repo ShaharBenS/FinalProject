@@ -713,7 +713,7 @@ sankey.shape.End = draw2d.shape.node.End.extend({
         var _this = this;
         this.label = this.label = new draw2d.shape.basic.Label({
             text:"סוף",
-            angle:270,
+            angle: 0,
             fontColor:"#FFFFFF",
             fontSize:18,
             stroke:0,
@@ -939,7 +939,7 @@ sankey.shape.Start = draw2d.shape.node.Start.extend({
         var _this = this;
         this.label = this.label = new draw2d.shape.basic.Label({
             text:"התחלה",
-            angle:270,
+            angle: 0,
             fontColor:"#FFFFFF",
             fontSize:18,
             stroke:0,
