@@ -132,6 +132,8 @@ function seeFormsOpened(roleName) {
             };
 
             let label = document.createElement("label");
+            label.style.color = "#00DD00";
+            label.style.marginLeft = "10px";
             label.innerText = formName;
             div.appendChild(button);
             div.appendChild(label);
@@ -143,6 +145,7 @@ function seeFormsOpened(roleName) {
     div.setAttribute("style", "display:flex; flex-direction: row;");
     let select = document.createElement("select");
     select.setAttribute("id", "selectForm");
+    select.style.marginLeft = "10px";
 
     Object.keys(onlineForms).forEach((formName) => {
         let optionElement = document.createElement('option');
