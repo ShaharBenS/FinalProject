@@ -5,6 +5,7 @@ let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
+let fs = require('fs');
 
 /**
  * Starts new process from a defined structure
@@ -159,6 +160,40 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     });
 };
 
+function uploadFilesAndHandleProcess(userEmail, processName, fields, files, callback)
+{
+    let dirOfProcess = 'files/' + processName;
+    let dirToUpload = dirOfProcess + '/' + userEmail;
+    let fileNames = [];
+    if(files !== {})
+    {
+        if (!fs.existsSync(dirOfProcess)){
+            fs.mkdirSync(dirOfProcess);
+        }
+        if (!fs.existsSync(dirToUpload)){
+            fs.mkdirSync(dirToUpload);
+        }
+    }
+    for(let file in files)
+    {
+        fileNames.push(files[file].name);
+        let oldpath = files[file].path;
+        let newpath = dirToUpload + '/' + files[file].name;
+        fs.rename(oldpath, newpath, function (err) {
+            if (err) throw err;
+        });
+    }
+    let nextStageRoles = [];
+    for(let attr in fields)
+    {
+        if(!isNaN(attr))
+        {
+            nextStageRoles.push(parseInt(attr));
+        }
+    }
+    let stage = {comments: fields.comments , filledForms : [], fileNames : fileNames, nextStageRoles: nextStageRoles};
+    handleProcess(userEmail, processName, stage, callback);
+}
 
 /**
  * approving process and updating stages
@@ -168,7 +203,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
  * @param stageDetails | all the stage details
  * @param callback
  */
-module.exports.handleProcess = (userEmail, processName, stageDetails, callback) => {
+function handleProcess(userEmail, processName, stageDetails, callback){
 
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -203,7 +238,7 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, callback) 
                 });
         }
     });
-};
+}
 
 /**
  * Advance process to next stage if able
@@ -424,3 +459,4 @@ module.exports.getNextStagesRoles = function(processName, userEmail, callback){
 };
 
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
+module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
