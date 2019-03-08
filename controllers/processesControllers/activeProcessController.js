@@ -311,7 +311,7 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
     processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
-            processReport = processReport[0]._doc;
+            processReport = processReport._doc;
             let returnProcessDetails = {
                 processName: processReport.processName, creationTime: processReport.creationTime,
                 status: processReport.status
