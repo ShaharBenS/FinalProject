@@ -51,7 +51,7 @@ module.exports.createProcessReport = (PR, callback) => {
 };
 
 module.exports.findProcessReport = (PR, callback) => {
-    return processReportSchema.find(PR, callback);
+    return processReportSchema.findOne(PR, callback);
 };
 
 module.exports.deleteOneProcessReport = (PR, callback) => {

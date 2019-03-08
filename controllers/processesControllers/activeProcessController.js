@@ -169,9 +169,20 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
  * @param callback
  */
 module.exports.handleProcess = (userEmail, processName, stageDetails, callback) => {
+
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
+            let currentStage;
+            for(let i=0;i<process.currentStages.length;i++)
+            {
+                currentStage = process.getStageByStageNum(process.currentStages[i]);
+                if(currentStage.userEmail === userEmail)
+                {
+                    break;
+                }
+            }
+            stageDetails.stageNum = currentStage.stageNum;
             process.handleStage(stageDetails);
             let today = new Date();
             processAccessor.updateActiveProcess({processName: processName}, {
@@ -181,7 +192,7 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, callback) 
                 (err) => {
                     if (err) callback(err);
                     else {
-                        advanceProcess(processName, stageDetails.nextStages, (err)=>{
+                        advanceProcess(processName, stageDetails.nextStageRoles, (err)=>{
                             if (err) callback(err);
                             else
                             {
@@ -368,16 +379,16 @@ function getRoleNamesForArray(stages,index,roleNamesArray,callback){
         return;
     }
     let roleID = stages[index].roleID;
-    (function(variable){
+    (function(array,stageNum){
         usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
             if (err) callback(err);
             else
             {
-                variable.push(roleName);
+                array.push([roleName,stageNum]);
                 getRoleNamesForArray(stages,index+1,roleNamesArray,callback);
             }
         });
-    })(roleNamesArray);
+    })(roleNamesArray,stages[index].stageNum);
 }
 
 module.exports.getNextStagesRoles = function(processName, userEmail, callback){
@@ -403,7 +414,7 @@ module.exports.getNextStagesRoles = function(processName, userEmail, callback){
                 let nextStagesArr = [];
                 for(let j=0;j<currentStage.nextStages.length;j++)
                 {
-                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[i]));
+                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
                 }
                 getRoleNamesForArray(nextStagesArr,0,[],callback);
             }
