@@ -1,7 +1,9 @@
 let express = require('express');
 let activeProcess = require('../../controllers/processesControllers/activeProcessController');
-
 let router = express.Router();
+let formidable = require('formidable');
+
+
 
 /*
   _____   ____   _____ _______
@@ -14,24 +16,20 @@ let router = express.Router();
  */
 
 router.post('/handleProcess', function (req, res) {
-    let userName = req.user.emails[0].value;
-    let processName = req.body.processName;
-    let nextStageRoles = [];
-    for(let attr in req.body)
-    {
-        if(attr !== "processName")
-        {
-            nextStageRoles.push(parseInt(attr));
-        }
-    }
-    let stage = {comments: "" , filledForms : [], fileNames : "", nextStageRoles: nextStageRoles};
-    activeProcess.handleProcess(userName, processName, stage, (err, ret) => {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send("success");
-        }
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        let userName = req.user.emails[0].value;
+        let processName = fields.processName;
+        activeProcess.uploadFilesAndHandleProcess(userName, processName, fields, files, (err, ret) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send("success");
+            }
+        });
+
     });
+
 });
 
 router.post('/takePartInProcess', function (req, res) {
