@@ -3,38 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <script src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></script>
-    <script src="http://malsup.github.com/jquery.form.js"></script>
-    <script src="/javascripts/handleProcess.js"></script>
+    <script src="/javascripts/handlingProcess.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script>
-        $(function()
-        {
-            let index = 0;
-            $(document).on('click', '.btn-add', function(e)
-            {
-                index = index + 1;
-                e.preventDefault();
-
-                var controlForm = $('.controls:first'),
-                    currentEntry = $(this).parents('.entry:first'),
-                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
-                newEntry.find('input').attr('name', 'sel' + index);
-                newEntry.find('input').val('');
-                controlForm.find('.entry:not(:last) .btn-add')
-                    .removeClass('btn-add').addClass('btn-remove')
-                    .removeClass('btn-success').addClass('btn-danger')
-                    .html('<span class="glyphicon glyphicon-minus"></span>');
-            }).on('click', '.btn-remove', function(e)
-            {
-                $(this).parents('.entry:first').remove();
-
-                e.preventDefault();
-                return false;
-            });
-        });
-    </script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
     <title>טיפול בתהליך </title>
 </head>
 <body>

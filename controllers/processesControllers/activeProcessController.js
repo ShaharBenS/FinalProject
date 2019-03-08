@@ -165,23 +165,28 @@ function uploadFilesAndHandleProcess(userEmail, processName, fields, files, call
     let dirOfProcess = 'files/' + processName;
     let dirToUpload = dirOfProcess + '/' + userEmail;
     let fileNames = [];
-    if(files !== {})
-    {
-        if (!fs.existsSync(dirOfProcess)){
-            fs.mkdirSync(dirOfProcess);
-        }
-        if (!fs.existsSync(dirToUpload)){
-            fs.mkdirSync(dirToUpload);
-        }
-    }
+    let flag = true;
     for(let file in files)
     {
-        fileNames.push(files[file].name);
-        let oldpath = files[file].path;
-        let newpath = dirToUpload + '/' + files[file].name;
-        fs.rename(oldpath, newpath, function (err) {
-            if (err) throw err;
-        });
+        if(files[file].name !== "")
+        {
+            if(flag)
+            {
+                if (!fs.existsSync(dirOfProcess)){
+                    fs.mkdirSync(dirOfProcess);
+                }
+                if (!fs.existsSync(dirToUpload)){
+                    fs.mkdirSync(dirToUpload);
+                }
+                flag = false;
+            }
+            fileNames.push(files[file].name);
+            let oldpath = files[file].path;
+            let newpath = dirToUpload + '/' + files[file].name;
+            fs.rename(oldpath, newpath, function (err) {
+                if (err) throw err;
+            });
+        }
     }
     let nextStageRoles = [];
     for(let attr in fields)
