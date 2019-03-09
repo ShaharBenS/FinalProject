@@ -53522,7 +53522,6 @@ draw2d.shape.basic.Label = draw2d.SetFigure.extend({
         if (typeof memento.fontColor !== "undefined") {
             this.setFontColor(memento.fontColor);
         }
-
         if (typeof memento.editor === "string") {
             this.installEditor(eval("new " + memento.editor + "()"));
         }

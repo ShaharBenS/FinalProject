@@ -150,12 +150,16 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                     let existingRoleIndex = oldSankey.getRoles().findIndex(role =>
                                                     {
                                                         return role.id === role_figure.id;
-
                                                     });
                                                     if (existingRoleIndex > -1) {
                                                         let _roleName = oldSankey.getRoles()[existingRoleIndex].labels[0].text;
                                                         _id = oldUsersAndRoles.getIdByRoleName(_roleName);
-
+                                                    }
+                                                    existingRoleIndex = oldSankey.getRoles().findIndex(role =>{
+                                                        return role.labels[0].text === roleName;
+                                                    });
+                                                    if (existingRoleIndex > -1) {
+                                                        _id = oldUsersAndRoles.getIdByRoleName(roleName);
                                                     }
                                                     this.addUsersAndRole(_id, roleName, roleToEmails[roleName], (_err, usersAndRole) =>
                                                     {
@@ -228,6 +232,11 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                             {
                                                                 return role.id !== n_role.id;
                                                             })) {
+                                                                deletedRoles.push(role);
+                                                            }
+                                                            else if(sankeyTree.getRoles().every(n_role=>{
+                                                                return n_role.labels[0].text !== role.labels[0].text;
+                                                            })){
                                                                 deletedRoles.push(role);
                                                             }
                                                         });

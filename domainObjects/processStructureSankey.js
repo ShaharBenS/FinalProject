@@ -66,7 +66,7 @@ class processStructureSankey
     {
         return this.getSankeyStages().filter((figure) =>
         {
-            return figure.bgColor === '#5957FF';
+            return figure.bgColor === '#1E90FF';
 
         }).map((figure) =>
         {
@@ -173,7 +173,7 @@ class processStructureSankey
         return flows.every((flow)=>{
             let initials = this.getSankeyStages().filter((figure) =>
             {
-                return figure.bgColor === '#5957FF';
+                return figure.bgColor === '#1E90FF';
 
             }).map(stage=>{
                 return stage.id;

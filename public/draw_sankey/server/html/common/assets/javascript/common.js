@@ -1092,12 +1092,18 @@ sankey.shape.State = draw2d.shape.node.Between.extend({
 
         // and add all children of the JSON document.
         //
+        let _this = this;
         $.each(memento.labels, $.proxy(function(i,json){
             // create the figure stored in the JSON
             var figure =  eval("new "+json.type+"()");
 
             // apply all attributes
             figure.attr(json);
+            figure.installEditor(new draw2d.ui.LabelInplaceEditor({
+                onCommit: function () {
+                    _this.setWidth(Math.max(_this.getWidth(), figure.getWidth()));
+                }
+            }));
 
             // instantiate the locator
             var locator =  eval("new "+json.locator+"()");
