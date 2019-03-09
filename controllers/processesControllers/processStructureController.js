@@ -150,24 +150,54 @@ let sankeyToStructure = function (sankeyContent, callback) {
 
 
 
-module.exports.setProcessStructuresUnavailable = function (deletedRolesIds,callback) {
+module.exports.setProcessStructuresUnavailable = function (deletedRolesIds,deletedRolesNames,renamedRoles,callback) {
     processStructureAccessor.findProcessStructures((err,processStructures)=>{
         if(err){
             callback(err);
         }
         else{
+            let updatedSankey = {};
             let processStructuresToSetUnavailable = processStructures.filter(processStructure=>{
+                let sankey = new processStructureSankey(JSON.parse(processStructure.sankey));
+                sankey.getSankeyStages().forEach(stage=>{
+                   if(deletedRolesNames.includes(stage.labels[0].text)){
+                        sankey.setStageToNotFound(stage.id);
+                   }
+                   if(Object.keys(renamedRoles).includes(stage.labels[0].text)){
+                       sankey.changeStageName(stage.id,renamedRoles[stage.labels[0].text]);
+                   }
+                });
+                updatedSankey[processStructure._id.toString()] = sankey.sankeyToString();
+
                 return processStructure.stages.findIndex(stage => {
                     return deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString());
                 }) > -1;
             }).map(processStructure=>{return processStructure._id});
+
 
             processStructureAccessor.updateProcessStructure({_id:{$in:processStructuresToSetUnavailable}},{$set: {available:false}},(err)=>{
                if(err) {
                    callback(err);
                }
                else{
-                   callback(null);
+                    Object.keys(updatedSankey).reduce((prev,curr)=>{
+                        return (err)=>{
+                            if(err){
+                                prev(err);
+                            }
+                            else{
+                                processStructureAccessor.updateProcessStructure({_id:curr},{$set:{sankey:updatedSankey[curr]}},prev);
+                            }
+                        }
+                    },(err)=>{
+                        if(err){
+                            callback(err);
+                        }
+                        else{
+
+                            callback(null);
+                        }
+                    })(null);
                }
             });
         }

@@ -66,7 +66,7 @@ class processStructureSankey
     {
         return this.getSankeyStages().filter((figure) =>
         {
-            return figure.bgColor === '#1E90FF';
+            return figure.bgColor.toLowerCase() === '#ff9d6d';
 
         }).map((figure) =>
         {
@@ -173,7 +173,7 @@ class processStructureSankey
         return flows.every((flow)=>{
             let initials = this.getSankeyStages().filter((figure) =>
             {
-                return figure.bgColor === '#1E90FF';
+                return figure.bgColor.toLowerCase() === '#ff9d6d';
 
             }).map(stage=>{
                 return stage.id;
@@ -186,6 +186,27 @@ class processStructureSankey
     {
         return this.getSankeyStages().length === 0;
 
+    }
+
+    setStageToNotFound(id){
+        this.getSankeyStages().forEach(stage=>{
+            if(stage.id===id){
+                stage.bgColor = "#ff0003"
+            }
+        })
+    }
+
+    sankeyToString(){
+        return JSON.stringify(this.sankey);
+    }
+
+    changeStageName(id, renamedRole)
+    {
+        this.getSankeyStages().forEach(stage=>{
+            if(stage.id === id){
+                stage.labels[0].text = renamedRole;
+            }
+        })
     }
 }
 

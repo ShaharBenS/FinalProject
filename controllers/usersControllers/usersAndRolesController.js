@@ -85,9 +85,10 @@ module.exports.getUsersAndRolesTree = (callback) =>
 module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
 {
     let sankeyTree = new usersAndRolesTreeSankey(JSON.parse(sankey));
-    let emails = Object.values(roleToEmails).reduce((prev,curr)=>{
+    let emails = Object.values(roleToEmails).reduce((prev, curr) =>
+    {
         return prev.concat(curr);
-    },[]);
+    }, []);
 
     if (sankeyTree.hasNoRoot()) {
         callback('ERROR: there must be at least one role');
@@ -95,7 +96,7 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
     else if (sankeyTree.hasMoreThanOneTree()) {
         callback('ERROR: there are two trees in the graph');
     }
-    else if(roleToEmails[sankeyTree.getRootName()].length === 0){
+    else if (roleToEmails[sankeyTree.getRootName()].length === 0) {
         callback('ERROR: there must be at least one email assigned to the root')
     }
     else if (sankeyTree.hasMultipleConnections()) {
@@ -104,7 +105,7 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
     else if (sankeyTree.hasCycles()) {
         callback('ERROR: tree contains cycles');
     }
-    else if(emails.filter(emailValidator).length !== emails.length){
+    else if (emails.filter(emailValidator).length !== emails.length) {
         callback('ERROR: some email is not valid'); //TODO: tell what specific email is not okay.
     }
     else {
@@ -155,7 +156,8 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                         let _roleName = oldSankey.getRoles()[existingRoleIndex].labels[0].text;
                                                         _id = oldUsersAndRoles.getIdByRoleName(_roleName);
                                                     }
-                                                    existingRoleIndex = oldSankey.getRoles().findIndex(role =>{
+                                                    existingRoleIndex = oldSankey.getRoles().findIndex(role =>
+                                                    {
                                                         return role.labels[0].text === roleName;
                                                     });
                                                     if (existingRoleIndex > -1) {
@@ -226,6 +228,7 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
 
                                                         // Looking for roles that have been removed.
                                                         let deletedRoles = [];
+                                                        let deletedRolesNames = [];
                                                         oldSankey.getRoles().forEach(role =>
                                                         {
                                                             if (sankeyTree.getRoles().every(n_role =>
@@ -234,17 +237,40 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                             })) {
                                                                 deletedRoles.push(role);
                                                             }
-                                                            else if(sankeyTree.getRoles().every(n_role=>{
-                                                                return n_role.labels[0].text !== role.labels[0].text;
-                                                            })){
+                                                            else if (sankeyTree.getRoles().every(n_role =>
+                                                            {
+                                                                if(role.id === n_role.id){
+                                                                    return false;
+                                                                }
+                                                                if(n_role.labels[0].text === role.labels[0].text){
+                                                                    return false;
+                                                                }
+                                                                return true;
+                                                            })) {
                                                                 deletedRoles.push(role);
                                                             }
                                                         });
                                                         let deletedRolesIds = deletedRoles.map(role =>
                                                         {
+                                                            deletedRolesNames.push(role.labels[0].text);
                                                             return oldUsersAndRoles.getIdByRoleName(role.labels[0].text);
                                                         });
-                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds, (err) =>
+                                                        let renamedRoles = {};
+                                                        oldSankey.getRoles().forEach(role =>
+                                                        {
+                                                            let newName = -1;
+                                                            sankeyTree.getRoles().forEach(_role=>{
+                                                                if(_role.id === role.id){
+                                                                    if(role.labels[0].text !== _role.labels[0].text){
+                                                                        newName = _role.labels[0].text;
+                                                                    }
+                                                                }
+                                                            });
+                                                            if(newName !== -1){
+                                                                renamedRoles[role.labels[0].text] = newName;
+                                                            }
+                                                        });
+                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds, deletedRolesNames, renamedRoles,(err) =>
                                                         {
                                                             if (err) {
                                                                 callback(err);
@@ -315,7 +341,8 @@ module.exports.getAllUsers = (callback) =>
     This function decides what emails can be used.
     //TODO: check that the email domain belongs to aguda. (@aguda)
  */
-function emailValidator(email){
+function emailValidator(email)
+{
     let regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return regularExpression.test(String(email).toLowerCase());
 }
