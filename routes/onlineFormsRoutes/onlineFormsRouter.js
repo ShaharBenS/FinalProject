@@ -58,17 +58,4 @@ router.get('/fill', function (req, res) {
     })
 });
 
-//TODO:
-router.get('/list', function (req, res) {
-    onlineFormsController.getAllOnlineForms((err, forms) => {
-        if (err) res.send(err);
-        else {
-            formsArr = [];
-            forms.forEach((form) => {
-                formsArr.push({name: form.formName, src: form.HTMLSource})
-            });
-            res.render('onlineFormViews/formsList', {forms: formsArr});
-        }
-    })
-});
 module.exports = router;

@@ -169,7 +169,3 @@ function confirmStartProcess() {
     });
 }
 
-function formsList() {
-    window.location.href = '/onlineForms/list'
-
-}
