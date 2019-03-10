@@ -13,6 +13,7 @@ module.exports.findOnlineFormByName = (formName, callback) => {
     onlineFormSchema.findOne({formName: formName}, (err, res) => {
         if (err)
             callback(err);
+        else if (res === null) callback(null, null);
         else callback(null, this.getOnlineFormFromSchemaRecord(res));
     });
 };
