@@ -1,11 +1,14 @@
 let processAccessor = require('../../models/accessors/activeProcessesAccessor');
+let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
+let processReportController = require('../processesControllers/processReportController');
 let processStructureController = require('./processStructureController');
 let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
+let fs = require('fs');
 
 
 /**
@@ -94,8 +97,8 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else addProcessReport(processName, today, (err) => {
-                                        if (err) {
+                                    else processReportController.addProcessReport(processName, today, (err)=>{
+                                        if(err){
                                             callback(err);
                                         } else {
                                             // Notify first role
@@ -136,47 +139,39 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
                             waitingActiveProcesses.push(process);
                         }
                     });
-                    callback(null, waitingActiveProcesses);
+                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
+                        callback(null, [waitingActiveProcesses,arrayOfRoles]);
+                    });
                 }
             });
         }
     });
 };
 
-/**
- * returns all active process for specific user
- * > FOR MONITORING <
- *
- * @param activeProcesses
- * @param callback
- */
-
-module.exports.convertActiveProcessesWithRoleIDToRoleName = (activeProcesses, callback) => {
-    var arrayOfRoles = [];
-    for (let i = 0; i < activeProcesses.length; i++) {
-        var arrayOfCurrentRolesInProcess = [];
-        for (let j = 0; j < activeProcesses[i]._currentStages.length; j++) {
-            let currentStageNumber = activeProcesses[i]._currentStages[j];
-            let currentStage = activeProcesses[i].stages[currentStageNumber];
-            let roleID = currentStage.roleID;
-            usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-                if (err) {
-                    callback(err);
-                } else {
-                    console.log('RoleName : ' + roleName);
-                    arrayOfCurrentRolesInProcess.push(roleName);
-                    console.log('Array1 : ' + arrayOfCurrentRolesInProcess.toString());
-                }
-            });
-        }
-        arrayOfRoles.push(arrayOfCurrentRolesInProcess);
+function bringRoles(subArray, fullArray, i, j, activeProcesses, callback)
+{
+    if(i === activeProcesses.length) {
+        callback(null,fullArray);
+        return;
     }
-    console.log('Array2 : ' + arrayOfRoles[0].toString());
-    callback(null, arrayOfRoles);
-};
-
-function insert(arrayDest, index, arraySrc) {
-    Array.prototype.splice.apply(arrayDest, [index, 0].concat(arraySrc));
+    if(j === activeProcesses[i]._currentStages.length){
+        fullArray.push(subArray);
+        bringRoles([],fullArray,i+1,0,activeProcesses,callback);
+        return;
+    }
+    let currentStageNumber = activeProcesses[i]._currentStages[j];
+    let currentStage = activeProcesses[i].stages[currentStageNumber];
+    let roleID = currentStage.roleID;
+    (function(variable){
+        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+            if (err) callback(err);
+            else
+            {
+                variable.push(roleName);
+                bringRoles(subArray,fullArray,i,j+1,activeProcesses,callback);
+            }
+        });
+    })(subArray);
 }
 
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
@@ -194,13 +189,58 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                         if (process.isParticipatingInProcess(userEmail))
                             toReturnActiveProcesses.push(process);
                     });
-                    callback(null, toReturnActiveProcesses);
+                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
+                        callback(null, [toReturnActiveProcesses,arrayOfRoles]);
+                    });
                 }
             });
         }
     });
 };
 
+function uploadFilesAndHandleProcess(userEmail, processName, fields, files, callback)
+{
+    let dirOfFiles = 'files';
+    let dirOfProcess = dirOfFiles + '/' + processName;
+    let dirToUpload = dirOfProcess + '/' + userEmail;
+    let fileNames = [];
+    let flag = true;
+    for(let file in files)
+    {
+        if(files[file].name !== "")
+        {
+            if(flag)
+            {
+                if (!fs.existsSync(dirOfFiles)){
+                    fs.mkdirSync(dirOfFiles);
+                }
+                if (!fs.existsSync(dirOfProcess)){
+                    fs.mkdirSync(dirOfProcess);
+                }
+                if (!fs.existsSync(dirToUpload)){
+                    fs.mkdirSync(dirToUpload);
+                }
+                flag = false;
+            }
+            fileNames.push(files[file].name);
+            let oldpath = files[file].path;
+            let newpath = dirToUpload + '/' + files[file].name;
+            fs.rename(oldpath, newpath, function (err) {
+                if (err) throw err;
+            });
+        }
+    }
+    let nextStageRoles = [];
+    for(let attr in fields)
+    {
+        if(!isNaN(attr))
+        {
+            nextStageRoles.push(parseInt(attr));
+        }
+    }
+    let stage = {comments: fields.comments , filledForms : [], fileNames : fileNames, nextStageRoles: nextStageRoles};
+    handleProcess(userEmail, processName, stage, callback);
+}
 
 /**
  * approving process and updating stages
@@ -212,11 +252,22 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
  * @param fileNames | added files
  * @param callback
  */
-module.exports.handleProcess = (userEmail, processName, stageDetails, filledForms, fileNames, callback) => {
+function handleProcess(userEmail, processName, stageDetails, callback){
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            process.handleStage(stageDetails.stageNum, filledForms, fileNames, stageDetails.comments);
+            let currentStage;
+            for(let i=0;i<process.currentStages.length;i++)
+            {
+                currentStage = process.getStageByStageNum(process.currentStages[i]);
+                if(currentStage.userEmail === userEmail)
+                {
+                    break;
+                }
+            }
+            stageDetails.stageNum = currentStage.stageNum;
+            stageDetails.action = "continue";
+            process.handleStage(stageDetails);
             let today = new Date();
             processAccessor.updateActiveProcess({processName: processName}, {
                     stages: process.stages,
@@ -225,17 +276,18 @@ module.exports.handleProcess = (userEmail, processName, stageDetails, filledForm
                 (err) => {
                     if (err) callback(err);
                     else {
-                        addActiveProcessDetailsToReport(processName, userEmail, stageDetails.stageNum, today, stageDetails.comments, (err) => {
+                        advanceProcess(processName, stageDetails.nextStageRoles, (err)=>{
                             if (err) callback(err);
-                            else {
-                                advanceProcess(processName, stageDetails.nextStages, callback);
+                            else
+                            {
+                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today,callback);
                             }
                         });
                     }
                 });
         }
     });
-};
+}
 
 /**
  * Advance process to next stage if able
@@ -252,8 +304,7 @@ const advanceProcess = (processName, nextStages, callback) => {
             process.advanceProcess(nextStages);
             processAccessor.updateActiveProcess({processName: processName}, {
                     currentStages: process.currentStages, stages: process.stages
-                },
-                (err, res) => {
+                }, (err, res) => {
                     if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
                     else callback(null, res);
                 });
@@ -306,7 +357,7 @@ const addActiveProcessDetailsToReport = (processName, userEmail, stageNum, appro
 };
 
 module.exports.getAllActiveProcessDetails = (processName, callback) => {
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
+    processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
             processReport = processReport[0]._doc;
@@ -396,7 +447,7 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
     });
 };
 
-module.exports.getActiveProcessByProcessName = function (processName, callback) {
+function getActiveProcessByProcessName(processName, callback) {
     processAccessor.findActiveProcesses({processName: processName}, (err, processArray) => {
         if (err) callback(err);
         else {
@@ -404,4 +455,76 @@ module.exports.getActiveProcessByProcessName = function (processName, callback) 
             else callback(null, processArray[0]);
         }
     });
+}
+
+function getRoleNamesForArray(stages,index,roleNamesArray,callback){
+    if(index === stages.length) {
+        callback(null,roleNamesArray);
+        return;
+    }
+    let roleID = stages[index].roleID;
+    (function(array,stageNum){
+        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+            if (err) callback(err);
+            else
+            {
+                array.push([roleName,stageNum]);
+                getRoleNamesForArray(stages,index+1,roleNamesArray,callback);
+            }
+        });
+    })(roleNamesArray,stages[index].stageNum);
+}
+
+module.exports.getNextStagesRoles = function(processName, userEmail, callback){
+    getActiveProcessByProcessName(processName,(err,process)=>{
+        if(err) callback(err);
+        else
+        {
+            if(!process)
+            {
+                callback(new Error("Couldn't find process"));
+            }
+            else
+            {
+                let i,currentStage;
+                for(i=0;i<process.currentStages.length;i++)
+                {
+                    currentStage = process.getStageByStageNum(process.currentStages[i]);
+                    if(currentStage.userEmail === userEmail)
+                    {
+                        break;
+                    }
+                }
+                let nextStagesArr = [];
+                for(let j=0;j<currentStage.nextStages.length;j++)
+                {
+                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
+                }
+                getRoleNamesForArray(nextStagesArr,0,[],callback);
+            }
+        }
+    });
+
 };
+
+module.exports.returnToCreator = function(userEmail,processName,comments,callback){
+    getActiveProcessByProcessName(processName,(err,process)=>{
+        process.currentStages = process.initials;
+        process.returnAllOriginalStagesToWaitFor();
+        let today = new Date();
+        let stage = {comments: comments , filledForms : [], fileNames : [], action: "return", stageNum: process.getStageNumberForUser(userEmail)};
+        processAccessor.updateActiveProcess({processName: processName}, {
+            stages: process.stages,
+            lastApproached: today
+        },(err)=>{
+           if(err) callback(err);
+           else
+           {
+               processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
+           }
+        });
+    });
+};
+
+module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
+module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
