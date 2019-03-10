@@ -18,18 +18,32 @@ let formidable = require('formidable');
 router.post('/handleProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
-        let userName = req.user.emails[0].value;
+        let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
-        activeProcess.uploadFilesAndHandleProcess(userName, processName, fields, files, (err, ret) => {
+        activeProcess.uploadFilesAndHandleProcess(userEmail, processName, fields, files, (err, ret) => {
             if (err) {
                 res.send(err);
             } else {
                 res.send("success");
             }
         });
-
     });
+});
 
+router.post('/returnToProcessCreator', function (req, res) {
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields) {
+        let userEmail = req.user.emails[0].value;
+        let processName = fields.processName;
+        let comments = fields.comments;
+        activeProcess.returnToCreator(userEmail,processName,comments, (err) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send("success");
+            }
+        });
+    });
 });
 
 router.post('/takePartInProcess', function (req, res) {
@@ -60,7 +74,6 @@ router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
     let username = req.user.emails[0].value;
-
     activeProcess.startProcessByUsername(username, structureName, processName, (err) => {
         if (err) {
             res.send(err.message);

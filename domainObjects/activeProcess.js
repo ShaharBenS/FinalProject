@@ -183,6 +183,24 @@ class activeProcess {
         }
         return false;
     }
+
+    returnAllOriginalStagesToWaitFor() {
+        for(let i=0;i<this._stages.length;i++)
+        {
+            this._stages[i].stagesToWaitFor = this._stages[i].originStagesToWaitFor;
+        }
+    }
+
+    getStageNumberForUser(userEmail){
+        for(let i=0;i<this._stages.length;i++)
+        {
+            if(this._stages[i].userEmail === userEmail)
+            {
+                return this._stages[i].stageNum;
+            }
+        }
+        return -1;
+    }
 }
 
 module.exports = activeProcess;

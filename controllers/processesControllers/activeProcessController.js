@@ -1,8 +1,8 @@
 let processAccessor = require('../../models/accessors/activeProcessesAccessor');
+let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
+let processReportController = require('../processesControllers/processReportController');
 let processStructureController = require('./processStructureController');
-let activeProcess = require('../../domainObjects/activeProcess');
-let activeProcessStage = require('../../domainObjects/activeProcessStage');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 let fs = require('fs');
@@ -60,7 +60,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else addProcessReport(processName, today, (err)=>{
+                                    else processReportController.addProcessReport(processName, today, (err)=>{
                                         if(err){
                                             callback(err);
                                         }
@@ -162,7 +162,8 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
 
 function uploadFilesAndHandleProcess(userEmail, processName, fields, files, callback)
 {
-    let dirOfProcess = 'files/' + processName;
+    let dirOfFiles = 'files';
+    let dirOfProcess = dirOfFiles + '/' + processName;
     let dirToUpload = dirOfProcess + '/' + userEmail;
     let fileNames = [];
     let flag = true;
@@ -172,6 +173,9 @@ function uploadFilesAndHandleProcess(userEmail, processName, fields, files, call
         {
             if(flag)
             {
+                if (!fs.existsSync(dirOfFiles)){
+                    fs.mkdirSync(dirOfFiles);
+                }
                 if (!fs.existsSync(dirOfProcess)){
                     fs.mkdirSync(dirOfProcess);
                 }
@@ -209,7 +213,6 @@ function uploadFilesAndHandleProcess(userEmail, processName, fields, files, call
  * @param callback
  */
 function handleProcess(userEmail, processName, stageDetails, callback){
-
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
@@ -223,6 +226,7 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                 }
             }
             stageDetails.stageNum = currentStage.stageNum;
+            stageDetails.action = "continue";
             process.handleStage(stageDetails);
             let today = new Date();
             processAccessor.updateActiveProcess({processName: processName}, {
@@ -236,7 +240,7 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                             if (err) callback(err);
                             else
                             {
-                                addActiveProcessDetailsToReport(processName, userEmail, stageDetails.stageNum, today, stageDetails.comments,callback);
+                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today,callback);
                             }
                         });
                     }
@@ -268,52 +272,8 @@ const advanceProcess = (processName, nextStages, callback) => {
     });
 };
 
-const addProcessReport = (processName, creationTime, callback) => {
-    processAccessor.createProcessReport({
-        processName: processName,
-        status: 'activated',
-        creationTime: creationTime,
-        stages: []
-    }, (err) => {
-        if (err) callback(err);
-        else callback(null);
-    });
-};
-
-const addActiveProcessDetailsToReport = (processName, userEmail, stageNum, approvalTime, comments, callback) => {
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
-        if (err) callback(err);
-        else {
-            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
-                if (err) callback(err);
-                else {
-                    let newStage = {
-                        roleID: roleID, userEmail: userEmail, stageNum: stageNum, approvalTime: approvalTime,
-                        comments: comments
-                    };
-                    let stages = [];
-                    processReport.stages.forEach((stage) => {
-                        stages.push({
-                            roleID: stage.roleID,
-                            userEmail: stage.userEmail,
-                            stageNum: stage.stageNum,
-                            approvalTime: stage.approvalTime,
-                            comments: stage.comments
-                        })
-                    });
-                    stages.push(newStage);
-                    processAccessor.updateProcessReport({processName: processName}, {stages: stages}, (err) => {
-                        if (err) callback(err);
-                        else callback(null);
-                    });
-                }
-            });
-        }
-    });
-};
-
 module.exports.getAllActiveProcessDetails = (processName, callback) => {
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
+    processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
             processReport = processReport._doc;
@@ -461,6 +421,25 @@ module.exports.getNextStagesRoles = function(processName, userEmail, callback){
         }
     });
 
+};
+
+module.exports.returnToCreator = function(userEmail,processName,comments,callback){
+    getActiveProcessByProcessName(processName,(err,process)=>{
+        process.currentStages = process.initials;
+        process.returnAllOriginalStagesToWaitFor();
+        let today = new Date();
+        let stage = {comments: comments , filledForms : [], fileNames : [], action: "return", stageNum: process.getStageNumberForUser(userEmail)};
+        processAccessor.updateActiveProcess({processName: processName}, {
+            stages: process.stages,
+            lastApproached: today
+        },(err)=>{
+           if(err) callback(err);
+           else
+           {
+               processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
+           }
+        });
+    });
 };
 
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
