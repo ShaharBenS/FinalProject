@@ -6,10 +6,6 @@ module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
     filledOnlineFormAccessor.createFilledOnlineForm(filledOnlineFormAccessor.getSchemaRecordFromFilledOnlineForm(newFilledOnlineForm), callback)
 };
 
-module.exports.getAllOnlineForms = (callback) => {
-    onlineFormAccessor.findAllOnlineForms(callback);
-};
-
-module.exports.getOnlineFormByName = (formName, callback) => {
-    onlineFormAccessor.findOnlineFormByName(formName, callback);
+module.exports.getFilledOnlineFormByID = (formID, callback) => {
+    filledOnlineFormAccessor.findFilledOnlineFormByFormID(formID, callback);
 };
