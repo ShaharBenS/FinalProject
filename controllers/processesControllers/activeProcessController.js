@@ -137,14 +137,20 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
-                    activeProcesses.forEach((process) => {
-                        if (process.isWaitingForUser(roleID, userEmail)) {
-                            waitingActiveProcesses.push(process);
-                        }
-                    });
-                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
-                        callback(null, [waitingActiveProcesses,arrayOfRoles]);
-                    });
+                    if(activeProcesses !== null) {
+                        activeProcesses.forEach((process) => {
+                            if (process.isWaitingForUser(roleID, userEmail)) {
+                                waitingActiveProcesses.push(process);
+                            }
+                        });
+                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
+                            callback(null, [waitingActiveProcesses, arrayOfRoles]);
+                        });
+                    }
+                    else
+                    {
+                        callback(null, [waitingActiveProcesses, []]);
+                    }
                 }
             });
         }
@@ -186,13 +192,20 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                 if (err) callback(err);
                 else {
                     let toReturnActiveProcesses = [];
-                    activeProcesses.forEach((process) => {
-                        if (process.isParticipatingInProcess(userEmail))
-                            toReturnActiveProcesses.push(process);
-                    });
-                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
-                        callback(null, [toReturnActiveProcesses,arrayOfRoles]);
-                    });
+                    if(activeProcesses !== null)
+                    {
+                        activeProcesses.forEach((process) => {
+                            if (process.isParticipatingInProcess(userEmail))
+                                toReturnActiveProcesses.push(process);
+                        });
+                        bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
+                            callback(null, [toReturnActiveProcesses,arrayOfRoles]);
+                        });
+                    }
+                    else
+                    {
+                        callback(null, [toReturnActiveProcesses,[]]);
+                    }
                 }
             });
         }
