@@ -13,6 +13,9 @@ const processReportSchema = new Schema({
         stageNum: Number,
         approvalTime: Date,
         comments: String,
+        action: {type: String, enum: ['cancel', 'continue', 'return']},
+        filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
+        attachedFilesNames: [String],
     }],
 });
 
