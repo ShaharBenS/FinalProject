@@ -444,6 +444,24 @@ function getRoleNamesForArray(stages,index,roleNamesArray,callback){
     })(roleNamesArray,stages[index].stageNum);
 }
 
+function getFormNamesForArray(forms,index,formNameArray,callback){
+    if(index === forms.length) {
+        callback(null,formNameArray);
+        return;
+    }
+    let formId = forms[index];
+    (function(array){
+        onlineFormController.getOnlineFormByID(formId, (err, formName) => {
+            if (err) callback(err);
+            else
+            {
+                array.push(formName);
+                getFormNamesForArray(forms,index+1,formNameArray,callback);
+            }
+        });
+    })(formNameArray);
+}
+
 module.exports.getNextStagesRoles = function(processName, userEmail, callback){
     getActiveProcessByProcessName(processName,(err,process)=>{
         if(err) callback(err);
@@ -469,11 +487,17 @@ module.exports.getNextStagesRoles = function(processName, userEmail, callback){
                 {
                     nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
                 }
-                getRoleNamesForArray(nextStagesArr,0,[],(err,res)=>{
+                getRoleNamesForArray(nextStagesArr,0,[],(err,rolesNames)=>{
                     if(err) callback(err);
                     else
                     {
-                        callback(null,[res,currentStage.onlineForms])
+                        getFormNamesForArray(currentStage.onlineForms,0,[],(err,res)=>{
+                            if(err) callback(err);
+                            else
+                            {
+                                callback(null,[rolesNames,res])
+                            }
+                        });
                     }
                 });
             }
