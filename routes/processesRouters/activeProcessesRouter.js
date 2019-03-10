@@ -4,7 +4,6 @@ let router = express.Router();
 let formidable = require('formidable');
 
 
-
 /*
   _____   ____   _____ _______
  |  __ \ / __ \ / ____|__   __|
@@ -36,7 +35,7 @@ router.post('/returnToProcessCreator', function (req, res) {
         let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
         let comments = fields.comments;
-        activeProcess.returnToCreator(userEmail,processName,comments, (err) => {
+        activeProcess.returnToCreator(userEmail, processName, comments, (err) => {
             if (err) {
                 res.send(err);
             } else {
@@ -96,6 +95,8 @@ router.post('/startProcess', function (req, res) {
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
+        if (err) res.send(err);
+        else if (array === undefined) array = [];
         handleRolesAndStages(array);
         convertDate(array[0]);
         res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
@@ -134,8 +135,7 @@ router.get('/handleProcessView', function (req, res) {
     activeProcess.getNextStagesRoles(processName, userName, (err, rolesArr) => {
         if (err) {
             res.send(err);
-        }
-        else {
+        } else {
             res.render('activeProcessesViews/handleProcess', {
                 userName: userName, processName: processName,
                 nextRoles: rolesArr
@@ -239,5 +239,6 @@ function convertJustCreationTime(process) {
     dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
     process.creationTime = dateOfCreationTime;
 }
+
 /////
 module.exports = router;
