@@ -469,7 +469,13 @@ module.exports.getNextStagesRoles = function(processName, userEmail, callback){
                 {
                     nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
                 }
-                getRoleNamesForArray(nextStagesArr,0,[],callback);
+                getRoleNamesForArray(nextStagesArr,0,[],(err,res)=>{
+                    if(err) callback(err);
+                    else
+                    {
+                        callback(null,[res,currentStage.onlineForms])
+                    }
+                });
             }
         }
     });

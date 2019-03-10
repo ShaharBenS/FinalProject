@@ -138,7 +138,7 @@ router.get('/handleProcessView', function (req, res) {
         } else {
             res.render('activeProcessesViews/handleProcess', {
                 userName: userName, processName: processName,
-                nextRoles: rolesArr
+                nextRoles: rolesArr[0], formsNames: rolesArr[1]
             });
         }
     });
