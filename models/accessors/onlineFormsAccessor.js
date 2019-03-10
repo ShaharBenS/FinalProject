@@ -1,5 +1,5 @@
 let onlineFormSchema = require('../schemas/onlineFormsSchemas/OnlineFormSchema');
-let onlineFormController = require('../../controllers/onlineFormsControllers/onlineFormController');
+let OnlineForm = require('../../domainObjects/onlineForm');
 
 module.exports.createOnlineForm = (newOnlineForm, callback) => {
     onlineFormSchema.create(newOnlineForm, callback);
@@ -9,7 +9,7 @@ module.exports.findOnlineFormByName = (formName, callback) => {
     onlineFormSchema.findOne({formName: formName}, (err, res) => {
         if (err)
             callback(err);
-        else callback(null, onlineFormController.getOnlineFormFromSchemaRecord(res));
+        else callback(null, this.getOnlineFormFromSchemaRecord(res));
     });
 };
 
@@ -19,9 +19,20 @@ module.exports.findAllOnlineForms = (callback) => {
         else {
             let onlineFormsObjects = [];
             onlineFormsArray.forEach((form) => {
-                onlineFormsObjects.push(onlineFormController.getOnlineFormFromSchemaRecord(form));
+                onlineFormsObjects.push(this.getOnlineFormFromSchemaRecord(form));
             });
             callback(null, onlineFormsObjects)
         }
     });
 };
+
+
+module.exports.getOnlineFormFromSchemaRecord = (form) => {
+    return new OnlineForm(form.formName, form.HTMLSource, form._id)
+};
+
+module.exports.getSchemaRecordFromOnlineForm = (form) => {
+    return {formName: form.formName, HTMLSource: form.HTMLSource}
+};
+
+
