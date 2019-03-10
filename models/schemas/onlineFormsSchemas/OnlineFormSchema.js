@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const onlineFormSchema = new Schema({
-    formName: String,
+    formName: {type: String, unique: true},
     HTMLSource : String,
 });
 

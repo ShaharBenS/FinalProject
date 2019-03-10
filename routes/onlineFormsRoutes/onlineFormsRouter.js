@@ -4,10 +4,10 @@ let router = express.Router();
 
 router.post('/createAllOnlineForms', function (req, res) {
     onlineFormsController.createOnlineFrom("the form 1", "file1", (err) => {
-        if (err) res.send(err);
+        if (err) res.send(err.message);
         else {
             onlineFormsController.createOnlineFrom("the form 2", "file2", (err) => {
-                if (err) res.send(err);
+                if (err) res.send(err.message);
                 else {
                     res.send("success")
                 }
@@ -47,7 +47,15 @@ router.get('/display', function (req, res) {
             res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: true});
         }
     })
-
-
 });
+
+router.get('/fill', function (req, res) {
+    onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
+        if (err) res.send(err);
+        else {
+            res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: false});
+        }
+    })
+});
+
 module.exports = router;

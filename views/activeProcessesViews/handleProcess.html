@@ -8,6 +8,9 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <script src="/javascripts/filledOnlineForms.js"></script>
+
     <title>טיפול בתהליך </title>
 </head>
 <body>
@@ -61,10 +64,18 @@
         <%})%>
         <br>
         <br>
-        <button type="submit" id="advanceProcess" class="btn btn-default"> העבר לשלב הבא</button>
+        <div id="formsInfo">
+        </div>
+        <button class="btn btn-default" id="advanceProcess" onclick="return updateForms()"> העבר לשלב
+            הבא
+        </button>
         <br>
         <br>
     </form>
+    <%formsNames.forEach(function(formName){%>
+    <a href="" onclick="formClick('<%=formName%>')"><%=formName%></a>
+    <br>
+    <%})%>
 </div>
 </body>
 </html>

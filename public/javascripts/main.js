@@ -109,7 +109,8 @@ function updateOnlineForms() {
             if (xmlHttp.responseText === "success") {
                 alert("טפסים נוצרו בהצלחה");
                 window.location.href = '/Home'
-            }
+            } else
+                alert(xmlHttp.responseText);
         }
     };
     xmlHttp.open("POST", '/onlineForms/createAllOnlineForms/', true);
@@ -167,3 +168,4 @@ function confirmStartProcess() {
         }
     });
 }
+

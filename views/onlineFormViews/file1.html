@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <script>
+        let _formName = '';
+
         window.onload = function () {
-            let formName = '<%=formName%>';
-            document.title = formName;
-            document.getElementById("formTitle").appendChild(document.createTextNode(formName));
-            let isForShow = '<%=isForShow%>';
+            _formName = '<%=formName%>';
+            document.title = _formName;
+            document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
+            let isForShow = '<%=isForShow%>' === 'true';
             if (isForShow) {
-                let info = "טופס דמו של " + formName;
+                let info = "טופס דמו של " + _formName;
                 document.getElementById("info").appendChild(document.createTextNode(info));
                 document.getElementById("fieldset").setAttribute("disabled", "disabled");
                 document.getElementById("submitButton").setAttribute("disabled", "disabled");
-            }
+            } else document.getElementById('close_win_button').style.display = "none";
         };
     </script>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
@@ -21,6 +23,7 @@
 
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/javascripts/onlineForms.js"></script>
     <title>DefaultTitle</title>
 </head>
 <body dir="rtl">
@@ -28,27 +31,24 @@
     <br><br>
     <div class="main-div">
         <h1>מערכת לניהול תהליכים ארגוניים</h1>
-        <u><h2 id="formTitle"></h2></u>
+        <h2 id="formTitle"><u></u></h2>
         <br>
         <h3 id="info"></h3>
         <br>
         <div>
-            <form action="../index.html" id="form">
+            <form id="form" onsubmit="return submitForm()">
                 <fieldset id="fieldset">
-                    שם ממלא
                     <br>
-                    <input name="firstname" type="text" value="Mickey">
-                    <br>
-                    מספר הזמנה
-                    <br>
-                    <input name="lastname" type="text" value="Mouse">
+                    <input id="name" name="first_name" placeholder="שם פרטי" type="text">
+                    <br><br>
+                    <input name="last_name" placeholder="שם משפחה" type="text">
                     <br><br>
                     <input class="btn-default" id="submitButton" type="submit" value="שלח">
                 </fieldset>
             </form>
         </div>
         <br><br>
-        <button class="btn-default" onclick="window.close()">סגור טופס</button>
+        <button class="btn-default" id="close_win_button" onclick="window.close()">סגור טופס</button>
     </div>
 
 </div>

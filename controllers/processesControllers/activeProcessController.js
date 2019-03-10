@@ -6,6 +6,7 @@ let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
+let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
 
 
@@ -102,12 +103,11 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     else processReportController.addProcessReport(processName, today, (err)=>{
                                         if(err){
                                             callback(err);
-                                        }
-                                        else{
+                                        } else {
                                             // Notify first role
                                             notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
                                                 "The process: " + processStructureName + ", named: " + processName + " is waiting for your approval"
-                                            ),callback)
+                                            ), callback)
                                         }
                                     });
                                 });
@@ -191,6 +191,8 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
+                    if (activeProcesses === null)
+                        activeProcesses = [];
                     let toReturnActiveProcesses = [];
                     if(activeProcesses !== null)
                     {
@@ -252,7 +254,13 @@ function uploadFilesAndHandleProcess(userEmail, processName, fields, files, call
             nextStageRoles.push(parseInt(attr));
         }
     }
-    let stage = {comments: fields.comments , filledForms : [], fileNames : fileNames, nextStageRoles: nextStageRoles};
+    let formsInfo = JSON.parse(fields.formsInfo);
+    let stage = {
+        comments: fields.comments,
+        filledForms: formsInfo,
+        fileNames: fileNames,
+        nextStageRoles: nextStageRoles
+    };
     handleProcess(userEmail, processName, stage, callback);
 }
 
@@ -277,26 +285,43 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                     break;
                 }
             }
-            stageDetails.stageNum = currentStage.stageNum;
-            stageDetails.action = "continue";
-            process.handleStage(stageDetails);
-            let today = new Date();
-            processAccessor.updateActiveProcess({processName: processName}, {
-                    stages: process.stages,
-                    lastApproached: today
-                },
-                (err) => {
-                    if (err) callback(err);
-                    else {
-                        advanceProcess(processName, stageDetails.nextStageRoles, (err)=>{
-                            if (err) callback(err);
-                            else
-                            {
-                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today,callback);
-                            }
-                        });
+
+            //insert filled forms to db
+            let filledFormsIDs = [];
+            let i = stageDetails.filledForms.length;
+            stageDetails.filledForms.forEach((form) => {
+                filledOnlineFormController.createFilledOnlineFrom(form.formName, form.fields, (err, formRecord) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        i--;
+                        filledFormsIDs.push(formRecord._id);
+                        if (i === 0) {
+                            stageDetails.filledForms = filledFormsIDs;
+                            stageDetails.stageNum = currentStage.stageNum;
+                            stageDetails.action = "continue";
+                            process.handleStage(stageDetails);
+                            let today = new Date();
+                            processAccessor.updateActiveProcess({processName: processName}, {
+                                    stages: process.stages,
+                                    lastApproached: today
+                                },
+                                (err) => {
+                                    if (err) callback(err);
+                                    else {
+                                        advanceProcess(processName, stageDetails.nextStageRoles, (err) => {
+                                            if (err) callback(err);
+                                            else {
+                                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                                            }
+                                        });
+                                    }
+                                });
+                        }
                     }
                 });
+            });
+
         }
     });
 }
@@ -443,6 +468,24 @@ function getRoleNamesForArray(stages,index,roleNamesArray,callback){
     })(roleNamesArray,stages[index].stageNum);
 }
 
+function getFormNamesForArray(forms,index,formNameArray,callback){
+    if(index === forms.length) {
+        callback(null,formNameArray);
+        return;
+    }
+    let formId = forms[index];
+    (function(array){
+        onlineFormController.getOnlineFormByID(formId, (err, form) => {
+            if (err) callback(err);
+            else
+            {
+                array.push(form.formName);
+                getFormNamesForArray(forms,index+1,formNameArray,callback);
+            }
+        });
+    })(formNameArray);
+}
+
 module.exports.getNextStagesRoles = function(processName, userEmail, callback){
     getActiveProcessByProcessName(processName,(err,process)=>{
         if(err) callback(err);
@@ -468,7 +511,19 @@ module.exports.getNextStagesRoles = function(processName, userEmail, callback){
                 {
                     nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
                 }
-                getRoleNamesForArray(nextStagesArr,0,[],callback);
+                getRoleNamesForArray(nextStagesArr,0,[],(err,rolesNames)=>{
+                    if(err) callback(err);
+                    else
+                    {
+                        getFormNamesForArray(currentStage.onlineForms,0,[],(err,res)=>{
+                            if(err) callback(err);
+                            else
+                            {
+                                callback(null,[rolesNames,res])
+                            }
+                        });
+                    }
+                });
             }
         }
     });
