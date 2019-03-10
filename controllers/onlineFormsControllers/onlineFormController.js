@@ -5,7 +5,6 @@ module.exports.createOnlineFrom = (formName, srcHTML, callback) => {
     try {
         let newOnlineForm = new OnlineForm(formName, srcHTML);
         onlineFormAccessor.createOnlineForm(onlineFormAccessor.getSchemaRecordFromOnlineForm(newOnlineForm), callback);
-        //});
     } catch (e) {
         callback(e);
     }

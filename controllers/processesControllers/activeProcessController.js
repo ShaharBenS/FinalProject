@@ -6,6 +6,7 @@ let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
+let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
 
 
@@ -253,7 +254,13 @@ function uploadFilesAndHandleProcess(userEmail, processName, fields, files, call
             nextStageRoles.push(parseInt(attr));
         }
     }
-    let stage = {comments: fields.comments , filledForms : [], fileNames : fileNames, nextStageRoles: nextStageRoles};
+    let formsInfo = JSON.parse(fields.formsInfo);
+    let stage = {
+        comments: fields.comments,
+        filledForms: formsInfo,
+        fileNames: fileNames,
+        nextStageRoles: nextStageRoles
+    };
     handleProcess(userEmail, processName, stage, callback);
 }
 
@@ -278,26 +285,44 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                     break;
                 }
             }
-            stageDetails.stageNum = currentStage.stageNum;
-            stageDetails.action = "continue";
-            process.handleStage(stageDetails);
-            let today = new Date();
-            processAccessor.updateActiveProcess({processName: processName}, {
-                    stages: process.stages,
-                    lastApproached: today
-                },
-                (err) => {
-                    if (err) callback(err);
-                    else {
-                        advanceProcess(processName, stageDetails.nextStageRoles, (err)=>{
-                            if (err) callback(err);
-                            else
-                            {
-                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today,callback);
-                            }
-                        });
+
+            //insert filled forms to db
+            let filledFormsIDs = [];
+            let i = stageDetails.onlineForms.length;
+            stageDetails.onlineForms.forEach((form) => {
+                filledOnlineFormController.createFilledOnlineFrom(form.forEach, form.fields, (err, formRecord) => {
+                    if (err) {
+                        callback(err);
+                        return;
+                    } else {
+                        i--;
+                        filledFormsIDs.push(formRecord._id);
+                        if (i === 0) {
+                            stageDetails.filledOnlineForms = filledFormsIDs;
+                            stageDetails.stageNum = currentStage.stageNum;
+                            stageDetails.action = "continue";
+                            process.handleStage(stageDetails);
+                            let today = new Date();
+                            processAccessor.updateActiveProcess({processName: processName}, {
+                                    stages: process.stages,
+                                    lastApproached: today
+                                },
+                                (err) => {
+                                    if (err) callback(err);
+                                    else {
+                                        advanceProcess(processName, stageDetails.nextStageRoles, (err) => {
+                                            if (err) callback(err);
+                                            else {
+                                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                                            }
+                                        });
+                                    }
+                                });
+                        }
                     }
                 });
+            });
+
         }
     });
 }
