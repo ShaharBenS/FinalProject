@@ -62,6 +62,10 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                 if (err) {
                     callback(err);
                 } else {
+                    if(!processStructure.available){
+                        callback(new Error('This process structure is currently unavailable duo to changes in roles'));
+                        return;
+                    }
                     processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
                         if (err) {
                             callback(err);

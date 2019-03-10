@@ -10726,7 +10726,6 @@ draw2d.layout.locator.BottomLocator = draw2d.layout.locator.Locator.extend({
         // shit happens.
         var offset = (parent instanceof draw2d.Port) ? boundingBox.w / 2 : 0;
 
-
         var targetBoundingBox = target.getBoundingBox();
         if (target instanceof draw2d.Port) {
             target.setPosition(boundingBox.w / 2 - offset, boundingBox.h);
@@ -17168,7 +17167,6 @@ draw2d.policy.connection.DragConnectionCreatePolicy = draw2d.policy.connection.C
             //
             if (this.currentDropTarget !== null) {
                 this.mouseDraggingElement.onDrop(this.currentDropTarget, x, y, shiftKey, ctrlKey);
-
                 this.currentDropTarget.onDragLeave(this.mouseDraggingElement);
                 this.currentDropTarget.fireEvent("dragLeave", {draggingElement: this.mouseDraggingElement});
 
@@ -36658,8 +36656,8 @@ draw2d.shape.node.Between = draw2d.shape.basic.Rectangle.extend({
             height: 50,
         }, attr), setter, getter);
 
-        this.createPort("output");
-        this.createPort("input");
+        this.createPort("output", new draw2d.layout.locator.BottomLocator());
+        this.createPort("input", new draw2d.layout.locator.TopLocator());
 
     }
 });

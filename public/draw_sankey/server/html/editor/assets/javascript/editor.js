@@ -563,10 +563,12 @@ sankey.View = draw2d.Canvas.extend({
     onDrop: function (droppedDomNode, x, y, shiftKey, ctrlKey)
     {
         var type = $(droppedDomNode).data("shape");
-        let color = '#ffb224';
+        let color = '#ff9d6d';
+        if(type === "sankey.shape.State"){
+            color = '#1E90FF';
+        }
         if (type === "sankey.shape.Start") {
             type = "sankey.shape.State";
-            color = '#5957ff';
         }
         var figure = eval("new " + type + "({bgColor:color});");
         // create a command for the undo/redo support

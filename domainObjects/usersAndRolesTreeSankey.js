@@ -117,6 +117,31 @@ class usersAndRolesTreeSankey
         });
         return trees > 1;
     }
+
+    hasNoRoot()
+    {
+        return this.getRoles().length === 0;
+    }
+    /*
+        @pre: there is at least one role in the tree
+     */
+    getRootName()
+    {
+        let connections = this.getConnections();
+        let trees = [];
+        this.getRoles().forEach((role)=>{
+            let result = true;
+            connections.forEach((connection)=>{
+                if(connection.target.node === role.id){
+                    result = false;
+                }
+            });
+            if(result){
+                trees.push(role);
+            }
+        });
+        return trees[0].labels[0].text;
+    }
 }
 
 
