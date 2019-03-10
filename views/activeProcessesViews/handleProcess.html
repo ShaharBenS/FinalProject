@@ -14,33 +14,45 @@
 <div align="center">
     <h1>טיפול בתהליך <%=processName%></h1>
     <br>
+    <br>
     <form id="frm" action="/activeProcesses/handleProcess" method="post" enctype="multipart/form-data">
-        <input type="hidden" value="<%=processName%>" name="processName" />
+        <input type="hidden" value="<%=processName%>" name="processName"/>
+        Insert Your Files :
+        <br>
+        <br>
         <div class="col-md-12">
             <div class="row">
                 <div class="control-group" id="fields">
                     <div class="controls">
-
                         <div class="entry input-group col-xs-3">
-
-
                             <input class="btn btn-primary" name="fields[]" type="file">
                             <span class="input-group-btn">
-              <button class="btn btn-success btn-add" type="button">
-                                <span class="glyphicon glyphicon-plus"></span>
-                </button>
-                </span>
+                           <button class="btn btn-success btn-add" type="button">
+                           <span class="glyphicon glyphicon-plus"></span>
+                           </button>
+                           </span>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
         <br>
+        <br>
+        <br>
+        Insert Your Comments :
+        <br>
+        <br>
         <input type="text" name="comments">
         <br>
-        <button id="cancel" class="btn btn-default">ביטול  </button>
+        <br>
+        Click Here To Cancel The Process :
+        <br>
+        <br>
+        <button id="cancel" class="btn btn-default">ביטול</button>
+        <br>
+        <br>
+        Choose To Which People You Want To Advance The Process To :
+        <br>
         <br>
         <%nextRoles.forEach(function(roleIdAndName){%>
         <label><%=roleIdAndName[0]%>
@@ -48,7 +60,8 @@
         </label>
         <%})%>
         <br>
-        <button type="submit" id="advanceProcess"  class="btn btn-default"> העבר לשלב הבא </button>
+        <br>
+        <button type="submit" id="advanceProcess" class="btn btn-default"> העבר לשלב הבא</button>
         <br>
         <br>
     </form>

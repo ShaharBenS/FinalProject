@@ -3,8 +3,6 @@ let processReportAccessor = require('../../models/accessors/processReportAccesso
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let processReportController = require('../processesControllers/processReportController');
 let processStructureController = require('./processStructureController');
-let activeProcess = require('../../domainObjects/activeProcess');
-let activeProcessStage = require('../../domainObjects/activeProcessStage');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
@@ -138,14 +136,20 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
-                    activeProcesses.forEach((process) => {
-                        if (process.isWaitingForUser(roleID, userEmail)) {
-                            waitingActiveProcesses.push(process);
-                        }
-                    });
-                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
-                        callback(null, [waitingActiveProcesses,arrayOfRoles]);
-                    });
+                    if(activeProcesses !== null) {
+                        activeProcesses.forEach((process) => {
+                            if (process.isWaitingForUser(roleID, userEmail)) {
+                                waitingActiveProcesses.push(process);
+                            }
+                        });
+                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
+                            callback(null, [waitingActiveProcesses, arrayOfRoles]);
+                        });
+                    }
+                    else
+                    {
+                        callback(null, [waitingActiveProcesses, []]);
+                    }
                 }
             });
         }
@@ -189,13 +193,20 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                     if (activeProcesses === null)
                         activeProcesses = [];
                     let toReturnActiveProcesses = [];
-                    activeProcesses.forEach((process) => {
-                        if (process.isParticipatingInProcess(userEmail))
-                            toReturnActiveProcesses.push(process);
-                    });
-                    bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
-                        callback(null, [toReturnActiveProcesses,arrayOfRoles]);
-                    });
+                    if(activeProcesses !== null)
+                    {
+                        activeProcesses.forEach((process) => {
+                            if (process.isParticipatingInProcess(userEmail))
+                                toReturnActiveProcesses.push(process);
+                        });
+                        bringRoles([],[],0,0,activeProcesses,(err,arrayOfRoles) => {
+                            callback(null, [toReturnActiveProcesses,arrayOfRoles]);
+                        });
+                    }
+                    else
+                    {
+                        callback(null, [toReturnActiveProcesses,[]]);
+                    }
                 }
             });
         }
@@ -252,8 +263,6 @@ function uploadFilesAndHandleProcess(userEmail, processName, fields, files, call
  * @param userEmail | the user that approved
  * @param processName | the process name that approved
  * @param stageDetails | all the stage details
- * @param filledForms | the filled forms
- * @param fileNames | added files
  * @param callback
  */
 function handleProcess(userEmail, processName, stageDetails, callback){
@@ -312,50 +321,6 @@ const advanceProcess = (processName, nextStages, callback) => {
                     if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
                     else callback(null, res);
                 });
-        }
-    });
-};
-
-const addProcessReport = (processName, creationTime, callback) => {
-    processAccessor.createProcessReport({
-        processName: processName,
-        status: 'activated',
-        creationTime: creationTime,
-        stages: []
-    }, (err) => {
-        if (err) callback(err);
-        else callback(null);
-    });
-};
-
-const addActiveProcessDetailsToReport = (processName, userEmail, stageNum, approvalTime, comments, callback) => {
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
-        if (err) callback(err);
-        else {
-            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
-                if (err) callback(err);
-                else {
-                    let newStage = {
-                        roleID: roleID, userEmail: userEmail, stageNum: stageNum, approvalTime: approvalTime,
-                        comments: comments
-                    };
-                    let stages = [];
-                    processReport.stages.forEach((stage) => {
-                        stages.push({
-                            roleID: stage.roleID,
-                            userEmail: stage.userEmail,
-                            stageNum: stage.stageNum,
-                            approvalTime: stage.approvalTime,
-                            comments: stage.comments
-                        })
-                    });
-                    stages.push(newStage);
-                    processAccessor.updateProcessReport({processName: processName}, {stages: stages}, (err) => {
-                        if (err) callback(err);
-                        else callback(null);
-                    });
-                }
-            });
         }
     });
 };
