@@ -27,3 +27,8 @@ function updateForms() {
     formsInput.setAttribute('value', JSON.stringify(myForms));
     document.getElementById('formsInfo').appendChild(formsInput);
 }
+
+function formClick(formName) {
+    window.open("/onlineForms/fill?formName=" + formName);
+    return false;
+}

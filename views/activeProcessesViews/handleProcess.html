@@ -66,14 +66,14 @@
         <br>
         <div id="formsInfo">
         </div>
-        <button class="btn btn-default" id="advanceProcess" onclick="return updateForms()" type="submit"> העבר לשלב
+        <button class="btn btn-default" id="advanceProcess" onclick="return updateForms()"> העבר לשלב
             הבא
         </button>
         <br>
         <br>
     </form>
     <%formsNames.forEach(function(formName){%>
-    <%=roleIdAndName[0]%>
+    <a onclick="formClick('<%=formName%>')"><%=formName%></a>
     <br>
     <%})%>
 </div>

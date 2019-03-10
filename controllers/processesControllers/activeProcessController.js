@@ -288,12 +288,11 @@ function handleProcess(userEmail, processName, stageDetails, callback){
 
             //insert filled forms to db
             let filledFormsIDs = [];
-            let i = stageDetails.onlineForms.length;
-            stageDetails.onlineForms.forEach((form) => {
-                filledOnlineFormController.createFilledOnlineFrom(form.forEach, form.fields, (err, formRecord) => {
+            let i = stageDetails.filledForms.length;
+            stageDetails.filledForms.forEach((form) => {
+                filledOnlineFormController.createFilledOnlineFrom(form.formName, form.fields, (err, formRecord) => {
                     if (err) {
                         callback(err);
-                        return;
                     } else {
                         i--;
                         filledFormsIDs.push(formRecord._id);
@@ -476,11 +475,11 @@ function getFormNamesForArray(forms,index,formNameArray,callback){
     }
     let formId = forms[index];
     (function(array){
-        onlineFormController.getOnlineFormByID(formId, (err, formName) => {
+        onlineFormController.getOnlineFormByID(formId, (err, form) => {
             if (err) callback(err);
             else
             {
-                array.push(formName);
+                array.push(form.formName);
                 getFormNamesForArray(forms,index+1,formNameArray,callback);
             }
         });
