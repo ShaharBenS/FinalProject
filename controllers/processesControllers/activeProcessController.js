@@ -529,5 +529,100 @@ module.exports.returnToCreator = function(userEmail,processName,comments,callbac
     });
 };
 
+/////Helper Functions
+function convertDate(array,isNotifications) {
+    for (let i = 0; i < array.length; i++) {
+        let creationTime;
+        let lastApproached;
+
+        if(isNotifications === undefined){
+            creationTime = array[i]._creationTime;
+            lastApproached = array[i]._lastApproached;
+        }
+        else{
+            creationTime = array[i];
+            lastApproached = array[i];
+        }
+
+        let dayOfCreationTime = creationTime.getDate();
+        let dayOfLastApproached = lastApproached.getDate();
+        let monthOfCreationTime = creationTime.getMonth() + 1;
+        let monthOfLastApproached = lastApproached.getMonth() + 1;
+        let yearOfCreationTime = creationTime.getFullYear();
+        let yearOfLastApproached = lastApproached.getFullYear();
+        if (dayOfCreationTime < 10) {
+            dayOfCreationTime = '0' + dayOfCreationTime;
+        }
+        if (dayOfLastApproached < 10) {
+            dayOfLastApproached = '0' + dayOfLastApproached;
+        }
+        if (monthOfCreationTime < 10) {
+            monthOfCreationTime = '0' + monthOfCreationTime;
+        }
+        if (monthOfLastApproached < 10) {
+            monthOfLastApproached = '0' + monthOfLastApproached;
+        }
+        let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
+        let dateOfLastApproached = dayOfLastApproached + '/' + monthOfLastApproached + '/' + yearOfLastApproached;
+        let hourOfCreationTime = creationTime.getHours();
+        let hourOfLastApproached = lastApproached.getHours();
+        let minuteOfCreationTime = creationTime.getMinutes();
+        let minuteOfLastApproached = lastApproached.getMinutes();
+        let secondsOfCreationTime = creationTime.getSeconds();
+        let secondsOfLastApproached = lastApproached.getSeconds();
+        if (hourOfCreationTime.toString().length === 1)
+            hourOfCreationTime = '0' + hourOfCreationTime;
+        if (hourOfLastApproached.toString().length === 1)
+            hourOfLastApproached = '0' + hourOfLastApproached;
+        if (minuteOfCreationTime.toString().length === 1)
+            minuteOfCreationTime = '0' + minuteOfCreationTime;
+        if (minuteOfLastApproached.toString().length === 1)
+            minuteOfLastApproached = '0' + minuteOfLastApproached;
+        if (secondsOfCreationTime.toString().length === 1)
+            secondsOfCreationTime = '0' + secondsOfCreationTime;
+        if (secondsOfLastApproached.toString().length === 1)
+            secondsOfLastApproached = '0' + secondsOfLastApproached;
+        dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
+        dateOfLastApproached = dateOfLastApproached + ' ' + hourOfLastApproached + ':' + minuteOfLastApproached + ':' + secondsOfLastApproached;
+        if(isNotifications === undefined){
+            array[i]._creationTime = dateOfCreationTime;
+            array[i]._lastApproached = dateOfLastApproached;
+        }
+        else{
+            array[i] = dateOfCreationTime;
+        }
+    }
+}
+
+function convertJustCreationTime(process) {
+    let creationTime = process.creationTime;
+    let dayOfCreationTime = creationTime.getDate();
+    let monthOfCreationTime = creationTime.getMonth() + 1;
+    let yearOfCreationTime = creationTime.getFullYear();
+    if (dayOfCreationTime < 10) {
+        dayOfCreationTime = '0' + dayOfCreationTime;
+    }
+    if (monthOfCreationTime < 10) {
+        monthOfCreationTime = '0' + monthOfCreationTime;
+    }
+    let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
+    let hourOfCreationTime = creationTime.getHours();
+    let minuteOfCreationTime = creationTime.getMinutes();
+    let secondsOfCreationTime = creationTime.getSeconds();
+    if (hourOfCreationTime.toString().length === 1)
+        hourOfCreationTime = '0' + hourOfCreationTime;
+    if (minuteOfCreationTime.toString().length === 1)
+        minuteOfCreationTime = '0' + minuteOfCreationTime;
+    if (secondsOfCreationTime.toString().length === 1)
+        secondsOfCreationTime = '0' + secondsOfCreationTime;
+    dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
+    process.creationTime = dateOfCreationTime;
+}
+/////
+
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
+
+module.exports.convertDate = convertDate;
+module.exports.convertJustCreationTime = convertJustCreationTime;
+

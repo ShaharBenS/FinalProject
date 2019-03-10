@@ -3,10 +3,10 @@ $(document).ready(()=>{
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
         {
+
             let notifications = JSON.parse(xmlHttp.responseText);
-            var table = document.getElementById("example");
-            notifications.forEach((notificationObject,index)=>{
-                let notification = notificationObject.notification;
+            let table = document.getElementById("example");
+            notifications.forEach((notification,index)=>{
 
                 let row = table.insertRow(index+1);
                 let cell1 = row.insertCell(0);
@@ -20,6 +20,6 @@ $(document).ready(()=>{
             })
         }
     };
-    xmlHttp.open("GET", '/notifications/getNotifications/', true);
-    xmlHttp.send(null);
+    //xmlHttp.open("GET", '/notifications/getNotifications/', true);
+    //xmlHttp.send(null);
 });

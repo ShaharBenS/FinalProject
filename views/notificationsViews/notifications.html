@@ -38,10 +38,17 @@
             <tr>
                 <th>סוג התראה</th>
                 <th>פירוט</th>
-                <th>תהליך</th>
+                <th>זמן</th>
             </tr>
             </thead>
             <tbody>
+            <%notifications.forEach(function(notification){%>
+            <tr>
+                <td><%=notification.notificationType%></td>
+                <td><%=notification.description%></td>
+                <td><%=notification.date%></td>
+            </tr>
+            <%})%>
             </tbody>
         </table>
     </div>

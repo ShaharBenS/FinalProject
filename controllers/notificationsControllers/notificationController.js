@@ -1,4 +1,5 @@
 let notificationAccessor = require('../../models/accessors/notificationsAccessor');
+let activeProcessController = require('../processesControllers/activeProcessController');
 
 module.exports.getUserNotifications = (userEmail,callback)=>{
     notificationAccessor.findNotifications({userEmail:userEmail},(err,result)=>{
@@ -6,7 +7,16 @@ module.exports.getUserNotifications = (userEmail,callback)=>{
             callback(err);
         }
         else{
-            callback(null,result);
+            let dates = result.map(notification=>notification.notification.date);
+            activeProcessController.convertDate(dates,true);
+            let toReturn = result.map((notification,i)=>{
+               return {
+                   notificationType: notification.notification.notificationType,
+                   description: notification.notification.description,
+                   date: dates[i],
+               };
+            });
+            callback(null,toReturn);
         }
     })
 };
