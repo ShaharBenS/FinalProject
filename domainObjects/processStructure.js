@@ -1,10 +1,11 @@
 class processStructure {
 
-    constructor(structureName, initials, stages,sankey) {
+    constructor(structureName, initials, stages,sankey,available) {
         this.structureName = structureName;
         this.initials = initials;
         this.stages = stages;
         this.sankey = sankey;
+        this.available = available;
     }
 
     getInitialStageByRoleID(roleID) {

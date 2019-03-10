@@ -45,19 +45,25 @@ class processStructureSankey {
         });
     }
 
-    getConnections() {
-        return this.sankey.content.diagram.filter((figure) => {
+    getConnections()
+    {
+        return this.sankey.content.diagram.filter((figure) =>
+        {
             return figure.type === "sankey.shape.Connection";
         });
     }
 
-    getInitials() {
-        return this.getSankeyStages().filter((figure) => {
-            return figure.bgColor === '#5957FF';
+    getInitials()
+    {
+        return this.getSankeyStages().filter((figure) =>
+        {
+            return figure.bgColor.toLowerCase() === '#ff9d6d';
 
-        }).map((figure) => {
+        }).map((figure) =>
+        {
             let index;
-            this.getSankeyStages().forEach((stage, _index) => {
+            this.getSankeyStages().forEach((stage, _index) =>
+            {
                 if (stage.id === figure.id) {
                     index = _index;
                 }
@@ -158,12 +164,39 @@ class processStructureSankey {
         return flows.every((flow)=>{
             let initials = this.getSankeyStages().filter((figure) =>
             {
-                return figure.bgColor === '#5957FF';
+                return figure.bgColor.toLowerCase() === '#ff9d6d';
 
             }).map(stage=>{
                 return stage.id;
             });
             return !initials.includes(flow);
+        })
+    }
+
+    hasNoStages()
+    {
+        return this.getSankeyStages().length === 0;
+
+    }
+
+    setStageToNotFound(id){
+        this.getSankeyStages().forEach(stage=>{
+            if(stage.id===id){
+                stage.bgColor = "#ff0003"
+            }
+        })
+    }
+
+    sankeyToString(){
+        return JSON.stringify(this.sankey);
+    }
+
+    changeStageName(id, renamedRole)
+    {
+        this.getSankeyStages().forEach(stage=>{
+            if(stage.id === id){
+                stage.labels[0].text = renamedRole;
+            }
         })
     }
 }

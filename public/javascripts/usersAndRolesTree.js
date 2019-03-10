@@ -32,8 +32,6 @@ $(document).ready(()=>{
     };
     xmlHttp2.open("GET", '/usersAndRoles/getIdToRole/', true);
     xmlHttp2.send(null);
-
-    document.getElementById("canvas").rotate()
 });
 
 function onDrop_extension(type, command, figure) {
