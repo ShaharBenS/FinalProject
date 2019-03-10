@@ -11,6 +11,7 @@ let submitForm = function () {
         i++;
     });
 
+    //receiveFormInfo is a function on the opener window that receive the form's data
     oldWin.receiveFormInfo(_formName, info);
     alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת");
     window.close();
