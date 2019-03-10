@@ -17,7 +17,7 @@ module.exports.findOnlineFormByName = (formName, callback) => {
     });
 };
 
-module.exports.findOnlineFormByID = (formID) => {
+module.exports.findOnlineFormByID = (formID, callback) => {
     onlineFormSchema.findOne({_id: formID}, (err, res) => {
         if (err)
             callback(err);
