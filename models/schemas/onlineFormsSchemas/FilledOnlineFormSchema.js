@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const filledOnlineFormSchema = new Schema({
-    formName: String,
+    formID: {type: Schema.Types.ObjectId, ref: 'OnlineForm'},
     fields: [{fieldName: String, value: String}],
 });
 

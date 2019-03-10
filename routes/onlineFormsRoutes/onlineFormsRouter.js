@@ -44,10 +44,21 @@ router.get('/display', function (req, res) {
     onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
         if (err) res.send(err);
         else {
-            res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: true});
+            res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: false});
         }
     })
+});
 
-
+router.get('/list', function (req, res) {
+    onlineFormsController.getAllOnlineForms((err, forms) => {
+        if (err) res.send(err);
+        else {
+            formsArr = [];
+            forms.forEach((form) => {
+                formsArr.push({name: form.formName, src: form.HTMLSource})
+            });
+            res.render('onlineFormViews/formsList', {forms: formsArr});
+        }
+    })
 });
 module.exports = router;

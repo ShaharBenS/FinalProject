@@ -1,12 +1,17 @@
-window.onload = function () {
-    let formName = '<%=formName%>';
-    document.title = formName;
-    document.getElementById("formTitle").appendChild(document.createTextNode(formName));
-    let isForShow = '<%=isForShow%>';
-    if (isForShow) {
-        let info = "טופס דמו של " + formName;
-        document.getElementById("info").appendChild(document.createTextNode(info));
-        document.getElementById("fieldset").setAttribute("disabled", "disabled");
-        document.getElementById("submitButton").setAttribute("disabled", "disabled");
-    }
+let submitForm = function () {
+    let oldWin = window.opener;
+    let inputs = Array.prototype.slice.call(document.getElementsByTagName('input'));
+    let i = 0;
+
+    let info = [];
+    inputs.forEach((input) => {
+        if (i !== inputs.length - 1) {
+            info.push({field: input.placeholder, value: input.value});
+        }
+        i++;
+    });
+
+    oldWin.receiveFormInfo(_formName, info);
+
+    return false;
 };
