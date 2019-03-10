@@ -12,6 +12,7 @@ let submitForm = function () {
     });
 
     oldWin.receiveFormInfo(_formName, info);
-
+    alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת");
+    window.close();
     return false;
 };

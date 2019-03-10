@@ -15,9 +15,7 @@
                 document.getElementById("info").appendChild(document.createTextNode(info));
                 document.getElementById("fieldset").setAttribute("disabled", "disabled");
                 document.getElementById("submitButton").setAttribute("disabled", "disabled");
-            }
-
-
+            } else document.getElementById('close_win_button').style.display = "none";
         };
     </script>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
@@ -45,12 +43,12 @@
                     <br><br>
                     <input name="last_name" placeholder="שם משפחה" type="text">
                     <br><br>
-                    <input class="btn-default" id="submitButton" onclick="submitForm()" type="button" value="שלח">
+                    <input class="btn-default" id="submitButton" type="submit" value="שלח">
                 </fieldset>
             </form>
         </div>
         <br><br>
-        <button class="btn-default" onclick="window.close()">סגור טופס</button>
+        <button class="btn-default" id="close_win_button" onclick="window.close()">סגור טופס</button>
     </div>
 
 </div>
