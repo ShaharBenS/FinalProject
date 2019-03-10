@@ -1,25 +1,29 @@
+/**
+ * data object that holds information about filled online forms of the current stage.
+ * @type {Array}
+ */
 let myForms = [];
 
+/**
+ *  add/update @myForms according to the filled form (formName)
+ * @var myForms
+ * @param formName
+ * @param info - array of maps {field:, value:}
+ */
 function receiveFormInfo(formName, info) {
     let formRecord = {formName: formName, fields: info};
+    for (let i = 0; i < myForms.length; i++) {
+        if (myForms[i].formName === formName) {
+            myForms[i] = formRecord;
+            return;
+        }
+    }
     myForms.push(formRecord);
-
-    /*
-
-        let str = "";
-        myForms.forEach((formRecord) => {
-            str += "------------------------------------\n";
-            str += "form name = " + formRecord.formName + "\n";
-            str += "-- attributes --\n";
-            formRecord.fields.forEach((fieldRecord) => {
-                str += "field: " + fieldRecord.field + " | ";
-                str += "value: " + fieldRecord.value + "\n";
-            });
-        });
-        document.getElementById('formsInfo').innerText = str;*/
 }
 
-
+/**
+ * @function updateForms is called before POST request and enter the filled forms data to the request by adding it to input.
+ */
 function updateForms() {
     let formsInput = document.createElement('input');
     formsInput.setAttribute('type', 'hidden');
@@ -28,6 +32,11 @@ function updateForms() {
     document.getElementById('formsInfo').appendChild(formsInput);
 }
 
+/**
+ * called whenever @formName is clicked
+ * @param formName
+ * @returns {boolean}
+ */
 function formClick(formName) {
     window.open("/onlineForms/fill?formName=" + formName);
     return false;

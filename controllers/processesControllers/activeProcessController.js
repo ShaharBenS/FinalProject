@@ -297,7 +297,7 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                         i--;
                         filledFormsIDs.push(formRecord._id);
                         if (i === 0) {
-                            stageDetails.filledOnlineForms = filledFormsIDs;
+                            stageDetails.filledForms = filledFormsIDs;
                             stageDetails.stageNum = currentStage.stageNum;
                             stageDetails.action = "continue";
                             process.handleStage(stageDetails);

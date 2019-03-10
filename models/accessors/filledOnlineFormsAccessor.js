@@ -19,6 +19,8 @@ module.exports.getFilledOnlineFormFromSchemaRecord = (form) => {
 };
 
 module.exports.getSchemaRecordFromFilledOnlineForm = (form) => {
-    return {formName: form.formName, fields: form.fields}
+    let fields = [];
+    form.fields.forEach((answerMap) => fields.push({fieldName: answerMap.field, value: answerMap.value}));
+    return {formName: form.formName, fields: fields}
 };
 
