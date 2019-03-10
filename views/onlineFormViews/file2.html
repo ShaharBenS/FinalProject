@@ -9,12 +9,12 @@
             _formName = '<%=formName%>';
             document.title = _formName;
             document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
-            let isForShow = '<%=isForShow%>';
+            let isForShow = '<%=isForShow%>' === 'true';
             if (isForShow) {
                 let info = "טופס דמו של " + _formName;
                 document.getElementById("info").appendChild(document.createTextNode(info));
-                //document.getElementById("fieldset").setAttribute("disabled", "disabled");
-                //document.getElementById("submitButton").setAttribute("disabled", "disabled");
+                document.getElementById("fieldset").setAttribute("disabled", "disabled");
+                document.getElementById("submitButton").setAttribute("disabled", "disabled");
             }
 
 

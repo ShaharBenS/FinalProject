@@ -44,6 +44,15 @@ router.get('/display', function (req, res) {
     onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
         if (err) res.send(err);
         else {
+            res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: true});
+        }
+    })
+});
+
+router.get('/fill', function (req, res) {
+    onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
+        if (err) res.send(err);
+        else {
             res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: false});
         }
     })
