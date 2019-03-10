@@ -350,7 +350,7 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
             else {
                 newStages.push({
                     roleID: roleName, userEmail: stage.userEmail,
-                    stageNum: stage.stageNum, approvalTime: stage.approvalTime, comments: stage.comments
+                    stageNum: stage.stageNum, approvalTime: stage.approvalTime, comments: stage.comments , files: stage.attachedFilesNames
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }
@@ -583,6 +583,33 @@ function convertJustCreationTime(process) {
     dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
     process.creationTime = dateOfCreationTime;
 }
+
+function convertDateInApprovalTime(array) {
+    for (let i = 0; i < array.length; i++) {
+        let approvalTime = array[i].approvalTime;
+        let dayOfApprovalTime = approvalTime.getDate();
+        let monthOfApprovalTime = approvalTime.getMonth() + 1;
+        let yearOfApprovalTime = approvalTime.getFullYear();
+        if (dayOfApprovalTime < 10) {
+            dayOfApprovalTime = '0' + dayOfApprovalTime;
+        }
+        if (monthOfApprovalTime < 10) {
+            monthOfApprovalTime = '0' + monthOfApprovalTime;
+        }
+        let dateOfApprovalTime = dayOfApprovalTime + '/' + monthOfApprovalTime + '/' + yearOfApprovalTime;
+        let hourOfApprovalTime = approvalTime.getHours();
+        let minuteOfApprovalTime = approvalTime.getMinutes();
+        let secondsOfApprovalTime = approvalTime.getSeconds();
+        if (hourOfApprovalTime.toString().length === 1)
+            hourOfApprovalTime = '0' + hourOfApprovalTime;
+        if (minuteOfApprovalTime.toString().length === 1)
+            minuteOfApprovalTime = '0' + minuteOfApprovalTime;
+        if (secondsOfApprovalTime.toString().length === 1)
+            secondsOfApprovalTime = '0' + secondsOfApprovalTime;
+        dateOfApprovalTime = dateOfApprovalTime + ' ' + hourOfApprovalTime + ':' + minuteOfApprovalTime + ':' + secondsOfApprovalTime;
+            array[i].approvalTime = dateOfApprovalTime;
+    }
+}
 /////
 
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
@@ -590,4 +617,4 @@ module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 
 module.exports.convertDate = convertDate;
 module.exports.convertJustCreationTime = convertJustCreationTime;
-
+module.exports.convertDateInApprovalTime = convertDateInApprovalTime;

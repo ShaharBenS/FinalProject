@@ -151,6 +151,7 @@ router.get('/reportProcess', function (req, res) {
             res.send(err);
         } else {
             activeProcess.convertJustCreationTime(result[0]);
+            activeProcess.convertDateInApprovalTime(result[1]);
             res.render('reportsViews/ProcessReport', {processDetails: result[0], table: result[1]});
         }
     });
