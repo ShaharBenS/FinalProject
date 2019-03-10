@@ -1,7 +1,6 @@
 let ActiveProcess = require('../../domainObjects/activeProcess');
 let ActiveProcessStage = require('../../domainObjects/activeProcessStage');
 let activeProcessSchema = require('../schemas/processesSchemas/ActiveProcessSchema.js');
-let processReportSchema = require('../schemas/processesSchemas/ProcessReportSchema.js');
 
 module.exports.getActiveProcessByProcessName = (processName, callback) => {
     activeProcessSchema.findOne({processName: processName}, (err, process) => {
@@ -43,23 +42,6 @@ module.exports.deleteOneActiveProcess = (AP, callback) => {
 
 module.exports.updateActiveProcess = (AP, update, callback) => {
     return activeProcessSchema.updateOne(AP, update, callback);
-};
-
-/* processReport */
-module.exports.createProcessReport = (PR, callback) => {
-    return processReportSchema.create(PR, callback);
-};
-
-module.exports.findProcessReport = (PR, callback) => {
-    return processReportSchema.find(PR, callback);
-};
-
-module.exports.deleteOneProcessReport = (PR, callback) => {
-    return processReportSchema.deleteOne(PR, callback);
-};
-
-module.exports.updateProcessReport = (PR, update, callback) => {
-    return processReportSchema.updateOne(PR, update, callback);
 };
 
 

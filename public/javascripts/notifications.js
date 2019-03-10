@@ -4,7 +4,7 @@ $(document).ready(()=>{
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
         {
             let notifications = JSON.parse(xmlHttp.responseText);
-            var table = document.getElementById("notifications-table");
+            var table = document.getElementById("example");
             notifications.forEach((notificationObject,index)=>{
                 let notification = notificationObject.notification;
 

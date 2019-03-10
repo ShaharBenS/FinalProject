@@ -160,7 +160,7 @@ function confirmStartProcess() {
         if (status === "success") {
             if (responseText === "success") {
                 alert("תהליך נוצר בהצלחה");
-                window.location.href = '/';
+                window.location.href = '/Home';
             } else {
                 alert(responseText);
             }

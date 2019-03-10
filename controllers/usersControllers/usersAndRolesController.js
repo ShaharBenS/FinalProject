@@ -1,4 +1,5 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
+let processStructureController = require('../processesControllers/processStructureController');
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 
@@ -224,7 +225,6 @@ module.exports.getRoleIdByUsername = function (username, callback) {
 
 module.exports.getRoleNameByRoleID = function (roleID, callback) {
     userAccessor.findRole({_id: roleID}, (err, user) => {
-        console.log('Search For : >>>>>' + roleID);
         if (err) callback(err);
         else {
             if (user.length === 0) callback(null, null);
@@ -233,7 +233,8 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
     });
 };
 
-module.exports.getAllUsers = (callback) => {
+module.exports.getAllUsers = (callback) =>
+{
     let toReturn = [];
     userAccessor.findUser({}, (err, res) => {
         if (err) callback(err);
