@@ -96,7 +96,6 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
         if (err) res.send(err);
-        else if (array === undefined) array = [];
         handleRolesAndStages(array);
         activeProcess.convertDate(array[0]);
         res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
