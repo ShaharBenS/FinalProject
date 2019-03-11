@@ -18,8 +18,7 @@ router.post('/handleProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
         let userEmail = req.user.emails[0].value;
-        let processName = fields.processName;
-        activeProcess.uploadFilesAndHandleProcess(userEmail, processName, fields, files, (err, ret) => {
+        activeProcess.uploadFilesAndHandleProcess(userEmail, fields, files, (err, ret) => {
             if (err) {
                 res.send(err);
             } else {
@@ -131,7 +130,7 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
 router.get('/handleProcessView', function (req, res) {
     let userName = req.user.emails[0].value;
     let processName = req.query.process_name;
-    activeProcess.getNextStagesRoles(processName, userName, (err, rolesArr) => {
+    activeProcess.getNextStagesRolesAndOnlineForms(processName, userName, (err, rolesArr) => {
         if (err) {
             res.send(err);
         } else {
@@ -141,7 +140,6 @@ router.get('/handleProcessView', function (req, res) {
             });
         }
     });
-
 });
 
 router.get('/reportProcess', function (req, res) {

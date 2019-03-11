@@ -102,17 +102,14 @@ class activeProcess {
         return foundStage;
     }
 
-    getCoverage(startingStages) {
-        let _this = this;
-        let pathStages = [];
-        let recursive = function (stageNum) {
-            if (!pathStages.includes(stageNum)) {
-                pathStages.push(stageNum);
-                _this.getStageByStageNum(stageNum).nextStages.forEach((iStage) => recursive(iStage));
-            }
-        };
-        startingStages.forEach((stageNum) => recursive(stageNum));
-        return pathStages;
+    getCoverage(startingStages, coverage) {
+        for(let i=0;i<startingStages.length;i++)
+        {
+            coverage.push(startingStages[i]);
+            let stage = this.getStageByStageNum(startingStages[i]);
+            this.getCoverage(stage.nextStages,coverage);
+        }
+        return coverage;
     }
 
     removeStage(stageNum) {
@@ -151,21 +148,34 @@ class activeProcess {
         for(let i=0;i<stage.nextStages.length;i++)
         {
             let currentStage = this.getStageByStageNum((stage.nextStages[i]));
-            currentStage.removeStagesToWaitFor(stageDetails.stageNum);
+            currentStage.removeStagesToWaitFor([stageDetails.stageNum]);
         }
     }
 
-    advanceProcess(nextStages) {
-        this._currentStages.forEach((stageNum) => {
-            let stage = this.getStageByStageNum(stageNum);
-            if (stage.haveNoOneToWaitFor()) {
-                nextStages.forEach((stageNum) => this.addCurrentStage(stageNum));
-                this.removeCurrentStage(stage.stageNum);
-                let pathStages = this.getCoverage(nextStages);
-                let removePathStages = stage.nextStages.filter((value) => !nextStages.includes(value));
-                this.removePathStages(removePathStages, pathStages);
+    advanceProcess(stageNum, nextStages) {
+        let stage = this.getStageByStageNum(stageNum);
+        this.removeCurrentStage(stageNum);
+        let nextChosenStages = stage.nextStages.filter((value) => nextStages.includes(value));
+        let nextNotChosenStages = stage.nextStages.filter((value) => !nextStages.includes(value));
+        let chosenPath = this.getCoverage(nextStages,[]);
+        let notChosenPath = this.getCoverage(nextNotChosenStages,[]);
+        let stagesToRemoveFromStagesToWaitFor = notChosenPath.filter((value) => !chosenPath.includes(value));
+        for(let i=0;i<stage.nextStages.length;i++)
+        {
+            let nextStage = this.getStageByStageNum(stage.nextStages[i]);
+            if(nextStage.haveNoOneToWaitFor())
+            {
+                if(nextChosenStages.includes(nextStage.stageNum))
+                {
+                    this.addCurrentStage(nextStage.stageNum);
+                }
+                else
+                {
+                    stage.removeStagesToWaitFor(stagesToRemoveFromStagesToWaitFor);
+                }
             }
-        });
+        }
+
     }
 
     isWaitingForUser(roleID,userEmail){

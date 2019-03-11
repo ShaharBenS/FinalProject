@@ -10,7 +10,6 @@
     <script src="http://malsup.github.com/jquery.form.js"></script>
 
     <script src="/javascripts/filledOnlineForms.js"></script>
-
     <title>טיפול בתהליך </title>
 </head>
 <body>
@@ -51,7 +50,13 @@
         Click Here To Cancel The Process :
         <br>
         <br>
-        <button id="cancel" class="btn btn-default">ביטול</button>
+        <button id="cancel" class="btn btn-default" onclick="cancelProcess('<%=processName%>');return false;">ביטול</button>
+        <br>
+        <br>
+        Click Here To Return The Process To Creator:
+        <br>
+        <br>
+        <button type="button" id="returnToCreator1" class="btn btn-default" onclick="returnToCreator('<%=processName%>');return false;">החזר ליוצר התהליך</button>
         <br>
         <br>
         Choose To Which People You Want To Advance The Process To :
@@ -73,7 +78,7 @@
         <br>
     </form>
     <%formsNames.forEach(function(formName){%>
-    <a href="" onclick="formClick('<%=formName%>')"><%=formName%></a>
+    <a onclick="formClick('<%=formName%>')"><%=formName%></a>
     <br>
     <%})%>
 </div>

@@ -1,3 +1,27 @@
+function returnToCreator(processName)
+{
+    let xhr = new XMLHttpRequest();
+    let data = new FormData();
+    data.append('processName', processName);
+    data.append('comments', document.getElementsByName('comments')[0].value);
+    xhr.open("POST", '/activeProcesses/returnToProcessCreator', true);
+    //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() { // Call a function when the state changes.
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            if(xhr.responseText === "success")
+            {
+                alert('התהליך הוחזר ליוצרו');
+            }
+            else
+            {
+                alert('קרתה שגיאה בעת החזרת התהליך ליוצרו');
+            }
+            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+        }
+    };
+    xhr.send(data);
+}
+
 $(function()
 {
     let index = 0;
@@ -33,3 +57,9 @@ $(document).ready(function() {
         }
     });
 });
+
+function cancelProcess(processName)
+{
+
+}
+

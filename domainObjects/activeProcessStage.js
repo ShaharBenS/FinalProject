@@ -17,11 +17,8 @@ class activeProcessStage {
         this.comments = comments;
     }
 
-    removeStagesToWaitFor(stageNum) {
-        if (stageNum !== undefined && this.stagesToWaitFor.includes(stageNum)) {
-            let index = this.stagesToWaitFor.indexOf(stageNum);
-            this.stagesToWaitFor.splice(index, 1);
-        } else throw new Error("invalid stage num");
+    removeStagesToWaitFor(stages) {
+        this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
     }
 
     handleStage(filledForms, fileNames, comments)
