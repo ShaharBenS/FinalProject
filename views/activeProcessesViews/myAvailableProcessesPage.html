@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>התהליכים הזמינים לי</title>
+    <script src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></script>
+    <script src="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/js/bootstrap.bundle.js"></script>
+    <script src="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
+    <script src="/javascripts/takePartInProcess.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+    </script>
+    <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap-grid.css" rel="stylesheet">
+    <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap-reboot.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/draw_sankey/server/html/common/lib/DataTables/datatables.min.css"/>
+    <style>
+        td {
+            text-align: center;
+        }
+        th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+    <h1 style="margin: auto">התהליכים הזמינים לי</h1>
+</div>
+<br>
+<div class="row">
+    <div class="col-lg-10" style="margin:auto">
+        <table id="example" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+            <tr>
+                <th>לקיחת חלק בתהליך</th>
+                <th>שם התהליך</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%availableProcesses.forEach(function(process){%>
+            <tr>
+                <td>
+                    <button id="<%=process._processName%>" class="btn btn-outline-secondary btn-sm"
+                            onclick="takePartInProcess('<%=process._processName%>','<%=username%>')">לקח חלק בתהליך
+                    </button>
+                </td>
+                <td><%=process._processName%></td>
+            </tr>
+            <%})%>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

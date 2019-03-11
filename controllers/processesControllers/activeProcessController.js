@@ -157,6 +157,33 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
     });
 };
 
+module.exports.getAvailableActiveProcessesByUser = (userEmail, callback) => {
+    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+        if (err) {
+            callback(err);
+        } else {
+            let availableActiveProcesses = [];
+            processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
+                if (err) callback(err);
+                else {
+                    if(activeProcesses !== null) {
+                        activeProcesses.forEach((process) => {
+                            if (process.isAvailableForRole(roleID)) {
+                                availableActiveProcesses.push(process);
+                            }
+                        });
+                        callback(null, availableActiveProcesses);
+                    }
+                    else
+                    {
+                        callback(null, []);
+                    }
+                }
+            });
+        }
+    });
+};
+
 function bringRoles(subArray, fullArray, i, j, activeProcesses, callback)
 {
     if(i === activeProcesses.length) {
@@ -381,24 +408,8 @@ module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) callback(err);
                 else {
-                    let newStages = [];
-                    process.stages.forEach((stage) => {
-                        newStages.push(
-                            {
-                                roleID: stage.roleID,
-                                userEmail: (process.currentStages.includes(stage.stageNum) && stage.roleID.id.equals(roleID.id) ? userEmail : stage.userEmail),
-                                stageNum: stage.stageNum,
-                                nextStages: stage.nextStages,
-                                stagesToWaitFor: stage.stagesToWaitFor,
-                                originStagesToWaitFor: stage.originStagesToWaitFor,
-                                approvalTime: stage.approvalTime,
-                                onlineForms: stage.onlineForms,
-                                filledOnlineForms: stage.filledOnlineForms,
-                                attachedFilesNames: stage.attachedFilesNames,
-                                comments: stage.comments
-                            });
-                    });
-                    processAccessor.updateActiveProcess({processName: processName}, {stages: newStages}, callback);
+                    process.assignUserToStage(roleID,userEmail);
+                    processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
                 }
             });
         }

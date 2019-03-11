@@ -45,14 +45,17 @@ router.post('/returnToProcessCreator', function (req, res) {
 });
 
 router.post('/takePartInProcess', function (req, res) {
-    let process_name = req.body.process_name;
-    let userEmail = req.body.user_email;
-    activeProcess.takePartInActiveProcess(process_name, userEmail, (err, result) => {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send("success");
-        }
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields) {
+        let userEmail = req.user.emails[0].value;
+        let processName = fields.processName;
+        activeProcess.takePartInActiveProcess(processName,userEmail, (err) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send("success");
+            }
+        });
     });
 });
 
@@ -124,6 +127,13 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
         handleRolesAndStages(array);
         activeProcess.convertDate(array[0]);
         res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
+    });
+});
+
+router.get('/getAvailableActiveProcessesByUser', function (req, res) {
+    let userName = req.user.emails[0].value;
+    activeProcess.getAvailableActiveProcessesByUser(userName, (err, array) => {
+        res.render('activeProcessesViews/myAvailableProcessesPage', {availableProcesses: array, username: userName});
     });
 });
 

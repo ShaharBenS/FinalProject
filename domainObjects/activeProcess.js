@@ -181,7 +181,17 @@ class activeProcess {
     isWaitingForUser(roleID,userEmail){
         for(let i=0;i<this._stages.length;i++)
         {
-            if (this._currentStages.includes(this._stages[i].stageNum) && this._stages[i].roleID.toString() === roleID.toString() && (this._stages[i].userEmail === null || this._stages[i].userEmail === userEmail)) {
+            if (this._currentStages.includes(this._stages[i].stageNum) && this._stages[i].roleID.toString() === roleID.toString() && this._stages[i].userEmail === userEmail) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isAvailableForRole(roleID){
+        for(let i=0;i<this._stages.length;i++)
+        {
+            if (this._currentStages.includes(this._stages[i].stageNum) && this._stages[i].roleID.toString() === roleID.toString() && this._stages[i].userEmail === null) {
                 return true;
             }
         }
@@ -212,6 +222,18 @@ class activeProcess {
             if(this._stages[i].userEmail === userEmail)
             {
                 return this._stages[i].stageNum;
+            }
+        }
+        return -1;
+    }
+
+    assignUserToStage(roleID,userEmail){
+        for(let i=0;i<this._currentStages.length;i++)
+        {
+            let currentStage = this.getStageByStageNum(this._currentStages[i]);
+            if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === null)
+            {
+                currentStage.userEmail = userEmail;
             }
         }
         return -1;
