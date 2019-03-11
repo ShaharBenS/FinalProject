@@ -231,7 +231,7 @@ class activeProcess {
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
-            if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === null)
+            if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === undefined)
             {
                 currentStage.userEmail = userEmail;
             }
