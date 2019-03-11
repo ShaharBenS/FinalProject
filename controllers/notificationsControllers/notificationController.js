@@ -35,7 +35,7 @@ module.exports.updateNotifications = ()=>{
         if(err){}
         else{
             activeProcesses.forEach(activeProcess=>{
-                if((new Date().getHours()) % activeProcess.lastApproached.getHours() === activeProcess.notificationTime){
+                if(((new Date()) - activeProcess.lastApproached) / 36e5 % activeProcess.notificationTime === 0){
                     this.addNotificationToUser();
                 }
             });

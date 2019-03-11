@@ -69,8 +69,9 @@ passport.deserializeUser(function (user, done) {
 
 
 // Thread for updating notifications
+let updateTimeInMinutes = 10;
 setInterval(()=>{
     notificationControllers.updateNotifications();
-},5 * 60000);
+},updateTimeInMinutes * 60000);
 
 module.exports = app;
