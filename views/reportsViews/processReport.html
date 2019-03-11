@@ -62,7 +62,11 @@
                 <td><%=step.userEmail%></td>
                 <td><%=step.approvalTime%></td>
                 <td><%=step.comments%></td>
-                <td>Files</td>
+                <td>
+                    <%step.files.forEach(function(file){%>
+                    files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>
+                    <%})%>
+                </td>
             </tr>
             <%})%>
             </tbody>
