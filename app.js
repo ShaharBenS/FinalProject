@@ -6,6 +6,7 @@ let logger = require('morgan');
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 let routes = require('./routes/routes');
+let notificationControllers = require('./controllers/notificationsControllers/notificationController');
 
 ///
 let app = express();
@@ -65,5 +66,11 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (user, done) {
     done(null, user);
 });
+
+
+// Thread for updating notifications
+setInterval(()=>{
+    notificationControllers.updateNotifications();
+},5 * 60000);
 
 module.exports = app;

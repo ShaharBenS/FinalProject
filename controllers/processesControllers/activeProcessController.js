@@ -48,10 +48,11 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
  * @param userEmail | The userEmail that starts the process
  * @param processStructureName | The name of the structure to start
  * @param processName | The requested name for the active process
+ * @param notificationTime | The pre-defined time which notifications will repeat themselves for.
  * @param callback
  */
 
-module.exports.startProcessByUsername = (userEmail, processStructureName, processName, callback) => {
+module.exports.startProcessByUsername = (userEmail, processStructureName, processName,notificationTime, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
         if (err) {
             callback(err);
@@ -92,6 +93,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
                                     creationTime: today,
+                                    notificationTime:notificationTime,
                                     currentStages: [initialStage],
                                     processName: processName,
                                     initials: processStructure.initials,
@@ -492,6 +494,11 @@ module.exports.returnToCreator = function(userEmail,processName,comments,callbac
            }
         });
     });
+};
+
+
+module.exports.getAllActiveProcesses = function (callback){
+    processAccessor.getActiveProcesses(callback);
 };
 
 /////Helper Functions

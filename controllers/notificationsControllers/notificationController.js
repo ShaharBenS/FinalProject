@@ -1,6 +1,7 @@
 let notificationAccessor = require('../../models/accessors/notificationsAccessor');
 let activeProcessController = require('../processesControllers/activeProcessController');
 
+
 module.exports.getUserNotifications = (userEmail,callback)=>{
     notificationAccessor.findNotifications({userEmail:userEmail},(err,result)=>{
         if(err){
@@ -27,4 +28,17 @@ module.exports.addNotificationToUser = (email, notification, callback)=>{
         userEmail:email,
         notification:notification.getNotification(),
     }, callback);
+};
+
+module.exports.updateNotifications = ()=>{
+    activeProcessController.getAllActiveProcesses((err,activeProcesses)=>{
+        if(err){}
+        else{
+            activeProcesses.forEach(activeProcess=>{
+                if((new Date().getHours()) % activeProcess.lastApproached.getHours() === activeProcess.notificationTime){
+                    this.addNotificationToUser();
+                }
+            });
+        }
+    })
 };

@@ -142,7 +142,9 @@ function confirmStartProcess() {
     let selector = document.getElementById("start-processes-selector");
     let structureName = selector.options[selector.selectedIndex].innerText;
     let processName = document.getElementById("start-processes-name").value;
-    let data = {processName: processName, structureName: structureName};
+    let notificationTime = parseInt(document.getElementById("start-processes-notification-time").value);
+
+    let data = {processName: processName, structureName: structureName, notificationTime: notificationTime};
     if (processName === "") {
         alert("שם לא יכול להיות ריק");
         return;
