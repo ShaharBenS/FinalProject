@@ -21,8 +21,18 @@
         td {
             text-align: center;
         }
+
         th {
             text-align: center;
+        }
+
+        #showLink {
+            background: none !important;
+            color: #07C;
+            border: none;
+            padding: 0 !important;
+            font: inherit;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -62,7 +72,14 @@
                 <td><%=step.userEmail%></td>
                 <td><%=step.approvalTime%></td>
                 <td><%=step.comments%></td>
-                <td>Files</td>
+                <td>
+                    <%step.files.forEach(function(file){%>
+                    <form action="/uploadFile/download_file" method="post" enctype="multipart/form-data">
+                        <input id="showLink" type="submit" name="filetodownload"
+                        value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
+                    </form>
+                    <%})%>
+                </td>
             </tr>
             <%})%>
             </tbody>
