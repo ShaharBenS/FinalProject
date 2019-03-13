@@ -36,7 +36,25 @@ module.exports.updateNotifications = ()=>{
         else{
             activeProcesses.forEach(activeProcess=>{
                 if(((new Date()) - activeProcess.lastApproached) / 36e5 % activeProcess.notificationTime === 0){
-                    this.addNotificationToUser();
+                    let emails = [];
+                    activeProcess.currentStages.forEach(curr=>{
+                        emails.push(activeProcess.stages[curr].userEmail);
+                    });
+                    emails.reduce((prev,curr)=>{
+                        return (err)=>{
+                            if(err){
+                                prev(err);
+                            }
+                            else{
+                                this.addNotificationToUser();
+                                prev(null);
+                            }
+                        }
+                    },(err)=>{
+                        if(err){
+
+                        }
+                    })(null);
                 }
             });
         }
