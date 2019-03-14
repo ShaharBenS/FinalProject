@@ -19,6 +19,10 @@ module.exports.createActiveProcess = (AP, callback) => {
     return activeProcessSchema.create(AP, callback);
 };
 
+module.exports.getActiveProcesses = (callback)=>{
+    return activeProcessSchema.find({},callback);
+};
+
 module.exports.findActiveProcesses = (AP, callback) => {
     return activeProcessSchema.find(AP, (err, activeProcessArray) => {
         if (err)

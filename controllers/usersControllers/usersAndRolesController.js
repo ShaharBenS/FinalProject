@@ -109,8 +109,10 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
     else if (sankeyTree.hasMoreThanOneTree()) {
         callback('ERROR: there are two trees in the graph');
     }
-    else if (roleToEmails[sankeyTree.getRootName()].length === 0) {
-        callback('ERROR: there must be at least one email assigned to the root')
+    else if(Object.keys(roleToEmails).some(key=>{
+        return roleToEmails[key].length === 0;
+    })){
+        callback('ERROR: there must be at least one email assigned to each role')
     }
     else if (sankeyTree.hasMultipleConnections()) {
         callback('ERROR: there are multiple connections between two nodes')

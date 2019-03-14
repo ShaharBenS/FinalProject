@@ -75,7 +75,8 @@ router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
     let username = req.user.emails[0].value;
-    activeProcess.startProcessByUsername(username, structureName, processName, (err) => {
+    let notificationTime = req.body.notificationTime;
+    activeProcess.startProcessByUsername(username, structureName, processName,notificationTime, (err) => {
         if (err) {
             res.send(err.message);
         } else {
