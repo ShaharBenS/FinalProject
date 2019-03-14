@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const activeProcessSchema = new Schema({
     processName: {type: String, unique: true},
+    processDate: Date,
+    processUrgency: Number,
     creationTime: Date,
     notificationTime: Number,
     currentStages: [Number],

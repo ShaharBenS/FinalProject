@@ -420,24 +420,13 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            let newStages = [];
-            process.stages.forEach((stage) => {
-                newStages.push(
-                    {
-                        roleID: stage.roleID,
-                        userEmail: (process.currentStages.includes(stage.stageNum) && stage.userEmail === userEmail ? null : stage.userEmail),
-                        stageNum: stage.stageNum,
-                        nextStages: stage.nextStages,
-                        stagesToWaitFor: stage.stagesToWaitFor,
-                        originStagesToWaitFor: stage.originStagesToWaitFor,
-                        approvalTime: stage.approvalTime,
-                        onlineForms: stage.onlineForms,
-                        filledOnlineForms: stage.filledOnlineForms,
-                        attachedFilesNames: stage.attachedFilesNames,
-                        comments: stage.comments
-                    });
+            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+                if (err) callback(err);
+                else {
+                    process.unAssignUserToStage(roleID,userEmail);
+                    processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
+                }
             });
-            processAccessor.updateActiveProcess({processName: processName}, {stages: newStages}, callback);
         }
     });
 };
