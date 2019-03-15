@@ -539,6 +539,24 @@ module.exports.returnToCreator = function(userEmail,processName,comments,callbac
     });
 };
 
+module.exports.cancelProcess = function(userEmail,processName,comments,callback){
+    getActiveProcessByProcessName(processName,(err,process)=>{
+        if(err) callback(err);
+        else
+        {
+            let today = new Date();
+            let stage = {comments: comments , filledForms : [], fileNames : [], action: "cancel", stageNum: process.getStageNumberForUser(userEmail)};
+            processAccessor.deleteOneActiveProcess({processName: processName},(err)=>{
+                if(err) callback(err);
+                else
+                {
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
+                }
+            });
+        }
+    });
+};
+
 /////Helper Functions
 function convertDate(array,isNotifications) {
     for (let i = 0; i < array.length; i++) {

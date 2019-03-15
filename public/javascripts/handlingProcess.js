@@ -60,6 +60,25 @@ $(document).ready(function() {
 
 function cancelProcess(processName)
 {
-
+    let xhr = new XMLHttpRequest();
+    let data = new FormData();
+    data.append('processName', processName);
+    data.append('comments', document.getElementsByName('comments')[0].value);
+    xhr.open("POST", '/activeProcesses/cancelProcess', true);
+    //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() { // Call a function when the state changes.
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            if(xhr.responseText === "success")
+            {
+                alert('התהליך בוטל');
+            }
+            else
+            {
+                alert('קרתה שגיאה בעת ביטול התהליך');
+            }
+            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+        }
+    };
+    xhr.send(data);
 }
 
