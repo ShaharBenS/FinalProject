@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const activeProcessSchema = new Schema({
     processName: {type: String, unique: true},
     processDate: Date,
-    processUrgency: Number,
+    processUrgency: { type: Number, min: 1, max: 10},
     creationTime: Date,
     notificationTime: Number,
     currentStages: [Number],
