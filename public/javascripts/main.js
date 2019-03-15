@@ -162,6 +162,11 @@ function confirmStartProcess() {
         alert("תאריך לא יכול להיות ריק");
         return;
     }
+    let today = new Date();
+    if(today.getTime() >= new Date(processDate).getTime()){
+        alert("התאריך חייב להיות מאוחר יותר מהיום");
+        return;
+    }
     $.ajax({
             url: '/activeProcesses/startProcess/',
             method: "POST",
