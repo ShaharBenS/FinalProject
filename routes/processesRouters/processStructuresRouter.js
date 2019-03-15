@@ -2,6 +2,7 @@ let express = require('express');
 let processStructure = require('../../controllers/processesControllers/processStructureController');
 let userAndRoles = require('../../controllers/usersControllers/usersAndRolesController');
 let onlineFormsController = require('../../controllers/onlineFormsControllers/onlineFormController');
+let waitingProcessStructuresController = require('../../controllers/processesControllers/waitingProcessStructuresController');
 
 let router = express.Router();
 
@@ -29,6 +30,12 @@ router.post('/removeProcessStructure', function (req, res) {
   \_____|______|  |_|
 
  */
+
+router.get('/waitingForApproval', (req,res)=>{
+    waitingProcessStructuresController.getAllWaitingProcessStructuresWithoutSankey((err, waitingStructures)=>{
+        res.render('processesStructureViews/waitingStructures',{waitingStructures:waitingStructures});
+    });
+});
 
 router.get('/addProcessStructure', function (req, res) {
     if (req.query.name) {
@@ -61,6 +68,17 @@ router.get('/getAllProcessStructures', function (req, res) {
         }
     })
 });
+
+router.get('/getAllProcessStructuresTakenNames', function (req, res) {
+    processStructure.getAllProcessStructuresTakenNames((err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    })
+});
+
 
 router.get('/getFormsToStages', function (req, res) {
     processStructure.getProcessStructure(req.query.processStructureName, (err, processStructure) => {

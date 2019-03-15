@@ -682,9 +682,13 @@ sankey.dialog.FileSave = Class.extend({
             ).done(function (text,status)
             {
                 if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
-                    if(text === 'success'){
-                        if(status === 'success'){
+                    if(status === 'success'){
+                        if(text === 'success'){
                             alert('Process Structure Saved Successfully');
+                            window.location.href = '/Home';
+                        }
+                        else if(text === 'success_needApprove'){
+                            alert("Process Structure is now waiting for approval");
                             window.location.href = '/Home';
                         }
                     }

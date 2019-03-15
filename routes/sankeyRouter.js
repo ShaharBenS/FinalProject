@@ -4,26 +4,37 @@ let processStructure = require('../controllers/processesControllers/processStruc
 let UsersAndRolesTreeSankey = require('../controllers/usersControllers/usersAndRolesController');
 
 router.post('/file/save', function (req, res) {
+    let userEmail = req.user.emails[0].value;
     if (req.body.context === 'addProcessStructure') {
-        processStructure.addProcessStructure(req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err) => {
+        processStructure.addProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err,needApprove) => {
             if (err) {
                 res.send(err);
             }
             else{
-                res.send('success'); //TODO: redirect to index
+                if(needApprove !== undefined){
+                    res.send('success_needApprove');
+                }
+                else{
+                    res.send('success');
+                }
             }
         });
     } else if (req.body.context === 'editProcessStructure') {
-        processStructure.editProcessStructure(req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err) => {
+        processStructure.editProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err,needApprove) => {
             if (err) {
                 res.send(err);
             }
             else{
-                res.send('success');
+                if(needApprove !== undefined){
+                    res.send('success_needApprove');
+                }
+                else{
+                    res.send('success');
+                }
             }
         })
     } else if (req.body.context === '__tree__') {
-        UsersAndRolesTreeSankey.setUsersAndRolesTree(req.body.content, JSON.parse(req.body.roleToEmails), (err) => {
+        UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content, JSON.parse(req.body.roleToEmails), (err) => {
             if (err) {
                 res.send(err);
             }

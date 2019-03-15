@@ -558,12 +558,12 @@ module.exports.getAllActiveProcesses = function (callback){
 };
 
 /////Helper Functions
-function convertDate(array,isNotifications) {
+function convertDate(array,isArrayOfDates) {
     for (let i = 0; i < array.length; i++) {
         let creationTime;
         let lastApproached;
 
-        if(isNotifications === undefined){
+        if(isArrayOfDates === undefined){
             creationTime = array[i]._creationTime;
             lastApproached = array[i]._lastApproached;
         }
@@ -612,7 +612,7 @@ function convertDate(array,isNotifications) {
             secondsOfLastApproached = '0' + secondsOfLastApproached;
         dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
         dateOfLastApproached = dateOfLastApproached + ' ' + hourOfLastApproached + ':' + minuteOfLastApproached + ':' + secondsOfLastApproached;
-        if(isNotifications === undefined){
+        if(isArrayOfDates === undefined){
             array[i]._creationTime = dateOfCreationTime;
             array[i]._lastApproached = dateOfLastApproached;
         }
