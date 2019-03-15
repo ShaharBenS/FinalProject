@@ -269,6 +269,10 @@ class activeProcess {
         return -1;
     }
 
+    isFinished()
+    {
+        return this._currentStages.length === 0;
+    }
 }
 
 module.exports = activeProcess;

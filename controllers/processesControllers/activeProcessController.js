@@ -49,10 +49,12 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
  * @param userEmail | The userEmail that starts the process
  * @param processStructureName | The name of the structure to start
  * @param processName | The requested name for the active process
+ * @param processDate | The requested date for the active process
+ * @param processUrgency | The requested urgency for the active process
  * @param callback
  */
 
-module.exports.startProcessByUsername = (userEmail, processStructureName, processName, callback) => {
+module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
         if (err) {
             callback(err);
@@ -98,6 +100,8 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     initials: processStructure.initials,
                                     stages: newStages,
                                     lastApproached: today,
+                                    processDate: processDate,
+                                    processUrgency: processUrgency
                                 }, (err) => {
                                     if (err) callback(err);
                                     else processReportController.addProcessReport(processName, today, (err)=>{
@@ -337,10 +341,23 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                 stageDetails.stageNum = currentStage.stageNum;
                 stageDetails.action = "continue";
                 process.handleStage(stageDetails);
-                advanceProcess(process,currentStage.stageNum, stageDetails.nextStageRoles, (err) => {
+                advanceProcess(process,currentStage.stageNum, stageDetails.nextStageRoles, (err,result) => {
                     if (err) callback(err);
                     else {
-                        processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                        if(process.isFinished())
+                        {
+                            processAccessor.deleteOneActiveProcess({processName: processName},(err)=>{
+                                if(err) callback(err);
+                                else
+                                {
+                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                        }
                     }
                 });
             });
