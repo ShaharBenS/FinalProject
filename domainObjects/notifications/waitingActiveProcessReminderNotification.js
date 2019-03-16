@@ -3,7 +3,7 @@ let notification = require('./notification');
 class waitingActiveProcessReminderNotification extends notification{
 
     constructor(description) {
-        super(description,"waitingActiveProcessReminderNotification");
+        super(description,"תזכורת להתליך בהמתנה");
     }
 
     getNotification(){

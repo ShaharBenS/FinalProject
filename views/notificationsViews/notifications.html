@@ -9,7 +9,8 @@
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
     <script src="/javascripts/notifications.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function ()
+        {
             $('#example').DataTable();
         });
     </script>
@@ -21,12 +22,13 @@
         td {
             text-align: center;
         }
+
         th {
             text-align: center;
         }
     </style>
 </head>
-<body>
+<body dir="rtl">
 <div class="row">
     <h1 style="margin: auto">ההתראות שלי</h1>
 </div>
@@ -39,6 +41,7 @@
                 <th>סוג התראה</th>
                 <th>פירוט</th>
                 <th>זמן</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -47,6 +50,9 @@
                 <td><%=notification.notificationType%></td>
                 <td><%=notification.description%></td>
                 <td><%=notification.date%></td>
+                <td>
+                    <button class="btn btn-default" onclick="removeNotification('<%=notification.mongoId%>')">מחק התראה</button>
+                </td>
             </tr>
             <%})%>
             </tbody>

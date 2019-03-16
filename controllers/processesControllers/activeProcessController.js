@@ -112,7 +112,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         } else {
                                             // Notify first role
                                             notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
-                                                "The process: " + processStructureName + ", named: " + processName + " is waiting for your approval"
+                                                "התהליך: " + processStructureName + ", שנקרא: " + processName + ", מחכה  לטיפולך"
                                             ), callback)
                                         }
                                     });

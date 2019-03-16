@@ -24,4 +24,21 @@ router.get('/getNotifications',function (req,res) {
     })
 });
 
+router.post('/deleteNotification',function (req,res) {
+    if(req.body.mongoId){
+        notificationsController.deleteNotification(req.body.mongoId,(err)=>{
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.send('success');
+            }
+        })
+    }
+    else{
+        res.send('Error: no id specified')
+    }
+});
+
+
 module.exports = router;
