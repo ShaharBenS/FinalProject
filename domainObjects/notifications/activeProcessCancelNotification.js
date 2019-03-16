@@ -3,7 +3,7 @@ let notification = require('../notifications/notification');
 class activeProcessCancelNotification extends notification{
 
     constructor(description) {
-        super(description,"activeProcessCancel");
+        super(description,"תהליך בוטל");
     }
     getNotification() {
         return super.getNotification();

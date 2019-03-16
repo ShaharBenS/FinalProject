@@ -5,6 +5,7 @@ let processReportController = require('../processesControllers/processReportCont
 let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
+let activeProcessFinishedNotification = require('../../domainObjects/notifications/activeProcessFinishedNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
 let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
@@ -352,7 +353,32 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                                 if(err) callback(err);
                                 else
                                 {
-                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            // notifying participants
+                                            process.stages.reduce((prev,curr)=>{
+                                                return (err)=>{
+                                                    if(err){
+                                                        prev(err);
+                                                    }
+                                                    else{
+                                                        notificationsController.addNotificationToUser(curr.userEmail,
+                                                            new activeProcessFinishedNotification("התהליך" + process.processName + " הושלם בהצלחה"),prev)
+                                                    }
+                                                }
+                                            },(err)=>{
+                                                if(err){
+                                                    console.log(err);
+                                                }
+                                                else{
+                                                    callback(null);
+                                                }
+                                            })(null);
+                                        }
+                                    });
                                 }
                             });
                         }
