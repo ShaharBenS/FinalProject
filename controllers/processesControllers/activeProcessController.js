@@ -392,8 +392,13 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
             if (err) callback(err);
             else {
                 newStages.push({
-                    roleID: roleName, userEmail: stage.userEmail,
-                    stageNum: stage.stageNum, approvalTime: stage.approvalTime, comments: stage.comments , files: stage.attachedFilesNames
+                    roleID: roleName,
+                    userEmail: stage.userEmail,
+                    stageNum: stage.stageNum,
+                    approvalTime: stage.approvalTime,
+                    comments: stage.comments,
+                    files: stage.attachedFilesNames,
+                    filledOnlineForms: stage.filledOnlineForms
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }

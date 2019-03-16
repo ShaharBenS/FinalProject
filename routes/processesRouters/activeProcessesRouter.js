@@ -1,5 +1,6 @@
 let express = require('express');
-let activeProcess = require('../../controllers/processesControllers/activeProcessController');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
+let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let router = express.Router();
 let formidable = require('formidable');
 
@@ -18,7 +19,7 @@ router.post('/handleProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
         let userEmail = req.user.emails[0].value;
-        activeProcess.uploadFilesAndHandleProcess(userEmail, fields, files, (err, ret) => {
+        activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files, (err, ret) => {
             if (err) {
                 res.send(err);
             } else {
@@ -34,7 +35,7 @@ router.post('/returnToProcessCreator', function (req, res) {
         let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
         let comments = fields.comments;
-        activeProcess.returnToCreator(userEmail, processName, comments, (err) => {
+        activeProcessController.returnToCreator(userEmail, processName, comments, (err) => {
             if (err) {
                 res.send(err);
             } else {
@@ -49,7 +50,7 @@ router.post('/takePartInProcess', function (req, res) {
     form.parse(req, function (err, fields) {
         let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
-        activeProcess.takePartInActiveProcess(processName,userEmail, (err) => {
+        activeProcessController.takePartInActiveProcess(processName, userEmail, (err) => {
             if (err) {
                 res.send(err);
             } else {
@@ -62,7 +63,7 @@ router.post('/takePartInProcess', function (req, res) {
 router.post('/unTakePartInProcess', function (req, res) {
     let process_name = req.body.process_name;
     let userEmail = req.body.user_email;
-    activeProcess.unTakePartInActiveProcess(process_name, userEmail, (err, result) => {
+    activeProcessController.unTakePartInActiveProcess(process_name, userEmail, (err, result) => {
         if (err) {
             res.send(err);
         } else {
@@ -75,7 +76,7 @@ router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
     let username = req.user.emails[0].value;
-    activeProcess.startProcessByUsername(username, structureName, processName, (err) => {
+    activeProcessController.startProcessByUsername(username, structureName, processName, (err) => {
         if (err) {
             res.send(err.message);
         } else {
@@ -96,10 +97,10 @@ router.post('/startProcess', function (req, res) {
 
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    activeProcess.getAllActiveProcessesByUser(userName, (err, array) => {
+    activeProcessController.getAllActiveProcessesByUser(userName, (err, array) => {
         if (err) res.send(err);
         handleRolesAndStages(array);
-        activeProcess.convertDate(array[0]);
+        activeProcessController.convertDate(array[0]);
         res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
     });
 });
@@ -123,16 +124,16 @@ function handleRolesAndStages(array) {
 
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    activeProcess.getWaitingActiveProcessesByUser(userName, (err, array) => {
+    activeProcessController.getWaitingActiveProcessesByUser(userName, (err, array) => {
         handleRolesAndStages(array);
-        activeProcess.convertDate(array[0]);
+        activeProcessController.convertDate(array[0]);
         res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
     });
 });
 
 router.get('/getAvailableActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    activeProcess.getAvailableActiveProcessesByUser(userName, (err, array) => {
+    activeProcessController.getAvailableActiveProcessesByUser(userName, (err, array) => {
         res.render('activeProcessesViews/myAvailableProcessesPage', {availableProcesses: array, username: userName});
     });
 });
@@ -140,7 +141,7 @@ router.get('/getAvailableActiveProcessesByUser', function (req, res) {
 router.get('/handleProcessView', function (req, res) {
     let userName = req.user.emails[0].value;
     let processName = req.query.process_name;
-    activeProcess.getNextStagesRolesAndOnlineForms(processName, userName, (err, rolesArr) => {
+    activeProcessController.getNextStagesRolesAndOnlineForms(processName, userName, (err, rolesArr) => {
         if (err) {
             res.send(err);
         } else {
@@ -154,13 +155,27 @@ router.get('/handleProcessView', function (req, res) {
 
 router.get('/reportProcess', function (req, res) {
     let process_name = req.query.process_name;
-    activeProcess.getAllActiveProcessDetails(process_name, (err, result) => {
+    activeProcessController.getAllActiveProcessDetails(process_name, (err, result) => {
         if (err) {
             res.send(err);
         } else {
-            activeProcess.convertJustCreationTime(result[0]);
-            activeProcess.convertDateInApprovalTime(result[1]);
-            res.render('reportsViews/ProcessReport', {processDetails: result[0], table: result[1]});
+            activeProcessController.convertJustCreationTime(result[0]);
+            activeProcessController.convertDateInApprovalTime(result[1]);
+            let error = false;
+            for (let i = 0; i < result[1].length && !error; i++) {
+                if (result[1][i].filledOnlineForms === undefined)
+                    result[1][i].filledOnlineForms = [];
+                filledOnlineFormsController.getFilledOnlineFormsOfArray(result[1][i].filledOnlineForms, (err, forms) => {
+                    if (err) error = err;
+                    else result[1][i] = forms;
+                })
+            }
+            if (error) res.send(error);
+            else
+                res.render('reportsViews/processReport', {
+                    processDetails: result[0],
+                    table: result[1]
+                });
         }
     });
 });

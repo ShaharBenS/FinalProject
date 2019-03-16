@@ -68,10 +68,7 @@
             <tbody>
             <%table.forEach(function(step){%>
             <tr>
-                <td><%=step.roleID%></td>
-                <td><%=step.userEmail%></td>
-                <td><%=step.approvalTime%></td>
-                <td><%=step.comments%></td>
+
                 <td>
                     <%step.files.forEach(function(file){%>
                     <form action="/uploadFile/download_file" method="post" enctype="multipart/form-data">
@@ -80,6 +77,15 @@
                     </form>
                     <%})%>
                 </td>
+                <td>
+                    <%step.filledOnlineForms.forEach((form)=>{%>
+                    <h5><%form.formName%></h5><br><br>
+                    <%})%>
+                </td>
+                <td><%=step.comments%></td>
+                <td><%=step.approvalTime%></td>
+                <td><%=step.userEmail%></td>
+                <td><%=step.roleID%></td>
             </tr>
             <%})%>
             </tbody>

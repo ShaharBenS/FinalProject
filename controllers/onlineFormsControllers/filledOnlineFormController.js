@@ -9,3 +9,17 @@ module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
 module.exports.getFilledOnlineFormByID = (formID, callback) => {
     filledOnlineFormAccessor.findFilledOnlineFormByFormID(formID, callback);
 };
+
+
+module.exports.getFilledOnlineFormsOfArray = (formIDs, callback) => {
+    let forms = [];
+    for (let i = 0; i < formIDs.length; i++) {
+        forms.push(this.getFilledOnlineFormByID(formIDs[i], (err, filledForm) => {
+            if (err) callback(err);
+            else return filledForm;
+        }));
+    }
+    Promise.all(forms).then(values => {
+        callback(null, values)
+    });
+};
