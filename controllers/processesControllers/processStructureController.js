@@ -35,6 +35,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                         addOrEdit: true,
                                         date: new Date(),
                                         sankey: sankeyContent,
+                                        onlineFormsOfStage: JSON.stringify(onlineFormsOfStage),
                                     },(err)=>{
                                         if(err){
                                             callback(err);
@@ -144,7 +145,7 @@ module.exports.getAllProcessStructuresTakenNames = (callback)=>{
         }
         else{
             let structuresName = strucures.map(structure=>structure.structureName);
-            waitingProcessStructuresAccessor.findProcessStructures({},(err,waitingStructures)=>{
+            waitingProcessStructuresAccessor.findWaitingProcessStructures({},(err, waitingStructures)=>{
                 if(err){
                     callback(err);
                 }

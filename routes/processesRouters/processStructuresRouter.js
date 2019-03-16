@@ -21,6 +21,39 @@ router.post('/removeProcessStructure', function (req, res) {
     processStructure.removeProcessStructure(structureName, (result) => res.send(result));
 });
 
+router.post('/approveStructure', function (req,res){
+    if(req.body.mongoId){
+            waitingProcessStructuresController.approveProcessStructure(req.user.emails[0].value,req.body.mongoId,(err)=>{
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.send("success")
+            }
+        })
+    }
+    else{
+        res.send("Error: no id specified")
+    }
+});
+
+router.post('/disapproveStructure', function (req,res){
+    if(req.body.mongoId){
+        waitingProcessStructuresController.disapproveProcessStructure(req.body.mongoId,(err)=>{
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.send("success")
+            }
+        })
+    }
+    else{
+        res.send("Error: no id specified")
+    }
+});
+
+
 /*
    _____ ______ _______
   / ____|  ____|__   __|
@@ -41,7 +74,8 @@ router.get('/addProcessStructure', function (req, res) {
     if (req.query.name) {
         res.render('processesStructureViews/ProcessStructure', {
             processStructureName: req.query.name,
-            pageContext: 'addProcessStructure'
+            pageContext: 'addProcessStructure',
+            mongoId: '',
         });
     } else {
         res.send("Missing structure name.")
@@ -52,8 +86,21 @@ router.get('/editProcessStructure', function (req, res) {
     if (req.query.name) {
         res.render('processesStructureViews/ProcessStructure', {
             processStructureName: req.query.name,
-            pageContext: 'editProcessStructure'
+            pageContext: 'editProcessStructure',
+            mongoId: '',
         })
+    } else {
+        res.send("Missing structure name.")
+    }
+});
+
+router.get('/viewWaitingProcessStructure', function (req, res) {
+    if (req.query.mongoId) {
+        res.render('processesStructureViews/ProcessStructure', {
+            processStructureName: 'noName',
+            pageContext: 'viewProcessStructure',
+            mongoId: req.query.mongoId,
+        });
     } else {
         res.send("Missing structure name.")
     }

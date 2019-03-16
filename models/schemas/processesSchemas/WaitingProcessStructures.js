@@ -8,6 +8,7 @@ const waitingProcessStructures = new Schema({
     addOrEdit: Boolean, // true for add
     date: Date,
     sankey: String,
+    onlineFormsOfStage: String,
 });
 
 module.exports = mongoose.model('waitingProcessStructures', waitingProcessStructures);

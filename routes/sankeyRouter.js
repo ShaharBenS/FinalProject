@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 let processStructure = require('../controllers/processesControllers/processStructureController');
 let UsersAndRolesTreeSankey = require('../controllers/usersControllers/usersAndRolesController');
+let waitingProcessStructuresController = require("../controllers/processesControllers/waitingProcessStructuresController");
 
 router.post('/file/save', function (req, res) {
     let userEmail = req.user.emails[0].value;
@@ -46,7 +47,7 @@ router.post('/file/save', function (req, res) {
 });
 
 router.post('/file/get', function (req, res) {
-    if (req.body.id === '__tree__') {
+    if (req.body.diagramContext === '__tree__') {
         UsersAndRolesTreeSankey.getUsersAndRolesTree((err, result) => {
             if (err) {
                 res.send(err);
@@ -54,7 +55,18 @@ router.post('/file/get', function (req, res) {
                 res.send(JSON.parse(result.sankey))
             }
         });
-    } else {
+    }
+    else if(req.body.diagramContext === "viewProcessStructure"){
+        waitingProcessStructuresController.getWaitingStructureById(req.body.mongoId,(err,waitingStructure)=>{
+           if(err){
+               res.send(err);
+           }
+           else{
+               res.send(JSON.parse(waitingStructure.sankey));
+           }
+        });
+    }
+    else{
         processStructure.getProcessStructure(req.body.id, (err, result) => {
             if (err) {
                 console.log(err);

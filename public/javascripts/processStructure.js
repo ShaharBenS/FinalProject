@@ -53,6 +53,10 @@ $(document).ready(function () {
             modal1.style.display = "none";
         }
     };
+    if(diagramContext === "viewProcessStructure"){
+        let button = document.getElementById("saveButton");
+        button.parentNode.removeChild(button);
+    }
 });
 
 function onDrop_extension(type, command, figure) {
