@@ -60,28 +60,49 @@ router.post('/takePartInProcess', function (req, res) {
 });
 
 router.post('/unTakePartInProcess', function (req, res) {
-    let process_name = req.body.process_name;
-    let userEmail = req.body.user_email;
-    activeProcess.unTakePartInActiveProcess(process_name, userEmail, (err, result) => {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send("success");
-        }
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields) {
+        let userEmail = req.user.emails[0].value;
+        let processName = fields.processName;
+        activeProcess.unTakePartInActiveProcess(processName,userEmail, (err) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send("success");
+            }
+        });
     });
 });
 
 router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
+    let processDate = req.body.processDate;
+    let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
     let notificationTime = req.body.notificationTime;
-    activeProcess.startProcessByUsername(username, structureName, processName,notificationTime, (err) => {
+    activeProcess.startProcessByUsername(username, structureName, processName,processDate, processUrgency,notificationTime, (err) => {
         if (err) {
             res.send(err.message);
         } else {
             res.send("success");
         }
+    });
+});
+
+router.post('/cancelProcess', function (req, res) {
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields) {
+        let userEmail = req.user.emails[0].value;
+        let processName = fields.processName;
+        let comments = fields.comments;
+        activeProcess.cancelProcess(userEmail, processName, comments, (err) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send("success");
+            }
+        });
     });
 });
 

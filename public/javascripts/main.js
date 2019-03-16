@@ -131,7 +131,14 @@ function startActiveProcess() {
                 option.innerText = structure.structureName;
                 selector.appendChild(option);
             });
+            let urgencySelector = document.getElementById("start-processes-urgency");;
             document.getElementById("start-active-process-modal").style.display = "block";
+            for(let i=1; i<=10; i++){
+                let option = document.createElement('option');
+                option.value = i;
+                option.innerText = i.toString();
+                urgencySelector.appendChild(option);
+            }
         }
     };
     xmlHttp.open("GET", '/processStructures/getAllProcessStructures/', true);
@@ -143,14 +150,25 @@ function confirmStartProcess() {
     let selector = document.getElementById("start-processes-selector");
     let structureName = selector.options[selector.selectedIndex].innerText;
     let processName = document.getElementById("start-processes-name").value;
+    let processDate = document.getElementById("start-processes-date").value;
+    let urgencySelector = document.getElementById("start-processes-urgency");
+    let urgency = urgencySelector.options[selector.selectedIndex].innerText;
     let notificationTime = parseInt(document.getElementById("start-processes-notification-time").value);
 
-    let data = {processName: processName, structureName: structureName, notificationTime: notificationTime};
+    let data = {processName: processName, structureName: structureName, processDate: processDate, processUrgency: urgency, notificationTime: notificationTime};
     if (processName === "") {
         alert("שם לא יכול להיות ריק");
         return;
     }
-
+    if (processDate === "") {
+        alert("תאריך לא יכול להיות ריק");
+        return;
+    }
+    let today = new Date();
+    if(today.getTime() >= new Date(processDate).getTime()){
+        alert("התאריך חייב להיות מאוחר יותר מהיום");
+        return;
+    }
     $.ajax({
             url: '/activeProcesses/startProcess/',
             method: "POST",

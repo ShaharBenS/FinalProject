@@ -1,7 +1,9 @@
 class activeProcess {
 
-    constructor(processName, creationTime, notificationTime, currentStages, initials, stages, lastApproached) {
+    constructor(processName, processDate,processUrgency, creationTime, notificationTime, currentStages, initials, stages, lastApproached) {
         this._processName = processName;
+        this._processDate = processDate;
+        this._processUrgency = processUrgency;
         this._creationTime = creationTime;
         this._notificationTime = notificationTime;
         this._currentStages = currentStages;
@@ -46,6 +48,22 @@ class activeProcess {
         if (this.creationTime === undefined)
             this._creationTime = value;
         else throw new Error();
+    }
+
+    get processDate() {
+        return this._processDate;
+    }
+
+    set processDate(value) {
+        this._processDate = value;
+    }
+
+    get processUrgency() {
+        return this._processUrgency;
+    }
+
+    set processUrgency(value) {
+        this._processUrgency = value;
     }
 
     get notificationTime() {
@@ -237,6 +255,23 @@ class activeProcess {
             }
         }
         return -1;
+    }
+
+    unAssignUserToStage(roleID,userEmail){
+        for(let i=0;i<this._currentStages.length;i++)
+        {
+            let currentStage = this.getStageByStageNum(this._currentStages[i]);
+            if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === userEmail)
+            {
+                currentStage.userEmail = undefined;
+            }
+        }
+        return -1;
+    }
+
+    isFinished()
+    {
+        return this._currentStages.length === 0;
     }
 }
 

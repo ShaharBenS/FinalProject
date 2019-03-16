@@ -49,11 +49,13 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
  * @param userEmail | The userEmail that starts the process
  * @param processStructureName | The name of the structure to start
  * @param processName | The requested name for the active process
+ * @param processDate | The requested date for the active process
+ * @param processUrgency | The requested urgency for the active process
  * @param notificationTime | The pre-defined time which notifications will repeat themselves for.
  * @param callback
  */
 
-module.exports.startProcessByUsername = (userEmail, processStructureName, processName,notificationTime, callback) => {
+module.exports.startProcessByUsername = (userEmail, processStructureName, processName,processDate, processUrgency, notificationTime, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
         if (err) {
             callback(err);
@@ -100,6 +102,8 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     initials: processStructure.initials,
                                     stages: newStages,
                                     lastApproached: today,
+                                    processDate: processDate,
+                                    processUrgency: processUrgency
                                 }, (err) => {
                                     if (err) callback(err);
                                     else processReportController.addProcessReport(processName, today, (err)=>{
@@ -339,10 +343,23 @@ function handleProcess(userEmail, processName, stageDetails, callback){
                 stageDetails.stageNum = currentStage.stageNum;
                 stageDetails.action = "continue";
                 process.handleStage(stageDetails);
-                advanceProcess(process,currentStage.stageNum, stageDetails.nextStageRoles, (err) => {
+                advanceProcess(process,currentStage.stageNum, stageDetails.nextStageRoles, (err,result) => {
                     if (err) callback(err);
                     else {
-                        processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                        if(process.isFinished())
+                        {
+                            processAccessor.deleteOneActiveProcess({processName: processName},(err)=>{
+                                if(err) callback(err);
+                                else
+                                {
+                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                        }
                     }
                 });
             });
@@ -422,24 +439,13 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            let newStages = [];
-            process.stages.forEach((stage) => {
-                newStages.push(
-                    {
-                        roleID: stage.roleID,
-                        userEmail: (process.currentStages.includes(stage.stageNum) && stage.userEmail === userEmail ? null : stage.userEmail),
-                        stageNum: stage.stageNum,
-                        nextStages: stage.nextStages,
-                        stagesToWaitFor: stage.stagesToWaitFor,
-                        originStagesToWaitFor: stage.originStagesToWaitFor,
-                        approvalTime: stage.approvalTime,
-                        onlineForms: stage.onlineForms,
-                        filledOnlineForms: stage.filledOnlineForms,
-                        attachedFilesNames: stage.attachedFilesNames,
-                        comments: stage.comments
-                    });
+            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+                if (err) callback(err);
+                else {
+                    process.unAssignUserToStage(roleID,userEmail);
+                    processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
+                }
             });
-            processAccessor.updateActiveProcess({processName: processName}, {stages: newStages}, callback);
         }
     });
 };
@@ -552,9 +558,22 @@ module.exports.returnToCreator = function(userEmail,processName,comments,callbac
     });
 };
 
-
-module.exports.getAllActiveProcesses = function (callback){
-    processAccessor.getActiveProcesses(callback);
+module.exports.cancelProcess = function(userEmail,processName,comments,callback){
+    getActiveProcessByProcessName(processName,(err,process)=>{
+        if(err) callback(err);
+        else
+        {
+            let today = new Date();
+            let stage = {comments: comments , filledForms : [], fileNames : [], action: "cancel", stageNum: process.getStageNumberForUser(userEmail)};
+            processAccessor.deleteOneActiveProcess({processName: processName},(err)=>{
+                if(err) callback(err);
+                else
+                {
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
+                }
+            });
+        }
+    });
 };
 
 /////Helper Functions
