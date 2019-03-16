@@ -14,12 +14,33 @@ module.exports.getFilledOnlineFormByID = (formID, callback) => {
 module.exports.getFilledOnlineFormsOfArray = (formIDs, callback) => {
     let forms = [];
     for (let i = 0; i < formIDs.length; i++) {
-        forms.push(this.getFilledOnlineFormByID(formIDs[i], (err, filledForm) => {
+        this.getFilledOnlineFormByID(formIDs[i], (err, filledForm) => {
             if (err) callback(err);
-            else return filledForm;
-        }));
+            else {
+                forms.push(filledForm);
+                if (forms.length === formIDs.length) {
+                    callback(null, forms)
+                }
+            }
+        });
     }
-    Promise.all(forms).then(values => {
-        callback(null, values)
-    });
+    /* let myReduce = Object.keys(formIDs).reduce((prev, curr) => {
+         return (err, onlineForm) => {
+             if (err) prev(err);
+             else {
+                 forms.push(onlineForm);
+                 this.getFilledOnlineFormByID(curr, prev);
+             }
+         }
+     }, (err, onlineForm) => {
+         if (err) {
+             callback(err);
+         } else {
+             forms.push(onlineForm);
+             callback(null, forms);
+         }
+     });
+     myReduce(null);
+ */
+
 };

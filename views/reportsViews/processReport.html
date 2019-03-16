@@ -58,11 +58,14 @@
         <table id="example" class="table table-striped table-bordered" style="width:100%">
             <thead>
             <tr>
-                <th>שם התפקיד :</th>
-                <th>שם ממלא התפקיד :</th>
-                <th>תאריך ושעה :</th>
-                <th>הערות :</th>
+
+
                 <th>קבצים :</th>
+                <th>טפסים :</th>
+                <th>הערות :</th>
+                <th>תאריך ושעה :</th>
+                <th>שם ממלא התפקיד :</th>
+                <th>שם התפקיד :</th>
             </tr>
             </thead>
             <tbody>
@@ -71,15 +74,15 @@
 
                 <td>
                     <%step.files.forEach(function(file){%>
-                    <form action="/uploadFile/download_file" method="post" enctype="multipart/form-data">
-                        <input id="showLink" type="submit" name="filetodownload"
-                        value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
+                    <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post">
+                        <input id="showLink" name="filetodownload" type="submit"
+                               value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
                     </form>
                     <%})%>
                 </td>
                 <td>
-                    <%step.filledOnlineForms.forEach((form)=>{%>
-                    <h5><%form.formName%></h5><br><br>
+                    <%step.filledOnlineForms.forEach(function(form) {%>
+                    <h5><%=form.formName%></h5><br><br>
                     <%})%>
                 </td>
                 <td><%=step.comments%></td>

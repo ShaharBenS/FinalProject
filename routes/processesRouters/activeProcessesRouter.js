@@ -161,21 +161,24 @@ router.get('/reportProcess', function (req, res) {
         } else {
             activeProcessController.convertJustCreationTime(result[0]);
             activeProcessController.convertDateInApprovalTime(result[1]);
-            let error = false;
-            for (let i = 0; i < result[1].length && !error; i++) {
+            let counter = result[1].length;
+            for (let i = 0; i < result[1].length; i++) {
                 if (result[1][i].filledOnlineForms === undefined)
                     result[1][i].filledOnlineForms = [];
                 filledOnlineFormsController.getFilledOnlineFormsOfArray(result[1][i].filledOnlineForms, (err, forms) => {
-                    if (err) error = err;
-                    else result[1][i] = forms;
+                    if (err) res.send(err);
+                    else {
+                        result[1][i].filledOnlineForms = forms;
+                        counter--;
+                        if (counter === 0) {
+                            res.render('reportsViews/processReport', {
+                                processDetails: result[0],
+                                table: result[1]
+                            });
+                        }
+                    }
                 })
             }
-            if (error) res.send(error);
-            else
-                res.render('reportsViews/processReport', {
-                    processDetails: result[0],
-                    table: result[1]
-                });
         }
     });
 });
