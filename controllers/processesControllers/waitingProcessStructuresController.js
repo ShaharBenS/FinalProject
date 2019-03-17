@@ -2,6 +2,7 @@ let waitingProcessStructuresAccessor = require('../../models/accessors/waitingPr
 let activeProcessController = require('./activeProcessController');
 let processStructureController = require('../processesControllers/processStructureController');
 let processStructureAccessor = require('../../models/accessors/processStructureAccessor');
+let usersPermissionsController = require('../usersControllers/UsersPermissionsController');
 
 module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) =>
 {
@@ -45,30 +46,54 @@ module.exports.getWaitingStructureById = (_id, callback) =>
 
 module.exports.approveProcessStructure = (userEmail, _id, callback) =>
 {
-    this.getWaitingStructureById(_id,(err,waitingStructure)=>{
-        if(err){
+    usersPermissionsController.getUserPermissions(userEmail,(err,permission)=>{
+      if(err){
+          callback(err);
+      }
+      else{
+          if(permission.structureManagementPermission){
+              this.getWaitingStructureById(_id,(err,waitingStructure)=>{
+                  if(err){
+                      callback(err);
+                  }
+                  else{
+                      let commonCallback = (err)=>{
+                          if(err){
+                              callback(err);
+                          }
+                          waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id:waitingStructure._id},callback)
+                      };
+
+                      if(waitingStructure.addOrEdit){
+                          processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
+                              waitingStructure.sankey,JSON.parse(waitingStructure.onlineFormsOfStage),commonCallback)
+                      }
+                      else{
+                          processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
+                              waitingStructure.onlineFormsOfStage,commonCallback);
+                      }
+                  }
+              })
+          }
+          else{
+              callback("ERROR: You don't have the required permissions to perform this operation")
+          }
+      }
+    });
+};
+
+module.exports.disapproveProcessStructure = (userEmail, _id,callback)=>{
+    usersPermissionsController.getUserPermissions(userEmail,(err,permission)=> {
+        if (err) {
             callback(err);
         }
         else{
-            let commonCallback = (err)=>{
-                if(err){
-                    callback(err);
-                }
-                waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id:waitingStructure._id},callback)
-            };
-
-            if(waitingStructure.addOrEdit){
-                processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
-                    waitingStructure.sankey,JSON.parse(waitingStructure.onlineFormsOfStage),commonCallback)
+            if(permission.structureManagementPermission){
+                waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id:_id},callback);
             }
             else{
-                processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
-                    waitingStructure.onlineFormsOfStage,commonCallback);
+                callback("ERROR: You don't have the required permissions to perform this operation")
             }
         }
-    })
-};
-
-module.exports.disapproveProcessStructure = (_id,callback)=>{
-    waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id:_id},callback);
+    });
 };

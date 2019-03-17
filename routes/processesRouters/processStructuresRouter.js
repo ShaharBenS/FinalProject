@@ -39,7 +39,7 @@ router.post('/approveStructure', function (req,res){
 
 router.post('/disapproveStructure', function (req,res){
     if(req.body.mongoId){
-        waitingProcessStructuresController.disapproveProcessStructure(req.body.mongoId,(err)=>{
+        waitingProcessStructuresController.disapproveProcessStructure(req.user.emails[0].value,req.body.mongoId,(err)=>{
             if(err){
                 res.send(err);
             }
