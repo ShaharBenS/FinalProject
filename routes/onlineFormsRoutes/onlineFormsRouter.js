@@ -65,7 +65,7 @@ router.get('/fill', function (req, res) {
 
 router.get('/displayFilled', function (req, res) {
     let filledFormID = req.query.formID;
-    filledOnlineFormsController.displayFilledForm(filledFormID, (err, locals) => {
+    filledOnlineFormsController.displayFilledForm(filledFormID, (err, locals, HTMLSource) => {
         if (err) res.send(err);
         else res.render('onlineFormViews/' + HTMLSource, locals);
     });
