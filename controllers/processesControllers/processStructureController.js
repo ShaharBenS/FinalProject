@@ -243,6 +243,6 @@ module.exports.getFormsToStages = function (structureName, callback) {
                 }
             });
 
-        } else res.send({});
+        } else callback(null, {});
     });
 };

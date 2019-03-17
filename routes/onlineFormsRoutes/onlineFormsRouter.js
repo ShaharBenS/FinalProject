@@ -44,6 +44,7 @@ router.get('/getAllOnlineForms', function (req, res) {
 router.get('/display', function (req, res) {
     onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
         if (err) res.send(err);
+        else if (form === null) req.send(new Error("form " + req.query.formName + " wasn't found"));
         else {
             res.render('onlineFormViews/' + form.HTMLSource, {formName: form.formName, isForShow: true, fields: false});
         }

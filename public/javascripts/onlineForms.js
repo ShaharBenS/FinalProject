@@ -6,7 +6,10 @@ let submitForm = function () {
     let info = [];
     inputs.forEach((input) => {
         if (i !== inputs.length - 1) {
-            info.push({field: input.id, value: input.value});
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                if (input.checked)
+                    info.push({field: input.name, value: input.value});
+            } else info.push({field: input.name, value: input.value});
         }
         i++;
     });
