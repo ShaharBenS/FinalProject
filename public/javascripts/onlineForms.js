@@ -6,7 +6,7 @@ let submitForm = function () {
     let info = [];
     inputs.forEach((input) => {
         if (i !== inputs.length - 1) {
-            info.push({field: input.placeholder, value: input.value});
+            info.push({field: input.id, value: input.value});
         }
         i++;
     });

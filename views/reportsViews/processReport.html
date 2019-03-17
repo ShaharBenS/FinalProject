@@ -9,9 +9,18 @@
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
     <script src="/javascripts/reports.js"></script>
     <script>
+
         $(document).ready(function () {
             $('#example').DataTable();
         });
+
+        let onClickForm = function (formID) {
+            window.open("/onlineForms/displayFilled?formID=" + formID.toString());
+            return false;
+
+        };
+
+
     </script>
     <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap.css" rel="stylesheet">
     <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap-grid.css" rel="stylesheet">
@@ -80,9 +89,10 @@
                     </form>
                     <%})%>
                 </td>
-                <td>
+                <td id="filledOnlineForms">
                     <%step.filledOnlineForms.forEach(function(form) {%>
-                    <h5><%=form.formName%></h5><br><br>
+                    <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
+                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
                     <%})%>
                 </td>
                 <td><%=step.comments%></td>

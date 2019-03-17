@@ -4,18 +4,31 @@
     <meta charset="UTF-8">
     <script>
         let _formName = '';
+        let fields = undefined;
 
         window.onload = function () {
             _formName = '<%=formName%>';
             document.title = _formName;
             document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
             let isForShow = '<%=isForShow%>' === 'true';
-            if (isForShow) {
+            fields = '<%= fields %>';
+            if (fields !== 'false') {
+                while (fields.indexOf('&#34;') >= 0)
+                    fields = fields.replace('&#34;', '"');
+                fields = JSON.parse(fields);
+                fields.forEach((field) => {
+                    document.getElementById(field.fieldName).setAttribute("value", field.value);
+                });
+                document.getElementById("fieldset").setAttribute("disabled", "disabled");
+                document.getElementById("submitButton").setAttribute("disabled", "disabled");
+                document.getElementById("submitButton").style.display = "none";
+            } else if (isForShow) {
                 let info = "טופס דמו של " + _formName;
                 document.getElementById("info").appendChild(document.createTextNode(info));
                 document.getElementById("fieldset").setAttribute("disabled", "disabled");
                 document.getElementById("submitButton").setAttribute("disabled", "disabled");
-            } else document.getElementById('close_win_button').style.display = "none";
+            } else
+                document.getElementById('close_win_button').style.display = "none";
         };
     </script>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
@@ -39,9 +52,11 @@
             <form id="form" onsubmit="return submitForm()">
                 <fieldset id="fieldset">
                     <br>
-                    <input id="name" name="first_name" placeholder="שם פרטי" type="text">
+                    <label for="first_name">שם פרטי</label><br>
+                    <input id="first_name" name="first_name" type="text">
                     <br><br>
-                    <input name="last_name" placeholder="שם משפחה" type="text">
+                    <label for="last_name">שם משפחה</label><br>
+                    <input id="last_name" name="last_name" type="text">
                     <br><br>
                     <input class="btn-default" id="submitButton" type="submit" value="שלח">
                 </fieldset>

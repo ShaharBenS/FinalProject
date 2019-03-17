@@ -155,32 +155,14 @@ router.get('/handleProcessView', function (req, res) {
 
 router.get('/reportProcess', function (req, res) {
     let process_name = req.query.process_name;
-    activeProcessController.getAllActiveProcessDetails(process_name, (err, result) => {
-        if (err) {
-            res.send(err);
-        } else {
-            activeProcessController.convertJustCreationTime(result[0]);
-            activeProcessController.convertDateInApprovalTime(result[1]);
-            let counter = result[1].length;
-            for (let i = 0; i < result[1].length; i++) {
-                if (result[1][i].filledOnlineForms === undefined)
-                    result[1][i].filledOnlineForms = [];
-                filledOnlineFormsController.getFilledOnlineFormsOfArray(result[1][i].filledOnlineForms, (err, forms) => {
-                    if (err) res.send(err);
-                    else {
-                        result[1][i].filledOnlineForms = forms;
-                        counter--;
-                        if (counter === 0) {
-                            res.render('reportsViews/processReport', {
-                                processDetails: result[0],
-                                table: result[1]
-                            });
-                        }
-                    }
-                })
-            }
-        }
-    });
+    activeProcessController.processReport(process_name, (err, result) => {
+        if (err) res.send(err);
+        else
+            res.render('reportsViews/processReport', {
+                processDetails: result[0],
+                table: result[1]
+            });
+    })
 });
 
 router.get('/processStartPage', function (req, res) {

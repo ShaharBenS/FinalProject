@@ -1,5 +1,6 @@
 let FilledOnlineForm = require('../../domainObjects/filledOnlineForm');
 let filledOnlineFormAccessor = require('../../models/accessors/filledOnlineFormsAccessor');
+let onlineFormsController = require('./onlineFormController');
 
 module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
     let newFilledOnlineForm = new FilledOnlineForm(formName, fields);
@@ -24,23 +25,25 @@ module.exports.getFilledOnlineFormsOfArray = (formIDs, callback) => {
             }
         });
     }
-    /* let myReduce = Object.keys(formIDs).reduce((prev, curr) => {
-         return (err, onlineForm) => {
-             if (err) prev(err);
-             else {
-                 forms.push(onlineForm);
-                 this.getFilledOnlineFormByID(curr, prev);
-             }
-         }
-     }, (err, onlineForm) => {
-         if (err) {
-             callback(err);
-         } else {
-             forms.push(onlineForm);
-             callback(null, forms);
-         }
-     });
-     myReduce(null);
- */
+};
 
+module.exports.displayFilledForm = function (filledFormID, callback) {
+    this.getFilledOnlineFormByID(filledFormID, (err, form) => {
+        if (err) callback(err);
+        else {
+            form = form.formObject;
+            onlineFormsController.getOnlineFormByName(form.formName, (err, onlineForm) => {
+                if (err) callback(err);
+                else {
+                    let fields = [];
+                    form.fields.forEach((field) => {
+                        fields.push({fieldName: field.fieldName, value: field.value})
+                    });
+                    let fieldsStr = JSON.stringify(fields);
+                    let locals = {formName: formName, isForShow: false, fields: fields};
+                    callback(null, locals);
+                }
+            })
+        }
+    });
 };
