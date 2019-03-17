@@ -12,23 +12,8 @@
             document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
             let isForShow = '<%=isForShow%>' === 'true';
             fields = '<%= fields %>';
-            if (fields !== 'false') {
-                while (fields.indexOf('&#34;') >= 0)
-                    fields = fields.replace('&#34;', '"');
-                fields = JSON.parse(fields);
-                fields.forEach((field) => {
-                    document.getElementById(field.fieldName).setAttribute("value", field.value);
-                });
-                document.getElementById("fieldset").setAttribute("disabled", "disabled");
-                document.getElementById("submitButton").setAttribute("disabled", "disabled");
-                document.getElementById("submitButton").style.display = "none";
-            } else if (isForShow) {
-                let info = "טופס דמו של " + _formName;
-                document.getElementById("info").appendChild(document.createTextNode(info));
-                document.getElementById("fieldset").setAttribute("disabled", "disabled");
-                document.getElementById("submitButton").setAttribute("disabled", "disabled");
-            } else
-                document.getElementById('close_win_button').style.display = "none";
+            setupInputs(_formName, isForShow, fields);
+
         };
     </script>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
@@ -57,6 +42,24 @@
                     <br><br>
                     <label for="last_name">שם משפחה</label><br>
                     <input id="last_name" name="last_name" type="text">
+                    <br><br>
+                    <label>
+                        מין
+                        <br><input name="sex" type="radio" value="m">זכר
+                        <br><input name="sex" type="radio" value="f">נקבה
+                        <br><input name="sex" type="radio" value="o">אחר
+                    </label>
+                    <br><br>
+                    <label>בחר מספרים
+                        <br><input name="choose1" type="checkbox" value="a">בחר 0
+                        <br><input name="choose2" type="checkbox" value="b">בחר 1
+                        <br><input name="choose3" type="checkbox" value="c">בחר 2
+                        <br><input name="choose4" type="checkbox" value="d">בחר 3
+                        <br><input name="choose5" type="checkbox" value="e">בחר 4
+                        <br><input name="choose6" type="checkbox" value="f">בחר 5
+                        <br><input name="choose7" type="checkbox" value="g">בחר 6
+                        <br><input name="choose8" type="checkbox" value="h">בחר 7
+                    </label>
                     <br><br>
                     <input class="btn-default" id="submitButton" type="submit" value="שלח">
                 </fieldset>
