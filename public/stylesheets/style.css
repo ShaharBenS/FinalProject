@@ -6,14 +6,15 @@ body {
     padding: 2% 2% 10%;
     width: 50%;
     border-radius: 60px;
-    border-color: dodgerblue;
+    border-color: #f6a500;
     border-width: 2px;
     border-style: solid;
 }
 
 .btn-default {
-    background-color: dodgerblue;
+    background-color: #f6a500;
     color: white;
+    margin: 10px;
     border-radius: 20px;
     border-color: transparent;
     border-width: 2px;
@@ -21,9 +22,9 @@ body {
 
 .btn-default:hover {
     background-color: white;
-    color: dodgerblue;
+    color: #f6a500;
     border-radius: 20px;
-    border-color: dodgerblue;
+    border-color: #f6a500;
     border-width: 2px;
 }
 

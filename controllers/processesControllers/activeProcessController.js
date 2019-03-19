@@ -214,6 +214,10 @@ function bringRoles(subArray, fullArray, i, j, activeProcesses, callback) {
     })(subArray);
 }
 
+module.exports.getAllActiveProcesses = function (callback) {
+    processAccessor.getActiveProcesses(callback);
+};
+
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
