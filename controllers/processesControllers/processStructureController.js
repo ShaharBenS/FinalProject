@@ -41,7 +41,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                             callback(err);
                                         }
                                         else{
-                                            callback(null,true);
+                                            callback(null,"approval");
                                         }
                                     })
                                 }
@@ -102,7 +102,7 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                             callback(err);
                                         }
                                         else{
-                                            callback(null,true);
+                                            callback(null,'approval');
                                         }
                                     })
                                 }

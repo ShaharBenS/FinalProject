@@ -12,7 +12,7 @@ router.post('/file/save', function (req, res) {
                 res.send(err);
             }
             else{
-                if(needApprove !== undefined){
+                if(needApprove === 'approval'){
                     res.send('success_needApprove');
                 }
                 else{
@@ -26,7 +26,7 @@ router.post('/file/save', function (req, res) {
                 res.send(err);
             }
             else{
-                if(needApprove !== undefined){
+                if(needApprove !== 'approval'){
                     res.send('success_needApprove');
                 }
                 else{
