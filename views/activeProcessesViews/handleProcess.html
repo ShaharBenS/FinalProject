@@ -12,75 +12,51 @@
     <script src="/javascripts/filledOnlineForms.js"></script>
     <title>טיפול בתהליך </title>
 </head>
-<body>
+<body dir="rtl">
 <div align="center">
     <h1>טיפול בתהליך <%=processName%></h1>
     <br>
     <br>
-    <form id="frm" action="/activeProcesses/handleProcess" method="post" enctype="multipart/form-data">
-        <input type="hidden" value="<%=processName%>" name="processName"/>
-        Insert Your Files :
-        <br>
-        <br>
-        <div class="col-md-12">
-            <div class="row">
-                <div class="control-group" id="fields">
-                    <div class="controls">
-                        <div class="entry input-group col-xs-3">
-                            <input class="btn btn-primary" name="fields[]" type="file">
-                            <span class="input-group-btn">
-                           <button class="btn btn-success btn-add" type="button">
-                           <span class="glyphicon glyphicon-plus"></span>
-                           </button>
-                           </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
-        <br>
-        <br>
-        Insert Your Comments :
-        <br>
-        <br>
-        <input type="text" name="comments">
-        <br>
-        <br>
-        Click Here To Cancel The Process :
-        <br>
-        <br>
-        <button id="cancel" class="btn btn-default" onclick="cancelProcess('<%=processName%>');return false;">ביטול</button>
-        <br>
-        <br>
-        Click Here To Return The Process To Creator:
-        <br>
-        <br>
-        <button type="button" id="returnToCreator1" class="btn btn-default" onclick="returnToCreator('<%=processName%>');return false;">החזר ליוצר התהליך</button>
-        <br>
-        <br>
-        Choose To Which People You Want To Advance The Process To :
-        <br>
-        <br>
-        <%nextRoles.forEach(function(roleIdAndName){%>
-        <label><%=roleIdAndName[0]%>
-            <input type="checkbox" name="<%=roleIdAndName[1]%>">
-        </label>
-        <%})%>
-        <br>
-        <br>
-        <div id="formsInfo">
-        </div>
-        <button class="btn btn-default" id="advanceProcess" onclick="return updateForms()"> העבר לשלב
-            הבא
-        </button>
-        <br>
-        <br>
-    </form>
-    <%formsNames.forEach(function(formName){%>
-    <a onclick="formClick('<%=formName%>')"><%=formName%></a>
-    <br>
-    <%})%>
+    <table width="70%">
+        <tr>
+            <td width="70%" style="vertical-align: text-top;">
+                <textarea placeholder="הערות" cols="50" rows="10"></textarea>
+                <br>
+                <br>
+                אנא בחר תפקידים הבאים בתהליך:
+                <br>
+                <label>
+                    <input type="checkbox" name='יו"ר'>
+                    יו"ר
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name='סיו"ר'>
+                    סיו"ר
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name='רכז'>
+                    רכז
+                </label>
+                <br>
+                <br>
+                אנא מלא את הטפסים הבאים:
+                <br>
+                <a onclick="">טופס צילום</a>
+                <br>
+                <a onclick="">טופס תשלומים</a>
+                <br>
+            </td>
+            <td width="30%" style="vertical-align: text-top;">
+                <textarea placeholder="הערות" cols="50" rows="10"></textarea>
+                <br>
+                <br>
+                <button id="cancel" class="btn btn-default" onclick="cancelProcess('<%=processName%>');return false;" style="width:45%;float: right;">ביטול</button>
+                <button type="button" id="returnToCreator1" class="btn btn-default" onclick="returnToCreator('<%=processName%>');return false;" style="width:45%;float: left;">החזר ליוצר התהליך</button>
+            </td>
+        </tr>
+    </table>
 </div>
 </body>
 </html>
