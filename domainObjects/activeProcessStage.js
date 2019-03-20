@@ -23,7 +23,7 @@ class activeProcessStage {
 
     handleStage(filledForms, fileNames, comments)
     {
-        if (this.approvalTime === undefined && this.stagesToWaitFor.length === 0) {
+        if (this.approvalTime === null && this.stagesToWaitFor.length === 0) {
             this.approvalTime = new Date();
             this.filledOnlineForms = this.filledOnlineForms.concat(filledForms);
             this.attachedFilesNames = this.attachedFilesNames.concat(fileNames);
