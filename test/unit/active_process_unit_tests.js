@@ -58,7 +58,7 @@ let createActiveProcess1 = function () {
     stage5 = new ActiveProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage6 = new ActiveProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess(processName1, creationTime, notificationTime, currentStages.slice(), initials, stages);
+    testProcess = new ActiveProcess(processName1,new Date(),3, creationTime, notificationTime, currentStages.slice(), initials, stages);
 };
 
 let createActiveProcess2 = function () {
@@ -94,7 +94,7 @@ let createActiveProcess2 = function () {
     stage5 = new ActiveProcessStage(5, null, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     stage6 = new ActiveProcessStage(6, null, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess(processName1, creationTime, notificationTime, [4, 5], initials, stages);
+    testProcess = new ActiveProcess(processName1,new Date(),3, creationTime, notificationTime, [4, 5], initials, stages, new Date());
 };
 
 describe('1.0 add to current stages', function () {
@@ -203,36 +203,28 @@ describe('5.0 get path', function () {
 
     beforeEach(createActiveProcess1);
 
-    let compare = function (array1, array2) {
-        return (array1.some(function (v) {
-            return array2.indexOf(v) >= 0;
-        }) && array2.some(function (v) {
-            return array1.indexOf(v) >= 0;
-        }));
-    };
-
     it('5.1 get existing paths', () => {
-        assert.isTrue(compare([0, 1, 2, 3, 4, 5, 6], testProcess.getCoverage([0])));
-        assert.isTrue(compare([1, 2, 3, 4, 5, 6], testProcess.getCoverage([1])));
-        assert.isTrue(compare([2, 4, 6], testProcess.getCoverage([2])));
-        assert.isTrue(compare([3, 5, 6], testProcess.getCoverage([3])));
-        assert.isTrue(compare([4, 6], testProcess.getCoverage([4])));
-        assert.isTrue(compare([5, 6], testProcess.getCoverage([5])));
-        assert.isTrue(compare([6], testProcess.getCoverage([6])));
+        assert.deepEqual([0, 1, 2, 3, 4, 5, 6], testProcess.getCoverage([0]).sort());
+        assert.deepEqual([1, 2, 3, 4, 5, 6], testProcess.getCoverage([1]).sort());
+        assert.deepEqual([2, 4, 6], testProcess.getCoverage([2]).sort());
+        assert.deepEqual([3, 5, 6], testProcess.getCoverage([3]).sort());
+        assert.deepEqual([4, 6], testProcess.getCoverage([4]).sort());
+        assert.deepEqual([5, 6], testProcess.getCoverage([5]).sort());
+        assert.deepEqual([6], testProcess.getCoverage([6]).sort());
     });
 
     it('5.2 get path from not existing stage num', () => {
         expect(() => {
-            testProcess.getCoverage(-1)
+            testProcess.getCoverage([-1])
         }).to.throw();
         expect(() => {
-            testProcess.getCoverage(7)
+            testProcess.getCoverage([7])
         }).to.throw();
         expect(() => {
-            testProcess.getCoverage(1.5)
+            testProcess.getCoverage([1.5])
         }).to.throw();
         expect(() => {
-            testProcess.getCoverage("a")
+            testProcess.getCoverage(["a"])
         }).to.throw();
     });
 });
@@ -294,32 +286,30 @@ describe('8.0 advance process', function () {
 
     it('8.1 advances 1 step', () => {
         assert.deepEqual([0], testProcess.currentStages);
-        testProcess.handleStage(0, [], [], "");
-        testProcess.advanceProcess([1]);
+        testProcess.handleStage({stageNum: 0, filledForms:[], fileNames: [], comments: ""});
+        testProcess.advanceProcess(0,[1]);
         assert.deepEqual([1], testProcess.currentStages);
         assert.equal(testProcess.stages.length, 7);
     });
 
     it('8.2 advances 2 steps', () => {
         assert.deepEqual([0], testProcess.currentStages);
-        testProcess.handleStage(0, [], [], "");
-        testProcess.advanceProcess([1]);
-        testProcess.handleStage(1, [], [], "");
-        testProcess.advanceProcess([2, 3]);
+        testProcess.handleStage({stageNum: 0, filledForms:[], fileNames: [], comments: ""});
+        testProcess.advanceProcess(0,[1]);
+        testProcess.handleStage({stageNum: 1, filledForms:[], fileNames: [], comments: ""});
+        testProcess.advanceProcess(1,[2, 3]);
         assert.deepEqual([2, 3], testProcess.currentStages);
         assert.equal(testProcess.stages.length, 7);
     });
 
     it('8.3 advances 2 steps with selection of 1 path', () => {
         assert.deepEqual([0], testProcess.currentStages);
-        testProcess.handleStage(0, [], [], "");
-        testProcess.advanceProcess([1]);
-        testProcess.handleStage(1, [], [], "");
-        testProcess.advanceProcess([2]);
+        testProcess.handleStage({stageNum: 0, filledForms:[], fileNames: [], comments: ""});
+        testProcess.advanceProcess(0,[1]);
+        testProcess.handleStage({stageNum: 1, filledForms:[], fileNames: [], comments: ""});
+        testProcess.advanceProcess(1,[2]);
         assert.deepEqual([2], testProcess.currentStages);
-        assert.equal(testProcess.stages.length, 5);
-        expect(() => testProcess.getStageByStageNum(3)).to.throw();
-        expect(() => testProcess.getStageByStageNum(5)).to.throw();
+        assert.equal(testProcess.stages.length, 7);
     });
 });
 
