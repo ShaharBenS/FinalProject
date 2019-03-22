@@ -6,57 +6,83 @@
     <script src="/javascripts/handlingProcess.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script>
-
+    <script src="/javascripts/upload_js.js"></script>
     <script src="/javascripts/filledOnlineForms.js"></script>
+
     <title>טיפול בתהליך </title>
+    <style>
+        .removal-button {
+            width: 6%;
+            height: 3%;
+            border: none;
+            background-color: #f6a500;
+            color: white;
+        }
+        .removal-button::before {
+            content: 'X';
+        }
+        .removal-button:focus {
+            outline: 0;
+        }
+    </style>
 </head>
 <body dir="rtl">
 <div align="center">
     <h1>טיפול בתהליך <%=processName%></h1>
     <br>
     <br>
-    <table width="70%">
-        <tr>
-            <td width="70%" style="vertical-align: text-top;">
-                <textarea placeholder="הערות" cols="50" rows="10"></textarea>
-                <br>
-                <br>
-                אנא בחר תפקידים הבאים בתהליך:
-                <br>
-                <label>
-                    <input type="checkbox" name='יו"ר'>
-                    יו"ר
-                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name='סיו"ר'>
-                    סיו"ר
-                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name='רכז'>
-                    רכז
-                </label>
-                <br>
-                <br>
-                אנא מלא את הטפסים הבאים:
-                <br>
-                <a onclick="">טופס צילום</a>
-                <br>
-                <a onclick="">טופס תשלומים</a>
-                <br>
-            </td>
-            <td width="30%" style="vertical-align: text-top;">
-                <textarea placeholder="הערות" cols="50" rows="10"></textarea>
-                <br>
-                <br>
-                <button id="cancel" class="btn btn-default" onclick="cancelProcess('<%=processName%>');return false;" style="width:45%;float: right;">ביטול</button>
-                <button type="button" id="returnToCreator1" class="btn btn-default" onclick="returnToCreator('<%=processName%>');return false;" style="width:45%;float: left;">החזר ליוצר התהליך</button>
-            </td>
-        </tr>
-    </table>
+    <form id="frm" action="/activeProcesses/handleProcess" method="post" enctype="multipart/form-data">
+        <input type="hidden" value="<%=processName%>" name="processName"/>
+    <div style="width:25%;text-align: right">
+    <textarea placeholder="הערות" cols="50" rows="10" name="comments"></textarea>
+    <br>
+    <br>
+    אנא בחר תפקידים הבאים בתהליך:
+    <br>
+    <br>
+    <div style="border:2px solid #ccc;width:100%; height: 100px; overflow-y: scroll;direction: ltr; text-align:right">
+        <%nextRoles.forEach(function(roleIdAndName){%>
+        <label style="direction: rtl">
+            <input type="checkbox" name="<%=roleIdAndName[1]%>">
+            <%=roleIdAndName[0]%>
+        </label>
+        <br>
+        <%})%>
+    </div>
+    <div class="file-chooser"  style="display: none">
+        <input id="fileUpload" class="file-chooser__input" type="file" name="fields[]">
+    </div>
+    <br>
+    רשימת קבצים:
+    <br>
+    <br>
+    <div class="file-list" style=" border:2px solid #ccc;width:100%;height: 100px; overflow-y: auto;direction: ltr; text-align:right">
+
+    </div>
+    <div class="hidden-inputs hidden;" style="display: none"></div>
+    <br>
+    <br>
+    אנא מלא את הטפסים הבאים:
+    <br>
+    <div style=" border:2px solid #ccc;width:100%;height: 100px; overflow-y: auto;direction: ltr; text-align:right">
+        <%formsNames.forEach(function(formName){%>
+        <a onclick="formClick('<%=formName%>')"><%=formName%></a>
+        <br>
+        <%})%>
+    </div>
+    </div>
+    <br>
+    <button id="upFake" class="btn btn-default" onclick="$('#fileUpload').trigger('click');return false;">העלאת קבצים</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button id="cancel" class="btn btn-default" onclick="cancelProcess('<%=processName%>');return false;">ביטול תהליך</button>&nbsp;&nbsp;&nbsp
+    <button type="button" id="returnToCreator1" class="btn btn-default" onclick="returnToCreator('<%=processName%>');return false;">החזר ליוצר התהליך</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button class="btn btn-default" id="advanceProcess" onclick="return updateForms()"> העבר לשלב הבא</button>
+    <br>
+    <br>
+        <div id="formsInfo">
+        </div>
+    </form>
 </div>
 </body>
 </html>
