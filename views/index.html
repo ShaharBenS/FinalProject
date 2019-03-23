@@ -13,8 +13,13 @@
 <body dir="rtl">
 <div align="center">
 
-    <div style="width: 100%; background: #f6a500; height: 15%;">
-        my top bar
+    <div style="width: 100%;display: flex; flex-direction: row; align-items: center;justify-content: center; background: #f6a500;">
+        <div style="padding-right: 10px; width:50%; display: flex;flex-direction: row;align-items: center;justify-content: start;">
+            <h3 style="padding-bottom: 10px">ברק קולומבוס - רכז משהו</h3>
+        </div>
+        <div style="padding-left:10px;width:50%;display: flex;flex-direction: row;align-items: center;justify-content: end;">
+            <button>התנתק</button>
+        </div>
     </div>
     <br><br>
     <div class="main-div">
@@ -36,7 +41,8 @@
             <button class="btn btn-default" onclick="updateOnlineForms()">
                 עדכן טפסים
             </button>
-            <button class="btn btn-default" onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">
+            <button class="btn btn-default"
+                    onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">
                 תהליכים זמינים
             </button>
         </div>
@@ -108,7 +114,8 @@
                         <td><br></td>
                     </tr>
                     <tr>
-                        <td style="width: 50%"><label for="start-processes-selector">בחר את מרווח זמן ההתראה</label></td>
+                        <td style="width: 50%"><label for="start-processes-selector">בחר את מרווח זמן ההתראה</label>
+                        </td>
                         <td><select id="start-processes-notification-time" style="width:100%">
                             <option value="12">12 שעות</option>
                             <option value="24">24 שעות</option>
