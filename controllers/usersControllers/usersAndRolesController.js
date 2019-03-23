@@ -38,15 +38,18 @@ module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 };
 
-module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) => {
+module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) =>
+{
     let countsArray = {};
-    usersEmail.forEach((email) => {
+    usersEmail.forEach((email) =>
+    {
         if (countsArray[email] === undefined)
             countsArray[email] = 1;
         else countsArray[email] = countsArray[email] + 1
     });
     let dupEmails = false;
-    usersEmail.every((email) => {
+    usersEmail.every((email) =>
+    {
         if (countsArray[email] > 1) dupEmails = true;
         return !dupEmails;
     });
@@ -56,10 +59,12 @@ module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) => {
     else {
         let params = {roleName: roleName, userEmail: usersEmail, children: []};
         let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail, children: []};
-        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) => {
+        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
+        {
             if (err) {
                 callback(err);
-            } else {
+            }
+            else {
                 callback(null, usersAndRole)
             }
         });
@@ -109,9 +114,10 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
     else if (sankeyTree.hasMoreThanOneTree()) {
         callback('ERROR: there are two trees in the graph');
     }
-    else if(Object.keys(roleToEmails).some(key=>{
+    else if (Object.keys(roleToEmails).some(key =>
+    {
         return roleToEmails[key].length === 0;
-    })){
+    })) {
         callback('ERROR: there must be at least one email assigned to each role')
     }
     else if (sankeyTree.hasMultipleConnections()) {
@@ -254,10 +260,10 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                             }
                                                             else if (sankeyTree.getRoles().every(n_role =>
                                                             {
-                                                                if(role.id === n_role.id){
+                                                                if (role.id === n_role.id) {
                                                                     return false;
                                                                 }
-                                                                if(n_role.labels[0].text === role.labels[0].text){
+                                                                if (n_role.labels[0].text === role.labels[0].text) {
                                                                     return false;
                                                                 }
                                                                 return true;
@@ -274,18 +280,19 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
                                                         oldSankey.getRoles().forEach(role =>
                                                         {
                                                             let newName = -1;
-                                                            sankeyTree.getRoles().forEach(_role=>{
-                                                                if(_role.id === role.id){
-                                                                    if(role.labels[0].text !== _role.labels[0].text){
+                                                            sankeyTree.getRoles().forEach(_role =>
+                                                            {
+                                                                if (_role.id === role.id) {
+                                                                    if (role.labels[0].text !== _role.labels[0].text) {
                                                                         newName = _role.labels[0].text;
                                                                     }
                                                                 }
                                                             });
-                                                            if(newName !== -1){
+                                                            if (newName !== -1) {
                                                                 renamedRoles[role.labels[0].text] = newName;
                                                             }
                                                         });
-                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds, deletedRolesNames, renamedRoles,(err) =>
+                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds, deletedRolesNames, renamedRoles, (err) =>
                                                         {
                                                             if (err) {
                                                                 callback(err);
@@ -309,8 +316,10 @@ module.exports.setUsersAndRolesTree = (sankey, roleToEmails, callback) =>
     }
 };
 
-module.exports.getRoleIdByUsername = function (username, callback) {
-    userAccessor.findRole({userEmail: username}, (err, user) => {
+module.exports.getRoleIdByUsername = function (username, callback)
+{
+    userAccessor.findRole({userEmail: username}, (err, user) =>
+    {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(new Error("no role found for username: " + username));
@@ -319,8 +328,10 @@ module.exports.getRoleIdByUsername = function (username, callback) {
     });
 };
 
-module.exports.getRoleNameByRoleID = function (roleID, callback) {
-    userAccessor.findRole({_id: roleID}, (err, user) => {
+module.exports.getRoleNameByRoleID = function (roleID, callback)
+{
+    userAccessor.findRole({_id: roleID}, (err, user) =>
+    {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(null, null);
@@ -329,21 +340,35 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
     });
 };
 
+module.exports.getRoleNameByUsername = function (username,callback)
+{
+    userAccessor.findRole({userEmail: username}, (err, user) =>
+    {
+        if (err) callback(err);
+        else {
+            if (user.length === 0){
+                callback(new Error("no such role found"));
+            }
+            else{
+                callback(null, user[0].roleName);
+            }
+        }
+    });
+};
+
 module.exports.getAllUsers = (callback) =>
 {
     let toReturn = [];
-    userAccessor.findUser({}, (err,res)=>{
-        if(err) callback(err);
-        else
-        {
-            for(let i=0;i< res.length;i++)
-            {
-                for(let j=0;j < res[i].userEmail.length;j++)
-                {
+    userAccessor.findUser({}, (err, res) =>
+    {
+        if (err) callback(err);
+        else {
+            for (let i = 0; i < res.length; i++) {
+                for (let j = 0; j < res[i].userEmail.length; j++) {
                     toReturn.push(res[i].userEmail[j]);
                 }
             }
-            callback(null,toReturn);
+            callback(null, toReturn);
         }
     });
 };

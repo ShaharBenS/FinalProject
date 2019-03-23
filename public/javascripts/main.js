@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    setTopBar();
+
     var modal = document.getElementById('add-process-structure-modal');
     var span = document.getElementById("close-add");
 

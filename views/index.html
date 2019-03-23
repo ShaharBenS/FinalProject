@@ -5,27 +5,16 @@
     <title>ראשי</title>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+    <script src="/javascripts/topbar.js"></script>
     <script src="/javascripts/main.js"></script>
+
 
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
 </head>
 <body dir="rtl">
 <div align="center">
-
-    <div style="width: 100%;display: flex; flex-direction: row; align-items: center;justify-content: center; background: #f6a500;">
-        <div style="padding-right: 10px; width:50%; display: flex;flex-direction: row;align-items: center;justify-content: start;">
-            <a class="top-bar-button" href="javascript:void(0)" onclick="alert('clicked')">התראות</a>
-            <h3 class="top-bar-label">ברק קולובוס - רכז יזמות</h3>
-        </div>
-        <div>
-            <a href="/Home">
-                <img class="top-bar-logo"  src="/images/aguda_logo.jpg" alt="logo">
-            </a>
-        </div>
-        <div style="padding-left:15px;width:50%;display: flex;flex-direction: row;align-items: center;justify-content: end;">
-            <a class="top-bar-button" href="javascript:void(0)" onclick="alert('clicked')">התנתק</a>
-        </div>
+    <div id="top-bar" class="top-bar">
     </div>
     <br><br>
     <div class="main-div">
@@ -139,7 +128,6 @@
         <br>
         <br>
         <br>
-        <div class="form-group"><a class="btn btn-default" href="/auth/logout">Sign out</a></div>
     </div>
 </div>
 
