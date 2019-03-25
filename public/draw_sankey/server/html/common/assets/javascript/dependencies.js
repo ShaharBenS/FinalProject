@@ -44799,6 +44799,7 @@ draw2d.policy.line.OrthogonalSelectionFeedbackPolicy = draw2d.policy.line.LineSe
      * @since 4.4.0
      */
     onRightMouseDown: function (conn, x, y, shiftKey, ctrlKey) {
+        return;
         var segment = conn.hitSegment(x, y);
         var items = {"split": {name: draw2d.Configuration.i18n.menu.addSegment}};
 
