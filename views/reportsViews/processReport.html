@@ -9,9 +9,18 @@
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
     <script src="/javascripts/reports.js"></script>
     <script>
+
         $(document).ready(function () {
             $('#example').DataTable();
         });
+
+        let onClickForm = function (formID) {
+            window.open("/onlineForms/displayFilled?formID=" + formID.toString());
+            return false;
+
+        };
+
+
     </script>
     <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap.css" rel="stylesheet">
     <link href="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/css/bootstrap-grid.css" rel="stylesheet">
@@ -58,28 +67,38 @@
         <table id="example" class="table table-striped table-bordered" style="width:100%">
             <thead>
             <tr>
-                <th>שם התפקיד :</th>
-                <th>שם ממלא התפקיד :</th>
-                <th>תאריך ושעה :</th>
-                <th>הערות :</th>
+
+
                 <th>קבצים :</th>
+                <th>טפסים :</th>
+                <th>הערות :</th>
+                <th>תאריך ושעה :</th>
+                <th>שם ממלא התפקיד :</th>
+                <th>שם התפקיד :</th>
             </tr>
             </thead>
             <tbody>
             <%table.forEach(function(step){%>
             <tr>
-                <td><%=step.roleID%></td>
-                <td><%=step.userEmail%></td>
-                <td><%=step.approvalTime%></td>
-                <td><%=step.comments%></td>
+
                 <td>
                     <%step.files.forEach(function(file){%>
-                    <form action="/uploadFile/download_file" method="post" enctype="multipart/form-data">
-                        <input id="showLink" type="submit" name="filetodownload"
-                        value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
+                    <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post">
+                        <input id="showLink" name="filetodownload" type="submit"
+                               value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
                     </form>
                     <%})%>
                 </td>
+                <td id="filledOnlineForms">
+                    <%step.filledOnlineForms.forEach(function(form) {%>
+                    <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
+                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
+                    <%})%>
+                </td>
+                <td><%=step.comments%></td>
+                <td><%=step.approvalTime%></td>
+                <td><%=step.userEmail%></td>
+                <td><%=step.roleID%></td>
             </tr>
             <%})%>
             </tbody>

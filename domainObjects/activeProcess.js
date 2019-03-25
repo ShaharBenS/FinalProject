@@ -12,26 +12,6 @@ class activeProcess {
         this._lastApproached = lastApproached;
     }
 
-    attachOnlineFormToStage(stageNum, formName) {
-        let stage = this.getStageByStageNum(stageNum);
-        stage.attachOnlineForm(formName);
-    }
-
-    addCurrentStage(stageNum) {
-        if (stageNum === undefined || this._currentStages.includes(stageNum))
-            throw new Error("invalid stage number");
-        else this._currentStages.push(stageNum);
-    }
-
-    removeCurrentStage(stageNum) {
-        if (stageNum === undefined || !this._currentStages.includes(stageNum))
-            throw new Error("invalid stage number");
-        else {
-            let index = this._currentStages.indexOf(stageNum);
-            this._currentStages.splice(index, 1);
-        }
-    }
-
     get processName() {
         return this._processName;
     }
@@ -106,6 +86,34 @@ class activeProcess {
         this._lastApproached = value;
     }
 
+    attachOnlineFormToStage(stageNum, formName) {
+        let stage = this.getStageByStageNum(stageNum);
+        stage.attachOnlineForm(formName);
+    }
+
+    addCurrentStage(stageNum) {
+        if(Number.isInteger(stageNum) && !this._currentStages.includes(stageNum))
+        {
+            this._currentStages.push(stageNum);
+        }
+        else
+        {
+            throw new Error("invalid stage number");
+        }
+    }
+
+    removeCurrentStage(stageNum) {
+        if(Number.isInteger(stageNum) && this._currentStages.includes(stageNum))
+        {
+            let index = this._currentStages.indexOf(stageNum);
+            this._currentStages.splice(index, 1);
+        }
+        else
+        {
+            throw new Error("invalid stage number");
+        }
+    }
+
     getStageByStageNum(stageNum) {
         let foundStage = null;
         this._stages.every((stage) => {
@@ -120,12 +128,21 @@ class activeProcess {
         return foundStage;
     }
 
-    getCoverage(startingStages, coverage) {
+    getCoverage(startingStages) {
+        let coverage = [];
         for(let i=0;i<startingStages.length;i++)
         {
-            coverage.push(startingStages[i]);
+            if(!coverage.includes(startingStages[i]))
+            {
+                coverage.push(startingStages[i]);
+            }
             let stage = this.getStageByStageNum(startingStages[i]);
-            this.getCoverage(stage.nextStages,coverage);
+            this.getCoverage(stage.nextStages,coverage).forEach((stage)=>{
+                if(!coverage.includes(stage))
+                {
+                    coverage.push(stage);
+                }
+            });
         }
         return coverage;
     }
