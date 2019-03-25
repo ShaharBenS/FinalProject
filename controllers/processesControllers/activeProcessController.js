@@ -96,6 +96,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
+                                    creatorRoleID: roleID,
                                     creationTime: today,
                                     notificationTime:notificationTime,
                                     currentStages: [initialStage],
@@ -552,7 +553,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
-        process.returnAllOriginalStagesToWaitFor();
+        let creatorEmail = process.returnProcessToCreator();
         let today = new Date();
         let stage = {
             comments: comments,
@@ -562,11 +563,13 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
             stageNum: process.getStageNumberForUser(userEmail)
         };
         processAccessor.updateActiveProcess({processName: processName}, {
-            currentStages: process.initials,
+            currentStages: process.currentStages,
+            stages:process.stages,
             lastApproached: today
         }, (err) => {
             if (err) callback(err);
             else {
+                //TODO Shahar notify creatorEmail variable
                 processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, callback);
             }
         });
@@ -584,6 +587,8 @@ module.exports.cancelProcess = function(userEmail,processName,comments,callback)
                 if(err) callback(err);
                 else
                 {
+                    let usersToNotify = process.getParticipatingUsers();
+                    //TODO Shahar notify the array usersToNotify
                     processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
                 }
             });

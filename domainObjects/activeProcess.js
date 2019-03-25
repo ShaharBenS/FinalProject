@@ -1,7 +1,8 @@
 class activeProcess {
 
-    constructor(processName, processDate,processUrgency, creationTime, notificationTime, currentStages, initials, stages, lastApproached) {
+    constructor(processName,creatorRoleID, processDate,processUrgency, creationTime, notificationTime, currentStages, initials, stages, lastApproached) {
         this._processName = processName;
+        this._creatorRoleID = creatorRoleID;
         this._processDate = processDate;
         this._processUrgency = processUrgency;
         this._creationTime = creationTime;
@@ -18,6 +19,14 @@ class activeProcess {
 
     set processName(value) {
         this._processName = value;
+    }
+
+    get creatorRoleID() {
+        return this._creatorRoleID;
+    }
+
+    set creatorRoleID(value) {
+        this._creatorRoleID = value;
     }
 
     get creationTime() {
@@ -244,11 +253,24 @@ class activeProcess {
         return false;
     }
 
-    returnAllOriginalStagesToWaitFor() {
+    returnProcessToCreator(){
+        let flag = true;
         for(let i=0;i<this._stages.length;i++)
         {
             this._stages[i].stagesToWaitFor = this._stages[i].originStagesToWaitFor;
+            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].roleID === this._creatorRoleID)
+            {
+                if(flag)
+                {
+                    this._currentStages = [this._stages[i].stageNum];
+                }
+                else
+                {
+                    throw new Error("two initials with same roles");
+                }
+            }
         }
+        return this._currentStages[0].userEmail;
     }
 
     getStageNumberForUser(userEmail){
@@ -289,6 +311,18 @@ class activeProcess {
     isFinished()
     {
         return this._currentStages.length === 0;
+    }
+
+    getParticipatingUsers(){
+        let userEmails = [];
+        for(let i=0;i<this.stages.length;i++)
+        {
+            if(this.stages[i].userEmail !== null && this.stages[i].userEmail !== undefined && !userEmails.includes(this.stages[i].userEmail))
+            {
+                userEmails.push(this.stages[i].userEmail);
+            }
+        }
+        return userEmails;
     }
 }
 
