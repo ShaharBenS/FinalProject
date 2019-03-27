@@ -6,6 +6,8 @@ let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
 let activeProcessFinishedNotification = require('../../domainObjects/notifications/activeProcessFinishedNotification');
+let activeProcessBackToCreatorNotification = require('../../domainObjects/notifications/activeProcessBackToCreatorNotification');
+let activeProcessCancelNotification = require('../../domainObjects/notifications/activeProcessCancelNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
 let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
@@ -363,6 +365,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                             },(err)=>{
                                                 if(err){
                                                     console.log(err);
+                                                    callback(err);
                                                 }
                                                 else{
                                                     callback(null);
@@ -569,8 +572,14 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
         }, (err) => {
             if (err) callback(err);
             else {
-                //TODO Shahar notify creatorEmail variable
-                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, callback);
+                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err)=>{
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        notificationsController.addNotificationToUser(creatorEmail, new activeProcessBackToCreatorNotification("התהליך "+processName+" חזר אליך"))
+                    }
+                });
             }
         });
     });
@@ -588,8 +597,33 @@ module.exports.cancelProcess = function(userEmail,processName,comments,callback)
                 else
                 {
                     let usersToNotify = process.getParticipatingUsers();
-                    //TODO Shahar notify the array usersToNotify
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,(err)=>{
+                        if(err){
+                            callback(err);
+                        }
+                        else{
+                            usersToNotify.reduce((prev,curr)=>{
+                                return (err)=>{
+                                    if(err){
+                                        prev(err);
+                                    }
+                                    else{
+                                        notificationsController.addNotificationToUser(curr,
+                                            new activeProcessCancelNotification("התהליך " + processName + " בוטל על ידי " + userEmail),prev)
+                                    }
+                                }
+                            },(err)=>{
+                                // Shahar Ben Shitrit is a living God
+                                if(err){
+                                    console.log(err);
+                                    callback(err);
+                                }
+                                else{
+                                    callback(null);
+                                }
+                            })(null);
+                        }
+                    });
                 }
             });
         }
@@ -623,15 +657,16 @@ module.exports.processReport = function (process_name, callback) {
 };
 
 /////Helper Functions
-function convertDate(array, isNotifications) {
+function convertDate(array,isArrayOfDates) {
     for (let i = 0; i < array.length; i++) {
         let creationTime;
         let lastApproached;
 
-        if (isNotifications === undefined) {
+        if(isArrayOfDates === undefined){
             creationTime = array[i]._creationTime;
             lastApproached = array[i]._lastApproached;
-        } else {
+        }
+        else{
             creationTime = array[i];
             lastApproached = array[i];
         }
@@ -676,7 +711,7 @@ function convertDate(array, isNotifications) {
             secondsOfLastApproached = '0' + secondsOfLastApproached;
         dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
         dateOfLastApproached = dateOfLastApproached + ' ' + hourOfLastApproached + ':' + minuteOfLastApproached + ':' + secondsOfLastApproached;
-        if (isNotifications === undefined) {
+        if(isArrayOfDates === undefined){
             array[i]._creationTime = dateOfCreationTime;
             array[i]._lastApproached = dateOfLastApproached;
         } else {

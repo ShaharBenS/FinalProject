@@ -49,8 +49,8 @@ function confirmAddProcessStructureClicked() {
                 return;
             }
             let isProcessExists = false;
-            JSON.parse(xmlHttp.responseText).forEach((structure) => {
-                if (structure.structureName === name) {
+            JSON.parse(xmlHttp.responseText).forEach((structureName) => {
+                if (structureName === name) {
                     isProcessExists = true;
                     alert("תהליך בעל שם זה כבר קיים");
                 }
@@ -61,7 +61,7 @@ function confirmAddProcessStructureClicked() {
             }
         }
     };
-    xmlHttp.open("GET", '/processStructures/getAllProcessStructures/', true);
+    xmlHttp.open("GET", '/processStructures/getAllProcessStructuresTakenNames/', true);
     xmlHttp.send(null);
 }
 
@@ -100,6 +100,10 @@ function confirmEditProcessStructureClicked() {
 
 function editUsersAndRolesTree() {
     window.location.href = '/usersAndRoles/editTree/'
+}
+
+function waitingStructuresClicked() {
+    window.location.href = '/processStructures/waitingForApproval/'
 }
 
 function updateOnlineForms() {
