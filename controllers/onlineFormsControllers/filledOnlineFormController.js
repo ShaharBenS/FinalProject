@@ -20,11 +20,13 @@ module.exports.getFilledOnlineFormsOfArray = (formIDs, callback) => {
             else {
                 forms.push(filledForm);
                 if (forms.length === formIDs.length) {
-                    callback(null, forms)
+                    callback(null, forms);
+                    return;
                 }
             }
         });
     }
+    callback(null,[]);
 };
 
 module.exports.displayFilledForm = function (filledFormID, callback) {
