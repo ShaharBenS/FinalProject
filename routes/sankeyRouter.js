@@ -2,28 +2,40 @@ var express = require('express');
 var router = express.Router();
 let processStructure = require('../controllers/processesControllers/processStructureController');
 let UsersAndRolesTreeSankey = require('../controllers/usersControllers/usersAndRolesController');
+let waitingProcessStructuresController = require("../controllers/processesControllers/waitingProcessStructuresController");
 
 router.post('/file/save', function (req, res) {
+    let userEmail = req.user.emails[0].value;
     if (req.body.context === 'addProcessStructure') {
-        processStructure.addProcessStructure(req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err) => {
+        processStructure.addProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err,needApprove) => {
             if (err) {
                 res.send(err);
             }
             else{
-                res.send('success'); //TODO: redirect to index
+                if(needApprove === 'approval'){
+                    res.send('success_needApprove');
+                }
+                else{
+                    res.send('success');
+                }
             }
         });
     } else if (req.body.context === 'editProcessStructure') {
-        processStructure.editProcessStructure(req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err) => {
+        processStructure.editProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err,needApprove) => {
             if (err) {
                 res.send(err);
             }
             else{
-                res.send('success');
+                if(needApprove !== 'approval'){
+                    res.send('success_needApprove');
+                }
+                else{
+                    res.send('success');
+                }
             }
         })
     } else if (req.body.context === '__tree__') {
-        UsersAndRolesTreeSankey.setUsersAndRolesTree(req.body.content, JSON.parse(req.body.roleToEmails), (err) => {
+        UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content, JSON.parse(req.body.roleToEmails), (err) => {
             if (err) {
                 res.send(err);
             }
@@ -35,7 +47,7 @@ router.post('/file/save', function (req, res) {
 });
 
 router.post('/file/get', function (req, res) {
-    if (req.body.id === '__tree__') {
+    if (req.body.diagramContext === '__tree__') {
         UsersAndRolesTreeSankey.getUsersAndRolesTree((err, result) => {
             if (err) {
                 res.send(err);
@@ -43,7 +55,18 @@ router.post('/file/get', function (req, res) {
                 res.send(JSON.parse(result.sankey))
             }
         });
-    } else {
+    }
+    else if(req.body.diagramContext === "viewProcessStructure"){
+        waitingProcessStructuresController.getWaitingStructureById(req.body.mongoId,(err,waitingStructure)=>{
+           if(err){
+               res.send(err);
+           }
+           else{
+               res.send(JSON.parse(waitingStructure.sankey));
+           }
+        });
+    }
+    else{
         processStructure.getProcessStructure(req.body.id, (err, result) => {
             if (err) {
                 console.log(err);

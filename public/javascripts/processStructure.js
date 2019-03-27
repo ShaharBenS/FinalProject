@@ -8,7 +8,7 @@ let formsOfStage = {};
 let onlineForms = {};
 
 let xmlHttpFormsOfStages = new XMLHttpRequest();
-let params = "?processStructureName=" + processStructureName;
+let params = "?processStructureName=" + processStructureName + '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false');
 xmlHttpFormsOfStages.onreadystatechange = function () {
     if (xmlHttpFormsOfStages.readyState === 4 && xmlHttpFormsOfStages.status === 200) {
         formsOfStage = JSON.parse(xmlHttpFormsOfStages.responseText)
@@ -53,6 +53,10 @@ $(document).ready(function () {
             modal1.style.display = "none";
         }
     };
+    if(diagramContext === "viewProcessStructure"){
+        let button = document.getElementById("saveButton");
+        button.parentNode.removeChild(button);
+    }
 });
 
 function onDrop_extension(type, command, figure) {

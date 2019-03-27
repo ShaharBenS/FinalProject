@@ -23,3 +23,29 @@ $(document).ready(()=>{
     //xmlHttp.open("GET", '/notifications/getNotifications/', true);
     //xmlHttp.send(null);
 });
+
+function removeNotification(id)
+{
+    let data = {
+        mongoId:id
+    };
+
+
+    $.ajax({
+            url: '/notifications/deleteNotification/',
+            method: "POST",
+            xhrFields: {
+                withCredentials: true
+            },
+            data: data,
+        }
+    ).done(function (responseText, status) {
+        if (status === "success") {
+            if (responseText === "success") {
+                window.location.reload();
+            } else {
+                alert(responseText);
+            }
+        }
+    });
+}

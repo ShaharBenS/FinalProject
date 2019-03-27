@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ההתראות שלי</title>
+    <title>אישור תהליכים</title>
     <script src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></script>
     <script src="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/js/bootstrap.bundle.js"></script>
     <script src="/draw_sankey/server/html/common/lib/bootstrap-4.3.1-dist/js/bootstrap.js"></script>
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
-    <script src="/javascripts/notifications.js"></script>
+    <script src="/javascripts/waitingStructures.js"></script>
     <script>
         $(document).ready(function ()
         {
@@ -30,7 +30,7 @@
 </head>
 <body dir="rtl">
 <div class="row">
-    <h1 style="margin: auto">ההתראות שלי</h1>
+    <h1 style="margin: auto">מבני תהליכים הממתינים לאישור</h1>
 </div>
 <br>
 <div class="row">
@@ -38,21 +38,25 @@
         <table id="example" class="table table-striped table-bordered" style="width:100%">
             <thead>
             <tr>
-                <th>סוג התראה</th>
-                <th>פירוט</th>
-                <th>זמן</th>
+                <th>שם המבנה</th>
+                <th>האדם שרוצה לשנות</th>
+                <th>סוג שינוי</th>
+                <th>תאריך</th>
+                <th>המבנה החדש</th>
+                <th></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <%notifications.forEach(function(notification){%>
+            <%waitingStructures.forEach(function(waitingStructure){%>
             <tr>
-                <td><%=notification.notificationType%></td>
-                <td><%=notification.description%></td>
-                <td><%=notification.date%></td>
-                <td>
-                    <button class="btn btn-default" onclick="removeNotification('<%=notification.mongoId%>')">מחק התראה</button>
-                </td>
+                <td><%=waitingStructure.structureName%></td>
+                <td><%=waitingStructure.userEmail%></td>
+                <td><%=waitingStructure.addOrEdit ? 'הוספה' : 'עריכה'%></td>
+                <td><%=waitingStructure.date%></td>
+                <td><button class="btn btn-default" onclick="viewStructureClicked(this.id)" id=<%='view_'+waitingStructure.id%>>ראה</button></td>
+                <td><button class="btn btn-default" onclick="approveClicked(this.id)" id=<%='approve_'+waitingStructure.id%>>אשר שינוי</button></td>
+                <td><button class="btn btn-default" onclick="disapproveClicked(this.id)" id=<%='disapprove_'+waitingStructure.id%>>דחה שינוי</button></td>
             </tr>
             <%})%>
             </tbody>

@@ -15,6 +15,7 @@ module.exports.getUserNotifications = (userEmail, callback) =>
             let toReturn = result.map((notification, i) =>
             {
                 return {
+                    mongoId: notification._id,
                     notificationType: notification.notification.notificationType,
                     description: notification.notification.description,
                     date: dates[i],
@@ -32,6 +33,11 @@ module.exports.addNotificationToUser = (email, notification, callback) =>
         userEmail: email,
         notification: notification.getNotification(),
     }, callback);
+};
+
+module.exports.deleteNotification = (_id, callback) =>
+{
+    notificationAccessor.deleteAllNotifications({_id:_id},callback);
 };
 
 
@@ -64,7 +70,7 @@ module.exports.updateNotifications = () =>
                             else {
                                 this.addNotificationToUser(curr,
                                     new waitingActiveProcessReminderNotification(
-                                        "The active process " + activeProcess.processName + " is still waiting for your approval, time that passed: " + timePassedInHours + " hours"),
+                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות"),
                                     (err) =>
                                     {
                                         if (err) {

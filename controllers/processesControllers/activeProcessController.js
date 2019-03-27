@@ -5,6 +5,9 @@ let processReportController = require('../processesControllers/processReportCont
 let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
 let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
+let activeProcessFinishedNotification = require('../../domainObjects/notifications/activeProcessFinishedNotification');
+let activeProcessBackToCreatorNotification = require('../../domainObjects/notifications/activeProcessBackToCreatorNotification');
+let activeProcessCancelNotification = require('../../domainObjects/notifications/activeProcessCancelNotification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
 let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
@@ -95,6 +98,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
+                                    creatorRoleID: roleID,
                                     creationTime: today,
                                     notificationTime:notificationTime,
                                     currentStages: [initialStage],
@@ -112,7 +116,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         } else {
                                             // Notify first role
                                             notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
-                                                "The process: " + processStructureName + ", named: " + processName + " is waiting for your approval"
+                                                "התהליך: " + processStructureName + ", שנקרא: " + processName + ", מחכה  לטיפולך"
                                             ), callback)
                                         }
                                     });
@@ -342,7 +346,33 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                 if(err) callback(err);
                                 else
                                 {
-                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            // notifying participants
+                                            process.stages.reduce((prev,curr)=>{
+                                                return (err)=>{
+                                                    if(err){
+                                                        prev(err);
+                                                    }
+                                                    else{
+                                                        notificationsController.addNotificationToUser(curr.userEmail,
+                                                            new activeProcessFinishedNotification("התהליך" + process.processName + " הושלם בהצלחה"),prev)
+                                                    }
+                                                }
+                                            },(err)=>{
+                                                if(err){
+                                                    console.log(err);
+                                                    callback(err);
+                                                }
+                                                else{
+                                                    callback(null);
+                                                }
+                                            })(null);
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -526,7 +556,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
-        process.returnAllOriginalStagesToWaitFor();
+        let creatorEmail = process.returnProcessToCreator();
         let today = new Date();
         let stage = {
             comments: comments,
@@ -536,12 +566,20 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
             stageNum: process.getStageNumberForUser(userEmail)
         };
         processAccessor.updateActiveProcess({processName: processName}, {
-            currentStages: process.initials,
+            currentStages: process.currentStages,
+            stages:process.stages,
             lastApproached: today
         }, (err) => {
             if (err) callback(err);
             else {
-                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, callback);
+                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err)=>{
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        notificationsController.addNotificationToUser(creatorEmail, new activeProcessBackToCreatorNotification("התהליך "+processName+" חזר אליך"))
+                    }
+                });
             }
         });
     });
@@ -558,7 +596,34 @@ module.exports.cancelProcess = function(userEmail,processName,comments,callback)
                 if(err) callback(err);
                 else
                 {
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,callback);
+                    let usersToNotify = process.getParticipatingUsers();
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today,(err)=>{
+                        if(err){
+                            callback(err);
+                        }
+                        else{
+                            usersToNotify.reduce((prev,curr)=>{
+                                return (err)=>{
+                                    if(err){
+                                        prev(err);
+                                    }
+                                    else{
+                                        notificationsController.addNotificationToUser(curr,
+                                            new activeProcessCancelNotification("התהליך " + processName + " בוטל על ידי " + userEmail),prev)
+                                    }
+                                }
+                            },(err)=>{
+                                // Shahar Ben Shitrit is a living God
+                                if(err){
+                                    console.log(err);
+                                    callback(err);
+                                }
+                                else{
+                                    callback(null);
+                                }
+                            })(null);
+                        }
+                    });
                 }
             });
         }
@@ -592,15 +657,16 @@ module.exports.processReport = function (process_name, callback) {
 };
 
 /////Helper Functions
-function convertDate(array, isNotifications) {
+function convertDate(array,isArrayOfDates) {
     for (let i = 0; i < array.length; i++) {
         let creationTime;
         let lastApproached;
 
-        if (isNotifications === undefined) {
+        if(isArrayOfDates === undefined){
             creationTime = array[i]._creationTime;
             lastApproached = array[i]._lastApproached;
-        } else {
+        }
+        else{
             creationTime = array[i];
             lastApproached = array[i];
         }
@@ -645,7 +711,7 @@ function convertDate(array, isNotifications) {
             secondsOfLastApproached = '0' + secondsOfLastApproached;
         dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
         dateOfLastApproached = dateOfLastApproached + ' ' + hourOfLastApproached + ':' + minuteOfLastApproached + ':' + secondsOfLastApproached;
-        if (isNotifications === undefined) {
+        if(isArrayOfDates === undefined){
             array[i]._creationTime = dateOfCreationTime;
             array[i]._lastApproached = dateOfLastApproached;
         } else {

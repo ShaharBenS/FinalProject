@@ -150,7 +150,9 @@ sankey.Application = Class.extend(
                             withCredentials: true
                         },
                         data: {
-                            id: fileName
+                            id: fileName,
+                            diagramContext: diagramContext,
+                            mongoId: mongoId,
                         }
                     }
                 ).done(function (response)
@@ -682,10 +684,14 @@ sankey.dialog.FileSave = Class.extend({
             ).done(function (text,status)
             {
                 if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
-                    if(text === 'success'){
-                        if(status === 'success'){
+                    if(status === 'success'){
+                        if(text === 'success'){
                             alert('Process Structure Saved Successfully');
                             window.location.href = '/Home';
+                        }
+                        else if(text === 'success_needApprove'){
+                            alert("Process Structure is now waiting for approval");
+                            window.location.href = '/Home';sz
                         }
                     }
                     else{
@@ -893,7 +899,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             if (diagramContext === '__tree__') {
                 items.users = {name: "See Users", icon: "icon ion-ios-people"}
             }
-            else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+            else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure'){
                 items.users = {name: "See Forms", icon: "icon ion-ios-browsers"}
             }
         }
@@ -940,7 +946,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                             rolesToHTML(figure.children.data[0].figure.text);
                             document.getElementById("select_users_modal").style.display = "block";
                         }
-                        else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
+                        else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure'){
                             seeFormsOpened(figure.children.data[0].figure.text);
                             document.getElementById("see_forms_modal").style.display = "block";
 

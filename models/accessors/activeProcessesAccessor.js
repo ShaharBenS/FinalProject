@@ -55,6 +55,7 @@ module.exports.updateActiveProcess = (AP, update, callback) => {
 
 let getActiveProcessFromOriginal = function (activeProcess) {
     return new ActiveProcess(activeProcess.processName,
+        activeProcess.creatorRoleID,
         activeProcess.processDate,
         activeProcess.processUrgency,
         activeProcess.creationTime,
