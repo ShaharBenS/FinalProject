@@ -92,7 +92,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .top-bar-left-div {
@@ -101,7 +101,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .top-bar-button {
