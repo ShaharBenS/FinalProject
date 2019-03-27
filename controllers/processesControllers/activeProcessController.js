@@ -230,20 +230,52 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
-                    if (activeProcesses === null)
-                        activeProcesses = [];
-                    let toReturnActiveProcesses = [];
-                    if (activeProcesses !== null) {
-                        activeProcesses.forEach((process) => {
-                            if (process.isParticipatingInProcess(userEmail))
-                                toReturnActiveProcesses.push(process);
-                        });
-                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
-                            callback(null, [toReturnActiveProcesses, arrayOfRoles]);
-                        });
-                    } else {
-                        callback(null, [toReturnActiveProcesses, []]);
-                    }
+                    usersAndRolesController.getAllChildren(userEmail,(err,children)=>{
+                        if(err) {
+                            callback(err);
+                            return;
+                        }
+                        if (activeProcesses === null)
+                            activeProcesses = [];
+                        let toReturnActiveProcesses = [];
+                        let userEmailsArrays = [];
+                        if (activeProcesses !== null) {
+                            activeProcesses.forEach((process) => {
+                                let flag = true;
+                                let currUserEmails = [];
+                                if (process.isParticipatingInProcess(userEmail))
+                                {
+                                    flag = false;
+                                    toReturnActiveProcesses.push(process);
+                                    currUserEmails = [userEmail];
+                                }
+                                children.forEach((child)=>{
+                                    if (process.isParticipatingInProcess(child))
+                                    {
+                                        if(flag === false)
+                                        {
+                                            currUserEmails = currUserEmails.concat(child);
+                                        }
+                                        else
+                                        {
+                                            toReturnActiveProcesses.push(process);
+                                            currUserEmails = [child];
+                                            flag = false;
+                                        }
+                                    }
+                                });
+                                if(flag === true)
+                                {
+                                    userEmailsArrays.push(currUserEmails);
+                                }
+                            });
+                            bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
+                                callback(null, [toReturnActiveProcesses, arrayOfRoles, userEmailsArrays]);
+                            });
+                        } else {
+                            callback(null, [toReturnActiveProcesses, [] , []]);
+                        }
+                    });
                 }
             });
         }
