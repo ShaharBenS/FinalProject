@@ -12,6 +12,12 @@
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
 </head>
+<style>
+    .sameWidth {
+        width: 200px;
+        margin-bottom: 50px;
+    }
+</style>
 <body dir="rtl">
 <div align="center">
     <div id="top-bar" class="top-bar">
@@ -20,34 +26,31 @@
     <div class="main-div">
         <h1>מערכת לניהול תהליכים ארגוניים</h1>
         <h2>אגודת הסטודנטים אוניברסיטת בן-גוריון</h2>
-        <br>
-        <h3>תפריט ראשי</h3>
-        <br>
+        <hr style="border: 1px solid #f6a500;background-color: #f6a500;">
         <div>
-            <button class="btn btn-default" onclick="startActiveProcess()">התחל תהליך</button>
-            <button class="btn btn-default" onclick="location.href='/notifications/myNotifications'">התראות</button>
-            <button class="btn btn-default" onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">
-                התהליכים
-                שלי
+            <button class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">
+                התהליכים שלי
             </button>
-            <button class="btn btn-default" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
+            <button class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
                 תהליכים שממתינים לי
             </button>
-            <button class="btn btn-default" onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">
-                תהליכים זמינים
+            <button class="btn btn-default sameWidth"
+                    onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">תהליכים זמינים
             </button>
         </div>
-        <br><br>
-        <h3>לפי הרשאות</h3>
-        <br>
         <div>
-            <button class="btn btn-default" onclick="addProcessStructureClicked()">הוספת מבנה תהליך</button>
-            <button class="btn btn-default" onclick="editProcessStructureClicked()">עריכת מבנה תהליך</button>
-            <button class="btn btn-default" onclick="editUsersAndRolesTree()">עריכת עץ המשתמשים</button>
-            <button class="btn btn-default" onclick="waitingStructuresClicked()">מבני תהליכים הממתינים לאישור</button>
+            <button class="btn btn-default sameWidth" onclick="startActiveProcess()">התחל תהליך</button>
+            <button class="btn btn-default sameWidth"
+                    onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">הצג דוחות
+            </button>
+            <button class="btn btn-default sameWidth" onclick="editUsersAndRolesTree()">עריכת עץ המשתמשים</button>
+        </div>
+        <div>
+            <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="addProcessStructureClicked()">הוספת מבנה תהליך</button>
+            <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="editProcessStructureClicked()">עריכת מבנה תהליך</button>
+            <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="waitingStructuresClicked()">מבני תהליכים הממתינים לאישור</button>
         </div>
         <div id="add-process-structure-modal" class="modal">
-
             <div class="modal-content" style="width: 30%">
                 <span id="close-add" class="close">&times;</span>
                 <br>
@@ -60,7 +63,6 @@
             </div>
         </div>
         <div id="edit-process-structure-modal" class="modal">
-
             <div class="modal-content">
                 <span id="close-edit" class="close">&times;</span>
                 <h4>בחר תהליך</h4>
@@ -122,11 +124,7 @@
                 </button>
             </div>
         </div>
-        <br>
-        <br>
-        <br>
     </div>
 </div>
-
 </body>
 </html>
