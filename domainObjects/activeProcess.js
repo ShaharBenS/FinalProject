@@ -258,11 +258,12 @@ class activeProcess {
         for(let i=0;i<this._stages.length;i++)
         {
             this._stages[i].stagesToWaitFor = this._stages[i].originStagesToWaitFor;
-            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].roleID === this._creatorRoleID)
+            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].roleID.id.equals(this._creatorRoleID.id))
             {
                 if(flag)
                 {
                     this._currentStages = [this._stages[i].stageNum];
+                    flag = false;
                 }
                 else
                 {
@@ -270,7 +271,7 @@ class activeProcess {
                 }
             }
         }
-        return this._currentStages[0].userEmail;
+        return this.getStageByStageNum(this._currentStages[0]).userEmail;
     }
 
     getStageNumberForUser(userEmail){
