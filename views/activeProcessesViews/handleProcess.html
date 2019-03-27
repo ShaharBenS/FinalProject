@@ -71,7 +71,6 @@
             border-color: #f60300;
         }
 
-
         #advanceProcess {
             background-color: #00c400;
             font-size: large;
@@ -91,7 +90,7 @@
         <h1>טיפול בתהליך <%=processName%></h1>
         <br>
 
-        <hr>
+        <hr style="border: 1px solid #f6a500;background-color: #f6a500;">
 
         <form action="/activeProcesses/handleProcess" enctype="multipart/form-data" id="frm" method="post">
             <input name="processName" type="hidden" value="<%=processName%>"/>
