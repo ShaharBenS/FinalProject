@@ -10,6 +10,11 @@
     <script src="/javascripts/reports.js"></script>
     <script>
 
+        let download_file = function (file_id) {
+            document.getElementById(file_id).click();
+            return false;
+        };
+
         $(document).ready(function () {
             $('#example').DataTable();
         });
@@ -35,14 +40,6 @@
             text-align: center;
         }
 
-        #showLink {
-            background: none !important;
-            color: #07C;
-            border: none;
-            padding: 0 !important;
-            font: inherit;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -83,10 +80,13 @@
 
                 <td>
                     <%step.files.forEach(function(file){%>
-                    <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post">
-                        <input id="showLink" name="filetodownload" type="submit"
+                    <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
+                          style="display: none">
+                        <input id="<%=file%>" name="filetodownload"
+                               type="submit"
                                value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
                     </form>
+                    <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u>
                     <%})%>
                 </td>
                 <td id="filledOnlineForms">
