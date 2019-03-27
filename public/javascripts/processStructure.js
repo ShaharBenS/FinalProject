@@ -34,21 +34,12 @@ $(document).ready(function () {
         modal.style.display = "none";
     };
 
+    var modal1 = document.getElementById('see_forms_modal');
+
     window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
-    };
-
-    var modal1 = document.getElementById('see_forms_modal');
-    var span1 = document.getElementsByClassName("close")[0];
-
-    span1.onclick = function () {
-        modal1.style.display = "none";
-    };
-
-    window.onclick = function (event) {
-
         if (event.target === modal1) {
             modal1.style.display = "none";
         }

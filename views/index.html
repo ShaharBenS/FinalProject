@@ -5,16 +5,16 @@
     <title>ראשי</title>
     <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+    <script src="/javascripts/topbar.js"></script>
     <script src="/javascripts/main.js"></script>
+
 
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
 </head>
 <body dir="rtl">
 <div align="center">
-
-    <div style="width: 100%; background: #f6a500; height: 15%;">
-        my top bar
+    <div id="top-bar" class="top-bar">
     </div>
     <br><br>
     <div class="main-div">
@@ -106,7 +106,8 @@
                         <td><br></td>
                     </tr>
                     <tr>
-                        <td style="width: 50%"><label for="start-processes-selector">בחר את מרווח זמן ההתראה</label></td>
+                        <td style="width: 50%"><label for="start-processes-selector">בחר את מרווח זמן ההתראה</label>
+                        </td>
                         <td><select id="start-processes-notification-time" style="width:100%">
                             <option value="12">12 שעות</option>
                             <option value="24">24 שעות</option>
@@ -124,7 +125,6 @@
         <br>
         <br>
         <br>
-        <div class="form-group"><a class="btn btn-default" href="/auth/logout">Sign out</a></div>
     </div>
 </div>
 
