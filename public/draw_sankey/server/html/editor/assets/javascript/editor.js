@@ -691,7 +691,7 @@ sankey.dialog.FileSave = Class.extend({
                         }
                         else if(text === 'success_needApprove'){
                             alert("Process Structure is now waiting for approval");
-                            window.location.href = '/Home';sz
+                            window.location.href = '/Home';
                         }
                     }
                     else{

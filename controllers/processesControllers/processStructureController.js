@@ -26,7 +26,14 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                         if (newProcessStructure.checkPrevNextSymmetric()) {
                             if (newProcessStructure.checkNextPrevSymmetric()) {
                                 if (permissions.structureManagementPermission) {
-                                    processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), callback);
+                                    processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), (err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            callback(null);
+                                        }
+                                    });
                                 }
                                 else{
                                     waitingProcessStructuresAccessor.addWaitingProcessStructure({
@@ -88,7 +95,14 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                             stages: structure.stages,
                                             sankey: sankeyContent,
                                         }
-                                    }, callback);
+                                    }, (err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            callback(null);
+                                        }
+                                    });
                                 }
                                 else{
                                     waitingProcessStructuresAccessor.addWaitingProcessStructure({
