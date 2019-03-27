@@ -37,21 +37,12 @@ let submitForm = function () {
 };
 
 let encodeJSONtoNotJSON = function (str) {
-
-    str = whileReplace(str, '"', '###');
-    str = whileReplace(str, '[', '!!!');
-    str = whileReplace(str, ']', '@@@');
-    str = whileReplace(str, '{', '^^^');
-    str = whileReplace(str, '}', '***');
+    str = whileReplace(str, '"', '2066quote2066');
     return str;
 };
 
 let decodeJSONtoNotJSON = function (str) {
-    str = whileReplace(str, '###', '"');
-    str = whileReplace(str, '!!!', '[');
-    str = whileReplace(str, '@@@', ']');
-    str = whileReplace(str, '^^^', '{');
-    str = whileReplace(str, '***', '}');
+    str = whileReplace(str, '2066quote2066', '"');
     return str;
 };
 
