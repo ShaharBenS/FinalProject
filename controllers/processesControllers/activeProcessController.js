@@ -437,7 +437,7 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
                     approvalTime: stage.approvalTime,
                     comments: stage.comments,
                     files: stage.attachedFilesNames,
-                    filledOnlineForms: stage.filledOnlineForms
+                    filledOnlineForms: stage.filledOnlineForms,
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }
@@ -720,6 +720,33 @@ function convertDate(array,isArrayOfDates) {
     }
 }
 
+function convertDate2(array) {
+    for (let i = 0; i < array.length; i++) {
+        let processDate = array[i].processDate;
+        let dayOfProcessDate = processDate.getDate();
+        let monthOfProcessDate = processDate.getMonth() + 1;
+        let yearOfProcessDate = processDate.getFullYear();
+        if (dayOfProcessDate < 10) {
+            dayOfProcessDate = '0' + dayOfProcessDate;
+        }
+        if (monthOfProcessDate < 10) {
+            monthOfProcessDate = '0' + monthOfProcessDate;
+        }
+        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
+        let hourOfProcessDate = processDate.getHours();
+        let minuteOfProcessDate  = processDate.getMinutes();
+        let secondsOfProcessDate  = processDate.getSeconds();
+        if (hourOfProcessDate.toString().length === 1)
+            hourOfProcessDate = '0' + hourOfProcessDate;
+        if (minuteOfProcessDate.toString().length === 1)
+            minuteOfProcessDate = '0' + minuteOfProcessDate;
+        if (secondsOfProcessDate.toString().length === 1)
+            secondsOfProcessDate = '0' + secondsOfProcessDate;
+        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
+        array[i].processDate = dateOfProcessDate;
+    }
+}
+
 function convertJustCreationTime(process) {
     let creationTime = process.creationTime;
     let dayOfCreationTime = creationTime.getDate();
@@ -776,7 +803,7 @@ function convertDateInApprovalTime(array) {
 
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
-
+module.exports.convertDate2 = convertDate2;
 module.exports.convertDate = convertDate;
 module.exports.convertJustCreationTime = convertJustCreationTime;
 module.exports.convertDateInApprovalTime = convertDateInApprovalTime;

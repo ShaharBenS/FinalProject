@@ -123,6 +123,7 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
         if (err) res.send(err);
         handleRolesAndStages(array);
         activeProcessController.convertDate(array[0]);
+        activeProcessController.convertDate2(array[0]);
         res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
     });
 });

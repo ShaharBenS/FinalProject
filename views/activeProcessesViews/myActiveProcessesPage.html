@@ -23,6 +23,7 @@
         td {
             text-align: center;
         }
+
         th {
             text-align: center;
         }
@@ -40,6 +41,8 @@
                 <thead>
                 <tr>
                     <th>שם התהליך</th>
+                    <th>תכיפות התהליך</th>
+                    <th>תאריך יעד</th>
                     <th>האדם אצלו נמצא התהליך כרגע</th>
                     <th>התפקיד אצלו נמצא התהליך כרגע</th>
                     <th>הזמן בו עודכן לאחרונה</th>
@@ -50,6 +53,8 @@
                 <%activeProcesses.forEach(function(process){%>
                 <tr>
                     <td><%=process._processName%></td>
+                    <td><%=process._processUrgency%></td>
+                    <td><%=process._processDate%></td>
                     <td>
                         <%process._currentStages.forEach(function(stage){%>
                         <%=stage.userEmail%>
