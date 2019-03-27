@@ -10,7 +10,7 @@
     <script src="/javascripts/takePartInProcess.js"></script>
     <script>
         $(document).ready(function () {
-            $('#example').DataTable();
+            $('#example').DataTable(tableLanguageOption);
             setTopBar();
         });
     </script>
@@ -37,19 +37,19 @@
             <table id="example" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                 <tr>
-                    <th>לקיחת חלק בתהליך</th>
                     <th>שם התהליך</th>
+                    <th>לקיחת חלק בתהליך</th>
                 </tr>
                 </thead>
                 <tbody>
                 <%availableProcesses.forEach(function(process){%>
                 <tr>
+                    <td><%=process._processName%></td>
                     <td>
                         <button id="<%=process._processName%>" class="btn btn-outline-secondary btn-sm"
                                 onclick="takePartInProcess('<%=process._processName%>','<%=username%>')">לקח חלק בתהליך
                         </button>
                     </td>
-                    <td><%=process._processName%></td>
                 </tr>
                 <%})%>
                 </tbody>

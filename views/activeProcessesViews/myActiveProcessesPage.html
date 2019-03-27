@@ -10,7 +10,7 @@
     <script src="/javascripts/reports.js"></script>
     <script>
         $(document).ready(function () {
-            $('#example').DataTable();
+            $('#example').DataTable(tableLanguageOption);
             setTopBar();
         });
     </script>
@@ -37,33 +37,34 @@
             <table id="example" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                 <tr>
-                    <th>דו"ח סיכום</th>
-                    <th>הזמן בו עודכן לאחרונה</th>
-                    <th>התפקיד אצלו נמצא התהליך כרגע</th>
-                    <th>האדם אצלו נמצא התהליך כרגע</th>
                     <th>שם התהליך</th>
+                    <th>האדם אצלו נמצא התהליך כרגע</th>
+                    <th>התפקיד אצלו נמצא התהליך כרגע</th>
+                    <th>הזמן בו עודכן לאחרונה</th>
+                    <th>דו"ח סיכום</th>
                 </tr>
                 </thead>
                 <tbody>
                 <%activeProcesses.forEach(function(process){%>
                 <tr>
-                    <td>
-                        <button id="<%=process._processName%>" class="btn btn-outline-secondary btn-sm"
-                                onclick="generateSummary(this.id)">הפק דו"ח
-                        </button>
-                    </td>
-                    <td><%=process._lastApproached%></td>
-                    <td>
-                        <%process._currentStages.forEach(function(stage){%>
-                        <%=stage.roleID%>
-                        <%})%>
-                    </td>
+                    <td><%=process._processName%></td>
                     <td>
                         <%process._currentStages.forEach(function(stage){%>
                         <%=stage.userEmail%>
                         <%})%>
                     </td>
-                    <td><%=process._processName%></td>
+                    <td>
+                        <%process._currentStages.forEach(function(stage){%>
+                        <%=stage.roleID%>
+                        <%})%>
+                    </td>
+                    <td><%=process._lastApproached%></td>
+                    <td>
+                        <button id="<%=process._processName%>" class="btn btn-outline-secondary btn-sm"
+                                onclick="generateSummary(this.id)">הפק דו"ח
+                        </button>
+                    </td>
+
                 </tr>
                 <%})%>
                 </tbody>

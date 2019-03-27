@@ -10,7 +10,7 @@
     <script src="/javascripts/handleProcess.js"></script>
     <script>
         $(document).ready(function () {
-            $('#example').DataTable();
+            $('#example').DataTable(tableLanguageOption);
             setTopBar();
         });
     </script>
@@ -37,35 +37,35 @@
             <table id="example" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                 <tr>
-                    <th>טיפול בתהליך</th>
-                    <th>הזמן בו עודכן לאחרונה</th>
-                    <th>התפקיד אצלו נמצא התהליך כרגע</th>
-                    <th>האדם אצלו נמצא התהליך כרגע</th>
-                    <th>זמן יצירת התהליך</th>
                     <th>שם התהליך</th>
+                    <th>זמן יצירת התהליך</th>
+                    <th>האדם אצלו נמצא התהליך כרגע</th>
+                    <th>התפקיד אצלו נמצא התהליך כרגע</th>
+                    <th>הזמן בו עודכן לאחרונה</th>
+                    <th>טיפול בתהליך</th>
                 </tr>
                 </thead>
                 <tbody>
                 <%waitingProcesses.forEach(function(process){%>
                 <tr>
-                    <td>
-                        <button id="<%=process._processName%>" class="btn btn-outline-secondary btn-sm"
-                                onclick="handleProcess('<%=process._processName%>','<%=username%>')">טפל בתהליך
-                        </button>
-                    </td>
-                    <td><%=process._lastApproached%></td>
-                    <td>
-                        <%process._currentStages.forEach(function(stage){%>
-                        <%=stage.roleID%>
-                        <%})%>
-                    </td>
+                    <td><%=process._processName%></td>
+                    <td><%=process._creationTime%></td>
                     <td>
                         <%process._currentStages.forEach(function(stage){%>
                         <%=stage.userEmail%>
                         <%})%>
                     </td>
-                    <td><%=process._creationTime%></td>
-                    <td><%=process._processName%></td>
+                    <td>
+                        <%process._currentStages.forEach(function(stage){%>
+                        <%=stage.roleID%>
+                        <%})%>
+                    </td>
+                    <td><%=process._lastApproached%></td>
+                    <td>
+                        <button id="<%=process._processName%>" class="btn btn-outline-secondary btn-sm"
+                                onclick="handleProcess('<%=process._processName%>','<%=username%>')">טפל בתהליך
+                        </button>
+                    </td>
                 </tr>
                 <%})%>
                 </tbody>
