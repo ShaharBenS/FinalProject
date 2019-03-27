@@ -117,7 +117,7 @@ router.get('/getAllProcessStructures', function (req, res) {
 });
 
 router.get('/getAllProcessStructuresTakenNames', function (req, res) {
-    processStructure.getAllProcessStructuresTakenNames((err, result) => {
+    processStructureController.getAllProcessStructuresTakenNames((err, result) => {
         if (err) {
             res.send(err);
         } else {
