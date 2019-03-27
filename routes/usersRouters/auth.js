@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let passportGoogle = require('../../auth/google');
+let passportOutlook = require('../../auth/outlook');
 
 /* LOGOUT ROUTER */
 router.get('/logout', function (req, res)
@@ -26,4 +27,23 @@ router.get('/google/callback',
         }
     });
 
+///////////////
+router.get('/outlook',
+    passportOutlook.authenticate('windowslive', {
+        scope: [
+            'openid',
+            'profile',
+            'offline_access',
+            'https://outlook.office.com/Mail.Read'
+        ]
+    })
+);
+
+router.get('/outlook/callback',
+    passportOutlook.authenticate('windowslive', { failureRedirect: '/login' }),
+    function(req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('/Home');
+    });
+///////////////
 module.exports = router;
