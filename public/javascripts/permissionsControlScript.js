@@ -21,6 +21,9 @@ function showPermissionsByUser(selectObject)
 }
 function submitPermissionsForm()
 {
+    alert(
+        'asfdj'
+    );
     let userEmail = document.getElementsByName("userEmail")[0].value;
     if(userEmail !== "choose_user")
     {
