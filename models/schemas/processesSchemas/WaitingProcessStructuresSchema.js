@@ -2,7 +2,7 @@ let mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const waitingProcessStructures = new Schema({
+const waitingProcessStructuresSchema = new Schema({
     userEmail: String,
     structureName: String,
     addOrEdit: Boolean, // true for add
@@ -11,4 +11,4 @@ const waitingProcessStructures = new Schema({
     onlineFormsOfStage: String,
 });
 
-module.exports = mongoose.model('waitingProcessStructures', waitingProcessStructures);
+module.exports = mongoose.model('waitingProcessStructuresSchema', waitingProcessStructuresSchema);

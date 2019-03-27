@@ -1,4 +1,4 @@
-let waitingProcessStructuresSchema = require('../schemas/processesSchemas/WaitingProcessStructures');
+let waitingProcessStructuresSchema = require('../schemas/processesSchemas/WaitingProcessStructuresSchema');
 
 module.exports.addWaitingProcessStructure = (waitingStructure, callback) =>
 {
