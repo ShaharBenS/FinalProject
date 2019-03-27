@@ -123,6 +123,7 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
         if (err) res.send(err);
         handleRolesAndStages(array);
         activeProcessController.convertDate(array[0]);
+        activeProcessController.convertDate2(array[0]);
         res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
     });
 });
@@ -141,6 +142,11 @@ function handleRolesAndStages(array) {
         for (let j = 0; j < array[0][i]._currentStages.length; j++) {
             array[0][i]._currentStages[j].roleID = array[1][i][j];
         }
+    }
+
+    for(let i=0;i<array[0].length;i++)
+    {
+        array[0][i]._child = array[2][i];
     }
 }
 

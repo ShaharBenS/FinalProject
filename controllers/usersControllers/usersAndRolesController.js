@@ -396,6 +396,48 @@ module.exports.getAllUsers = (callback) =>
     });
 };
 
+function getAllChildren(userEmail,callback){
+    userAccessor.findUser({}, (err,res)=>{
+        if(err) callback(err);
+        else
+        {
+            let children = [];
+            let roleOfUser = '';
+            let roleMapping = {};
+            for(let i=0;i < res.length;i++)
+            {
+                roleMapping[res[i]._id] = res[i];
+                for(let j=0;j < res[i].userEmail.length;j++)
+                {
+                    if(res[i].userEmail[j] === userEmail)
+                    {
+                        roleOfUser = res[i];
+                    }
+                }
+            }
+            for(let i=0;i<roleOfUser.children.length;i++)
+            {
+                children = children.concat(getChildrenRecursive(roleMapping[roleOfUser.children[i]],roleMapping));
+            }
+            callback(null,children);
+        }
+    });
+}
+
+function getChildrenRecursive(role,roleMapping)
+{
+    let toReturn = [];
+    for(let i=0;i<role.userEmail.length;i++)
+    {
+        toReturn.push(role.userEmail[i]);
+    }
+    for(let i=0;i<role.children.length;i++)
+    {
+        toReturn = toReturn.concat(getChildrenRecursive(roleMapping[role.children[i]],roleMapping));
+    }
+    return toReturn;
+}
+
 /*
     This function decides what emails can be used.
     //TODO: check that the email domain belongs to aguda. (@aguda)
@@ -407,7 +449,7 @@ function emailValidator(email)
 }
 
 
-
+module.exports.getAllChildren = getAllChildren;
 
 
 
