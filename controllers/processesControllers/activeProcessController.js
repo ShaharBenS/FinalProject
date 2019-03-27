@@ -577,7 +577,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
                         callback(err);
                     }
                     else{
-                        notificationsController.addNotificationToUser(creatorEmail, new activeProcessBackToCreatorNotification("התהליך "+processName+" חזר אליך"))
+                        notificationsController.addNotificationToUser(creatorEmail, new activeProcessBackToCreatorNotification("התהליך "+processName+" חזר אליך"), callback);
                     }
                 });
             }
@@ -609,7 +609,7 @@ module.exports.cancelProcess = function(userEmail,processName,comments,callback)
                                     }
                                     else{
                                         notificationsController.addNotificationToUser(curr,
-                                            new activeProcessCancelNotification("התהליך " + processName + " בוטל על ידי " + userEmail),prev)
+                                            new activeProcessCancelNotification("התהליך " + processName + " בוטל על ידי " + userEmail),prev);
                                     }
                                 }
                             },(err)=>{
