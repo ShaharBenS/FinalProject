@@ -14,6 +14,8 @@ xmlHttp.open("GET", '/usersAndRoles/getRoleToEmails/', true);
 xmlHttp.send(null);
 
 $(document).ready(()=>{
+    setTopBar();
+
     var modal = document.getElementById('select_users_modal');
 
     window.onclick = function(event)
