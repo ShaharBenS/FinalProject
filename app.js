@@ -7,6 +7,7 @@ let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 let routes = require('./routes/routes');
 let notificationControllers = require('./controllers/notificationsControllers/notificationController');
+let onlineFormsController = require('./controllers/onlineFormsControllers/onlineFormController');
 
 ///
 let app = express();
@@ -67,6 +68,7 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
+onlineFormsController.createAllOnlineForms();
 
 // Thread for updating notifications
 let updateTimeInMinutes = 10;

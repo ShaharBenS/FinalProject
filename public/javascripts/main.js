@@ -102,21 +102,6 @@ function editUsersAndRolesTree() {
     window.location.href = '/usersAndRoles/editTree/'
 }
 
-function updateOnlineForms() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            if (xmlHttp.responseText === "success") {
-                alert("טפסים נוצרו בהצלחה");
-                window.location.href = '/Home'
-            } else
-                alert(xmlHttp.responseText);
-        }
-    };
-    xmlHttp.open("POST", '/onlineForms/createAllOnlineForms/', true);
-    xmlHttp.send(null);
-}
-
 function startActiveProcess() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
@@ -131,7 +116,7 @@ function startActiveProcess() {
                 option.innerText = structure.structureName;
                 selector.appendChild(option);
             });
-            let urgencySelector = document.getElementById("start-processes-urgency");;
+            let urgencySelector = document.getElementById("start-processes-urgency");
             document.getElementById("start-active-process-modal").style.display = "block";
             for(let i=1; i<=10; i++){
                 let option = document.createElement('option');

@@ -3,20 +3,6 @@ let onlineFormsController = require('../../controllers/onlineFormsControllers/on
 let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let router = express.Router();
 
-router.post('/createAllOnlineForms', function (req, res) {
-    onlineFormsController.createOnlineFrom("the form 1", "file1", (err) => {
-        if (err) res.send(err.message);
-        else {
-            onlineFormsController.createOnlineFrom("the form 2", "file2", (err) => {
-                if (err) res.send(err.message);
-                else {
-                    res.send("success")
-                }
-            });
-        }
-    });
-});
-
 /*
    _____ ______ _______
   / ____|  ____|__   __|
