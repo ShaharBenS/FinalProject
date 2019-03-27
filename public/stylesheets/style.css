@@ -3,7 +3,8 @@ body {
 }
 
 .main-div {
-    padding: 2% 2% 10%;
+    padding: 2% 2% 2%;
+    margin: 2%;
     width: 50%;
     border-radius: 60px;
     border-color: #f6a500;
