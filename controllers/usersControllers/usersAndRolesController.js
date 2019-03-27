@@ -361,6 +361,22 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
     });
 };
 
+module.exports.getRoleNameByUsername = function (username,callback)
+{
+    userAccessor.findRole({userEmail: username}, (err, user) =>
+    {
+        if (err) callback(err);
+        else {
+            if (user.length === 0){
+                callback(new Error("no such role found"));
+            }
+            else{
+                callback(null, user[0].roleName);
+            }
+        }
+    });
+};
+
 module.exports.getAllUsers = (callback) =>
 {
     let toReturn = [];
