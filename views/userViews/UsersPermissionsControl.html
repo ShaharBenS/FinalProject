@@ -3,38 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>הרשאות</title>
-    <script src="/javascripts/permissionsControlScript.js">
 
-    </script>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+
+    <script src="/javascripts/permissionsControlScript.js"></script>
+    <link href="/stylesheets/style.css" rel="stylesheet">
+
+    <style>
+        label {
+            margin-right: 5px;
+        }
+    </style>
+
 </head>
 <body dir="rtl">
 <div align="center">
-<form name ="permissionForm" onsubmit="submitPermissionsForm()">
-    <label>
-        <select name="userEmail" onchange="showPermissionsByUser(this)">
-            <option value="choose_user">בחר משתמש</option>
-            <%users.forEach(function(user){%>
-            <option value="<%=user%>"><%=user%></option>
-            <%})%>
-        </select>
-    </label>
-    <table id="all_checkbox" style="display: none">
-        <tr><td><label>
-            <input type="checkbox" name="UserManagementsPermission">
-        </label>הרשאת ניהול משתמשים<br></td></tr>
-        <tr><td><label>
-            <input type="checkbox" name="StructureManagementsPermission">
-        </label>הרשאת ניהול מבני תהליכים<br></td></tr>
-        <tr><td><label>
-            <input type="checkbox" name="ObserverPermission">
-        </label>הרשאת צופה<br></td></tr>
-        <tr><td><label>
-            <input type="checkbox" name="PermissionManagementPermission">
-        </label>הרשאת נתינת הרשאות<br></td></tr>
-        <tr><td><input type="submit" value="עדכן הרשאות"></td></tr>
-    </table>
-</form>
+    <div class="main-div">
+        <h2>הרשאות משתמשים</h2>
+        <hr>
+
+        <form name="permissionForm" onsubmit="return submitPermissionsForm()">
+            <select class="selectpicker" data-live-search="true" data-show-subtext="true" id="user_selector"
+                    name="userEmail" onchange="showPermissionsByUser(this)">
+                <option value="choose_user">בחר משתמש</option>
+                <%users.forEach(function(user){%>
+                <option value="<%=user%>"><%=user%></option>
+                <%})%>
+            </select>
+            <hr>
+            <h3 id="which_user_is_now"></h3>
+            <br>
+            <div align="right" id="all_checkbox" style="display: none">
+                <input id="1" name="UserManagementsPermission" type="checkbox">
+                <label for="1">הרשאת ניהול משתמשים</label>
+
+                <br>
+                <input id="2" name="StructureManagementsPermission" type="checkbox">
+                <label for="2">הרשאת ניהול מבני תהליכים</label>
+
+                <br>
+                <input id="3" name="ObserverPermission" type="checkbox">
+                <label for="3">הרשאת צופה</label>
+
+                <br>
+                <input id="4" name="PermissionManagementPermission" type="checkbox">
+                <label for="4">הרשאת נתינת הרשאות</label>
+
+                <br><br>
+                <input class="btn-default" style="font-size: medium" type="submit" value="עדכן הרשאות">
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

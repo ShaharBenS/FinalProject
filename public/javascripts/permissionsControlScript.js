@@ -13,10 +13,13 @@ function showPermissionsByUser(selectObject)
         document.getElementsByName("StructureManagementsPermission")[0].checked = permissionsArray[1];
         document.getElementsByName("ObserverPermission")[0].checked = permissionsArray[2];
         document.getElementsByName("PermissionManagementPermission")[0].checked = permissionsArray[3];
+        let pre = "ניהול הרשאות עבור ";
+        document.getElementById("which_user_is_now").innerText = pre + userEmail;
     }
     else
     {
         document.getElementById("all_checkbox").style.display = 'none';
+        document.getElementById("which_user_is_now").innerText = '';
     }
 }
 function submitPermissionsForm()
@@ -44,7 +47,6 @@ function submitPermissionsForm()
             if (status === "success") {
                 if (responseText === "success") {
                     alert("ההרשאות ניתנו בהצלחה");
-                    window.location.reload();
                 } else {
                     alert(responseText);
                 }
@@ -55,4 +57,5 @@ function submitPermissionsForm()
     {
         alert('בחר משתמש');
     }
+    return false;
 }
