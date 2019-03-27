@@ -32,11 +32,10 @@
 <div align="center">
     <h1>טיפול בתהליך <%=processName%></h1>
     <br>
-    <br>
     <form id="frm" action="/activeProcesses/handleProcess" method="post" enctype="multipart/form-data">
         <input type="hidden" value="<%=processName%>" name="processName"/>
     <div style="width:25%;text-align: right">
-    <textarea placeholder="הערות" cols="50" rows="10" name="comments"></textarea>
+    <textarea placeholder="הערות" cols="50" rows="5" name="comments" style="resize: none"></textarea>
     <br>
     <br>
     אנא בחר תפקידים הבאים בתהליך:
@@ -66,6 +65,7 @@
     <br>
     אנא מלא את הטפסים הבאים:
     <br>
+        <br>
     <div style=" border:2px solid #ccc;width:100%;height: 100px; overflow-y: auto;direction: ltr; text-align:right">
         <%formsNames.forEach(function(formName){%>
         <a onclick="formClick('<%=formName%>')"><%=formName%></a>
