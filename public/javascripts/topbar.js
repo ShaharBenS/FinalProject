@@ -49,10 +49,4 @@ function setTopBar()
     let example_info = document.getElementById("example_info");
     example_info.style.display = 'flex';
     example_info.style.justifyContent = "flex-end";
-
-
-    // Leave this meanwhile
-    /*let pagination = document.getElementById("example_previous").parentElement;
-    pagination.style.marginRight = "-40px";
-    pagination.style.marginTop = "8px";*/
 }
