@@ -40,14 +40,13 @@ function setTopBar()
 
 
     let example_length = document.getElementById("example_length");
+    if(example_length === null){
+        return;
+    }
     example_length.style.display = 'flex';
     example_length.style.justifyContent = "flex-end";
 
     let example_info = document.getElementById("example_info");
     example_info.style.display = 'flex';
     example_info.style.justifyContent = "flex-end";
-
-    let pagination = document.getElementById("example_previous").parentElement
-    pagination.style.marginRight = "-40px";
-    pagination.style.marginTop = "8px";
 }

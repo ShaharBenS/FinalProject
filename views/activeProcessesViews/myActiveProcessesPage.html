@@ -8,6 +8,8 @@
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
     <script src="/javascripts/topbar.js"></script>
     <script src="/javascripts/reports.js"></script>
+    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
+
     <script>
         $(document).ready(function () {
             $('#example').DataTable(tableLanguageOption);
@@ -21,6 +23,7 @@
         td {
             text-align: center;
         }
+
         th {
             text-align: center;
         }
@@ -38,6 +41,9 @@
                 <thead>
                 <tr>
                     <th>שם התהליך</th>
+                    <th>תכיפות התהליך</th>
+                    <th>תאריך יעד</th>
+                    <th>מי לוקח חלק בתהליך</th>
                     <th>האדם אצלו נמצא התהליך כרגע</th>
                     <th>התפקיד אצלו נמצא התהליך כרגע</th>
                     <th>הזמן בו עודכן לאחרונה</th>
@@ -48,6 +54,14 @@
                 <%activeProcesses.forEach(function(process){%>
                 <tr>
                     <td><%=process._processName%></td>
+                    <td><%=process._processUrgency%></td>
+                    <td><%=process._processDate%></td>
+                    <td>
+                    <%process._child.forEach(function(children){%>
+                    <%=children%>
+                    <%})%>
+                    </td>
+
                     <td>
                         <%process._currentStages.forEach(function(stage){%>
                         <%=stage.userEmail%>

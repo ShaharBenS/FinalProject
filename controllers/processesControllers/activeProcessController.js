@@ -110,8 +110,8 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     processUrgency: processUrgency
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else processReportController.addProcessReport(processName, today, (err) => {
-                                        if (err) {
+                                    else processReportController.addProcessReport(processName, today,processDate,processUrgency, (err)=>{
+                                        if(err){
                                             callback(err);
                                         } else {
                                             // Notify first role
@@ -226,20 +226,52 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
-                    if (activeProcesses === null)
-                        activeProcesses = [];
-                    let toReturnActiveProcesses = [];
-                    if (activeProcesses !== null) {
-                        activeProcesses.forEach((process) => {
-                            if (process.isParticipatingInProcess(userEmail))
-                                toReturnActiveProcesses.push(process);
-                        });
-                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
-                            callback(null, [toReturnActiveProcesses, arrayOfRoles]);
-                        });
-                    } else {
-                        callback(null, [toReturnActiveProcesses, []]);
-                    }
+                    usersAndRolesController.getAllChildren(userEmail,(err,children)=>{
+                        if(err) {
+                            callback(err);
+                            return;
+                        }
+                        if (activeProcesses === null)
+                            activeProcesses = [];
+                        let toReturnActiveProcesses = [];
+                        let userEmailsArrays = [];
+                        if (activeProcesses !== null) {
+                            activeProcesses.forEach((process) => {
+                                let flag = true;
+                                let currUserEmails = [];
+                                if (process.isParticipatingInProcess(userEmail))
+                                {
+                                    flag = false;
+                                    toReturnActiveProcesses.push(process);
+                                    currUserEmails = [userEmail];
+                                }
+                                children.forEach((child)=>{
+                                    if (process.isParticipatingInProcess(child))
+                                    {
+                                        if(flag === false)
+                                        {
+                                            currUserEmails = currUserEmails.concat(child);
+                                        }
+                                        else
+                                        {
+                                            toReturnActiveProcesses.push(process);
+                                            currUserEmails = [child];
+                                            flag = false;
+                                        }
+                                    }
+                                });
+                                if(flag === false)
+                                {
+                                    userEmailsArrays.push(currUserEmails);
+                                }
+                            });
+                            bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
+                                callback(null, [toReturnActiveProcesses, arrayOfRoles, userEmailsArrays]);
+                            });
+                        } else {
+                            callback(null, [toReturnActiveProcesses, [] , []]);
+                        }
+                    });
                 }
             });
         }
@@ -402,7 +434,7 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
             processReport = processReport._doc;
             let returnProcessDetails = {
                 processName: processReport.processName, creationTime: processReport.creationTime,
-                status: processReport.status
+                status: processReport.status, urgency: processReport.processUrgency, processDate : processReport.processDate
             };
             returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
                 callback(null, [returnProcessDetails, newStages]);
@@ -426,7 +458,7 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
                     approvalTime: stage.approvalTime,
                     comments: stage.comments,
                     files: stage.attachedFilesNames,
-                    filledOnlineForms: stage.filledOnlineForms
+                    filledOnlineForms: stage.filledOnlineForms,
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }
@@ -619,29 +651,35 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
     });
 };
 
+function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback){
+    if(index === filledFormIds.length)
+    {
+        callback(null, filledFormsArray);
+        return;
+    }
+    filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
+        if(err) callback(err);
+        else{
+            filledFormsArray.push(forms);
+            getFilledOnlineForms(filledFormIds,index+1,filledFormsArray,callback);
+        }
+    });
+}
+
 module.exports.processReport = function (process_name, callback) {
     this.getAllActiveProcessDetails(process_name, (err, result) => {
         if (err) callback(err);
         else {
             this.convertJustCreationTime(result[0]);
+            this.convertJustProcessDate(result[0]);
             this.convertDateInApprovalTime(result[1]);
-            let counter = result[1].length;
-            //TODO OMRI: change this for to reduce or something
-            for (let i = 0; i < result[1].length; i++) {
-                if (result[1][i].filledOnlineForms === undefined)
-                    result[1][i].filledOnlineForms = [];
-                filledOnlineFormController.getFilledOnlineFormsOfArray(result[1][i].filledOnlineForms, (err, forms) => {
-                    if (err) callback(err);
-                    else {
-                        result[1][i].filledOnlineForms = forms;
-                        counter--;
-                        if (counter === 0) {
-                            callback(null, result);
-                        }
-                    }
-                })
-            }
-
+            getFilledOnlineForms(result[1],0,[],(err,formsArr)=>{
+                for(let i=0;i<formsArr.length;i++)
+                {
+                    result[1][i].filledOnlineForms = formsArr[i];
+                }
+                callback(null,result);
+            });
         }
     });
 };
@@ -709,6 +747,60 @@ function convertDate(array, isArrayOfDates) {
     }
 }
 
+function convertJustProcessDate(process) {
+        let processDate = process.processDate;
+        let dayOfProcessDate = processDate.getDate();
+        let monthOfProcessDate = processDate.getMonth() + 1;
+        let yearOfProcessDate = processDate.getFullYear();
+        if (dayOfProcessDate < 10) {
+            dayOfProcessDate = '0' + dayOfProcessDate;
+        }
+        if (monthOfProcessDate < 10) {
+            monthOfProcessDate = '0' + monthOfProcessDate;
+        }
+        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
+        let hourOfProcessDate = processDate.getHours();
+        let minuteOfProcessDate  = processDate.getMinutes();
+        let secondsOfProcessDate  = processDate.getSeconds();
+        if (hourOfProcessDate.toString().length === 1)
+            hourOfProcessDate = '0' + hourOfProcessDate;
+        if (minuteOfProcessDate.toString().length === 1)
+            minuteOfProcessDate = '0' + minuteOfProcessDate;
+        if (secondsOfProcessDate.toString().length === 1)
+            secondsOfProcessDate = '0' + secondsOfProcessDate;
+        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
+        process.processDate = dateOfProcessDate;
+}
+
+/////////
+function convertDate2(array) {
+    for (let i = 0; i < array.length; i++) {
+        let processDate = array[i].processDate;
+        let dayOfProcessDate = processDate.getDate();
+        let monthOfProcessDate = processDate.getMonth() + 1;
+        let yearOfProcessDate = processDate.getFullYear();
+        if (dayOfProcessDate < 10) {
+            dayOfProcessDate = '0' + dayOfProcessDate;
+        }
+        if (monthOfProcessDate < 10) {
+            monthOfProcessDate = '0' + monthOfProcessDate;
+        }
+        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
+        let hourOfProcessDate = processDate.getHours();
+        let minuteOfProcessDate  = processDate.getMinutes();
+        let secondsOfProcessDate  = processDate.getSeconds();
+        if (hourOfProcessDate.toString().length === 1)
+            hourOfProcessDate = '0' + hourOfProcessDate;
+        if (minuteOfProcessDate.toString().length === 1)
+            minuteOfProcessDate = '0' + minuteOfProcessDate;
+        if (secondsOfProcessDate.toString().length === 1)
+            secondsOfProcessDate = '0' + secondsOfProcessDate;
+        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
+        array[i].processDate = dateOfProcessDate;
+    }
+}
+/////////
+
 function convertJustCreationTime(process) {
     let creationTime = process.creationTime;
     let dayOfCreationTime = creationTime.getDate();
@@ -765,7 +857,8 @@ function convertDateInApprovalTime(array) {
 
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
-
+module.exports.convertDate2 = convertDate2;
 module.exports.convertDate = convertDate;
 module.exports.convertJustCreationTime = convertJustCreationTime;
 module.exports.convertDateInApprovalTime = convertDateInApprovalTime;
+module.exports.convertJustProcessDate = convertJustProcessDate;

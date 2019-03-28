@@ -2,10 +2,12 @@ let processAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 
 
-function addProcessReport(processName, creationTime, callback){
+function addProcessReport(processName, creationTime,processDate,processUrgency,callback){
     processAccessor.createProcessReport({
         processName: processName,
         status: 'activated',
+        processDate: processDate,
+        processUrgency: processUrgency,
         creationTime: creationTime,
         stages: []
     }, (err) => {

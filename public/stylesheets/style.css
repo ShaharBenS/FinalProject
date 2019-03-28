@@ -108,13 +108,15 @@ body {
 .top-bar-button {
     color: white;
     font-size: 20px;
-    padding-bottom: 4px;
+    padding-top: 5px;
+    padding-right: 8px;
+    padding-left: 5px;
 }
 
 .top-bar-label {
     color: white;
     font-size: 16px;
-    padding-right: 30px;
+    padding-right: 25px;
     padding-bottom: 10px;
 }
 
