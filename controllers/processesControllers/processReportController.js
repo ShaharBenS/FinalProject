@@ -117,7 +117,6 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
 //////////////////////////////////
 function isExistInReport(report,userEmail)
 {
-    let x = report._doc.stages.length;
     for(let i=0;i<report._doc.stages.length;i++)
     {
         if(report._doc.stages[i].userEmail === userEmail)
