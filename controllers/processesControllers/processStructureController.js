@@ -149,7 +149,36 @@ module.exports.getProcessStructure = (name, callback) =>
 
 module.exports.getAllProcessStructures = (callback) =>
 {
-    processStructureAccessor.findProcessStructures(callback)
+    processStructureAccessor.findProcessStructures(callback);
+};
+
+module.exports.getAllProcessStructuresAvailableForUser = (userEmail, callback) =>
+{
+    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+        if(err) callback(err);
+        else
+        {
+            processStructureAccessor.findProcessStructures((err,structures)=>{
+                if(err) callback(err);
+                else
+                {
+                    callback(null,structures.filter((structure)=> {
+                        return structure.initials.some((initial)=>{
+                            for(let i=0;i<structure.stages.length;i++)
+                            {
+                                let stage = structure.stages[i];
+                                if(stage.stageNum === initial && stage.roleID.id.equals(roleID.id))
+                                {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        });
+                    }));
+                }
+            });
+        }
+    });
 };
 
 module.exports.getAllProcessStructuresTakenNames = (callback)=>{
