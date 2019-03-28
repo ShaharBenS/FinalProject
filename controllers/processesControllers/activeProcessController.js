@@ -110,7 +110,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     processUrgency: processUrgency
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else processReportController.addProcessReport(processName, today, (err)=>{
+                                    else processReportController.addProcessReport(processName, today,processDate,processUrgency, (err)=>{
                                         if(err){
                                             callback(err);
                                         } else {
@@ -445,7 +445,7 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
             processReport = processReport._doc;
             let returnProcessDetails = {
                 processName: processReport.processName, creationTime: processReport.creationTime,
-                status: processReport.status
+                status: processReport.status, urgency: processReport.processUrgency, processDate : processReport.processDate
             };
             returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
                 callback(null, [returnProcessDetails, newStages]);
@@ -679,6 +679,7 @@ module.exports.processReport = function (process_name, callback) {
         if (err) callback(err);
         else {
             this.convertJustCreationTime(result[0]);
+            this.convertJustProcessDate(result[0]);
             this.convertDateInApprovalTime(result[1]);
             getFilledOnlineForms(result[1],0,[],(err,formsArr)=>{
                 for(let i=0;i<formsArr.length;i++)
@@ -755,6 +756,32 @@ function convertDate(array,isArrayOfDates) {
     }
 }
 
+function convertJustProcessDate(process) {
+        let processDate = process.processDate;
+        let dayOfProcessDate = processDate.getDate();
+        let monthOfProcessDate = processDate.getMonth() + 1;
+        let yearOfProcessDate = processDate.getFullYear();
+        if (dayOfProcessDate < 10) {
+            dayOfProcessDate = '0' + dayOfProcessDate;
+        }
+        if (monthOfProcessDate < 10) {
+            monthOfProcessDate = '0' + monthOfProcessDate;
+        }
+        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
+        let hourOfProcessDate = processDate.getHours();
+        let minuteOfProcessDate  = processDate.getMinutes();
+        let secondsOfProcessDate  = processDate.getSeconds();
+        if (hourOfProcessDate.toString().length === 1)
+            hourOfProcessDate = '0' + hourOfProcessDate;
+        if (minuteOfProcessDate.toString().length === 1)
+            minuteOfProcessDate = '0' + minuteOfProcessDate;
+        if (secondsOfProcessDate.toString().length === 1)
+            secondsOfProcessDate = '0' + secondsOfProcessDate;
+        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
+        process.processDate = dateOfProcessDate;
+}
+
+/////////
 function convertDate2(array) {
     for (let i = 0; i < array.length; i++) {
         let processDate = array[i].processDate;
@@ -781,6 +808,7 @@ function convertDate2(array) {
         array[i].processDate = dateOfProcessDate;
     }
 }
+/////////
 
 function convertJustCreationTime(process) {
     let creationTime = process.creationTime;
@@ -842,3 +870,4 @@ module.exports.convertDate2 = convertDate2;
 module.exports.convertDate = convertDate;
 module.exports.convertJustCreationTime = convertJustCreationTime;
 module.exports.convertDateInApprovalTime = convertDateInApprovalTime;
+module.exports.convertJustProcessDate = convertJustProcessDate;
