@@ -1,19 +1,49 @@
+:root {
+    --main-color: #f6a500;
+}
+
 body {
     background-color: #FFFFFF;
 }
 
 .main-div {
-    padding: 2% 2% 2%;
+    padding: 0 2% 2%;
     margin: 2%;
     width: 50%;
     border-radius: 60px;
-    border-color: #f6a500;
+    border-color: var(--main-color);
     border-width: 2px;
     border-style: solid;
 }
 
+.main-div-tables {
+    padding: 0 2% 2%;
+    margin: 2%;
+    width: 90%;
+    border-radius: 60px;
+    border-color: var(--main-color);
+    border-width: 2px;
+    border-style: solid;
+}
+
+.main-div-forms {
+    padding: 2% 2% 2%;
+    margin: 2%;
+    width: 60%;
+    border-radius: 60px;
+    border-color: var(--main-color);
+    border-width: 2px;
+    border-style: solid;
+}
+
+.orange-hr {
+    width: 60%;
+    border-color: var(--main-color);
+    border-width: 1px;
+}
+
 .btn-default {
-    background-color: #f6a500;
+    background-color: var(--main-color);
     color: white;
     margin: 10px;
     border-radius: 20px;
@@ -23,9 +53,9 @@ body {
 
 .btn-default:hover {
     background-color: white;
-    color: #f6a500;
+    color: var(--main-color);
     border-radius: 20px;
-    border-color: #f6a500;
+    border-color: var(--main-color);
     border-width: 2px;
 }
 
@@ -84,7 +114,7 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background: #f6a500;
+    background: var(--main-color);
 }
 
 .top-bar-right-div {

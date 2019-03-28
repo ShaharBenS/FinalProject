@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        let _formName = '';
+        let fields = undefined;
+
+        window.onload = function () {
+            _formName = '<%=formName%>';
+            document.title = _formName;
+            document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
+            let isForShow = '<%=isForShow%>' === 'true';
+            fields = '<%= fields %>';
+
+            setupInputs(_formName, isForShow, fields);
+        };
+
+    </script>
+    <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+
+    <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/javascripts/onlineForms.js"></script>
+    <link href="/stylesheets/onlineFormsStyle.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+</head>
+<body dir="rtl">
+<div align="center">
+    <div class="main-div-forms">
+        <h2 id="formTitle"><u></u></h2>
+        <h3 id="info"></h3>
+        <hr class="orange-hr">
+        <form id="form" onsubmit="return submitForm()">
+            <fieldset id="fieldset">
+                <h4>השואל:</h4>
+                <table class="no_table" id="taker">
+                    <tbody>
+                    <tr>
+                        <td><label for="full_name_1">שם מלא</label></td>
+                        <td><input id="full_name_1" name="full_name_1" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="id_1">מספר זהות</label></td>
+                        <td><input id="id_1" name="id_1" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="company">חברה</label></td>
+                        <td><input id="company" name="company" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="role">תפקיד</label></td>
+                        <td><input id="role" name="role" type="text"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h4>המשאיל:</h4>
+
+                <table class="no_table" id="giver">
+                    <tbody>
+                    <tr>
+                        <td><label for="full_name_2">שם מלא</label></td>
+                        <td><input id="full_name_2" name="full_name_2" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="id_2">מספר זהות</label></td>
+                        <td><input id="id_2" name="id_2" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="role_in_aguda">תפקיד באגודת הסטודנטים באוניברסיטה</label></td>
+                        <td><input id="role_in_aguda" name="role_in_aguda" type="text"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+                <hr>
+
+                <div align="right">
+                    בחתימה על טופס זה הנני מאשר/ת כי קראתי את הנהלים הנוגעים לקבלת הציוד/חדרים להלן:
+                    <br>
+                    <ol type="1">
+                        <li>חל איסור להעביר את הציוד (לרבות מפתחות ושכפולם, קודים וסיסמאות) למי שאיננו עובד החברה ללא
+                            אישור בכתב מהמשאיל.
+                        </li>
+                        <li>הציוד בחדרים ותקינותו בזמן השימוש בחדר באחריות השואל. במידה ויינזק הציוד שהושאל או הציוד
+                            בתוך החדרים שהושאלו בעת השימוש בהם על ידי החברה השואלת או שלא יוחזר הציוד עד תאריך ההחזרה
+                            השואל יישא באחריות לנזקים ובעלויות הכרוכות ברכישת הציוד מחדש.
+                        </li>
+                        <li>בסיום היום על החדר להיות נקי ומסודר לפחות כפי שהיה בתחילתו.</li>
+                        <li>יש לכבות את האור ביציאה מהחדר.</li>
+                        <li>בגמר השימוש יש להחזיר את הציוד לידי המשאיל (לא יאוחר מתאריך סיום הקורס).</li>
+                    </ol>
+                </div>
+
+                <hr>
+
+                <h4>פירוט הציוד</h4>
+                <table id="equipment_table">
+                    <tbody>
+                    <tr>
+                        <th>הציוד (מתייחס לבניין בית הסטודנט)</th>
+                        <th>תאריך קבלה</th>
+                        <th>תאריך החזרה</th>
+                        <th>חתימת השואל</th>
+                        <th>חתימת המשאיל</th>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <table class="no_table" id="signatures">
+                    <tbody>
+                    <tr>
+                        <td><label for="date_1">תאריך</label></td>
+                        <td><input id="date_1" name="date_1" type="text"></td>
+                        <td><label for="signature_1">חתימת השואל:</label></td>
+                        <td><input id="signature_1" name="signature_1" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="date_2">תאריך</label></td>
+                        <td><input id="date_2" name="date_2" type="text"></td>
+                        <td><label for="signature_2">חתימת המשאיל:</label></td>
+                        <td><input id="signature_2" name="signature_2" type="text"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+                <br>
+                <input class="btn-default" id="submitButton" type="submit" value="שלח">
+            </fieldset>
+        </form>
+        <br>
+        <button class="btn-default" id="close_win_button" onclick="window.close()">סגור טופס</button>
+    </div>
+</div>
+
+</body>
+</html>

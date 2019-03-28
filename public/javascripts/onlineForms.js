@@ -6,7 +6,8 @@ let submitForm = function () {
     let tableInputs = {};
     let tables = Array.prototype.slice.call(document.getElementsByTagName('table'));
     tables.forEach((table) => {
-        tableInputs[table.id] = [];
+        if (table.className !== "no_table")
+            tableInputs[table.id] = [];
     });
 
     inputs.forEach((input) => {
@@ -102,6 +103,8 @@ let disableForm = function () {
 
 let setupInputs = function (formName, isForShow, fields) {
 
+    setupLabelCells();
+
     if (fields !== 'false') {
         fillForm(fields)
     } else if (isForShow) {
@@ -141,17 +144,25 @@ let removeTableRow = function (table) {
 };
 
 let setupTable = function (num_of_rows, table) {
-    table = table.children[0]; //TBODY
-    let currentRows = 0;
-    while (currentRows < num_of_rows) {
-        currentRows++;
-        table.appendChild(createTableRow(table))
+    if (table.className !== "no_table") {
+        table = table.children[0]; //TBODY
+        let currentRows = 0;
+        while (currentRows < num_of_rows) {
+            currentRows++;
+            table.appendChild(createTableRow(table))
+        }
     }
+};
+
+let setupLabelCells = function () {
+    let tds = Array.prototype.slice.call(document.getElementsByTagName('td'));
+    tds.forEach((td) => {
+        if (td.children[0].tagName.toLowerCase() === 'label') td.className = 'no_input'
+    })
 };
 
 let setupTables = function (num_of_rows, table_id) {
     let tables;
-
     if (table_id === 'every_table') {
         tables = Array.prototype.slice.call(document.getElementsByTagName('table'));
         tables.forEach((table) => surroundTableWithDivAndAddButtons(table));
@@ -166,29 +177,33 @@ let setupTables = function (num_of_rows, table_id) {
 let surroundTableWithDivAndAddButtons = function (table) {
 
     // surround table with div
-    let parent = table.parentNode;
-    let div = document.createElement('div');
-    parent.replaceChild(div, table);
-    div.appendChild(table);
+    if (table.className !== "no_table") {
+        let parent = table.parentNode;
+        let div = document.createElement('div');
+        parent.replaceChild(div, table);
+        div.appendChild(table);
 
-    table = table.children[0];
+        table = table.children[0];
 
-    //add the add / remove buttons
-    let addBtn = document.createElement('button');
-    let removeBtn = document.createElement('button');
+        //add the add / remove buttons
+        let addBtn = document.createElement('button');
+        let removeBtn = document.createElement('button');
 
-    addBtn.innerText = 'הוסף שורה';
-    addBtn.type = 'button';
-    addBtn.style.marginLeft = '10px';
-    addBtn.onclick = () => table.appendChild(createTableRow(table));
+        addBtn.innerText = 'הוסף שורה';
+        addBtn.type = 'button';
+        addBtn.style.marginLeft = '10px';
+        addBtn.onclick = () => table.appendChild(createTableRow(table));
+        addBtn.className = "btn-default";
 
-    removeBtn.innerText = 'הסר שורה';
-    removeBtn.type = 'button';
-    removeBtn.style.marginRight = '10px';
-    removeBtn.onclick = () => removeTableRow(table);
+        removeBtn.innerText = 'הסר שורה';
+        removeBtn.type = 'button';
+        removeBtn.style.marginRight = '10px';
+        removeBtn.onclick = () => removeTableRow(table);
+        removeBtn.className = "btn-default";
 
-    div.appendChild(document.createElement('br'));
+        div.appendChild(document.createElement('br'));
 
-    div.appendChild(addBtn);
-    div.appendChild(removeBtn);
+        div.appendChild(addBtn);
+        div.appendChild(removeBtn);
+    }
 };

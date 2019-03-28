@@ -15,22 +15,6 @@
     <title>טיפול בתהליך </title>
 
     <style>
-        .removal-button {
-            width: 6%;
-            height: 3%;
-            border: none;
-            background-color: #f6a500;
-            color: white;
-        }
-
-        .removal-button::before {
-            content: 'X';
-        }
-
-        .removal-button:focus {
-            outline: 0;
-        }
-
         .btn-form {
             background-color: #5280f6;
             color: white;
@@ -50,7 +34,7 @@
         }
 
         .scrollable-box {
-            border: 2px solid #f6a500;
+            border: 2px solid var(--main-color);
             height: 100px;
             overflow-y: auto;
             direction: ltr;
@@ -90,15 +74,15 @@
         <h1>טיפול בתהליך <%=processName%></h1>
         <br>
 
-        <hr style="border: 1px solid #f6a500;background-color: #f6a500;">
+        <hr class="orange-hr" style="width: 80%;">
 
         <form action="/activeProcesses/handleProcess" enctype="multipart/form-data" id="frm" method="post">
             <input name="processName" type="hidden" value="<%=processName%>"/>
             <div style="width:70%;text-align: right">
                 <h4>הערות</h4>
                 <label>
-                    <textarea cols="60" name="comments" rows="5"
-                              style="resize: none; border: 2px solid #f6a500"></textarea>
+                    <textarea cols="58" name="comments" rows="5"
+                              style="resize: none; border: 2px solid var(--main-color)"></textarea>
                 </label>
                 <br>
 

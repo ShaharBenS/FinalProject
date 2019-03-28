@@ -50,3 +50,8 @@ function setTopBar()
     example_info.style.display = 'flex';
     example_info.style.justifyContent = "flex-end";
 }
+
+let changeMainColor = function () {
+    let color = document.getElementById('color_picker').value;
+    document.documentElement.style.setProperty('--main-color', color);
+};

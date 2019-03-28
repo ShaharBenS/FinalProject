@@ -74,19 +74,19 @@
 <style>
     .sameWidth {
         width: 28%;
-        margin-bottom: 5%;
     }
 </style>
 <body dir="rtl">
 <div align="center">
-    <div id="top-bar" class="top-bar">
+    <div class="top-bar" id="top-bar">
     </div>
-    <br><br>
     <div class="main-div" style="width: 60%">
         <h1>מערכת לניהול תהליכים ארגוניים</h1>
-        <h2>אגודת הסטודנטים אוניברסיטת בן-גוריון</h2>
-        <hr style="border: 1px solid #f6a500;background-color: #f6a500;">
+        <h3>אגודת הסטודנטים אוניברסיטת בן-גוריון</h3>
+        <hr class="orange-hr" style="width: 90%">
+
         <div>
+            <h4><b>תהליכים פעילים</b></h4>
             <button class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">
                 התהליכים שלי
             </button>
@@ -97,18 +97,28 @@
                     onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">תהליכים זמינים
             </button>
         </div>
+
+        <hr class="orange-hr" style="width: 90%">
+
         <div>
+            <h4><b>פעולות</b></h4>
             <button class="btn btn-default sameWidth" onclick="startActiveProcess()">התחל תהליך</button>
             <button class="btn btn-default sameWidth"
                     onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">הצג דוחות
             </button>
             <button class="btn btn-default sameWidth" onclick="editUsersAndRolesTree()">עריכת עץ המשתמשים</button>
         </div>
+
+        <hr class="orange-hr" style="width: 90%">
+
         <div>
+            <h4><b>מבני תהליכים</b></h4>
             <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="addProcessStructureClicked()">הוספת מבנה תהליך</button>
             <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="editProcessStructureClicked()">עריכת מבנה תהליך</button>
             <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="waitingStructuresClicked()">מבני תהליכים הממתינים לאישור</button>
         </div>
+
+
         <div id="add-process-structure-modal" class="modal">
             <div class="modal-content" style="width: 30%">
                 <span id="close-add" class="close">&times;</span>

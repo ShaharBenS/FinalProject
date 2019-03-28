@@ -125,8 +125,8 @@ function seeFormsOpened(roleName) {
             };
 
             let a = document.createElement("a");
-            a.style.color = "#00BB00";
-            a.style.marginLeft = "10px";
+            a.style.color = "#ce8900";
+            a.style.marginRight = "10px";
             a.innerText = formName;
             a.title = formName;
             a.href = "";
@@ -147,7 +147,7 @@ function seeFormsOpened(roleName) {
     div.setAttribute("style", "display:flex; flex-direction: row; margin-top: 5px");
     let select = document.createElement("select");
     select.setAttribute("id", "selectForm");
-    select.style.marginLeft = "10px";
+    select.style.marginRight = "10px";
 
     Object.keys(onlineForms).forEach((formName) => {
         let optionElement = document.createElement('option');

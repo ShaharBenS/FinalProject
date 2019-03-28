@@ -1,6 +1,6 @@
 <div class="top-bar-right-div">
     <a class="top-bar-button" href="/notifications/myNotifications">
-        <i class ="ion ion-android-notifications" style="font-size: 30px"></i>
+        <i class="ion ion-android-notifications" style="font-size: 30px"></i>
     </a>
     <h3 class="top-bar-label"><%= userFullName %> - <%= roleName %></h3>
 </div>
@@ -10,7 +10,10 @@
     </a>
 </div>
 <div class="top-bar-left-div">
+    <input style="margin-left: 20px;" type="color" id="color_picker" name="color_picker" value="#f6a500"
+           onchange="changeMainColor()">
     <a class="top-bar-button" href="/auth/logout">
-        <i class ="ion ion-log-out" style="font-size: 30px"></i>
+        <i class="ion ion-log-out" style="font-size: 30px"></i>
     </a>
+
 </div>

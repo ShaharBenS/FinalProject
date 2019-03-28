@@ -43,76 +43,88 @@
             text-align: center;
         }
 
+        label {
+            padding: 2px;
+        }
+
+        .no_borders {
+            margin: auto;
+            border-collapse: collapse;
+            border: none;
+        }
     </style>
 </head>
-<body dir="rtl">
+<body>
 <div align="center">
-    <div id="top-bar" class="top-bar">
-    </div>
-    <br>
-    <div class="row">
-        <h1 style="margin: auto">דו"ח תהליך</h1>
-    </div>
-    <div class="row">
-        <h3 style="margin: auto;direction: rtl">פרטי התהליך :</h3>
-    </div>
-    <div class="row">
-        <h4 style="margin: auto;direction: rtl">שם התהליך : <%=processDetails.processName%></h4>
-    </div>
-    <div class="row">
-        <h4 style="margin: auto;direction: rtl">סטטוס התהליך : <%=processDetails.status%></h4>
-    </div>
-    <div class="row">
-        <h4 style="margin: auto">תאריך יצירה : <%=processDetails.creationTime%></h4>
-    </div>
-    <div class="row">
-        <h4 style="margin: auto">תכיפות התהליך : <%=processDetails.urgency%></h4>
-    </div>
-    <div class="row">
-        <h4 style="margin: auto">תאריך היעד : <%=processDetails.processDate%></h4>
-    </div>
-    <br>
-    <div class="row">
-        <div align="center" style="margin: auto; width:83%">
-            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                <tr>
-                    <th>שם התפקיד</th>
-                    <th>שם ממלא התפקיד</th>
-                    <th>תאריך ושעה</th>
-                    <th>הערות</th>
-                    <th>טפסים</th>
-                    <th>קבצים</th>
-                </tr>
-                </thead>
-                <tbody>
-                <%table.forEach(function(step){%>
-                <tr>
-                    <td><%=step.roleID%></td>
-                    <td><%=step.userEmail%></td>
-                    <td><%=step.approvalTime%></td>
-                    <td><%=step.comments%></td>
-                    <td id="filledOnlineForms">
-                        <%step.filledOnlineForms.forEach(function(form) {%>
-                        <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
-                              title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
-                        <%})%>
-                    </td>
-                    <td>
-                        <%step.files.forEach(function(file){%>
-                        <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
-                              style="display: none">
-                            <input id="<%=file%>" name="filetodownload"
-                                   type="submit"
-                                   value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
-                        </form>
-                        <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u>
-                        <%})%>
-                    </td>
-                </tr>
-                <%})%>
-                </tbody>
-            </table>
+    <div align="center" class="main-div-tables">
+        <h1 style="margin: auto">דו"ח <%=processDetails.processName%></h1>
+        <hr class="orange-hr">
+        <table class="no_borders" dir="rtl">
+            <tr>
+                <td><label>שם תהליך:</label></td>
+                <td><label><%=processDetails.processName%></label></td>
+            </tr>
+            <tr>
+                <td><label>סטטוס:</label></td>
+                <td><label><%=processDetails.status%></label></td>
+            </tr>
+            <tr>
+                <td><label>תאריך יצירה:</label></td>
+                <td><label><%=processDetails.creationTime%></label></td>
+            </tr>
+            <tr>
+                <td><label>תכיפות התהליך:</label></td>
+                <td><label><%=processDetails.urgency%></label></td>
+            </tr>
+            <tr>
+                <td><label>תאריך היעד:</label></td>
+                <td><label><%=processDetails.processDate%></label></td>
+            </tr>
+        </table>
+
+        <br>
+        <div class="row">
+            <div align="center" style="margin: auto; width:83%">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>שם התפקיד</th>
+                        <th>שם ממלא התפקיד</th>
+                        <th>תאריך ושעה</th>
+                        <th>הערות</th>
+                        <th>טפסים</th>
+                        <th>קבצים</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%table.forEach(function(step){%>
+                    <tr>
+                        <td><%=step.roleID%></td>
+                        <td><%=step.userEmail%></td>
+                        <td><%=step.approvalTime%></td>
+                        <td><%=step.comments%></td>
+                        <td id="filledOnlineForms">
+                            <%step.filledOnlineForms.forEach(function(form) {%>
+                            <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
+                                  title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
+                            <%})%>
+                        </td>
+                        <td>
+                            <%step.files.forEach(function(file){%>
+                            <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
+                                  style="display: none">
+                                <input id="<%=file%>" name="filetodownload"
+                                       type="submit"
+                                       value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
+                            </form>
+                            <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u>
+                            <%})%>
+                        </td>
+                    </tr>
+                    <%})%>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
