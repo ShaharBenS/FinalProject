@@ -12,7 +12,7 @@ const activeProcessSchema = new Schema({
     initials: [Number],
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
-        userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
+        userEmail: String,
         stageNum: Number,
         nextStages: [Number],
         stagesToWaitFor: [Number],

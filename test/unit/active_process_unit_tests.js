@@ -57,7 +57,7 @@ let createActiveProcess1 = function () {
     stage5 = new ActiveProcessStage({roleID: 6, stageNum: 5, nextStages: [6], stagesToWaitFor: [3], originStagesToWaitFor: [3], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     stage6 = new ActiveProcessStage({roleID: 7, stageNum: 6, nextStages: [], stagesToWaitFor: [4,5], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess({processName: processName1, creatorRoleID: roleID, processDate: new Date(), processUrgency:3, creationTime:creationTime, notificationTime: notificationTime, currentStages: currentStages.slice(), initials: initials, stages: stages});
+    testProcess = new ActiveProcess({processName: processName1, creatorRoleID: roleID, processDate: new Date(), processUrgency:3, creationTime:creationTime, notificationTime: notificationTime, currentStages: currentStages.slice(), initials: initials},stages);
 };
 
 let createActiveProcess2 = function () {
@@ -93,7 +93,7 @@ let createActiveProcess2 = function () {
     stage5 = new ActiveProcessStage({roleID: {id : Buffer.from('6')}, stageNum: 5, nextStages: [6], stagesToWaitFor: [], originStagesToWaitFor: [3], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     stage6 = new ActiveProcessStage({roleID: {id : Buffer.from('7')}, stageNum: 6, nextStages: [], stagesToWaitFor: [5], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess({processName: processName1, creatorRoleID: {id : Buffer.from('1')}, processDate: new Date(), processUrgency: 3, creationTime: creationTime, notificationTime: notificationTime, currentStages: [5], initials: initials, stages: stages});
+    testProcess = new ActiveProcess({processName: processName1, creatorRoleID: {id : Buffer.from('1')}, processDate: new Date(), processUrgency: 3, creationTime: creationTime, notificationTime: notificationTime, currentStages: [5], initials: initials}, stages);
 };
 
 

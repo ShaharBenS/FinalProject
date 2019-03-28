@@ -1,16 +1,16 @@
 class activeProcess {
 
-    constructor(pureObject) {
-        this._processName = pureObject.processName;
-        this._creatorRoleID = pureObject.creatorRoleID;
-        this._processDate = pureObject.processDate;
-        this._processUrgency = pureObject.processUrgency;
-        this._creationTime = pureObject.creationTime;
-        this._notificationTime = pureObject.notificationTime;
-        this._currentStages = pureObject.currentStages;
-        this._initials = pureObject.initials;
-        this._stages = pureObject.stages;
-        this._lastApproached = pureObject.lastApproached;
+    constructor(processObject,stages) {
+        this._processName = processObject.processName;
+        this._creatorRoleID = processObject.creatorRoleID;
+        this._processDate = processObject.processDate;
+        this._processUrgency = processObject.processUrgency;
+        this._creationTime = processObject.creationTime;
+        this._notificationTime = processObject.notificationTime;
+        this._currentStages = processObject.currentStages;
+        this._initials = processObject.initials;
+        this._stages = stages;
+        this._lastApproached = processObject.lastApproached;
     }
 
     get processName() {

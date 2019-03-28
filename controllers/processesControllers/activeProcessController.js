@@ -630,7 +630,6 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                                     }
                                 }
                             }, (err) => {
-                                // Shahar Ben Shitrit is a living God
                                 if (err) {
                                     console.log(err);
                                     callback(err);

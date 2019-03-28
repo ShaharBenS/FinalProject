@@ -54,8 +54,7 @@ module.exports.updateActiveProcess = (AP, update, callback) => {
 /*********************/
 
 let getActiveProcessFromOriginal = function (activeProcess) {
-    activeProcess.stages = getActiveProcessStagesFromOriginal(activeProcess.stages);
-    return new ActiveProcess(activeProcess);
+    return new ActiveProcess(activeProcess,getActiveProcessStagesFromOriginal(activeProcess.stages));
 };
 
 
