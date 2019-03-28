@@ -132,8 +132,17 @@ router.get('/getAllProcessesReportsByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
-        processReportController.convertDate(array);
-        res.render('reportsViews/processReportPage', {processReports: array});
+        if(array === undefined)
+        {
+            res.render('reportsViews/processReportPage', {processReports: []});
+        }
+        else
+        {
+            processReportController.convertDate(array);
+            res.render('reportsViews/processReportPage', {processReports: array});
+        }
+
+
     });
 });
 /////////////////
