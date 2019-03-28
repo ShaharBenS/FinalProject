@@ -10,7 +10,7 @@ let tableLanguageOption = {
         "lengthMenu": "הצג _MENU_ רשומות",
         "loadingRecords": "טוען...",
         "processing": "מעבד...",
-        "search": "חפש: ",
+        "search": "חפש  ",
         "zeroRecords": "לא נמצאו רשומות",
         "paginate": {
             "first": "ראשון",
@@ -25,11 +25,10 @@ let tableLanguageOption = {
     }
 };
 
-function setTopBar()
-{
+function setTopBar() {
+
     let xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function ()
-    {
+    xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             let topbar = document.getElementById("top-bar");
             topbar.innerHTML = xmlHttp.responseText;
@@ -38,9 +37,12 @@ function setTopBar()
     xmlHttp.open("GET", '/getTopBar', true);
     xmlHttp.send(null);
 
+    let color = document.cookie.substr(6, 13);
+    changeMainColor(color);
+
 
     let example_length = document.getElementById("example_length");
-    if(example_length === null){
+    if (example_length === null) {
         return;
     }
     example_length.style.display = 'flex';
@@ -49,9 +51,21 @@ function setTopBar()
     let example_info = document.getElementById("example_info");
     example_info.style.display = 'flex';
     example_info.style.justifyContent = "flex-end";
+
+
 }
 
-let changeMainColor = function () {
-    let color = document.getElementById('color_picker').value;
-    document.documentElement.style.setProperty('--main-color', color);
+let changeMainColor = function (color) {
+    let newColor = "";
+    if (color === "") {
+        newColor = document.getElementById('color_picker').value;
+    } else {
+        newColor = color;
+    }
+
+    if (document.getElementById('color_picker') != null)
+        document.getElementById('color_picker').value = newColor;
+    document.cookie = "color=" + newColor + "; path=/";
+    document.documentElement.style.setProperty('--main-color', newColor);
+
 };
