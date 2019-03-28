@@ -1,5 +1,7 @@
 let express = require('express');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
+let processReportController = require('../../controllers/processesControllers/processReportController');
+
 let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let router = express.Router();
 let formidable = require('formidable');
@@ -127,6 +129,17 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
         res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
     });
 });
+
+/////Tomer's Work
+router.get('/getAllProcessesReportsByUser', function (req, res) {
+    let userName = req.user.emails[0].value;
+    processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
+        if (err) res.send(err);
+        processReportController.convertDate(array);
+        res.render('reportsViews/processReportPage', {processReports: array});
+    });
+});
+/////////////////
 
 function handleRolesAndStages(array) {
     for (let i = 0; i < array[0].length; i++) {
