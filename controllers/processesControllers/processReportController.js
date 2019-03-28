@@ -125,14 +125,7 @@ function isExistInReport(report,userEmail)
             return true;
         }
     }
-    if(report.processCreatorEmail === userEmail)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return report.processCreatorEmail === userEmail;
 }
 
 
