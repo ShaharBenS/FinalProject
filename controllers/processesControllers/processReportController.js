@@ -1,8 +1,7 @@
 let processAccessor = require('../../models/accessors/processReportAccessor');
-let processReportAccescor = require('../../models/accessors/processReportAccessor');
-
+let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
-
+let moment = require('moment');
 
 function addProcessReport(processName, creationTime,processDate,processUrgency,processCreatorEmail,callback){
     processAccessor.createProcessReport({
@@ -55,14 +54,12 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
     });
 }
 
-
-//////////////////////////////////
 module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
             callback(err);
         } else {
-            processReportAccescor.findProcessesReports({}, (err, processReports) => {
+            processReportAccessor.findProcessesReports({}, (err, processReports) => {
                 if (err) callback(err);
                 else {
                     usersAndRolesController.getAllChildren(userEmail,(err,children)=>{
@@ -114,7 +111,7 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
         }
     });
 };
-//////////////////////////////////
+
 function isExistInReport(report,userEmail)
 {
     for(let i=0;i<report._doc.stages.length;i++)
@@ -130,28 +127,7 @@ function isExistInReport(report,userEmail)
 
 function convertDate(array) {
     for (let i = 0; i < array.length; i++) {
-        let processDate = array[i]._doc.processDate;
-        let dayOfProcessDate = processDate.getDate();
-        let monthOfProcessDate = processDate.getMonth() + 1;
-        let yearOfProcessDate = processDate.getFullYear();
-        if (dayOfProcessDate < 10) {
-            dayOfProcessDate = '0' + dayOfProcessDate;
-        }
-        if (monthOfProcessDate < 10) {
-            monthOfProcessDate = '0' + monthOfProcessDate;
-        }
-        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
-        let hourOfProcessDate = processDate.getHours();
-        let minuteOfProcessDate  = processDate.getMinutes();
-        let secondsOfProcessDate  = processDate.getSeconds();
-        if (hourOfProcessDate.toString().length === 1)
-            hourOfProcessDate = '0' + hourOfProcessDate;
-        if (minuteOfProcessDate.toString().length === 1)
-            minuteOfProcessDate = '0' + minuteOfProcessDate;
-        if (secondsOfProcessDate.toString().length === 1)
-            secondsOfProcessDate = '0' + secondsOfProcessDate;
-        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
-        array[i]._doc.processDate = dateOfProcessDate;
+        array[i]._doc.processDate =  moment(array[i]._doc.processDate).format("DD/MM/YYYY HH:mm:ss");
     }
 }
 
