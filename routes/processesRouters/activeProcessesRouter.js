@@ -22,9 +22,8 @@ router.post('/handleProcess', function (req, res) {
     form.parse(req, function (err, fields, files) {
         let userEmail = req.user.emails[0].value;
         activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files, (err, ret) => {
-            if (err) {
-                res.send(err);
-            } else {
+            if (err) res.render('errorViews/error');
+            else {
                 res.send("success");
             }
         });
@@ -38,9 +37,8 @@ router.post('/returnToProcessCreator', function (req, res) {
         let processName = fields.processName;
         let comments = fields.comments;
         activeProcessController.returnToCreator(userEmail, processName, comments, (err) => {
-            if (err) {
-                res.send(err);
-            } else {
+            if (err) res.render('errorViews/error');
+            else {
                 res.send("success");
             }
         });
@@ -53,9 +51,8 @@ router.post('/takePartInProcess', function (req, res) {
         let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
         activeProcessController.takePartInActiveProcess(processName, userEmail, (err) => {
-            if (err) {
-                res.send(err);
-            } else {
+            if (err) res.render('errorViews/error');
+            else {
                 res.send("success");
             }
         });
@@ -68,9 +65,8 @@ router.post('/unTakePartInProcess', function (req, res) {
         let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
         activeProcessController.unTakePartInActiveProcess(processName,userEmail, (err) => {
-            if (err) {
-                res.send(err);
-            } else {
+            if (err) res.render('errorViews/error');
+            else {
                 res.send("success");
             }
         });
@@ -85,9 +81,8 @@ router.post('/startProcess', function (req, res) {
     let username = req.user.emails[0].value;
     let notificationTime = req.body.notificationTime;
     activeProcessController.startProcessByUsername(username, structureName, processName,processDate, processUrgency,notificationTime, (err) => {
-        if (err) {
-            res.send(err.message);
-        } else {
+        if (err) res.render('errorViews/error');
+        else {
             res.send("success");
         }
     });
@@ -100,9 +95,8 @@ router.post('/cancelProcess', function (req, res) {
         let processName = fields.processName;
         let comments = fields.comments;
         activeProcessController.cancelProcess(userEmail, processName, comments, (err) => {
-            if (err) {
-                res.send(err);
-            } else {
+            if (err) res.render('errorViews/error');
+            else {
                 res.send("success");
             }
         });
