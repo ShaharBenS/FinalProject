@@ -14,19 +14,26 @@ module.exports.getFilledOnlineFormByID = (formID, callback) => {
 
 module.exports.getFilledOnlineFormsOfArray = (formIDs, callback) => {
     let forms = [];
-    for (let i = 0; i < formIDs.length; i++) {
-        this.getFilledOnlineFormByID(formIDs[i], (err, filledForm) => {
-            if (err) callback(err);
-            else {
-                forms.push(filledForm);
-                if (forms.length === formIDs.length) {
-                    callback(null, forms);
-                    return;
+    if(formIDs !== undefined)
+    {
+        for (let i = 0; i < formIDs.length; i++) {
+            this.getFilledOnlineFormByID(formIDs[i], (err, filledForm) => {
+                if (err) callback(err);
+                else {
+                    forms.push(filledForm);
+                    if (forms.length === formIDs.length) {
+                        callback(null, forms);
+                        return;
+                    }
                 }
-            }
-        });
+            });
+        }
+        callback(null,[]);
     }
-    callback(null,[]);
+    else
+    {
+        callback(null,[]);
+    }
 };
 
 module.exports.displayFilledForm = function (filledFormID, callback) {

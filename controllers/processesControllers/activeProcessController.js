@@ -662,28 +662,31 @@ module.exports.cancelProcess = function(userEmail,processName,comments,callback)
     });
 };
 
+function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback){
+    if(index === filledFormIds.length)
+    {
+        callback(null, filledFormsArray);
+        return;
+    }
+    filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
+        filledFormsArray.push(forms);
+        getFilledOnlineForms(filledFormIds,index+1,filledFormsArray,callback);
+    });
+}
+
 module.exports.processReport = function (process_name, callback) {
     this.getAllActiveProcessDetails(process_name, (err, result) => {
         if (err) callback(err);
         else {
             this.convertJustCreationTime(result[0]);
             this.convertDateInApprovalTime(result[1]);
-            let counter = result[1].length;
-            //TODO OMRI: change this for to reduce or something
-            for (let i = 0; i < result[1].length; i++) {
-                if (result[1][i].filledOnlineForms === undefined)
-                    result[1][i].filledOnlineForms = [];
-                filledOnlineFormController.getFilledOnlineFormsOfArray(result[1][i].filledOnlineForms, (err, forms) => {
-                    if (err) callback(err);
-                    else {
-                        result[1][i].filledOnlineForms = forms;
-                        counter--;
-                        if (counter === 0) {
-                            callback(null, result);
-                        }
-                    }
-                })
-            }
+            getFilledOnlineForms(result[1],0,[],(err,formsArr)=>{
+                for(let i=0;i<formsArr.length;i++)
+                {
+                    result[1][i].filledOnlineForms = formsArr[i];
+                }
+                callback(null,result);
+            });
         }
     });
 };
