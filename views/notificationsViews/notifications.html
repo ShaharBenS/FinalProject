@@ -21,6 +21,64 @@
     <link rel="stylesheet" type="text/css" href="/draw_sankey/server/html/common/lib/DataTables/datatables.min.css"/>
     <link href="/stylesheets/style.css" rel="stylesheet">
 
+    <script src="/alertify/alertify.js"></script>
+    <link href="/alertify/css/alertify.css" rel="stylesheet">
+    <link href="/alertify/css/alertify.rtl.css" rel="stylesheet">
+    <script type="text/javascript">
+        //override defaults
+        alertify.defaults = {
+            // dialogs defaults
+            autoReset:true,
+            basic:false,
+            closable:true,
+            closableByDimmer:true,
+            frameless:false,
+            maintainFocus:true, // <== global default not per instance, applies to all dialogs
+            maximizable:true,
+            modal:true,
+            movable:true,
+            moveBounded:false,
+            overflow:true,
+            padding: true,
+            pinnable:true,
+            pinned:true,
+            preventBodyShift:false, // <== global default not per instance, applies to all dialogs
+            resizable:true,
+            startMaximized:false,
+            transition:'pulse',
+
+            // notifier defaults
+            notifier:{
+                // auto-dismiss wait time (in seconds)
+                delay:5,
+                // default position
+                position:'bottom-right',
+                // adds a close button to notifier messages
+                closeButton: false
+            },
+
+            // language resources
+            glossary:{
+                // dialogs default title
+                title:'',
+                // ok button text
+                ok: 'אוקיי',
+                // cancel button text
+                cancel: 'ביטול'
+            },
+
+            // theme settings
+            theme:{
+                // class name attached to prompt dialog input textbox.
+                input:'ajs-input',
+                // class name attached to ok button
+                ok:'ajs-ok',
+                // class name attached to cancel button
+                cancel:'ajs-cancel'
+            }
+        };
+    </script>
+
     <style>
         td {
             text-align: center;
@@ -38,6 +96,7 @@
     <div class="main-div-tables">
         <h1>ההתראות שלי</h1>
         <hr class="orange-hr">
+        <button onclick="removeAllNotifications()" class="btn btn-default">מחק את כל ההתראות</button>
         <div align="center">
             <div align="center" style="margin: auto; width:83%">
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -46,6 +105,7 @@
                         <th>סוג התראה</th>
                         <th>פירוט</th>
                         <th>זמן</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -54,6 +114,9 @@
                         <td><%=notification.notificationType%></td>
                         <td><%=notification.description%></td>
                         <td><%=notification.date%></td>
+                        <td>
+                            <a onclick="removeNotification('<%=notification.mongoId%>')" href="javascript:void(0)"><i class="ion ion-trash-a" style="font-size: 22px"></i></a>
+                        </td>
                     </tr>
                     <%})%>
                     </tbody>

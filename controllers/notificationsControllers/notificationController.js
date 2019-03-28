@@ -1,6 +1,6 @@
 let notificationAccessor = require('../../models/accessors/notificationsAccessor');
 let activeProcessController = require('../processesControllers/activeProcessController');
-let waitingActiveProcessReminderNotification = require('../../domainObjects/notifications/waitingActiveProcessReminderNotification');
+let Notification = require('../../domainObjects/notification');
 
 module.exports.getUserNotifications = (userEmail, callback) =>
 {
@@ -40,6 +40,15 @@ module.exports.deleteNotification = (_id, callback) =>
     notificationAccessor.deleteAllNotifications({_id:_id},callback);
 };
 
+module.exports.deleteAllNotification = (callback) =>
+{
+    notificationAccessor.deleteAllNotifications({},callback);
+};
+
+module.exports.countNotifications = (email, callback) =>
+{
+    notificationAccessor.countNotifications({userEmail:email},callback)
+};
 
 /*
     TODO: This function has a bug that need to be fixed. When the active process diverges into two roles, the last approach time , however, applies on both of them.
@@ -69,8 +78,8 @@ module.exports.updateNotifications = () =>
                             }
                             else {
                                 this.addNotificationToUser(curr,
-                                    new waitingActiveProcessReminderNotification(
-                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות"),
+                                    new Notification(
+                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות","תזכורת להתליך בהמתנה"),
                                     (err) =>
                                     {
                                         if (err) {
