@@ -193,11 +193,13 @@ let surroundTableWithDivAndAddButtons = function (table) {
         addBtn.type = 'button';
         addBtn.style.marginLeft = '10px';
         addBtn.onclick = () => table.appendChild(createTableRow(table));
+        addBtn.className = "btn-default";
 
         removeBtn.innerText = 'הסר שורה';
         removeBtn.type = 'button';
         removeBtn.style.marginRight = '10px';
         removeBtn.onclick = () => removeTableRow(table);
+        removeBtn.className = "btn-default";
 
         div.appendChild(document.createElement('br'));
 

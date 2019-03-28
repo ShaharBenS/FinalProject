@@ -7,6 +7,8 @@ module.exports.createAllOnlineForms = () => {
     });
     this.createOnlineFrom("טופס החתמה על ציוד", "טופס_החתמה_על_ציוד", (err) => {
     });
+    this.createOnlineFrom("טופס קניות", "טופס_קניות", (err) => {
+    });
 };
 
 module.exports.createOnlineFrom = (formName, srcHTML, callback) => {

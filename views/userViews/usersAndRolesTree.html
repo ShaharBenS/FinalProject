@@ -32,39 +32,39 @@
         //override defaults
         alertify.defaults = {
             // dialogs defaults
-            autoReset:true,
-            basic:false,
-            closable:true,
-            closableByDimmer:true,
-            frameless:false,
-            maintainFocus:true, // <== global default not per instance, applies to all dialogs
-            maximizable:true,
-            modal:true,
-            movable:true,
-            moveBounded:false,
-            overflow:true,
+            autoReset: true,
+            basic: false,
+            closable: true,
+            closableByDimmer: true,
+            frameless: false,
+            maintainFocus: true, // <== global default not per instance, applies to all dialogs
+            maximizable: true,
+            modal: true,
+            movable: true,
+            moveBounded: false,
+            overflow: true,
             padding: true,
-            pinnable:true,
-            pinned:true,
-            preventBodyShift:false, // <== global default not per instance, applies to all dialogs
-            resizable:true,
-            startMaximized:false,
-            transition:'pulse',
+            pinnable: true,
+            pinned: true,
+            preventBodyShift: false, // <== global default not per instance, applies to all dialogs
+            resizable: true,
+            startMaximized: false,
+            transition: 'pulse',
 
             // notifier defaults
-            notifier:{
+            notifier: {
                 // auto-dismiss wait time (in seconds)
-                delay:5,
+                delay: 5,
                 // default position
-                position:'bottom-right',
+                position: 'bottom-right',
                 // adds a close button to notifier messages
                 closeButton: false
             },
 
             // language resources
-            glossary:{
+            glossary: {
                 // dialogs default title
-                title:'',
+                title: '',
                 // ok button text
                 ok: 'אוקיי',
                 // cancel button text
@@ -72,13 +72,13 @@
             },
 
             // theme settings
-            theme:{
+            theme: {
                 // class name attached to prompt dialog input textbox.
-                input:'ajs-input',
+                input: 'ajs-input',
                 // class name attached to ok button
-                ok:'ajs-ok',
+                ok: 'ajs-ok',
                 // class name attached to cancel button
-                cancel:'ajs-cancel'
+                cancel: 'ajs-cancel'
             }
         };
     </script>
@@ -87,15 +87,18 @@
         var app,
             socket;
 
-        $(window).load(function ()
-        {
+        $(window).load(function () {
             socket = io();
             app = new sankey.Application(socket);
             app.fileOpen("__tree__");
         });
 
     </script>
-
+    <style>
+        label {
+            font-family: "Lato", Arial, sans-serif;
+        }
+    </style>
 </head>
 
 <body id="container">
@@ -262,7 +265,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button onclick="document.getElementById('select_users_modal').style.display = 'none'" id="no-id123" class="btn btn-primary okButton"><span>Okay</span></button>
+                <button class="btn btn-primary okButton" id="no-id123"
+                        onclick="document.getElementById('select_users_modal').style.display = 'none'"><span>Okay</span>
+                </button>
             </div>
         </div>
     </div>
