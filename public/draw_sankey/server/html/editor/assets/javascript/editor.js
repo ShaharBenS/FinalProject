@@ -686,27 +686,30 @@ sankey.dialog.FileSave = Class.extend({
                 if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure'){
                     if(status === 'success'){
                         if(text === 'success'){
-                            alert('Process Structure Saved Successfully');
-                            window.location.href = '/Home';
+                            alertify.alert('מבנה התהליך נשמר בהצלחה!',()=>{
+                                window.location.href = '/Home';
+                            });
                         }
                         else if(text === 'success_needApprove'){
-                            alert("Process Structure is now waiting for approval");
-                            window.location.href = '/Home';
+                            alertify.alert("מבנה התהליך נקלט ומחכה לאישור",()=>{
+                                window.location.href = '/Home';
+                            });
                         }
                     }
                     else{
-                        alert(text);
+                        alertify.alert(text);
                     }
                 }
                 else if(diagramContext === '__tree__'){
                     if(text === 'success'){
                         if(status === 'success'){
-                            alert('Tree Saved Successfully');
-                            window.location.href = '/Home';
+                            alertify.alert('עץ המשתמשים נשמר בהצלחה!',()=>{
+                                window.location.href = '/Home';
+                            });
                         }
                     }
                     else{
-                        alert(text);
+                        alertify.alert(text);
                     }
                 }
 
@@ -897,10 +900,10 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         }*/
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
-                items.users = {name: "See Users", icon: "icon ion-ios-people"}
+                items.users = {name: "<i style='font-size: 20px' class='ion ion-android-people'><label style='padding-right: 6px;font-weight: normal'>ראה משתמשים</label><i>"}
             }
             else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure'){
-                items.users = {name: "See Forms", icon: "icon ion-ios-browsers"}
+                items.users = {name: "<i style='font-size: 20px' class='ion ion-ios-browsers'><label style='padding-right: 6px;font-weight: normal'>ראה טפסים</label><i>"}
             }
         }
         if ((figure instanceof sankey.shape.Start) ||
@@ -908,7 +911,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             (figure instanceof sankey.shape.State) ||
             (figure instanceof sankey.shape.Connection)) {
             //items.label = {name: "Add Label", icon: "x ion-ios-pricetag-outline"};
-            items.del = {name: "Delete", icon: "x ion-ios-close-outline"};
+            items.del = {name: "<i style='font-size: 20px' class='ion ion-ios-close-outline'><label style='padding-right: 6px;font-weight: normal'>מחק</label><\i>"};
         }
 
         $.contextMenu({

@@ -35,32 +35,33 @@ $(document).ready(()=>{
 });
 
 function onDrop_extension(type, command, figure) {
-    let role_name = prompt("Enter Role Name Here");
-    if(role_name != null){
-        if(roleToEmails[role_name] === undefined){
-            idToRole[figure.id] = role_name;
-            roleToEmails[role_name] = [];
-            figure.label = figure.label = new draw2d.shape.basic.Label({
-                text: role_name,
-                angle: 0,
-                fontColor: "#FFFFFF",
-                fontSize: 18,
-                stroke: 0,
-                editor: new draw2d.ui.LabelInplaceEditor({
-                    onCommit: function () {
-                        figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
-                    }
-                })
-            });
-            figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
-            app.view.getCommandStack().execute(command);
-            figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
-            figure.setHeight(figure.height+30);
+    alertify.prompt("הכנס את שם התפקיד","",(evt,role_name)=>{
+        if(role_name != null){
+            if(roleToEmails[role_name] === undefined){
+                idToRole[figure.id] = role_name;
+                roleToEmails[role_name] = [];
+                figure.label = figure.label = new draw2d.shape.basic.Label({
+                    text: role_name,
+                    angle: 0,
+                    fontColor: "#FFFFFF",
+                    fontSize: 18,
+                    stroke: 0,
+                    editor: new draw2d.ui.LabelInplaceEditor({
+                        onCommit: function () {
+                            figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
+                        }
+                    })
+                });
+                figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
+                app.view.getCommandStack().execute(command);
+                figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
+                figure.setHeight(figure.height+30);
+            }
+            else{
+                alertify.alert('A role with that name already exists');
+            }
         }
-        else{
-            alert('A role with that name already exists');
-        }
-    }
+    });
 }
 
 
@@ -95,22 +96,23 @@ function rolesToHTML(roleName)
     button.innerText = '+';
     button.onclick = () =>
     {
-        let email = prompt("Enter user email :");
-        if (email != null) {
-            let found = false;
-            Object.keys(roleToEmails).forEach(roleName=>{
-                roleToEmails[roleName].forEach(userEmail=>{
-                    if(email === userEmail){
-                        found = true;
-                        alert('email already in use, in role: '+roleName)
-                    }
-                })
-            });
-            if(!found){
-                roleToEmails[roleName].push(email);
-                rolesToHTML(roleName);
+        alertify.prompt("הכנס אימייל:","",(evt,email)=>{
+            if (email != null) {
+                let found = false;
+                Object.keys(roleToEmails).forEach(roleName=>{
+                    roleToEmails[roleName].forEach(userEmail=>{
+                        if(email === userEmail){
+                            found = true;
+                            alertify.alert('email already in use, in role: '+roleName)
+                        }
+                    })
+                });
+                if(!found){
+                    roleToEmails[roleName].push(email);
+                    rolesToHTML(roleName);
+                }
             }
-        }
+        });
     };
     div.appendChild(button);
     users_div.append(div);

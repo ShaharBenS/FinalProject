@@ -4,7 +4,7 @@ let tableLanguageOption = {
         "emptyTable": "אין כרגע מידע בטבלה",
         "info": "מציג _START_ עד _END_ מתוך _TOTAL_ רשומות",
         "infoEmpty": "מציג 0 עד 0 מתוך 0 רשומות",
-        "infoFiltered": "(filtered from _MAX_ total entries)",
+        "infoFiltered": "(סוננו מתוך _MAX_ רשומות)",
         "infoPostFix": "",
         "thousands": ",",
         "lengthMenu": "הצג _MENU_ רשומות",
