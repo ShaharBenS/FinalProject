@@ -40,6 +40,15 @@ module.exports.deleteNotification = (_id, callback) =>
     notificationAccessor.deleteAllNotifications({_id:_id},callback);
 };
 
+module.exports.deleteAllNotification = (callback) =>
+{
+    notificationAccessor.deleteAllNotifications({},callback);
+};
+
+module.exports.countNotifications = (email, callback) =>
+{
+    notificationAccessor.countNotifications({userEmail:email},callback)
+};
 
 /*
     TODO: This function has a bug that need to be fixed. When the active process diverges into two roles, the last approach time , however, applies on both of them.

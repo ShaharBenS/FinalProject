@@ -6,6 +6,11 @@ body {
     background-color: #FFFFFF;
 }
 
+.btn-primary{
+    border-color: var(--main-color);
+    background-color:var(--main-color)
+}
+
 .main-div {
     padding: 0 2% 2%;
     margin: 2%;
@@ -152,4 +157,13 @@ body {
 
 .top-bar-logo {
     height: 42px;
+}
+
+.top-bar-permission-button{
+    margin-top: 5px;
+    margin-left: 15px;
+}
+
+.top-bar-permission-image{
+    height: 34px;
 }

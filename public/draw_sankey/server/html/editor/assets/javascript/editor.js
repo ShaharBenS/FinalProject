@@ -567,7 +567,7 @@ sankey.View = draw2d.Canvas.extend({
         var type = $(droppedDomNode).data("shape");
         let color = '#ff9d6d';
         if(type === "sankey.shape.State"){
-            color = '#1E90FF';
+            color = '#f6a500';
         }
         if (type === "sankey.shape.Start") {
             type = "sankey.shape.State";

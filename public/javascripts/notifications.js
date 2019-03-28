@@ -1,14 +1,16 @@
-$(document).ready(()=>{
+$(document).ready(() =>
+{
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-        {
+    xmlHttp.onreadystatechange = function ()
+    {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
 
             let notifications = JSON.parse(xmlHttp.responseText);
             let table = document.getElementById("example");
-            notifications.forEach((notification,index)=>{
+            notifications.forEach((notification, index) =>
+            {
 
-                let row = table.insertRow(index+1);
+                let row = table.insertRow(index + 1);
                 let cell1 = row.insertCell(0);
                 let cell2 = row.insertCell(1);
                 let cell3 = row.insertCell(2);
@@ -27,7 +29,7 @@ $(document).ready(()=>{
 function removeNotification(id)
 {
     let data = {
-        mongoId:id
+        mongoId: id
     };
 
 
@@ -39,13 +41,45 @@ function removeNotification(id)
             },
             data: data,
         }
-    ).done(function (responseText, status) {
+    ).done(function (responseText, status)
+    {
         if (status === "success") {
             if (responseText === "success") {
                 window.location.reload();
-            } else {
+            }
+            else {
                 alert(responseText);
             }
         }
     });
+}
+
+function removeAllNotifications()
+{
+    alertify.confirm('', 'האם אתה בטוח שאתה רוצה למחוק את כל ההתראות שלך?', function ()
+        {
+            $.ajax({
+                    url: '/notifications/deleteAllNotification/',
+                    method: "POST",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: data,
+                }
+            ).done(function (responseText, status)
+            {
+                if (status === "success") {
+                    if (responseText === "success") {
+                        window.location.reload();
+                    }
+                    else {
+                        alert(responseText);
+                    }
+                }
+            });
+        }
+        , function ()
+        {
+
+        });
 }

@@ -4,6 +4,7 @@ let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 let userPermissionsController = require('../usersControllers/UsersPermissionsController');
 let UserPermissions = require('../../domainObjects/UserPermissions');
+let notificationsAccessor = require('../../models/accessors/notificationsAccessor');
 
 module.exports.getRoleToEmails = (callback) =>
 {
@@ -457,6 +458,7 @@ module.exports.getFullNameByEmail = (email, callback) =>
         }
     });
 };
+
 
 module.exports.getAllUsers = (callback) =>
 {
