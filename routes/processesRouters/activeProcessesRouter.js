@@ -143,10 +143,12 @@ function handleRolesAndStages(array) {
             array[0][i]._currentStages[j].roleID = array[1][i][j];
         }
     }
-
-    for(let i=0;i<array[0].length;i++)
+    if(array[2] !== undefined)
     {
-        array[0][i]._child = array[2][i];
+        for(let i=0;i<array[0].length;i++)
+        {
+            array[0][i]._child = array[2][i];
+        }
     }
 }
 

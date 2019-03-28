@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 const processReportSchema = new Schema({
     processName: {type: String, unique: true},
     status: String,
+    processDate: Date,
+    processUrgency: { type: Number, min: 1, max: 10},
     creationTime: Date,
     currentStages: [Number],
     initials: [Number],
