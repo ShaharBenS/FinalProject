@@ -16,6 +16,24 @@ module.exports.getRoleToEmails = (callback) =>
     })
 };
 
+module.exports.getEmailToFullName = (callback) =>
+{
+    userAccessor.findUsernames((err, result) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else {
+            let emailToFullName = {};
+            result.forEach((entry) =>
+            {
+                emailToFullName[entry.userEmail] = entry.userName;
+            });
+            callback(null, emailToFullName);
+        }
+    });
+};
+
 module.exports.getIdToRole = (callback) =>
 {
     userAccessor.findInSankeyTree({}, (err, sankeyTree) =>
@@ -40,15 +58,18 @@ module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 };
 
-module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) => {
+module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) =>
+{
     let countsArray = {};
-    usersEmail.forEach((email) => {
+    usersEmail.forEach((email) =>
+    {
         if (countsArray[email] === undefined)
             countsArray[email] = 1;
         else countsArray[email] = countsArray[email] + 1
     });
     let dupEmails = false;
-    usersEmail.every((email) => {
+    usersEmail.every((email) =>
+    {
         if (countsArray[email] > 1) dupEmails = true;
         return !dupEmails;
     });
@@ -58,10 +79,12 @@ module.exports.addUsersAndRole = (_id, roleName, usersEmail, callback) => {
     else {
         let params = {roleName: roleName, userEmail: usersEmail, children: []};
         let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail, children: []};
-        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) => {
+        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
+        {
             if (err) {
                 callback(err);
-            } else {
+            }
+            else {
                 callback(null, usersAndRole)
             }
         });
@@ -97,15 +120,17 @@ module.exports.getUsersAndRolesTree = (callback) =>
     });
 };
 
-module.exports.setUsersAndRolesTree = (userEmail,sankey, roleToEmails, callback) =>
+module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, callback) =>
 {
-    let commonCallback = ()=>{
-        userPermissionsController.getUserPermissions(userEmail,(err,permissions)=>{
-            if(err){
+    let commonCallback = () =>
+    {
+        userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
+        {
+            if (err) {
                 callback(err);
             }
-            else{
-                if(permissions.usersManagementPermission){
+            else {
+                if (permissions.usersManagementPermission) {
                     let sankeyTree = new usersAndRolesTreeSankey(JSON.parse(sankey));
                     let emails = Object.values(roleToEmails).reduce((prev, curr) =>
                     {
@@ -118,9 +143,10 @@ module.exports.setUsersAndRolesTree = (userEmail,sankey, roleToEmails, callback)
                     else if (sankeyTree.hasMoreThanOneTree()) {
                         callback('ERROR: there are two trees in the graph');
                     }
-                    else if(Object.keys(roleToEmails).some(key=>{
+                    else if (Object.keys(roleToEmails).some(key =>
+                    {
                         return roleToEmails[key].length === 0;
-                    })){
+                    })) {
                         callback('ERROR: there must be at least one email assigned to each role')
                     }
                     else if (sankeyTree.hasMultipleConnections()) {
@@ -159,59 +185,17 @@ module.exports.setUsersAndRolesTree = (userEmail,sankey, roleToEmails, callback)
                                                         callback(err);
                                                     }
                                                     else {
-                                                        let roles = sankeyTree.getRoles();
-                                                        let connections = sankeyTree.getConnections();
-                                                        let usersAndRoleDocuments = [];
-                                                        roles.reduce((acc, role_figure) =>
-                                                        {
-                                                            return (err) =>
-                                                            {
-                                                                if (err) {
-                                                                    acc(err);
-                                                                }
-                                                                else {
-                                                                    let _id = undefined;
-                                                                    let roleName = role_figure.labels[0].text;
-                                                                    let existingRoleIndex = oldSankey.getRoles().findIndex(role =>
-                                                                    {
-                                                                        return role.id === role_figure.id;
-                                                                    });
-                                                                    if (existingRoleIndex > -1) {
-                                                                        let _roleName = oldSankey.getRoles()[existingRoleIndex].labels[0].text;
-                                                                        _id = oldUsersAndRoles.getIdByRoleName(_roleName);
-                                                                    }
-                                                                    existingRoleIndex = oldSankey.getRoles().findIndex(role =>
-                                                                    {
-                                                                        return role.labels[0].text === roleName;
-                                                                    });
-                                                                    if (existingRoleIndex > -1) {
-                                                                        _id = oldUsersAndRoles.getIdByRoleName(roleName);
-                                                                    }
-                                                                    this.addUsersAndRole(_id, roleName, roleToEmails[roleName], (_err, usersAndRole) =>
-                                                                    {
-                                                                        if (err) {
-                                                                            acc(err);
-                                                                        }
-                                                                        else {
-                                                                            usersAndRoleDocuments.push(usersAndRole);
-                                                                            acc(null)
-                                                                        }
-                                                                    })
-                                                                }
-                                                            };
-                                                        }, (err) =>
+                                                        userAccessor.deleteAllUserNames((err) =>
                                                         {
                                                             if (err) {
                                                                 callback(err);
                                                             }
                                                             else {
-                                                                let roleNames = usersAndRoleDocuments.map(usersAndRoleDocument =>
-                                                                {
-                                                                    return usersAndRoleDocument.roleName;
-                                                                });
-                                                                let roleIDs = roles.map(role => role.id);
 
-                                                                connections.reduce((acc, connection) =>
+                                                                let roles = sankeyTree.getRoles();
+                                                                let connections = sankeyTree.getConnections();
+                                                                let usersAndRoleDocuments = [];
+                                                                roles.reduce((acc, role_figure) =>
                                                                 {
                                                                     return (err) =>
                                                                     {
@@ -219,25 +203,54 @@ module.exports.setUsersAndRolesTree = (userEmail,sankey, roleToEmails, callback)
                                                                             acc(err);
                                                                         }
                                                                         else {
-                                                                            let fromNodeIndex = roleIDs.indexOf(connection.source.node);
-                                                                            let toNodeIndex = roleIDs.indexOf(connection.target.node);
-
-                                                                            let fromNodeRoleName = roles[fromNodeIndex].labels[0].text;
-                                                                            let toNodeRoleName = roles[toNodeIndex].labels[0].text;
-
-                                                                            let fromNodeRoleIndex = roleNames.indexOf(fromNodeRoleName);
-                                                                            let toNodeRoleIndex = roleNames.indexOf(toNodeRoleName);
-                                                                            // TODO: RoleIndex check if -1
-                                                                            let fromNodeID = usersAndRoleDocuments[fromNodeRoleIndex]._id;
-                                                                            let toNodeID = usersAndRoleDocuments[toNodeRoleIndex]._id;
-
-                                                                            this.addChildrenToRole(fromNodeID, toNodeID, (err) =>
+                                                                            let _id = undefined;
+                                                                            let roleName = role_figure.labels[0].text;
+                                                                            let existingRoleIndex = oldSankey.getRoles().findIndex(role =>
+                                                                            {
+                                                                                return role.id === role_figure.id;
+                                                                            });
+                                                                            if (existingRoleIndex > -1) {
+                                                                                let _roleName = oldSankey.getRoles()[existingRoleIndex].labels[0].text;
+                                                                                _id = oldUsersAndRoles.getIdByRoleName(_roleName);
+                                                                            }
+                                                                            existingRoleIndex = oldSankey.getRoles().findIndex(role =>
+                                                                            {
+                                                                                return role.labels[0].text === roleName;
+                                                                            });
+                                                                            if (existingRoleIndex > -1) {
+                                                                                _id = oldUsersAndRoles.getIdByRoleName(roleName);
+                                                                            }
+                                                                            this.addUsersAndRole(_id, roleName, roleToEmails[roleName], (_err, usersAndRole) =>
                                                                             {
                                                                                 if (err) {
                                                                                     acc(err);
                                                                                 }
                                                                                 else {
-                                                                                    acc(null);
+                                                                                    roleToEmails[roleName].reduce((acc, email) =>
+                                                                                    {
+                                                                                        return (err) =>
+                                                                                        {
+                                                                                            if (err) {
+                                                                                                acc(err);
+                                                                                            }
+                                                                                            else {
+                                                                                                userAccessor.createUser({
+                                                                                                    userEmail: email,
+                                                                                                    userName: emailToFullName[email]
+                                                                                                }, acc)
+                                                                                            }
+                                                                                        };
+                                                                                    }, (err) =>
+                                                                                    {
+                                                                                        if (err) {
+                                                                                            callback(err);
+
+                                                                                        }
+                                                                                        else {
+                                                                                            usersAndRoleDocuments.push(usersAndRole);
+                                                                                            acc(null)
+                                                                                        }
+                                                                                    })(null);
                                                                                 }
                                                                             })
                                                                         }
@@ -248,65 +261,111 @@ module.exports.setUsersAndRolesTree = (userEmail,sankey, roleToEmails, callback)
                                                                         callback(err);
                                                                     }
                                                                     else {
-                                                                        // All done here
+                                                                        let roleNames = usersAndRoleDocuments.map(usersAndRoleDocument =>
+                                                                        {
+                                                                            return usersAndRoleDocument.roleName;
+                                                                        });
+                                                                        let roleIDs = roles.map(role => role.id);
 
-                                                                        // Looking for roles that have been removed.
-                                                                        let deletedRoles = [];
-                                                                        let deletedRolesNames = [];
-                                                                        oldSankey.getRoles().forEach(role =>
+                                                                        connections.reduce((acc, connection) =>
                                                                         {
-                                                                            if (sankeyTree.getRoles().every(n_role =>
+                                                                            return (err) =>
                                                                             {
-                                                                                return role.id !== n_role.id;
-                                                                            })) {
-                                                                                deletedRoles.push(role);
-                                                                            }
-                                                                            else if (sankeyTree.getRoles().every(n_role =>
-                                                                            {
-                                                                                if(role.id === n_role.id){
-                                                                                    return false;
+                                                                                if (err) {
+                                                                                    acc(err);
                                                                                 }
-                                                                                if(n_role.labels[0].text === role.labels[0].text){
-                                                                                    return false;
+                                                                                else {
+                                                                                    let fromNodeIndex = roleIDs.indexOf(connection.source.node);
+                                                                                    let toNodeIndex = roleIDs.indexOf(connection.target.node);
+
+                                                                                    let fromNodeRoleName = roles[fromNodeIndex].labels[0].text;
+                                                                                    let toNodeRoleName = roles[toNodeIndex].labels[0].text;
+
+                                                                                    let fromNodeRoleIndex = roleNames.indexOf(fromNodeRoleName);
+                                                                                    let toNodeRoleIndex = roleNames.indexOf(toNodeRoleName);
+                                                                                    // TODO: RoleIndex check if -1
+                                                                                    let fromNodeID = usersAndRoleDocuments[fromNodeRoleIndex]._id;
+                                                                                    let toNodeID = usersAndRoleDocuments[toNodeRoleIndex]._id;
+
+                                                                                    this.addChildrenToRole(fromNodeID, toNodeID, (err) =>
+                                                                                    {
+                                                                                        if (err) {
+                                                                                            acc(err);
+                                                                                        }
+                                                                                        else {
+                                                                                            acc(null);
+                                                                                        }
+                                                                                    })
                                                                                 }
-                                                                                return true;
-                                                                            })) {
-                                                                                deletedRoles.push(role);
-                                                                            }
-                                                                        });
-                                                                        let deletedRolesIds = deletedRoles.map(role =>
-                                                                        {
-                                                                            deletedRolesNames.push(role.labels[0].text);
-                                                                            return oldUsersAndRoles.getIdByRoleName(role.labels[0].text);
-                                                                        });
-                                                                        let renamedRoles = {};
-                                                                        oldSankey.getRoles().forEach(role =>
-                                                                        {
-                                                                            let newName = -1;
-                                                                            sankeyTree.getRoles().forEach(_role=>{
-                                                                                if(_role.id === role.id){
-                                                                                    if(role.labels[0].text !== _role.labels[0].text){
-                                                                                        newName = _role.labels[0].text;
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                            if(newName !== -1){
-                                                                                renamedRoles[role.labels[0].text] = newName;
-                                                                            }
-                                                                        });
-                                                                        processStructureController.setProcessStructuresUnavailable(deletedRolesIds, deletedRolesNames, renamedRoles,(err) =>
+                                                                            };
+                                                                        }, (err) =>
                                                                         {
                                                                             if (err) {
                                                                                 callback(err);
                                                                             }
                                                                             else {
-                                                                                callback(null);
+                                                                                // All done here
+
+                                                                                // Looking for roles that have been removed.
+                                                                                let deletedRoles = [];
+                                                                                let deletedRolesNames = [];
+                                                                                oldSankey.getRoles().forEach(role =>
+                                                                                {
+                                                                                    if (sankeyTree.getRoles().every(n_role =>
+                                                                                    {
+                                                                                        return role.id !== n_role.id;
+                                                                                    })) {
+                                                                                        deletedRoles.push(role);
+                                                                                    }
+                                                                                    else if (sankeyTree.getRoles().every(n_role =>
+                                                                                    {
+                                                                                        if (role.id === n_role.id) {
+                                                                                            return false;
+                                                                                        }
+                                                                                        if (n_role.labels[0].text === role.labels[0].text) {
+                                                                                            return false;
+                                                                                        }
+                                                                                        return true;
+                                                                                    })) {
+                                                                                        deletedRoles.push(role);
+                                                                                    }
+                                                                                });
+                                                                                let deletedRolesIds = deletedRoles.map(role =>
+                                                                                {
+                                                                                    deletedRolesNames.push(role.labels[0].text);
+                                                                                    return oldUsersAndRoles.getIdByRoleName(role.labels[0].text);
+                                                                                });
+                                                                                let renamedRoles = {};
+                                                                                oldSankey.getRoles().forEach(role =>
+                                                                                {
+                                                                                    let newName = -1;
+                                                                                    sankeyTree.getRoles().forEach(_role =>
+                                                                                    {
+                                                                                        if (_role.id === role.id) {
+                                                                                            if (role.labels[0].text !== _role.labels[0].text) {
+                                                                                                newName = _role.labels[0].text;
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                    if (newName !== -1) {
+                                                                                        renamedRoles[role.labels[0].text] = newName;
+                                                                                    }
+                                                                                });
+                                                                                processStructureController.setProcessStructuresUnavailable(deletedRolesIds, deletedRolesNames, renamedRoles, (err) =>
+                                                                                {
+                                                                                    if (err) {
+                                                                                        callback(err);
+                                                                                    }
+                                                                                    else {
+                                                                                        callback(null);
+                                                                                    }
+                                                                                });
                                                                             }
-                                                                        });
+                                                                        })(null);
                                                                     }
                                                                 })(null);
                                                             }
-                                                        })(null);
+                                                        });
                                                     }
                                                 });
                                             }
@@ -317,32 +376,36 @@ module.exports.setUsersAndRolesTree = (userEmail,sankey, roleToEmails, callback)
                         });
                     }
                 }
-                else{
+                else {
                     callback('ERROR: You have no permissions to edit the tree')
                 }
             }
         });
     };
 
-    userAccessor.findInSankeyTree({}, (err, _sankeyTree) => {
-        if(_sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}"){
-            userPermissionsController.setUserPermissions(new UserPermissions(userEmail,[true,true,true,true]),(err)=>{
-                if(err){
+    userAccessor.findInSankeyTree({}, (err, _sankeyTree) =>
+    {
+        if (_sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}") {
+            userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
+            {
+                if (err) {
                     callback(err);
                 }
-                else{
+                else {
                     commonCallback();
                 }
             })
         }
-        else{
+        else {
             commonCallback();
         }
     });
 };
 
-module.exports.getRoleIdByUsername = function (username, callback) {
-    userAccessor.findRole({userEmail: username}, (err, user) => {
+module.exports.getRoleIdByUsername = function (username, callback)
+{
+    userAccessor.findRole({userEmail: username}, (err, user) =>
+    {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(new Error("no role found for username: " + username));
@@ -351,8 +414,10 @@ module.exports.getRoleIdByUsername = function (username, callback) {
     });
 };
 
-module.exports.getRoleNameByRoleID = function (roleID, callback) {
-    userAccessor.findRole({_id: roleID}, (err, user) => {
+module.exports.getRoleNameByRoleID = function (roleID, callback)
+{
+    userAccessor.findRole({_id: roleID}, (err, user) =>
+    {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(null, null);
@@ -361,18 +426,34 @@ module.exports.getRoleNameByRoleID = function (roleID, callback) {
     });
 };
 
-module.exports.getRoleNameByUsername = function (username,callback)
+module.exports.getRoleNameByUsername = function (username, callback)
 {
     userAccessor.findRole({userEmail: username}, (err, user) =>
     {
         if (err) callback(err);
         else {
-            if (user.length === 0){
+            if (user.length === 0) {
                 callback(new Error("no such role found"));
             }
-            else{
+            else {
                 callback(null, user[0].roleName);
             }
+        }
+    });
+};
+
+module.exports.getFullNameByEmail = (email, callback) =>
+{
+    userAccessor.findUsername({userEmail: email}, (err, result) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else if (result.length === 0) {
+            callback(new Error("full name not found"));
+        }
+        else {
+            callback(null, result[0].userName);
         }
     });
 };
@@ -380,60 +461,53 @@ module.exports.getRoleNameByUsername = function (username,callback)
 module.exports.getAllUsers = (callback) =>
 {
     let toReturn = [];
-    userAccessor.findUser({}, (err,res)=>{
-        if(err) callback(err);
-        else
-        {
-            for(let i=0;i< res.length;i++)
-            {
-                for(let j=0;j < res[i].userEmail.length;j++)
-                {
+    userAccessor.findUser({}, (err, res) =>
+    {
+        if (err) callback(err);
+        else {
+            for (let i = 0; i < res.length; i++) {
+                for (let j = 0; j < res[i].userEmail.length; j++) {
                     toReturn.push(res[i].userEmail[j]);
                 }
             }
-            callback(null,toReturn);
+            callback(null, toReturn);
         }
     });
 };
 
-function getAllChildren(userEmail,callback){
-    userAccessor.findUser({}, (err,res)=>{
-        if(err) callback(err);
-        else
-        {
+function getAllChildren(userEmail, callback)
+{
+    userAccessor.findUser({}, (err, res) =>
+    {
+        if (err) callback(err);
+        else {
             let children = [];
             let roleOfUser = '';
             let roleMapping = {};
-            for(let i=0;i < res.length;i++)
-            {
+            for (let i = 0; i < res.length; i++) {
                 roleMapping[res[i]._id] = res[i];
-                for(let j=0;j < res[i].userEmail.length;j++)
-                {
-                    if(res[i].userEmail[j] === userEmail)
-                    {
+                for (let j = 0; j < res[i].userEmail.length; j++) {
+                    if (res[i].userEmail[j] === userEmail) {
                         roleOfUser = res[i];
                     }
                 }
             }
-            for(let i=0;i<roleOfUser.children.length;i++)
-            {
-                children = children.concat(getChildrenRecursive(roleMapping[roleOfUser.children[i]],roleMapping));
+            for (let i = 0; i < roleOfUser.children.length; i++) {
+                children = children.concat(getChildrenRecursive(roleMapping[roleOfUser.children[i]], roleMapping));
             }
-            callback(null,children);
+            callback(null, children);
         }
     });
 }
 
-function getChildrenRecursive(role,roleMapping)
+function getChildrenRecursive(role, roleMapping)
 {
     let toReturn = [];
-    for(let i=0;i<role.userEmail.length;i++)
-    {
+    for (let i = 0; i < role.userEmail.length; i++) {
         toReturn.push(role.userEmail[i]);
     }
-    for(let i=0;i<role.children.length;i++)
-    {
-        toReturn = toReturn.concat(getChildrenRecursive(roleMapping[role.children[i]],roleMapping));
+    for (let i = 0; i < role.children.length; i++) {
+        toReturn = toReturn.concat(getChildrenRecursive(roleMapping[role.children[i]], roleMapping));
     }
     return toReturn;
 }

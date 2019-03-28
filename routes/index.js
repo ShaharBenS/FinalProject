@@ -14,10 +14,17 @@ router.get('/getTopBar', function (req, res)
     usersAndRolesController.getRoleNameByUsername(req.user.emails[0].value, (err, roleName) =>
     {
         if (err) {
-            res.render('topbar', {roleName: "RoleNotFound", userFullName: 'ברק קולובוס'});
+            res.render('topbar', {roleName: "RoleNotFound", userFullName: ''});
         }
         else {
-            res.render('topbar', {roleName: roleName, userFullName: 'ברק קולובוס'});
+            usersAndRolesController.getFullNameByEmail(req.user.emails[0].value,(err,fullName)=>{
+                if(err){
+                    res.render('topbar', {roleName: roleName, userFullName: 'FullNameNotFound'});
+                }
+                else{
+                    res.render('topbar', {roleName: roleName, userFullName: fullName});
+                }
+            });
         }
     });
 });

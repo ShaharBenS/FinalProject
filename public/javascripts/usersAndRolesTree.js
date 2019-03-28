@@ -2,6 +2,7 @@ let add_label = function () {};
 
 let roleToEmails = {};     // roleName to usersEmail
 let idToRole = {};
+let emailToFullName = {};
 
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.onreadystatechange = function() {
@@ -12,6 +13,17 @@ xmlHttp.onreadystatechange = function() {
 };
 xmlHttp.open("GET", '/usersAndRoles/getRoleToEmails/', true);
 xmlHttp.send(null);
+
+
+var xmlHttp1 = new XMLHttpRequest();
+xmlHttp1.onreadystatechange = function() {
+    if (xmlHttp1.readyState === 4 && xmlHttp1.status === 200)
+    {
+        emailToFullName = JSON.parse(xmlHttp1.responseText)
+    }
+};
+xmlHttp1.open("GET", '/usersAndRoles/getEmailToFullName/', true);
+xmlHttp1.send(null);
 
 $(document).ready(()=>{
     var modal = document.getElementById('select_users_modal');
@@ -72,29 +84,50 @@ function rolesToHTML(roleName)
 
     roleToEmails[roleName].forEach((userEmail) =>
     {
+        let outerDiv = document.createElement("div");
+        outerDiv.style.display = "flex";
+        outerDiv.style.flexDirection = "row";
+        outerDiv.style.alignItems = "center";
+        outerDiv.style.justifyContent = "space-between";
+
         let div = document.createElement("div");
-        let button = document.createElement("button");
-        button.class = "btn";
-        button.innerText = '-';
-        button.onclick = ()=>{
+        div.style.display = "flex";
+        div.style.flexDirection = "row";
+        div.style.alignItems = "center";
+
+        let a = document.createElement("a");
+        a.innerHTML = '<i class="ion ion-android-remove-circle" style="font-size: 30px"></i>';
+        a.style.marginRight = "10px";
+        a.onclick = ()=>{
             let index = roleToEmails[roleName].indexOf(userEmail);
             if(index > -1){
                 roleToEmails[roleName].splice(index,1);
+                delete emailToFullName[userEmail];
             }
             rolesToHTML(roleName);
         };
 
         let label = document.createElement("label");
         label.innerText = userEmail;
-        div.appendChild(button);
+        div.appendChild(a);
         div.appendChild(label);
-        users_div.append(div);
+
+        outerDiv.append(div);
+
+        label = document.createElement("label");
+        label.innerText = emailToFullName[userEmail];
+        outerDiv.append(label);
+
+        users_div.append(outerDiv);
     });
     let div = document.createElement("div");
-    let button = document.createElement("button");
-    button.class = "btn";
-    button.innerText = '+';
-    button.onclick = () =>
+    div.style.display = "flex";
+    div.style.flexDirection = "row";
+    div.style.alignItems = "center";
+    div.style.justifyContent = "center";
+    let a = document.createElement("a");
+    a.innerHTML = '<i class="ion ion-android-add-circle" style="font-size: 30px"></i>';
+    a.onclick = () =>
     {
         alertify.prompt("הכנס אימייל:","",(evt,email)=>{
             if (email != null) {
@@ -103,22 +136,32 @@ function rolesToHTML(roleName)
                     roleToEmails[roleName].forEach(userEmail=>{
                         if(email === userEmail){
                             found = true;
-                            alertify.alert('email already in use, in role: '+roleName)
+                            alertify.alert('המייל כבר בשימוש, בתפקיד: '+roleName)
                         }
                     })
                 });
                 if(!found){
-                    roleToEmails[roleName].push(email);
-                    rolesToHTML(roleName);
+                    setTimeout(()=>{
+                        alertify.prompt("הכנס שם מלא:","",(evt,fullName)=>{
+                            emailToFullName[email] = fullName;
+                            roleToEmails[roleName].push(email);
+                            rolesToHTML(roleName);
+                        });
+                    },400);
                 }
             }
         });
     };
-    div.appendChild(button);
+    users_div.appendChild(document.createElement("br"));
+    div.appendChild(a);
     users_div.append(div);
 }
 
 function deleteRoleById(id){
+    let emails = roleToEmails[idToRole[id]];
+    emails.forEach(email=>{
+       delete emailToFullName[email];
+    });
     delete roleToEmails[idToRole[id]];
     delete idToRole[id];
 }

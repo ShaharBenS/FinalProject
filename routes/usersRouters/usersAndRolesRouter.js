@@ -49,14 +49,26 @@ router.get('/getRoleToEmails', (req, res) =>
     });
 });
 
-router.get('/getIdToRole', (req, res) =>
+router.get('/getEmailToFullName', (req, res) =>
 {
-    UsersAndRolesController.getIdToRole((err, idToRole) =>
-    {
+    UsersAndRolesController.getEmailToFullName((err,emailToFullName)=>{
         if(err){
             res.send(err);
         }
         else{
+            res.send(emailToFullName);
+        }
+    });
+});
+
+router.get('/getIdToRole', (req, res) =>
+{
+    UsersAndRolesController.getIdToRole((err, idToRole) =>
+    {
+        if (err) {
+            res.send(err);
+        }
+        else {
             res.send(idToRole);
         }
     });
