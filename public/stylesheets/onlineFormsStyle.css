@@ -7,15 +7,28 @@ table {
     width: 100%;
 }
 
+.no_table {
+    border: none;
+    width: 100%;
+}
+
+label {
+    padding: 0 10px
+}
+
 tr > th {
     text-align: center;
     padding: 8px;
+    background-color: ghostwhite;
+}
+
+fieldset > input {
+    margin: 10px;
 }
 
 td > input {
     width: 100%;
     text-align: center;
-    background-color: whitesmoke;
     border: none;
     padding: 7px;
 }

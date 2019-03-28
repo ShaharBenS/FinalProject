@@ -5,7 +5,7 @@ let onlineFormAccessor = require('../../models/accessors/onlineFormsAccessor');
 module.exports.createAllOnlineForms = () => {
     this.createOnlineFrom("the form 1", "file1", (err) => {
     });
-    this.createOnlineFrom("the form 2", "file2", (err) => {
+    this.createOnlineFrom("טופס החתמה על ציוד", "טופס_החתמה_על_ציוד", (err) => {
     });
 };
 
