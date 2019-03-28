@@ -263,12 +263,13 @@ class activeProcess {
         return this.getStageByStageNum(this._currentStages[0]).userEmail;
     }
 
-    getStageNumberForUser(userEmail){
-        for(let i=0;i<this._stages.length;i++)
+    getCurrentStageNumberForUser(userEmail){
+        for(let i=0;i<this._currentStages.length;i++)
         {
-            if(this._stages[i].userEmail === userEmail)
+            let stage = this.getStageByStageNum(this._currentStages[i]);
+            if(stage.userEmail === userEmail)
             {
-                return this._stages[i].stageNum;
+                return stage.stageNum;
             }
         }
         return -1;
@@ -285,7 +286,9 @@ class activeProcess {
                 hasChanged = true;
             }
         }
-        return hasChanged;
+        if(!hasChanged)
+            throw new Error('cant assign user');
+        return true;
     }
 
     unAssignUserToStage(roleID,userEmail){
@@ -299,7 +302,9 @@ class activeProcess {
                 hasChanged = true;
             }
         }
-        return hasChanged;
+        if(!hasChanged)
+            throw new Error('cant unassign user');
+        return true;
     }
 
     isFinished()

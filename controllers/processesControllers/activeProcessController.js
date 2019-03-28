@@ -595,7 +595,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
             filledForms: [],
             fileNames: [],
             action: "return",
-            stageNum: process.getStageNumberForUser(userEmail)
+            stageNum: process.getCurrentStageNumberForUser(userEmail)
         };
         processAccessor.updateActiveProcess({processName: processName}, {
             currentStages: process.currentStages,
@@ -623,7 +623,7 @@ module.exports.cancelProcess = function(userEmail,processName,comments,callback)
         else
         {
             let today = new Date();
-            let stage = {comments: comments , filledForms : [], fileNames : [], action: "cancel", stageNum: process.getStageNumberForUser(userEmail)};
+            let stage = {comments: comments , filledForms : [], fileNames : [], action: "cancel", stageNum: process.getCurrentStageNumberForUser(userEmail)};
             processAccessor.deleteOneActiveProcess({processName: processName},(err)=>{
                 if(err) callback(err);
                 else

@@ -27,7 +27,8 @@
     "popups": "^1.1.3",
     "pug": "^2.0.3",
     "pug-bootstrap": "0.0.15",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "bson": "latest"
   },
   "devDependencies": {
     "chai": "^4.2.0",
