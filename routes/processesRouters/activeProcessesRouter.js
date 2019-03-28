@@ -122,11 +122,14 @@ router.post('/cancelProcess', function (req, res) {
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getAllActiveProcessesByUser(userName, (err, array) => {
-        if (err) res.send(err);
-        handleRolesAndStages(array);
-        activeProcessController.convertDate(array[0]);
-        activeProcessController.convertDate2(array[0]);
-        res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
+        if (err) res.render('errorViews/error');
+        else
+        {
+            handleRolesAndStages(array);
+            activeProcessController.convertDate(array[0]);
+            activeProcessController.convertDate2(array[0]);
+            res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
+        }
     });
 });
 
@@ -134,7 +137,7 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
 router.get('/getAllProcessesReportsByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
-        if (err) res.send(err);
+        if (err) res.render('errorViews/error');
         processReportController.convertDate(array);
         res.render('reportsViews/processReportPage', {processReports: array});
     });
@@ -168,16 +171,24 @@ function handleRolesAndStages(array) {
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getWaitingActiveProcessesByUser(userName, (err, array) => {
-        handleRolesAndStages(array);
-        activeProcessController.convertDate(array[0]);
-        res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
+        if(err) res.render('errorViews/error');
+        else
+        {
+            handleRolesAndStages(array);
+            activeProcessController.convertDate(array[0]);
+            res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
+        }
     });
 });
 
 router.get('/getAvailableActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getAvailableActiveProcessesByUser(userName, (err, array) => {
-        res.render('activeProcessesViews/myAvailableProcessesPage', {availableProcesses: array, username: userName});
+        if(err) res.render('errorViews/error');
+        else
+        {
+            res.render('activeProcessesViews/myAvailableProcessesPage', {availableProcesses: array, username: userName});
+        }
     });
 });
 
@@ -186,7 +197,7 @@ router.get('/handleProcessView', function (req, res) {
     let processName = req.query.process_name;
     activeProcessController.getNextStagesRolesAndOnlineForms(processName, userName, (err, rolesArr) => {
         if (err) {
-            res.send(err);
+            res.render('errorViews/error');
         } else {
             res.render('activeProcessesViews/handleProcess', {
                 userName: userName, processName: processName,
@@ -199,7 +210,7 @@ router.get('/handleProcessView', function (req, res) {
 router.get('/reportProcess', function (req, res) {
     let process_name = req.query.process_name;
     activeProcessController.processReport(process_name, (err, result) => {
-        if (err) res.send(err);
+        if (err) res.render('errorViews/error');
         else
             res.render('reportsViews/processReport', {
                 processDetails: result[0],
