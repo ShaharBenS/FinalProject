@@ -1,5 +1,3 @@
-let processStructureStage = require("./processStructureStage");
-
 class activeProcessStage {
 
     constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, approvalTime, onlineForms, filledOnlineForms, attachedFilesNames, comments)
@@ -18,7 +16,14 @@ class activeProcessStage {
     }
 
     removeStagesToWaitFor(stages) {
-        this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
+        }
+        else
+        {
+            throw new Error();
+        }
     }
 
     handleStage(filledForms, fileNames, comments)

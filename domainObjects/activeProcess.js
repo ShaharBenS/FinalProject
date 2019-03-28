@@ -286,27 +286,31 @@ class activeProcess {
     }
 
     assignUserToStage(roleID,userEmail){
+        let hasChanged = false;
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
             if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === undefined)
             {
                 currentStage.userEmail = userEmail;
+                hasChanged = true;
             }
         }
-        return -1;
+        return hasChanged;
     }
 
     unAssignUserToStage(roleID,userEmail){
+        let hasChanged = false;
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
             if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === userEmail)
             {
                 currentStage.userEmail = undefined;
+                hasChanged = true;
             }
         }
-        return -1;
+        return hasChanged;
     }
 
     isFinished()

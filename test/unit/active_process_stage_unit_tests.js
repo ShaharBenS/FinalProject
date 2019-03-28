@@ -14,8 +14,8 @@ const roleID = 0;
 
 let stage0, stage1;
 let initStages = function () {
-    stage0 = new ActiveProcessStage(roleID, undefined, 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage1 = new ActiveProcessStage(roleID, undefined, 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage0 = new ActiveProcessStage(roleID, null, 0, [1], [], [], null, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage1 = new ActiveProcessStage(roleID, null, 1, [2, 3], [0], [0], null, onlineForms, filledOnlineForms, attachedFilesNames, comments);
 };
 
 
@@ -25,19 +25,19 @@ describe('1.0 remove stages to wait for', function () {
 
     it('1.1 removes a stage normally', () => {
         assert.deepEqual(stage1.stagesToWaitFor, [0]);
-        stage1.removeStagesToWaitFor(0);
+        stage1.removeStagesToWaitFor([0]);
         assert.deepEqual(stage1.stagesToWaitFor, []);
     });
 
     it('1.2 removes stage that does not wait for', () => {
         assert.deepEqual(stage1.stagesToWaitFor, [0]);
-        expect(() => stage1.removeStagesToWaitFor(3)).to.throw();
+        stage1.removeStagesToWaitFor([1]);
         assert.deepEqual(stage1.stagesToWaitFor, [0]);
     });
 
-    it('1.3 removes undefined stage', () => {
+    it('1.3 removes non numeric stage', () => {
         assert.deepEqual(stage1.stagesToWaitFor, [0]);
-        expect(() => stage1.removeStagesToWaitFor(undefined)).to.throw();
+        expect(() => stage1.removeStagesToWaitFor([undefined])).to.throw();
         assert.deepEqual(stage1.stagesToWaitFor, [0]);
     });
 });
