@@ -15,3 +15,7 @@ module.exports.deleteAllNotifications = (criteria,callback)=>{
 module.exports.updateNotification = (criteria,update,callback)=>{
     return notifications.updateMany(criteria,update,callback);
 };
+
+module.exports.countNotifications = (criteria,callback)=>{
+    return notifications.count(criteria,callback);
+};
