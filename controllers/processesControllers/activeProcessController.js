@@ -669,8 +669,11 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback){
         return;
     }
     filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
-        filledFormsArray.push(forms);
-        getFilledOnlineForms(filledFormIds,index+1,filledFormsArray,callback);
+        if(err) callback(err);
+        else{
+            filledFormsArray.push(forms);
+            getFilledOnlineForms(filledFormIds,index+1,filledFormsArray,callback);
+        }
     });
 }
 
