@@ -264,7 +264,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                                         }
                                     }
                                 });
-                                if(flag === true)
+                                if(flag === false)
                                 {
                                     userEmailsArrays.push(currUserEmails);
                                 }
