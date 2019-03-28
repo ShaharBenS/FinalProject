@@ -22,17 +22,17 @@
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
 
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
     <script src="/javascripts/onlineForms.js"></script>
     <link href="/stylesheets/onlineFormsStyle.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
 </head>
 <body dir="rtl">
 <div align="center">
-    <div class="main-div">
+    <div class="main-div-forms">
         <h2 id="formTitle"><u></u></h2>
         <br>
         <h3 id="info"></h3>
-        <br>
+        <hr class="orange-hr">
         <div align="right">
             <form id="form" onsubmit="return submitForm()">
                 <fieldset id="fieldset">
@@ -114,9 +114,23 @@
 
                     <hr>
 
-                    תאריך:___________________ חתימת שואל:___________________
-                    <br><br>
-                    תאריך:___________________ חתימת משאיל:___________________
+                    <table class="no_table" id="signatures">
+                        <tbody>
+                        <tr>
+                            <td><label for="date_1">תאריך</label></td>
+                            <td><input id="date_1" name="date_1" type="text"></td>
+                            <td><label for="signature_1">חתימת השואל:</label></td>
+                            <td><input id="signature_1" name="signature_1" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="date_2">תאריך</label></td>
+                            <td><input id="date_2" name="date_2" type="text"></td>
+                            <td><label for="signature_2">חתימת המשאיל:</label></td>
+                            <td><input id="signature_2" name="signature_2" type="text"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                     <hr>
                     <br>
                     <input class="btn-default" id="submitButton" type="submit" value="שלח">

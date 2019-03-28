@@ -103,6 +103,8 @@ let disableForm = function () {
 
 let setupInputs = function (formName, isForShow, fields) {
 
+    setupLabelCells();
+
     if (fields !== 'false') {
         fillForm(fields)
     } else if (isForShow) {
@@ -152,9 +154,15 @@ let setupTable = function (num_of_rows, table) {
     }
 };
 
+let setupLabelCells = function () {
+    let tds = Array.prototype.slice.call(document.getElementsByTagName('td'));
+    tds.forEach((td) => {
+        if (td.children[0].tagName.toLowerCase() === 'label') td.className = 'no_input'
+    })
+};
+
 let setupTables = function (num_of_rows, table_id) {
     let tables;
-
     if (table_id === 'every_table') {
         tables = Array.prototype.slice.call(document.getElementsByTagName('table'));
         tables.forEach((table) => surroundTableWithDivAndAddButtons(table));

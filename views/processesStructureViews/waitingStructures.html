@@ -11,8 +11,7 @@
     <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
 
     <script>
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             $('#example').DataTable(tableLanguageOption);
             setTopBar();
         });
@@ -33,39 +32,52 @@
 <body dir="rtl">
 <div id="top-bar" class="top-bar">
 </div>
-<br><br>
-<div align="center" class="row">
-    <h1 style="margin: auto">מבני תהליכים הממתינים לאישור</h1>
-</div>
-<br>
-<div class="row">
-    <div align="center" style="margin: auto; width:83%">
-        <table id="example" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-            <tr>
-                <th>שם המבנה</th>
-                <th>האדם שרוצה לשנות</th>
-                <th>סוג שינוי</th>
-                <th>תאריך</th>
-                <th>המבנה החדש</th>
-                <th></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <%waitingStructures.forEach(function(waitingStructure){%>
-            <tr>
-                <td><%=waitingStructure.structureName%></td>
-                <td><%=waitingStructure.userEmail%></td>
-                <td><%=waitingStructure.addOrEdit ? 'הוספה' : 'עריכה'%></td>
-                <td><%=waitingStructure.date%></td>
-                <td><button class="btn btn-default" onclick="viewStructureClicked(this.id)" id=<%='view_'+waitingStructure.id%>>ראה</button></td>
-                <td><button class="btn btn-default" onclick="approveClicked(this.id)" id=<%='approve_'+waitingStructure.id%>>אשר שינוי</button></td>
-                <td><button class="btn btn-default" onclick="disapproveClicked(this.id)" id=<%='disapprove_'+waitingStructure.id%>>דחה שינוי</button></td>
-            </tr>
-            <%})%>
-            </tbody>
-        </table>
+<div align="center">
+    <div class="main-div-tables">
+        <h1>מבני תהליכים הממתינים לאישור</h1>
+        <hr class="orange-hr">
+        <div class="row">
+            <div align="center" style="margin: auto; width:83%">
+                <table class="table table-striped table-bordered" id="example" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>שם המבנה</th>
+                        <th>האדם שרוצה לשנות</th>
+                        <th>סוג שינוי</th>
+                        <th>תאריך</th>
+                        <th>המבנה החדש</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%waitingStructures.forEach(function(waitingStructure){%>
+                    <tr>
+                        <td><%=waitingStructure.structureName%></td>
+                        <td><%=waitingStructure.userEmail%></td>
+                        <td><%=waitingStructure.addOrEdit ? 'הוספה' : 'עריכה'%></td>
+                        <td><%=waitingStructure.date%></td>
+                        <td>
+                            <button class="btn btn-default" id=<%='view_'+waitingStructure.id%
+                                    onclick="viewStructureClicked(this.id)">>ראה
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-default" id=<%='approve_'+waitingStructure.id%
+                                    onclick="approveClicked(this.id)">>אשר שינוי
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-default" id=<%='disapprove_'+waitingStructure.id%
+                                    onclick="disapproveClicked(this.id)">>דחה שינוי
+                            </button>
+                        </td>
+                    </tr>
+                    <%})%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 </body>
