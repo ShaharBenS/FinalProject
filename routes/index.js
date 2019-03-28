@@ -11,7 +11,6 @@ router.get('/', function (req, res)
 
 router.get('/getTopBar', function (req, res)
 {
-
     if (req.isAuthenticated()) {
         usersAndRolesController.getRoleNameByUsername(req.user.emails[0].value, (err, roleName) =>
         {

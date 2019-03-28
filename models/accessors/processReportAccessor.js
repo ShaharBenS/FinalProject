@@ -15,3 +15,16 @@ module.exports.deleteOneProcessReport = (PR, callback) => {
 module.exports.updateProcessReport = (PR, update, callback) => {
     return processReportSchema.updateOne(PR, update, callback);
 };
+
+module.exports.findProcessesReports = (AP, callback) => {
+    return processReportSchema.find(AP, (err, processReportsArray) => {
+        if (err)
+            callback(err);
+        else {
+            if (processReportsArray.length > 0) {
+                callback(null, processReportsArray);
+            } else
+                callback(null, null);
+        }
+    });
+};
