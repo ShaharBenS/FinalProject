@@ -104,10 +104,11 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     stages: newStages,
                                     lastApproached: today,
                                     processDate: processDate,
-                                    processUrgency: processUrgency
+                                    processUrgency: processUrgency,
+                                    processCreatorEmail: userEmail
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else processReportController.addProcessReport(processName, today, processDate, processUrgency, (err) => {
+                                    else processReportController.addProcessReport(processName, today, processDate, processUrgency,userEmail, (err) => {
                                         if (err) {
                                             callback(err);
                                         } else {

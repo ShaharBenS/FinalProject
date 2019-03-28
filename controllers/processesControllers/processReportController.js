@@ -4,12 +4,13 @@ let processReportAccescor = require('../../models/accessors/processReportAccesso
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 
 
-function addProcessReport(processName, creationTime,processDate,processUrgency,callback){
+function addProcessReport(processName, creationTime,processDate,processUrgency,processCreatorEmail,callback){
     processAccessor.createProcessReport({
         processName: processName,
-        status: 'activated',
+        status: 'פעיל',
         processDate: processDate,
         processUrgency: processUrgency,
+        processCreatorEmail: processCreatorEmail,
         creationTime: creationTime,
         stages: []
     }, (err) => {
@@ -77,7 +78,6 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
                             processReports.forEach((process) => {
                                 let flag = true;
                                 let currUserEmails = [];
-                                let x = process;
                                 if (isExistInReport(process,userEmail))
                                 {
                                     flag = false;
@@ -117,6 +117,7 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
 //////////////////////////////////
 function isExistInReport(report,userEmail)
 {
+    let x = report._doc.stages.length;
     for(let i=0;i<report._doc.stages.length;i++)
     {
         if(report._doc.stages[i].userEmail === userEmail)
@@ -124,7 +125,14 @@ function isExistInReport(report,userEmail)
             return true;
         }
     }
-    return false;
+    if(report.processCreatorEmail === userEmail)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 
