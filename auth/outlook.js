@@ -11,7 +11,7 @@ passport.use(new OutlookStrategy({
     {
         usersAccessor.findInSankeyTree({}, (err, _sankeyTree) =>
         {
-            if (_sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}") {
+            if (_sankeyTree[0] === undefined ||_sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}") {
                 done(null, profile);
             }
             else {
