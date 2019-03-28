@@ -40,10 +40,16 @@ router.get('/outlook',
 );
 
 router.get('/outlook/callback',
-    passportOutlook.authenticate('windowslive', { failureRedirect: '/login' }),
-    function(req, res) {
-        // Successful authentication, redirect home.
-        res.redirect('/Home');
+    passportOutlook.authenticate('windowslive', { failureRedirect: '/userViews/login' }),
+    function (req, res)
+    {
+        if (req.isAuthenticated()) {
+            res.redirect('/Home')
+        }
+        else
+        {
+            res.redirect('userViews/login')
+        }
     });
 ///////////////
 module.exports = router;

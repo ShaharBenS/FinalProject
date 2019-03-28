@@ -1,4 +1,4 @@
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html dir="rtl" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
     <title>מבנה תהליך</title>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -11,7 +11,63 @@
     <link rel="stylesheet" href="/draw_sankey/server/html/editor/assets/css/main.css">
 
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="/alertify/alertify.js"></script>
+    <link href="/alertify/css/alertify.css" rel="stylesheet">
+    <link href="/alertify/css/alertify.rtl.css" rel="stylesheet">
+    <script type="text/javascript">
+        //override defaults
+        alertify.defaults = {
+            // dialogs defaults
+            autoReset:true,
+            basic:false,
+            closable:true,
+            closableByDimmer:true,
+            frameless:false,
+            maintainFocus:true, // <== global default not per instance, applies to all dialogs
+            maximizable:true,
+            modal:true,
+            movable:true,
+            moveBounded:false,
+            overflow:true,
+            padding: true,
+            pinnable:true,
+            pinned:true,
+            preventBodyShift:false, // <== global default not per instance, applies to all dialogs
+            resizable:true,
+            startMaximized:false,
+            transition:'pulse',
 
+            // notifier defaults
+            notifier:{
+                // auto-dismiss wait time (in seconds)
+                delay:5,
+                // default position
+                position:'bottom-right',
+                // adds a close button to notifier messages
+                closeButton: false
+            },
+
+            // language resources
+            glossary:{
+                // dialogs default title
+                title:'',
+                // ok button text
+                ok: 'אוקיי',
+                // cancel button text
+                cancel: 'ביטול'
+            },
+
+            // theme settings
+            theme:{
+                // class name attached to prompt dialog input textbox.
+                input:'ajs-input',
+                // class name attached to ok button
+                ok:'ajs-ok',
+                // class name attached to cancel button
+                cancel:'ajs-cancel'
+            }
+        };
+    </script>
     <script>
         let diagramContext = '<%= pageContext %>';
         let processStructureName = '<%= processStructureName %>';
@@ -47,21 +103,22 @@
 
 <body id="container">
 
-<div id="content">
+<div dir="ltr" id="content">
     <div id="editor">
         <div id="palette" align="center">
-            <h6>הוסף שלב התחלתי</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.Start"
+            <h6 style="color:#000">הוסף שלב התחלתי</h6>
+            <img src="/draw_sankey/server/html/editor/assets/img/start-stage.png" data-shape="sankey.shape.Start"
                  class="palette_node_element draw2d_droppable">
-            <h6>הוסף שלב</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.State"
+            <h6 style="color:#000">הוסף שלב</h6>
+            <img src="/draw_sankey/server/html/editor/assets/img/stage.png" data-shape="sankey.shape.State"
                  class="palette_node_element draw2d_droppable">
-            <div style="height: 100px"></div>
-            <button id="saveButton" onclick="confirm()" title="Save Report" class="btn btn-default ion-ios-upload-outline icon"> שמור
+            <div style="height: 40%"></div>
+            <button class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
+            <div style="height: 10%"></div>
+            <button id="saveButton" onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
             </button>
-            <div style="height: 20px"></div>
-            <button class="btn btn-default" onclick="app.view.centerDocument();">מרכז</button>
         </div>
+
         <div id="view">
             <div id="draw2dCanvasWrapper">
                 <div id="canvas" style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0); "></div>
@@ -158,7 +215,7 @@
   #
   -->
 
-<div id="select_role_modal" class="modal">
+<div dir="ltr" id="select_role_modal" class="modal">
 
     <div class="modal-content" dir="rtl">
         <span class="close">&times;</span>
@@ -196,10 +253,10 @@
   #
   -->
 
-<div id="see_forms_modal" class="modal">
+<div dir="ltr" id="see_forms_modal" class="modal">
     <div class="modal-content">
-        <div align="right" dir="rtl">
-            <div class="modal-header">
+        <div>
+            <div dir="rtl" class="modal-header">
                 <h4 class="media-heading">ניהול טפסים מקוונים לשלב</h4>
             </div>
             <div class="modal-body">

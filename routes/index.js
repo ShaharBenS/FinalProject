@@ -11,20 +11,32 @@ router.get('/', function (req, res)
 
 router.get('/getTopBar', function (req, res)
 {
-    usersAndRolesController.getRoleNameByUsername(req.user.emails[0].value, (err, roleName) =>
+    if (req.isAuthenticated()) {
+        usersAndRolesController.getRoleNameByUsername(req.user.emails[0].value, (err, roleName) =>
+        {
+            if (err) {
+                res.render('topbar', {roleName: "RoleNotFound", userFullName: 'ברק קולובוס'});
+            }
+            else {
+                res.render('topbar', {roleName: roleName, userFullName: 'ברק קולובוס'});
+            }
+        });
+    }
+    else
     {
-        if (err) {
-            res.render('topbar', {roleName: "RoleNotFound", userFullName: 'ברק קולובוס'});
-        }
-        else {
-            res.render('topbar', {roleName: roleName, userFullName: 'ברק קולובוס'});
-        }
-    });
+        res.redirect('/')
+    }
 });
 
 router.get('/Home', function (req, res)
 {
-    res.render('index');
+    if (req.isAuthenticated()) {
+        res.render('index')
+    }
+    else
+    {
+        res.redirect('/')
+    }
 });
 
 

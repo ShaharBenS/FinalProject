@@ -40,21 +40,21 @@ $(document).ready(function () {
 function confirmAddProcessStructureClicked() {
     let name = document.getElementById("new-process-structure-name").value;
     if (name === "") {
-        alert("שם לא יכול להיות ריק");
+        alertify.alert("שם לא יכול להיות ריק");
         return;
     }
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if (name === "") {
-                alert("שם לא יכול להיות ריק");
+                alertify.alert("שם לא יכול להיות ריק");
                 return;
             }
             let isProcessExists = false;
             JSON.parse(xmlHttp.responseText).forEach((structureName) => {
                 if (structureName === name) {
                     isProcessExists = true;
-                    alert("תהליך בעל שם זה כבר קיים");
+                    alertify.alert("תהליך בעל שם זה כבר קיים");
                 }
             });
 
@@ -113,10 +113,11 @@ function updateOnlineForms() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if (xmlHttp.responseText === "success") {
-                alert("טפסים נוצרו בהצלחה");
-                window.location.href = '/Home'
+                alertify.alert("טפסים נוצרו בהצלחה",()=>{
+                    window.location.href = '/Home'
+                });
             } else
-                alert(xmlHttp.responseText);
+                alertify.alert(xmlHttp.responseText);
         }
     };
     xmlHttp.open("POST", '/onlineForms/createAllOnlineForms/', true);
@@ -161,16 +162,16 @@ function confirmStartProcess() {
     let notificationTime = parseInt(document.getElementById("start-processes-notification-time").value);
     let data = {processName: processName, structureName: structureName, processDate: processDate, processUrgency: urgency, notificationTime: notificationTime};
     if (processName === "") {
-        alert("שם לא יכול להיות ריק");
+        alertify.alert("שם לא יכול להיות ריק");
         return;
     }
     if (processDate === "") {
-        alert("תאריך לא יכול להיות ריק");
+        alertify.alert("תאריך לא יכול להיות ריק");
         return;
     }
     let today = new Date();
     if(today.getTime() >= new Date(processDate).getTime()){
-        alert("התאריך חייב להיות מאוחר יותר מהיום");
+        alertify.alert("התאריך חייב להיות מאוחר יותר מהיום");
         return;
     }
     $.ajax({
@@ -184,10 +185,11 @@ function confirmStartProcess() {
     ).done(function (responseText, status) {
         if (status === "success") {
             if (responseText === "success") {
-                alert("תהליך נוצר בהצלחה");
-                window.location.href = '/Home';
+                alertify.alert("תהליך נוצר בהצלחה",()=>{
+                    window.location.href = '/Home';
+                });
             } else {
-                alert(responseText);
+                alertify.alert(responseText);
             }
         }
     });
