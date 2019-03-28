@@ -1,11 +1,11 @@
 let express = require('express');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processReportController = require('../../controllers/processesControllers/processReportController');
-
+let usersAccessor = require('../../models/accessors/usersAccessor');
 let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let router = express.Router();
 let formidable = require('formidable');
-
+let moment = require('moment');
 
 /*
   _____   ____   _____ _______
@@ -121,7 +121,11 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
         {
             handleRolesAndStages(array);
             activeProcessController.convertDate(array[0]);
-            activeProcessController.convertDate2(array[0]);
+            for (let i = 0; i < array[0].length; i++) {
+                array[0][i].processDate =  moment(array[0][i].processDate).format("DD/MM/YYYY HH:mm:ss");
+            }
+
+
             res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
         }
     });
@@ -141,8 +145,6 @@ router.get('/getAllProcessesReportsByUser', function (req, res) {
             processReportController.convertDate(array);
             res.render('reportsViews/processReportPage', {processReports: array});
         }
-
-
     });
 });
 /////////////////
