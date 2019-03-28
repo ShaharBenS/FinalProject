@@ -584,7 +584,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
             filledForms: [],
             fileNames: [],
             action: "return",
-            stageNum: process.getStageNumberForUser(userEmail)
+            stageNum: process.getCurrentStageNumberForUser(userEmail)
         };
         processAccessor.updateActiveProcess({processName: processName}, {
             currentStages: process.currentStages,
@@ -610,16 +610,11 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
         if (err) callback(err);
         else {
             let today = new Date();
-            let stage = {
-                comments: comments,
-                filledForms: [],
-                fileNames: [],
-                action: "cancel",
-                stageNum: process.getStageNumberForUser(userEmail)
-            };
-            processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
-                if (err) callback(err);
-                else {
+            let stage = {comments: comments , filledForms : [], fileNames : [], action: "cancel", stageNum: process.getCurrentStageNumberForUser(userEmail)};
+            processAccessor.deleteOneActiveProcess({processName: processName},(err)=>{
+                if(err) callback(err);
+                else
+                {
                     let usersToNotify = process.getParticipatingUsers();
                     processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
                         if (err) {
