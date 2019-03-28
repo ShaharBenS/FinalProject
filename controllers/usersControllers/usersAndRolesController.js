@@ -139,25 +139,25 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                     }, []);
 
                     if (sankeyTree.hasNoRoot()) {
-                        callback('ERROR: there must be at least one role');
+                        callback('שגיאה: חייב להיות לפחות תפקיד אחד בעץ.');
                     }
                     else if (sankeyTree.hasMoreThanOneTree()) {
-                        callback('ERROR: there are two trees in the graph');
+                        callback('שגיאה: יש יותר מעץ אחד.');
                     }
                     else if (Object.keys(roleToEmails).some(key =>
                     {
                         return roleToEmails[key].length === 0;
                     })) {
-                        callback('ERROR: there must be at least one email assigned to each role')
+                        callback('שגיאה: לכל תפקיד חייבל היות מקושר לפחות עובד אחד.')
                     }
                     else if (sankeyTree.hasMultipleConnections()) {
-                        callback('ERROR: there are multiple connections between two nodes')
+                        callback('שגיאה: יש 2 קשרים בין 2 צמתים.')
                     }
                     else if (sankeyTree.hasCycles()) {
-                        callback('ERROR: tree contains cycles');
+                        callback('שגיאה: העץ מכיל מעגלים.');
                     }
                     else if (emails.filter(emailValidator).length !== emails.length) {
-                        callback('ERROR: some email is not valid'); //TODO: tell what specific email is not okay.
+                        callback('שגיאה: אחד או יותר מהמיילים שצורפו לא תקינים.'); //TODO: tell what specific email is not okay.
                     }
                     else {
                         userAccessor.findRole({}, (err, roles) =>
@@ -378,7 +378,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                     }
                 }
                 else {
-                    callback('ERROR: You have no permissions to edit the tree')
+                    callback('שגיאה: אין לך את ההרשאות המתאימות לעריכת עץ המשתמשים.')
                 }
             }
         });

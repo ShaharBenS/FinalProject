@@ -17,5 +17,5 @@ module.exports.updateNotification = (criteria,update,callback)=>{
 };
 
 module.exports.countNotifications = (criteria,callback)=>{
-    return notifications.count(criteria,callback);
+    return notifications.countDocuments(criteria,callback);
 };

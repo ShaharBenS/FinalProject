@@ -1,6 +1,6 @@
 let notificationAccessor = require('../../models/accessors/notificationsAccessor');
 let activeProcessController = require('../processesControllers/activeProcessController');
-let waitingActiveProcessReminderNotification = require('../../domainObjects/notifications/waitingActiveProcessReminderNotification');
+let Notification = require('../../domainObjects/notification');
 
 module.exports.getUserNotifications = (userEmail, callback) =>
 {
@@ -78,8 +78,8 @@ module.exports.updateNotifications = () =>
                             }
                             else {
                                 this.addNotificationToUser(curr,
-                                    new waitingActiveProcessReminderNotification(
-                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות"),
+                                    new Notification(
+                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות","תזכורת להתליך בהמתנה"),
                                     (err) =>
                                     {
                                         if (err) {

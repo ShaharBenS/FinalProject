@@ -54,16 +54,16 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                 }
                             }
                             else
-                                callback(new Error('Some stages have next stages that dont contain them for previous'));
+                                callback(new Error('קיימים שלבים הבאים שלא מכילים את הקודמים'));
                         }
                         else
-                            callback(new Error('Some stages have previous stages that dont contain them for next'));
+                            callback(new Error('קיימים שלבים קודמים הלא מכילים את השלבים הבאים'));
                     }
                     else
-                        callback(new Error('Some initial stages do not exist'));
+                        callback(new Error('חלק מהשלבים ההתחלתיים לא קיימים'));
                 }
                 else
-                    callback(new Error('There are two stages with the same number'));
+                    callback(new Error('קיימים שלבים כפולים'));
             }
         });
     });
@@ -209,19 +209,19 @@ let sankeyToStructure = function (sankeyContent, onlineFormsOfStage, callback)
     let initials = processStructureSankeyObject.getInitials();
 
     if (processStructureSankeyObject.hasNoStages()) {
-        callback('ERROR: there are no stages (need at least one)');
+        callback('שגיאה: אין שלבים (צריך לפחות אחד)');
     }
     else if (processStructureSankeyObject.hasMoreThanOneFlow()) {
-        callback('ERROR: there are two flows in the graph');
+        callback('שגיאה: יש יותר מזרימה אחת בגרף');
     }
     else if (processStructureSankeyObject.hasMultipleConnections()) {
-        callback('ERROR: there are multiple connections between two nodes')
+        callback('שגיאה: יש יותר מחיבור אחד בין 2 שלבים')
     }
     else if (processStructureSankeyObject.firstStageIsNotInitial()) {
-        callback('ERROR: first stage must be an initial stage')
+        callback('שגיאה: השלב הראשון חייב להיות שלב התחלתי')
     }
     else if (processStructureSankeyObject.hasCycles()) {
-        callback('ERROR: structure contains cycles');
+        callback('שגיאה: המבנה מכיל מעגלים');
     }
     else {
         usersAndRolesController.getAllRoles((err, roles) =>
@@ -267,7 +267,7 @@ let sankeyToStructure = function (sankeyContent, onlineFormsOfStage, callback)
                     {
                         return rolesName.includes(roleName);
                     })) {
-                        callback('ERROR: there is a stage with an undefined role');
+                        callback('שגיאה: יש שלב עם תפקיד שלא בעץ המשתמשים');
                         return;
                     }
 
