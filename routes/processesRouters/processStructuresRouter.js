@@ -108,7 +108,7 @@ router.get('/viewWaitingProcessStructure', function (req, res) {
 
 router.get('/getAllProcessStructures', function (req, res) {
     let userEmail = req.user.emails[0].value;
-    processStructureController.getAllProcessStructuresAvailableForUser(userEmail,(err, result) => {
+    processStructureController.getAllProcessStructures((err, result) => {
         if (err) {
             res.send(err);
         } else {

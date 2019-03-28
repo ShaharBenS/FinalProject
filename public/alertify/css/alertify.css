@@ -28,11 +28,12 @@
 .alertify .ajs-dialog {
   position: relative;
   margin: 5% auto;
-  min-height: 110px;
+  min-height: 120px;
   max-width: 500px;
   padding: 24px 24px 0 24px;
   outline: 0;
   background-color: #fff;
+  height:30%;
 }
 .alertify .ajs-dialog.ajs-capture:before {
   content: '';
@@ -112,6 +113,8 @@
   min-width: 88px;
   min-height: 35px;
 }
+
+
 .alertify .ajs-handle {
   position: absolute;
   display: none;
@@ -936,3 +939,4 @@
 .alertify-notifier.ajs-center.ajs-bottom .ajs-message.ajs-visible {
   bottom: 0;
 }
+

@@ -936,3 +936,20 @@
 .alertify-notifier.ajs-center.ajs-bottom .ajs-message.ajs-visible {
   bottom: 0;
 }
+
+.ajs-primary{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ajs-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ajs-input{
+  width:70%
+}

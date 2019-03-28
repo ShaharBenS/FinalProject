@@ -148,7 +148,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                     {
                         return roleToEmails[key].length === 0;
                     })) {
-                        callback('שגיאה: לכל תפקיד חייבל היות מקושר לפחות עובד אחד.')
+                        callback('שגיאה: לכל תפקיד חייב היות מקושר לפחות עובד אחד.')
                     }
                     else if (sankeyTree.hasMultipleConnections()) {
                         callback('שגיאה: יש 2 קשרים בין 2 צמתים.')
