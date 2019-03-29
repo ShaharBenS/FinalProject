@@ -64,7 +64,6 @@ function removeAllNotifications()
                     xhrFields: {
                         withCredentials: true
                     },
-                    data: data,
                 }
             ).done(function (responseText, status)
             {

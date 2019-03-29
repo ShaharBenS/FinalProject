@@ -443,6 +443,17 @@ module.exports.getRoleNameByUsername = function (username, callback)
     });
 };
 
+module.exports.getEmailsByRoleId = (roleId,callback)=>{
+    userAccessor.findRole({_id:roleId},(err,role)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            callback(null,role[0].userEmail);
+        }
+    });
+};
+
 module.exports.getFullNameByEmail = (email, callback) =>
 {
     userAccessor.findUsername({userEmail: email}, (err, result) =>
