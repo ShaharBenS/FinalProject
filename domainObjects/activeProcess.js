@@ -337,6 +337,14 @@ class activeProcess {
             }});
         return isFoundStage;
     }
+/*
+    getCurrentStagesUserEmailsAndRoles(){
+        let answer = [];
+        for(let i=0;i<this._currentStages.length)
+        {
+            let stage = this.getStageByStageNum(this._currentStages[i]);
+        }
+    }*/
 }
 
 module.exports = activeProcess;

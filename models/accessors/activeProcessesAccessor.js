@@ -37,7 +37,7 @@ module.exports.findActiveProcesses = (AP, callback) => {
             } else
                 callback(null, null);
         }
-    });
+    }).populate('User');
 };
 
 module.exports.deleteOneActiveProcess = (AP, callback) => {

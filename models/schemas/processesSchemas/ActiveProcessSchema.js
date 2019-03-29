@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const activeProcessSchema = new Schema({
     processName: {type: String, unique: true},
-    creatorRoleID : {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
+    creatorRoleID : {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
     processDate: Date,
     processUrgency: { type: Number, min: 1, max: 10},
     creationTime: Date,
@@ -11,7 +11,7 @@ const activeProcessSchema = new Schema({
     currentStages: [Number],
     initials: [Number],
     stages: [{
-        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
+        roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
         userEmail: String,
         stageNum: Number,
         nextStages: [Number],
@@ -25,5 +25,14 @@ const activeProcessSchema = new Schema({
     }],
     lastApproached: Date,
 });
+
+activeProcessSchema.virtual('User', {
+    ref: 'UsersNames',
+    localField: 'stages.userEmail',
+    foreignField: 'userEmail'
+});
+
+activeProcessSchema.set('toObject', { virtuals: true });
+activeProcessSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('ActiveProcess', activeProcessSchema);
