@@ -65,12 +65,12 @@
 
                         <td>
                             <%process._currentStages.forEach(function(stage){%>
-                            <%=stage.userEmail%>
+                            <%=stage.user.userName%>
                             <%})%>
                         </td>
                         <td>
                             <%process._currentStages.forEach(function(stage){%>
-                            <%=stage.roleName%>
+                            <%=stage.role.roleName%>
                             <%})%>
                         </td>
                         <td><%=process._lastApproached%></td>

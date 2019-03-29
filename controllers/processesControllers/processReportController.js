@@ -22,31 +22,24 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
     processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
-            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+            usersAndRolesController.getUserIDByEmail(userEmail,(err,userID)=>{
                 if (err) callback(err);
-                else {
-                    let newStage = {
-                        roleID: roleID, userEmail: userEmail, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
-                        comments: stageDetails.comments, action: stageDetails.action, filledOnlineForms: stageDetails.filledForms,
-                        attachedFilesNames: stageDetails.fileNames
-                    };
-                    let stages = [];
-                    processReport.stages.forEach((stage) => {
-                        stages.push({
-                            roleID: stage.roleID,
-                            userEmail: stage.userEmail,
-                            stageNum: stage.stageNum,
-                            approvalTime: stage.approvalTime,
-                            comments: stage.comments,
-                            action: stage.action,
-                            filledOnlineForms: stage.filledOnlineForms,
-                            attachedFilesNames: stage.attachedFilesNames
-                        });
-                    });
-                    stages.push(newStage);
-                    processAccessor.updateProcessReport({processName: processName}, {stages: stages}, (err) => {
+                else
+                {
+                    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                         if (err) callback(err);
-                        else callback(null);
+                        else {
+                            let newStage = {
+                                role: roleID, user: userID, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
+                                comments: stageDetails.comments, action: stageDetails.action, filledOnlineForms: stageDetails.filledForms,
+                                attachedFilesNames: stageDetails.fileNames
+                            };
+                            processReport.push(newStage);
+                            processAccessor.updateProcessReport({processName: processName}, {stages: processReport.stages}, (err) => {
+                                if (err) callback(err);
+                                else callback(null);
+                            });
+                        }
                     });
                 }
             });

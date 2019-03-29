@@ -2,13 +2,13 @@ class activeProcessStage {
 
     constructor(pureObject)
     {
-        this.roleID = pureObject.roleID;
+        this.role = pureObject.role;
         this.stageNum = pureObject.stageNum;
         this.nextStages = pureObject.nextStages;
         this.stagesToWaitFor = pureObject.stagesToWaitFor;
         this.onlineForms = pureObject.onlineForms;
         this.attachedFilesNames = pureObject.attachedFilesNames;
-        this.userEmail = pureObject.userEmail;
+        this.user = pureObject.user;
         this.originStagesToWaitFor = pureObject.originStagesToWaitFor;
         this.approvalTime = pureObject.approvalTime;
         this.filledOnlineForms = pureObject.filledOnlineForms;

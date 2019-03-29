@@ -56,76 +56,83 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
  */
 
 module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, notificationTime, callback) => {
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
-        if (err) {
-            callback(err);
-        } else {
-            processStructureController.getProcessStructure(processStructureName, (err, processStructure) => {
+    usersAndRolesController.getUserIDByEmail(userEmail,(err,userID)=>{
+        if(err) callback(err);
+        else
+        {
+            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) {
                     callback(err);
                 } else {
-                    if (!processStructure.available) {
-                        callback(new Error('This process structure is currently unavailable duo to changes in roles'));
-                        return;
-                    }
-                    processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
+                    processStructureController.getProcessStructure(processStructureName, (err, processStructure) => {
                         if (err) {
                             callback(err);
                         } else {
-                            if (activeProcesses === null) {
-                                let initialStage = processStructure.getInitialStageByRoleID(roleID);
-                                if (initialStage === -1) {
-                                    callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
-                                    return;
-                                }
-                                let newStages = [];
-                                processStructure.stages.forEach((stage) => {
-                                    newStages.push({
-                                        roleID: stage.roleID,
-                                        userEmail: stage.stageNum === initialStage ? userEmail : null,
-                                        stageNum: stage.stageNum,
-                                        nextStages: stage.nextStages,
-                                        stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
-                                        originStagesToWaitFor: stage.stagesToWaitFor,
-                                        approvalTime: null,
-                                        onlineForms: stage.onlineForms,
-                                        filledOnlineForms: [],
-                                        attachedFilesNames: stage.attachedFilesNames,
-                                    });
-                                });
-                                let today = new Date();
-                                processAccessor.createActiveProcess({
-                                    creatorRoleID: roleID,
-                                    creationTime: today,
-                                    notificationTime: notificationTime,
-                                    currentStages: [initialStage],
-                                    processName: processName,
-                                    initials: processStructure.initials,
-                                    stages: newStages,
-                                    lastApproached: today,
-                                    processDate: processDate,
-                                    processUrgency: processUrgency
-                                }, (err) => {
-                                    if (err) callback(err);
-                                    else processReportController.addProcessReport(processName, today, processDate, processUrgency, (err) => {
-                                        if (err) {
-                                            callback(err);
-                                        } else {
-                                            // Notify first role
-                                            notificationsController.addNotificationToUser(userEmail, new Notification(
-                                                processName+" מסוג "+processStructureName+" מחכה לטיפולך.","תהליך בהמתנה"), callback)
-                                        }
-                                    });
-                                });
-                            } else {
-                                callback(new Error(">>> ERROR: there is already process with the name: " + processName));
+                            if (!processStructure.available) {
+                                callback(new Error('This process structure is currently unavailable duo to changes in roles'));
+                                return;
                             }
+                            processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
+                                if (err) {
+                                    callback(err);
+                                } else {
+                                    if (activeProcesses === null) {
+                                        let initialStage = processStructure.getInitialStageByRoleID(roleID);
+                                        if (initialStage === -1) {
+                                            callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
+                                            return;
+                                        }
+                                        let newStages = [];
+                                        processStructure.stages.forEach((stage) => {
+                                            newStages.push({
+                                                role: stage.roleID,
+                                                user: stage.stageNum === initialStage ? userID : null,
+                                                stageNum: stage.stageNum,
+                                                nextStages: stage.nextStages,
+                                                stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
+                                                originStagesToWaitFor: stage.stagesToWaitFor,
+                                                approvalTime: null,
+                                                onlineForms: stage.onlineForms,
+                                                filledOnlineForms: [],
+                                                attachedFilesNames: stage.attachedFilesNames,
+                                            });
+                                        });
+                                        let today = new Date();
+                                        processAccessor.createActiveProcess({
+                                            creatorRoleID: roleID,
+                                            creationTime: today,
+                                            notificationTime: notificationTime,
+                                            currentStages: [initialStage],
+                                            processName: processName,
+                                            initials: processStructure.initials,
+                                            stages: newStages,
+                                            lastApproached: today,
+                                            processDate: processDate,
+                                            processUrgency: processUrgency
+                                        }, (err) => {
+                                            if (err) callback(err);
+                                            else processReportController.addProcessReport(processName, today, processDate, processUrgency, (err) => {
+                                                if (err) {
+                                                    callback(err);
+                                                } else {
+                                                    // Notify first role
+                                                    notificationsController.addNotificationToUser(userEmail, new Notification(
+                                                        processName+" מסוג "+processStructureName+" מחכה לטיפולך.","תהליך בהמתנה"), callback)
+                                                }
+                                            });
+                                        });
+                                    } else {
+                                        callback(new Error(">>> ERROR: there is already process with the name: " + processName));
+                                    }
+                                }
+                            });
                         }
                     });
                 }
             });
         }
     });
+
 };
 
 /**
@@ -136,9 +143,8 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
  */
 module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
-        if (err) {
-            callback(err);
-        } else {
+        if (err) callback(err);
+        else {
             let waitingActiveProcesses = [];
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
@@ -149,12 +155,9 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
                                 waitingActiveProcesses.push(process);
                             }
                         });
-                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
-                            callback(null, [waitingActiveProcesses, arrayOfRoles]);
-                        });
-                    } else {
-                        callback(null, [waitingActiveProcesses, []]);
+
                     }
+                    callback(null, waitingActiveProcesses);
                 }
             });
         }
@@ -392,48 +395,6 @@ function advanceProcess(process, stageNum, nextStages, callback) {
     });
 }
 
-module.exports.getAllActiveProcessDetails = (processName, callback) => {
-    processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
-        if (err) callback(err);
-        else {
-            processReport = processReport._doc;
-            let returnProcessDetails = {
-                processName: processReport.processName,
-                creationTime: processReport.creationTime,
-                status: processReport.status,
-                urgency: processReport.processUrgency,
-                processDate: processReport.processDate
-            };
-            returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
-                callback(null, [returnProcessDetails, newStages]);
-            });
-        }
-    });
-};
-
-const returnStagesWithRoleName = (index, stages, newStages, callback) => {
-    if (index === stages.length) {
-        callback(null, newStages);
-    } else {
-        let stage = stages[index];
-        usersAndRolesController.getRoleNameByRoleID(stage.roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                newStages.push({
-                    roleID: roleName,
-                    userEmail: stage.userEmail,
-                    stageNum: stage.stageNum,
-                    approvalTime: stage.approvalTime,
-                    comments: stage.comments,
-                    files: stage.attachedFilesNames,
-                    filledOnlineForms: stage.filledOnlineForms,
-                });
-                returnStagesWithRoleName(index + 1, stages, newStages, callback);
-            }
-        });
-    }
-};
-
 module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -632,22 +593,16 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
     });
 }
 
-module.exports.processReport = function (process_name, callback) {
-    this.getAllActiveProcessDetails(process_name, (err, result) => {
+module.exports.processReport = function (processName, callback) {
+    processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
-            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
-            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
-            for (let i = 0; i < result[1].length; i++) {
-                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
+            processReport.creationTime = moment(processReport.creationTime).format("DD/MM/YYYY HH:mm:ss");
+            processReport.processDate = moment(processReport.processDate).format("DD/MM/YYYY HH:mm:ss");
+            for (let i = 0; i < processReport.stages.length; i++) {
+                processReport.stages[i].approvalTime = moment(processReport.stages.approvalTime).format("DD/MM/YYYY HH:mm:ss");
             }
-
-            getFilledOnlineForms(result[1], 0, [], (err, formsArr) => {
-                for (let i = 0; i < formsArr.length; i++) {
-                    result[1][i].filledOnlineForms = formsArr[i];
-                }
-                callback(null, result);
-            });
+            callback(null, processReport);
         }
     });
 };

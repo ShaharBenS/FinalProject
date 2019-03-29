@@ -80,7 +80,7 @@ router.post('/startProcess', function (req, res) {
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
     let notificationTime = req.body.notificationTime;
-    activeProcessController.startProcessByUsername(username, structureName, processName,processDate, processUrgency,notificationTime, (err) => {
+    activeProcessController.startProcessByUsername(username, structureName, processName,processDate, processUrgency, notificationTime, (err) => {
         if (err) res.render('errorViews/error');
         else {
             res.send("success");
@@ -133,7 +133,15 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
             for (let i = 0; i < array[0].length; i++) {
                 array[0][i].processDate =  moment(array[0][i].processDate).format("DD/MM/YYYY HH:mm:ss");
             }
-            res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
+            let activeProcesses = array[0];
+            for(let i=0;i<activeProcesses.length;i++)
+            {
+                for(let j=0;j<activeProcesses[i]._currentStages.length;j++)
+                {
+                    activeProcesses[i]._currentStages[j] = activeProcesses[i].getStageByStageNum(activeProcesses[i]._currentStages[j]);
+                }
+            }
+            res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: activeProcesses});
         }
     });
 });
@@ -160,13 +168,19 @@ router.get('/getAllProcessesReportsByUser', function (req, res) {
 
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    activeProcessController.getWaitingActiveProcessesByUser(userName, (err, array) => {
+    activeProcessController.getWaitingActiveProcessesByUser(userName, (err, waitingProcesses) => {
         if(err) res.render('errorViews/error');
         else
         {
-            handleRolesAndStages(array);
-            activeProcessController.convertDate(array[0]);
-            res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
+            activeProcessController.convertDate(waitingProcesses);
+            for(let i=0;i<waitingProcesses.length;i++)
+            {
+                for(let j=0;j<waitingProcesses[i]._currentStages.length;j++)
+                {
+                    waitingProcesses[i]._currentStages[j] = waitingProcesses[i].getStageByStageNum(waitingProcesses[i]._currentStages[j]);
+                }
+            }
+            res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: waitingProcesses, username: userName});
         }
     });
 });
@@ -203,8 +217,7 @@ router.get('/reportProcess', function (req, res) {
         if (err) res.render('errorViews/error');
         else
             res.render('reportsViews/processReport', {
-                processDetails: result[0],
-                table: result[1]
+                processDetails: result
             });
     })
 });
