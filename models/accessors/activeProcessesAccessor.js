@@ -37,7 +37,7 @@ module.exports.findActiveProcesses = (AP, callback) => {
             } else
                 callback(null, null);
         }
-    }).populate('stages.role stages.user');
+    }).populate('stages.role stages.user stages.onlineForms');
 };
 
 module.exports.deleteOneActiveProcess = (AP, callback) => {

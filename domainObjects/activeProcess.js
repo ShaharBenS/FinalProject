@@ -267,7 +267,7 @@ class activeProcess {
         for(let i=0;i<this._currentStages.length;i++)
         {
             let stage = this.getStageByStageNum(this._currentStages[i]);
-            if(stage.userEmail === userEmail)
+            if(stage.user.userEmail === userEmail)
             {
                 return stage.stageNum;
             }

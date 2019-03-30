@@ -515,28 +515,17 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
             if (!process) {
                 callback(new Error("Couldn't find process"));
             } else {
-                let i, currentStage;
-                for (i = 0; i < process.currentStages.length; i++) {
-                    currentStage = process.getStageByStageNum(process.currentStages[i]);
-                    if (currentStage.userEmail === userEmail) {
-                        break;
-                    }
-                }
-                let nextStagesArr = [];
+                let currentStage = process.getStageByStageNum(process.getCurrentStageNumberForUser(userEmail));
+                let nextRolesNames = [], onlineForms = [];
                 for (let j = 0; j < currentStage.nextStages.length; j++) {
-                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
+                    let stage = process.getStageByStageNum(currentStage.nextStages[j]);
+                    nextRolesNames.push([stage.role.roleName,stage.role.id]);
                 }
-                getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
-                    if (err) callback(err);
-                    else {
-                        getFormNamesForArray(currentStage.onlineForms, 0, [], (err, res) => {
-                            if (err) callback(err);
-                            else {
-                                callback(null, [rolesNames, res]);
-                            }
-                        });
-                    }
-                });
+                for(let j=0;j<currentStage.onlineForms.length;j++)
+                {
+                    onlineForms.push(currentStage.onlineForms[j].formName);
+                }
+                callback(null, [nextRolesNames, onlineForms]);
             }
         }
     });

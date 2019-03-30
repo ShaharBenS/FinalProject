@@ -76,7 +76,7 @@
             </tr>
             <tr>
                 <td><label>תכיפות התהליך:</label></td>
-                <td><label><%=processDetails.urgency%></label></td>
+                <td><label><%=processDetails.processUrgency%></label></td>
             </tr>
             <tr>
                 <td><label>תאריך היעד:</label></td>
@@ -107,8 +107,8 @@
                         <td><%=step.comments%></td>
                         <td id="filledOnlineForms">
                             <%step.filledOnlineForms.forEach(function(form) {%>
-                            <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
-                                  title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
+                            <u><a href="" onclick='return onClickForm("<%=form.ןג%>")'
+                                  title="<%=form.formName%>"><%=form.formName%></a></u><br>
                             <%})%>
                         </td>
                         <td>
