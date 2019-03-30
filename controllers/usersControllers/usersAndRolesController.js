@@ -148,7 +148,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                     {
                         return roleToEmails[key].length === 0;
                     })) {
-                        callback('שגיאה: לכל תפקיד חייבל היות מקושר לפחות עובד אחד.')
+                        callback('שגיאה: לכל תפקיד חייב היות מקושר לפחות עובד אחד.')
                     }
                     else if (sankeyTree.hasMultipleConnections()) {
                         callback('שגיאה: יש 2 קשרים בין 2 צמתים.')
@@ -439,6 +439,17 @@ module.exports.getRoleNameByUsername = function (username, callback)
             else {
                 callback(null, user[0].roleName);
             }
+        }
+    });
+};
+
+module.exports.getEmailsByRoleId = (roleId,callback)=>{
+    userAccessor.findRole({_id:roleId},(err,role)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            callback(null,role[0].userEmail);
         }
     });
 };

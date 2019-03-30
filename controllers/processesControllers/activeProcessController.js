@@ -111,7 +111,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                             processUrgency: processUrgency
                                         }, (err) => {
                                             if (err) callback(err);
-                                            else processReportController.addProcessReport(processName, today, processDate, processUrgency, (err) => {
+                                            else processReportController.addProcessReport(processName, today, processDate, processUrgency, userEmail, (err) => {
                                                 if (err) {
                                                     callback(err);
                                                 } else {
@@ -132,7 +132,6 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
             });
         }
     });
-
 };
 
 /**
@@ -351,7 +350,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                                         prev(err);
                                                     } else {
                                                         notificationsController.addNotificationToUser(curr.userEmail,
-                                                            new Notification("התהליך" + process.processName + " הושלם בהצלחה","תהליך נגמר בהצלחה"), prev)
+                                                            new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
                                                     }
                                                 }
                                             }, (err) => {
@@ -367,7 +366,47 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                 }
                             });
                         } else {
-                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
+                                if (err) {
+                                    callback(err);
+                                } else {
+                                    process.currentStages.reduce((acc, curr) => {
+                                        return (err)=>{
+                                            if(err){
+                                                acc(err);
+                                            }
+                                            else{
+                                                let stage = process.getStageByStageNum(curr);
+                                                usersAndRolesController.getEmailsByRoleId(stage.roleID,(err,emails)=>{
+                                                    emails.reduce((acc,curr)=>{
+                                                        return (err)=>{
+                                                            if(err){
+                                                                acc(err);
+                                                            }
+                                                            else{
+                                                                notificationsController.addNotificationToUser(curr,new Notification("התהליך "+process.processName+" מחכה ברשימת התהליכים הזמינים לך","תהליך זמין"),acc);
+                                                            }
+                                                        }
+                                                    },(err)=>{
+                                                        if(err){
+                                                            acc(err);
+                                                        }
+                                                        else{
+                                                            acc(null);
+                                                        }
+                                                    })(null);
+                                                });
+                                            }
+                                        }
+                                    }, (err) => {
+                                        if (err) {
+                                            callback(err);
+                                        } else {
+                                            callback(null);
+                                        }
+                                    })(null);
+                                }
+                            });
                         }
                     }
                 });
@@ -526,7 +565,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
                     if (err) {
                         callback(err);
                     } else {
-                        notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + processName + " חזר אליך","תהליך חזר ליוצר"), callback);
+                        notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + processName + " חזר אליך", "תהליך חזר ליוצר"), callback);
                     }
                 });
             }
@@ -560,7 +599,7 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                                         prev(err);
                                     } else {
                                         notificationsController.addNotificationToUser(curr,
-                                            new Notification("התהליך " + processName + " בוטל על ידי " + userEmail,"תהליך בוטל"), prev);
+                                            new Notification("התהליך " + processName + " בוטל על ידי " + userEmail, "תהליך בוטל"), prev);
                                     }
                                 }
                             }, (err) => {
