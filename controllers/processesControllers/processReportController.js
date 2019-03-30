@@ -34,7 +34,7 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
                                 comments: stageDetails.comments, action: stageDetails.action, filledOnlineForms: stageDetails.filledForms,
                                 attachedFilesNames: stageDetails.fileNames
                             };
-                            processReport.push(newStage);
+                            processReport.stages.push(newStage);
                             processAccessor.updateProcessReport({processName: processName}, {stages: processReport.stages}, (err) => {
                                 if (err) callback(err);
                                 else callback(null);
@@ -110,9 +110,9 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
 //////////////////////////////////
 function isExistInReport(report,userEmail)
 {
-    for(let i=0;i<report._doc.stages.length;i++)
+    for(let i=0;i<report.stages.length;i++)
     {
-        if(report._doc.stages[i].userEmail === userEmail)
+        if(report.stages[i].user.userEmail === userEmail)
         {
             return true;
         }
@@ -123,7 +123,7 @@ function isExistInReport(report,userEmail)
 
 function convertDate(array) {
     for (let i = 0; i < array.length; i++) {
-        let processDate = array[i]._doc.processDate;
+        let processDate = array[i].processDate;
         let dayOfProcessDate = processDate.getDate();
         let monthOfProcessDate = processDate.getMonth() + 1;
         let yearOfProcessDate = processDate.getFullYear();
@@ -144,7 +144,7 @@ function convertDate(array) {
         if (secondsOfProcessDate.toString().length === 1)
             secondsOfProcessDate = '0' + secondsOfProcessDate;
         dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
-        array[i]._doc.processDate = dateOfProcessDate;
+        array[i].processDate = dateOfProcessDate;
     }
 }
 

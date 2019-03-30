@@ -30,11 +30,15 @@ module.exports.findProcessesReports = (PR, callback) => {
             callback(err);
         else {
             if (processReportsArray.length > 0) {
-                callback(null, processReportsArray);
+                let newProcessReportsArray = [];
+                processReportsArray.forEach((processReport) => {
+                    newProcessReportsArray.push(getProcessReportFromOriginal(processReport));
+                });
+                callback(null, newProcessReportsArray);
             } else
                 callback(null, null);
         }
-    });
+    }).populate('stages.role stages.user stages.filledOnlineForms');
 };
 
 /*********************/
