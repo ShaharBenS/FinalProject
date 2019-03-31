@@ -69,7 +69,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                             callback(err);
                         } else {
                             if (!processStructure.available) {
-                                callback(new Error('This process structure is currently unavailable duo to changes in roles'));
+                                callback(new Error('This process structure is currently unavailable due to changes in roles'));
                                 return;
                             }
                             processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
@@ -99,7 +99,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         });
                                         let today = new Date();
                                         processAccessor.createActiveProcess({
-                                            creatorRoleID: roleID,
+                                            creatorRole: roleID,
                                             creationTime: today,
                                             notificationTime: notificationTime,
                                             currentStages: [initialStage],
@@ -322,7 +322,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
             let currentStage;
             for (let i = 0; i < process.currentStages.length; i++) {
                 currentStage = process.getStageByStageNum(process.currentStages[i]);
-                if (currentStage.userEmail === userEmail) {
+                if (currentStage.user.userEmail === userEmail) {
                     break;
                 }
             }

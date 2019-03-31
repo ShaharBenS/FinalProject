@@ -12,7 +12,7 @@ module.exports.getActiveProcessByProcessName = (processName, callback) => {
             else
                 callback(null, null);
         }
-    });
+    }).populate('stages.role stages.user stages.onlineForms');
 };
 
 module.exports.createActiveProcess = (AP, callback) => {

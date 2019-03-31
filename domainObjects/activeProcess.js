@@ -2,7 +2,7 @@ class activeProcess {
 
     constructor(processObject,stages) {
         this._processName = processObject.processName;
-        this._creatorRoleID = processObject.creatorRoleID;
+        this._creatorRole = processObject.creatorRole;
         this._processDate = processObject.processDate;
         this._processUrgency = processObject.processUrgency;
         this._creationTime = processObject.creationTime;
@@ -21,12 +21,12 @@ class activeProcess {
         this._processName = value;
     }
 
-    get creatorRoleID() {
-        return this._creatorRoleID;
+    get creatorRole() {
+        return this._creatorRole;
     }
 
-    set creatorRoleID(value) {
-        this._creatorRoleID = value;
+    set creatorRole(value) {
+        this._creatorRole = value;
     }
 
     get creationTime() {
@@ -214,7 +214,7 @@ class activeProcess {
     isWaitingForUser(roleID,userEmail){
         for(let i=0;i<this._stages.length;i++)
         {
-            if (this._currentStages.includes(this._stages[i].stageNum) && this._stages[i].role.id.toString() === roleID.toString() && this._stages[i].user.userEmail === userEmail) {
+            if (this._currentStages.includes(this._stages[i].stageNum) && this._stages[i].role.id.toString() === roleID.toString() && this._stages[i].user !== null &&  this._stages[i].user.userEmail === userEmail) {
                 return true;
             }
         }
@@ -222,9 +222,10 @@ class activeProcess {
     }
 
     isAvailableForRole(roleID){
-        for(let i=0;i<this._stages.length;i++)
+        for(let i=0;i<this._currentStages.length;i++)
         {
-            if (this._currentStages.includes(this._stages[i].stageNum) && this._stages[i].roleID.toString() === roleID.toString() && this._stages[i].userEmail === null) {
+            let currentStage = this.getStageByStageNum(this._currentStages[i]);
+            if (currentStage.role.id.toString() === roleID.toString() && currentStage.user === null) {
                 return true;
             }
         }
@@ -234,7 +235,7 @@ class activeProcess {
     isParticipatingInProcess(userEmail){
         for(let i=0;i<this._stages.length;i++)
         {
-            if(this._stages[i].user.userEmail === userEmail)
+            if(this._stages[i].user !== null && this._stages[i].user.userEmail === userEmail)
             {
                 return true;
             }
@@ -247,7 +248,7 @@ class activeProcess {
         for(let i=0;i<this._stages.length;i++)
         {
             this._stages[i].stagesToWaitFor = this._stages[i].originStagesToWaitFor;
-            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].roleID.id.equals(this._creatorRoleID.id))
+            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].role.id.equals(this._creatorRole.id))
             {
                 if(flag)
                 {
@@ -267,7 +268,7 @@ class activeProcess {
         for(let i=0;i<this._currentStages.length;i++)
         {
             let stage = this.getStageByStageNum(this._currentStages[i]);
-            if(stage.user.userEmail === userEmail)
+            if(stage.user !== null && stage.user.userEmail === userEmail)
             {
                 return stage.stageNum;
             }
@@ -275,14 +276,14 @@ class activeProcess {
         return -1;
     }
 
-    assignUserToStage(roleID,userEmail){
+    assignUserToStage(role,userEmail){
         let hasChanged = false;
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
-            if(currentStage.roleID.id.equals(roleID.id) && currentStage.userID === undefined)
+            if(currentStage.role.id.equals(role.id) && currentStage.user === null)
             {
-                currentStage.userEmail = userEmail;
+                currentStage.user = {userEmail: userEmail};
                 hasChanged = true;
             }
         }
@@ -296,7 +297,7 @@ class activeProcess {
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
-            if(currentStage.roleID.id.equals(roleID.id) && currentStage.userEmail === userEmail)
+            if(currentStage.roleID.id.equals(roleID.id) && currentStage.user.userEmail === userEmail)
             {
                 currentStage.userEmail = undefined;
                 hasChanged = true;

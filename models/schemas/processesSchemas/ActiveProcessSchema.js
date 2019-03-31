@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 let activeProcessSchema = new Schema({
     processName: {type: String, unique: true},
-    creatorRoleID : {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
+    creatorRole : {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
     processDate: Date,
     processUrgency: { type: Number, min: 1, max: 10},
     creationTime: Date,
