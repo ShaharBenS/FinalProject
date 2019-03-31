@@ -36,7 +36,12 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
                                 attachedFilesNames: stageDetails.fileNames
                             };
                             processReport.stages.push(newStage);
-                            processAccessor.updateProcessReport({processName: processName}, {stages: processReport.stages}, (err) => {
+                            let updatedStatus = processReport.status;
+                            if(stageDetails.status !== undefined)
+                            {
+                                updatedStatus = stageDetails.status;
+                            }
+                            processAccessor.updateProcessReport({processName: processName}, {stages: processReport.stages, status:updatedStatus}, (err) => {
                                 if (err) callback(err);
                                 else callback(null);
                             });

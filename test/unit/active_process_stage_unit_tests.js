@@ -14,8 +14,8 @@ const roleID = 0;
 
 let stage0, stage1;
 let initStages = function () {
-    stage0 = new ActiveProcessStage(roleID, null, 0, [1], [], [], null, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage1 = new ActiveProcessStage(roleID, null, 1, [2, 3], [0], [0], null, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage0 = new ActiveProcessStage({role: {roleName: '', id: 0}, stageNum: 0, nextStages: [1], stagesToWaitFor: [], onlineForms: [], attachedFilesNames: [], user: {userName: 'user1', id: 0}, originStagesToWaitFor: [], approvalTime: null, filledOnlineForms: [], comments: ''});
+    stage1 = new ActiveProcessStage({role: {roleName: '', id: 0}, stageNum: 1, nextStages: [2,3], stagesToWaitFor: [0], onlineForms: [], attachedFilesNames: [], user: {userName: 'user2', id: 1}, originStagesToWaitFor: [0], approvalTime: null, filledOnlineForms: [], comments: ''});
 };
 
 

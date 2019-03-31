@@ -336,6 +336,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                     if (err) callback(err);
                     else {
                         if (process.isFinished()) {
+                            stageDetails.status = "הושלם";
                             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                                 if (err) callback(err);
                                 else {
@@ -474,40 +475,6 @@ function getActiveProcessByProcessName(processName, callback) {
     });
 }
 
-function getRoleNamesForArray(stages, index, roleNamesArray, callback) {
-    if (index === stages.length) {
-        callback(null, roleNamesArray);
-        return;
-    }
-    let roleID = stages[index].roleID;
-    (function (array, stageNum) {
-        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                array.push([roleName, stageNum]);
-                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
-            }
-        });
-    })(roleNamesArray, stages[index].stageNum);
-}
-
-function getFormNamesForArray(forms, index, formNameArray, callback) {
-    if (index === forms.length) {
-        callback(null, formNameArray);
-        return;
-    }
-    let formId = forms[index];
-    (function (array) {
-        onlineFormController.getOnlineFormByID(formId, (err, form) => {
-            if (err) callback(err);
-            else {
-                array.push(form.formName);
-                getFormNamesForArray(forms, index + 1, formNameArray, callback);
-            }
-        });
-    })(formNameArray);
-}
-
 module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEmail, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -572,7 +539,8 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                 filledForms: [],
                 fileNames: [],
                 action: "cancel",
-                stageNum: process.getCurrentStageNumberForUser(userEmail)
+                stageNum: process.getCurrentStageNumberForUser(userEmail),
+                status: "מבוטל"
             };
             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                 if (err) callback(err);
@@ -606,20 +574,6 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
         }
     });
 };
-
-function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) {
-    if (index === filledFormIds.length) {
-        callback(null, filledFormsArray);
-        return;
-    }
-    filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
-        if (err) callback(err);
-        else {
-            filledFormsArray.push(forms);
-            getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
-        }
-    });
-}
 
 module.exports.processReport = function (processName, callback) {
     processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
