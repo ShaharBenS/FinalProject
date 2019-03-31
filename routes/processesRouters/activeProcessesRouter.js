@@ -112,35 +112,13 @@ router.post('/cancelProcess', function (req, res) {
   \_____|______|  |_|
 
  */
-function handleRolesAndStages(array) {
-    if(array[1] !== undefined)
-    {
-        for(let i=0;i<array[0].length;i++)
-        {
-            array[0][i]._child = array[1][i];
-        }
-    }
-}
 
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    activeProcessController.getAllActiveProcessesByUser(userName, (err, array) => {
+    activeProcessController.getAllActiveProcessesByUser(userName, (err, activeProcesses) => {
         if (err) res.render('errorViews/error');
         else
         {
-            handleRolesAndStages(array);
-            activeProcessController.convertDate(array[0]);
-            for (let i = 0; i < array[0].length; i++) {
-                array[0][i].processDate =  moment(array[0][i].processDate).format("DD/MM/YYYY HH:mm:ss");
-            }
-            let activeProcesses = array[0];
-            for(let i=0;i<activeProcesses.length;i++)
-            {
-                for(let j=0;j<activeProcesses[i]._currentStages.length;j++)
-                {
-                    activeProcesses[i]._currentStages[j] = activeProcesses[i].getStageByStageNum(activeProcesses[i]._currentStages[j]);
-                }
-            }
             res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: activeProcesses});
         }
     });

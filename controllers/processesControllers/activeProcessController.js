@@ -192,6 +192,38 @@ module.exports.getAllActiveProcesses = function (callback) {
     processAccessor.getActiveProcesses(callback);
 };
 
+function getActiveProcessesOfChildren(activeProcesses, children, userEmail)
+{
+    let toReturnActiveProcesses = [];
+    let userEmailsArrays = [];
+    activeProcesses.forEach((process) => {
+        let flag = true;
+        let currUserEmails = [];
+        if (process.isParticipatingInProcess(userEmail)) {
+            flag = false;
+            toReturnActiveProcesses.push(process);
+            currUserEmails = [userEmail];
+        }
+        children.forEach((child) => {
+            if (process.isParticipatingInProcess(child)) {
+                if (flag === false) {
+                    currUserEmails = currUserEmails.concat(child);
+                }
+                else {
+                    toReturnActiveProcesses.push(process);
+                    currUserEmails = [child];
+                    flag = false;
+                }
+            }
+        });
+        if (flag === false) {
+            userEmailsArrays.push(currUserEmails);
+        }
+    });
+    return [toReturnActiveProcesses, userEmailsArrays]
+}
+
+
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
@@ -208,33 +240,22 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                         if (activeProcesses === null)
                             activeProcesses = [];
                         let toReturnActiveProcesses = [];
-                        let userEmailsArrays = [];
                         if (activeProcesses !== null) {
-                            activeProcesses.forEach((process) => {
-                                let flag = true;
-                                let currUserEmails = [];
-                                if (process.isParticipatingInProcess(userEmail)) {
-                                    flag = false;
-                                    toReturnActiveProcesses.push(process);
-                                    currUserEmails = [userEmail];
-                                }
-                                children.forEach((child) => {
-                                    if (process.isParticipatingInProcess(child)) {
-                                        if (flag === false) {
-                                            currUserEmails = currUserEmails.concat(child);
-                                        }
-                                        else {
-                                            toReturnActiveProcesses.push(process);
-                                            currUserEmails = [child];
-                                            flag = false;
-                                        }
-                                    }
+                            let processOfChildrenWithChildren = getActiveProcessesOfChildren(activeProcesses, children, userEmail);
+                            let arrayToSend = [];
+                            for(let i=0;i<processOfChildrenWithChildren[0].length;i++)
+                            {
+                                let process = processOfChildrenWithChildren[0][i];
+                                let currentStagesOfProcess = [];
+                                process._currentStages.forEach((curr)=>{
+                                    let stage = process.getStageByStageNum(curr);
+                                    currentStagesOfProcess.push({userEmail: stage.user !== null?stage.user.userEmail:null, roleName: stage.role.roleName});
                                 });
-                                if (flag === false) {
-                                    userEmailsArrays.push(currUserEmails);
-                                }
-                            });
-                            callback(null, [toReturnActiveProcesses, userEmailsArrays]);
+                                arrayToSend.push({processName: process._processName, processUrgency: process._processUrgency,
+                                    processDate: moment(process._processDate).format("DD/MM/YYYY HH:mm:ss"), children: processOfChildrenWithChildren[1][i],
+                                    lastApproached: moment(process._lastApproached).format("DD/MM/YYYY HH:mm:ss"), currentStages: currentStagesOfProcess});
+                            }
+                            callback(null, arrayToSend);
                         } else {
                             callback(null, [toReturnActiveProcesses, [], []]);
                         }
@@ -350,7 +371,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                                     if (err) {
                                                         prev(err);
                                                     } else {
-                                                        notificationsController.addNotificationToUser(curr.userEmail,
+                                                        notificationsController.addNotificationToUser(curr.user.userEmail,
                                                             new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
                                                     }
                                                 }
@@ -378,7 +399,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                             }
                                             else{
                                                 let stage = process.getStageByStageNum(curr);
-                                                usersAndRolesController.getEmailsByRoleId(stage.roleID,(err,emails)=>{
+                                                usersAndRolesController.getEmailsByRoleId(stage.role.id,(err,emails)=>{
                                                     emails.reduce((acc,curr)=>{
                                                         return (err)=>{
                                                             if(err){
@@ -486,7 +507,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 let nextRolesNames = [], onlineForms = [];
                 for (let j = 0; j < currentStage.nextStages.length; j++) {
                     let stage = process.getStageByStageNum(currentStage.nextStages[j]);
-                    nextRolesNames.push([stage.role.roleName,stage.role.id]);
+                    nextRolesNames.push([stage.role.roleName,stage.stageNum]);
                 }
                 for(let j=0;j<currentStage.onlineForms.length;j++)
                 {
