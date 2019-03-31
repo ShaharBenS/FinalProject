@@ -1,5 +1,6 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
 let processStructureController = require('../processesControllers/processStructureController');
+let activeProcessController = require('../processesControllers/activeProcessController');
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 let userPermissionsController = require('../usersControllers/UsersPermissionsController');
@@ -358,7 +359,8 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                         callback(err);
                                                                                     }
                                                                                     else {
-                                                                                        callback(null);
+                                                                                        let rootID = '//TODO';
+                                                                                        activeProcessController.updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, callback);
                                                                                     }
                                                                                 });
                                                                             }

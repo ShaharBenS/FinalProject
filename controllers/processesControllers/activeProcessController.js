@@ -395,27 +395,24 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                     callback(err);
                                 } else {
                                     process.currentStages.reduce((acc, curr) => {
-                                        return (err)=>{
-                                            if(err){
+                                        return (err) => {
+                                            if (err) {
                                                 acc(err);
-                                            }
-                                            else{
+                                            } else {
                                                 let stage = process.getStageByStageNum(curr);
-                                                usersAndRolesController.getEmailsByRoleId(stage.roleID,(err,emails)=>{
-                                                    emails.reduce((acc,curr)=>{
-                                                        return (err)=>{
-                                                            if(err){
+                                                usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
+                                                    emails.reduce((acc, curr) => {
+                                                        return (err) => {
+                                                            if (err) {
                                                                 acc(err);
-                                                            }
-                                                            else{
-                                                                notificationsController.addNotificationToUser(curr,new Notification("התהליך "+process.processName+" מחכה ברשימת התהליכים הזמינים לך","תהליך זמין"),acc);
+                                                            } else {
+                                                                notificationsController.addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
                                                             }
                                                         }
-                                                    },(err)=>{
-                                                        if(err){
+                                                    }, (err) => {
+                                                        if (err) {
                                                             acc(err);
-                                                        }
-                                                        else{
+                                                        } else {
                                                             acc(null);
                                                         }
                                                     })(null);
@@ -697,6 +694,37 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
         }
     });
 }
+
+module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTree, rootID, callback) => {
+    processAccessor.getActiveProcesses((err, processes) => {
+        if (err) {
+            callback(err);
+        } else {
+            processes.forEach(process => {
+                process.stages.forEach(stage => {
+                    if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
+                        if (stage.userEmail === null) {
+                            let findReplacement = (roleId) => {
+                                let replacement = oldTree.getFatherOf(stage.roleID);
+                                if (replacement === undefined) {
+                                    return rootID;
+                                }
+                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
+                                    return findReplacement(replacement);
+                                }
+                                else{
+                                    return replacement;
+                                }
+                            };
+                            let replacement = findReplacement();
+                            //TODO Update stage roleId to replacement
+                        }
+                    }
+                })
+            });
+        }
+    });
+};
 
 module.exports.processReport = function (process_name, callback) {
     this.getAllActiveProcessDetails(process_name, (err, result) => {
