@@ -705,7 +705,7 @@ module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTre
                     if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
                         if (stage.userEmail === null) {
                             let findReplacement = (roleId) => {
-                                let replacement = oldTree.getFatherOf(stage.roleID);
+                                let replacement = oldTree.getFatherOf(roleId);
                                 if (replacement === undefined) {
                                     return rootID;
                                 }
@@ -715,7 +715,7 @@ module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTre
                                     return replacement;
                                 }
                             };
-                            stage.roleID = findReplacement();
+                            stage.roleID = findReplacement(stage.roleID);
                         }
                     }
                 });
