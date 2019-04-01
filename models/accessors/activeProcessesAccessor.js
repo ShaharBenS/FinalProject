@@ -48,6 +48,9 @@ module.exports.updateActiveProcess = (AP, update, callback) => {
     return activeProcessSchema.updateOne(AP, update, callback);
 };
 
+module.exports.updateAllActiveProcesses = (AP, update, callback) => {
+    return activeProcessSchema.update(AP, update, callback);
+};
 
 /*********************/
 /* Private Functions */

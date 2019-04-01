@@ -359,7 +359,12 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                         callback(err);
                                                                                     }
                                                                                     else {
-                                                                                        let rootID = '//TODO';
+                                                                                        let rootName = sankeyTree.getRootName();
+                                                                                        let rootID = usersAndRoleDocuments.find((usersAndRole)=>{
+                                                                                            if(usersAndRole.roleName === rootName){
+                                                                                                return true;
+                                                                                            }
+                                                                                        })._id;
                                                                                         activeProcessController.updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, callback);
                                                                                     }
                                                                                 });

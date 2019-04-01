@@ -711,17 +711,25 @@ module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTre
                                 }
                                 if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
                                     return findReplacement(replacement);
-                                }
-                                else{
+                                } else {
                                     return replacement;
                                 }
                             };
-                            let replacement = findReplacement();
-                            //TODO Update stage roleId to replacement
+                            stage.roleID = findReplacement();
                         }
                     }
-                })
+                });
             });
+
+            processes.reduce((prev, process) => {
+                return (err) => {
+                    if (err) {
+                        prev(err)
+                    } else {
+                        processAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev)
+                    }
+                }
+            }, callback)(null);
         }
     });
 };
