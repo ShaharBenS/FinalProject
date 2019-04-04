@@ -1,16 +1,16 @@
 class activeProcess {
 
-    constructor(processName,creatorRoleID, processDate,processUrgency, creationTime, notificationTime, currentStages, initials, stages, lastApproached) {
-        this._processName = processName;
-        this._creatorRoleID = creatorRoleID;
-        this._processDate = processDate;
-        this._processUrgency = processUrgency;
-        this._creationTime = creationTime;
-        this._notificationTime = notificationTime;
-        this._currentStages = currentStages;
-        this._initials = initials;
+    constructor(processObject,stages) {
+        this._processName = processObject.processName;
+        this._creatorRoleID = processObject.creatorRoleID;
+        this._processDate = processObject.processDate;
+        this._processUrgency = processObject.processUrgency;
+        this._creationTime = processObject.creationTime;
+        this._notificationTime = processObject.notificationTime;
+        this._currentStages = processObject.currentStages;
+        this._initials = processObject.initials;
         this._stages = stages;
-        this._lastApproached = lastApproached;
+        this._lastApproached = processObject.lastApproached;
     }
 
     get processName() {
@@ -101,6 +101,10 @@ class activeProcess {
     }
 
     addCurrentStage(stageNum) {
+        if(!this.isStageExists(stageNum))
+        {
+            throw new Error('stage doesnt exist');
+        }
         if(Number.isInteger(stageNum) && !this._currentStages.includes(stageNum))
         {
             this._currentStages.push(stageNum);
@@ -112,6 +116,10 @@ class activeProcess {
     }
 
     removeCurrentStage(stageNum) {
+        if(!this.isStageExists(stageNum))
+        {
+            throw new Error('stage doesnt exist');
+        }
         if(Number.isInteger(stageNum) && this._currentStages.includes(stageNum))
         {
             let index = this._currentStages.indexOf(stageNum);
@@ -124,66 +132,47 @@ class activeProcess {
     }
 
     getStageByStageNum(stageNum) {
-        let foundStage = null;
-        this._stages.every((stage) => {
-            if (stage.stageNum === stageNum) {
-                foundStage = stage;
-                return false;
-            }
-            return true;
-        });
-        if (foundStage === null)
-            throw new Error("stage does not exist");
-        return foundStage;
+        if(Number.isInteger(stageNum))
+        {
+            let foundStage = null;
+            this._stages.every((stage) => {
+                if (stage.stageNum === stageNum) {
+                    foundStage = stage;
+                    return false;
+                }
+                return true;
+            });
+            if (foundStage === null)
+                throw new Error("stage does not exist");
+            return foundStage;
+        }
+        throw new Error("stage not numeric");
     }
 
     getCoverage(startingStages) {
-        let coverage = [];
-        for(let i=0;i<startingStages.length;i++)
+        if(!startingStages.some(isNaN))
         {
-            if(!coverage.includes(startingStages[i]))
+            let coverage = [];
+            for(let i=0;i<startingStages.length;i++)
             {
-                coverage.push(startingStages[i]);
-            }
-            let stage = this.getStageByStageNum(startingStages[i]);
-            this.getCoverage(stage.nextStages,coverage).forEach((stage)=>{
-                if(!coverage.includes(stage))
+                if(!coverage.includes(startingStages[i]))
                 {
-                    coverage.push(stage);
+                    coverage.push(startingStages[i]);
                 }
-            });
-        }
-        return coverage;
-    }
-
-    removeStage(stageNum) {
-        let _stage = this.getStageByStageNum(stageNum);
-        _stage.nextStages.forEach((_stageNum) => {
-            let stage = this.getStageByStageNum(_stageNum);
-            let index = stage.stagesToWaitFor.indexOf(stageNum);
-            stage.stagesToWaitFor.splice(index, 1);
-        });
-
-        this._stages.forEach((stage) => {
-            let index = stage.nextStages.indexOf(stageNum);
-            if (index >= 0) stage.nextStages.splice(index, 1);
-        });
-
-        let index = this._stages.indexOf(_stage);
-        this._stages.splice(index, 1);
-    }
-
-    removePathStages(removePathStages, exclude) {
-        let _this = this;
-        let recursive = function (stageNum) {
-            if (!exclude.includes(stageNum)) {
-                let next = _this.getStageByStageNum(stageNum).nextStages;
-                exclude.push(stageNum);
-                _this.removeStage(stageNum);
-                next.forEach((iStage) => recursive(iStage));
+                let stage = this.getStageByStageNum(startingStages[i]);
+                this.getCoverage(stage.nextStages,coverage).forEach((stage)=>{
+                    if(!coverage.includes(stage))
+                    {
+                        coverage.push(stage);
+                    }
+                });
             }
-        };
-        removePathStages.forEach((stageNum) => recursive(stageNum));
+            return coverage;
+        }
+        else
+        {
+            throw new Error();
+        }
     }
 
     handleStage(stageDetails) {
@@ -274,39 +263,48 @@ class activeProcess {
         return this.getStageByStageNum(this._currentStages[0]).userEmail;
     }
 
-    getStageNumberForUser(userEmail){
-        for(let i=0;i<this._stages.length;i++)
+    getCurrentStageNumberForUser(userEmail){
+        for(let i=0;i<this._currentStages.length;i++)
         {
-            if(this._stages[i].userEmail === userEmail)
+            let stage = this.getStageByStageNum(this._currentStages[i]);
+            if(stage.userEmail === userEmail)
             {
-                return this._stages[i].stageNum;
+                return stage.stageNum;
             }
         }
         return -1;
     }
 
     assignUserToStage(roleID,userEmail){
+        let hasChanged = false;
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
             if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === undefined)
             {
                 currentStage.userEmail = userEmail;
+                hasChanged = true;
             }
         }
-        return -1;
+        if(!hasChanged)
+            throw new Error('cant assign user');
+        return true;
     }
 
     unAssignUserToStage(roleID,userEmail){
+        let hasChanged = false;
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
             if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === userEmail)
             {
                 currentStage.userEmail = undefined;
+                hasChanged = true;
             }
         }
-        return -1;
+        if(!hasChanged)
+            throw new Error('cant unassign user');
+        return true;
     }
 
     isFinished()
@@ -324,6 +322,20 @@ class activeProcess {
             }
         }
         return userEmails;
+    }
+
+    isStageExists(stageNum)
+    {
+        let isFoundStage = false;
+        this._stages.forEach((stage) => {
+            if(stage.stageNum === stageNum){
+                if(isFoundStage)
+                {
+                    throw new Error();
+                }
+                isFoundStage = true;
+            }});
+        return isFoundStage;
     }
 }
 

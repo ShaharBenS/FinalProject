@@ -96,7 +96,7 @@ function rolesToHTML(roleName)
         div.style.alignItems = "center";
 
         let a = document.createElement("a");
-        a.innerHTML = '<i class="ion ion-android-remove-circle" style="font-size: 30px"></i>';
+        a.innerHTML = '<i class="ion ion-android-remove-circle" style="color:var(--main-color) ;font-size: 30px"></i>';
         a.style.marginRight = "10px";
         a.onclick = ()=>{
             let index = roleToEmails[roleName].indexOf(userEmail);
@@ -126,7 +126,7 @@ function rolesToHTML(roleName)
     div.style.alignItems = "center";
     div.style.justifyContent = "center";
     let a = document.createElement("a");
-    a.innerHTML = '<i class="ion ion-android-add-circle" style="font-size: 30px"></i>';
+    a.innerHTML = '<i class="ion ion-android-add-circle" style="color:var(--main-color);font-size: 30px"></i>';
     a.onclick = () =>
     {
         alertify.prompt("הכנס אימייל:","",(evt,email)=>{

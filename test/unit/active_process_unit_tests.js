@@ -6,7 +6,6 @@ let expect = require('chai').expect;
 let ActiveProcess = require('../../domainObjects/activeProcess');
 let ActiveProcessStage = require('../../domainObjects/activeProcessStage');
 
-
 const processName1 = "proc name 1";
 const creationTime = new Date();
 const notificationTime = 10;
@@ -50,15 +49,15 @@ let createActiveProcess1 = function () {
       +----> 6 <----+
            +---+
     */
-    stage0 = new ActiveProcessStage(roleID, undefined, 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage1 = new ActiveProcessStage(roleID, undefined, 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage2 = new ActiveProcessStage(roleID, undefined, 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage3 = new ActiveProcessStage(roleID, undefined, 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage4 = new ActiveProcessStage(roleID, undefined, 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage5 = new ActiveProcessStage(roleID, undefined, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage6 = new ActiveProcessStage(roleID, undefined, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage0 = new ActiveProcessStage({roleID: 1, stageNum: 0, nextStages: [1], stagesToWaitFor: [], originStagesToWaitFor: [], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage1 = new ActiveProcessStage({roleID: 2, stageNum: 1, nextStages: [2,3], stagesToWaitFor: [0], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'b@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage2 = new ActiveProcessStage({roleID: 3, stageNum: 2, nextStages: [4], stagesToWaitFor: [1], originStagesToWaitFor: [1], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'c@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage3 = new ActiveProcessStage({roleID: 4, stageNum: 3, nextStages: [5], stagesToWaitFor: [1], originStagesToWaitFor: [1], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'd@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage4 = new ActiveProcessStage({roleID: 5, stageNum: 4, nextStages: [6], stagesToWaitFor: [2], originStagesToWaitFor: [2], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'e@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage5 = new ActiveProcessStage({roleID: 6, stageNum: 5, nextStages: [6], stagesToWaitFor: [3], originStagesToWaitFor: [3], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage6 = new ActiveProcessStage({roleID: 7, stageNum: 6, nextStages: [], stagesToWaitFor: [4,5], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess(processName1,new Date(),3, creationTime, notificationTime, currentStages.slice(), initials, stages);
+    testProcess = new ActiveProcess({processName: processName1, creatorRoleID: roleID, processDate: new Date(), processUrgency:3, creationTime:creationTime, notificationTime: notificationTime, currentStages: currentStages.slice(), initials: initials},stages);
 };
 
 let createActiveProcess2 = function () {
@@ -86,16 +85,17 @@ let createActiveProcess2 = function () {
       +----> 6 <----+
            +---+
     */
-    stage0 = new ActiveProcessStage(0, 'a@bgu.ac.il', 0, [1], [], [], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage1 = new ActiveProcessStage(1, 'b@bgu.ac.il', 1, [2, 3], [0], [0], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage2 = new ActiveProcessStage(2, 'c@bgu.ac.il', 2, [4], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage3 = new ActiveProcessStage(3, 'd@bgu.ac.il', 3, [5], [1], [1], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage4 = new ActiveProcessStage(4, 'e@bgu.ac.il', 4, [6], [2], [2], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage5 = new ActiveProcessStage(5, null, 5, [6], [3], [3], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
-    stage6 = new ActiveProcessStage(6, null, 6, [], [4, 5], [4, 5], undefined, onlineForms, filledOnlineForms, attachedFilesNames, comments);
+    stage0 = new ActiveProcessStage({roleID: {id : Buffer.from('1')}, stageNum: 0, nextStages: [1], stagesToWaitFor: [], originStagesToWaitFor: [], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage1 = new ActiveProcessStage({roleID: {id : Buffer.from('2')}, stageNum: 1, nextStages: [2,3], stagesToWaitFor: [], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'b@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage2 = new ActiveProcessStage({roleID: {id : Buffer.from('3')}, stageNum: 2, nextStages: [4], stagesToWaitFor: [], originStagesToWaitFor: [1], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'c@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage3 = new ActiveProcessStage({roleID: {id : Buffer.from('4')}, stageNum: 3, nextStages: [5], stagesToWaitFor: [], originStagesToWaitFor: [1], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'd@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage4 = new ActiveProcessStage({roleID: {id : Buffer.from('5')}, stageNum: 4, nextStages: [6], stagesToWaitFor: [], originStagesToWaitFor: [2], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'e@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage5 = new ActiveProcessStage({roleID: {id : Buffer.from('6')}, stageNum: 5, nextStages: [6], stagesToWaitFor: [], originStagesToWaitFor: [3], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage6 = new ActiveProcessStage({roleID: {id : Buffer.from('7')}, stageNum: 6, nextStages: [], stagesToWaitFor: [5], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: null, approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     let stages = [stage0, stage1, stage2, stage3, stage4, stage5, stage6];
-    testProcess = new ActiveProcess(processName1,new Date(),3, creationTime, notificationTime, [4, 5], initials, stages, new Date());
+    testProcess = new ActiveProcess({processName: processName1, creatorRoleID: {id : Buffer.from('1')}, processDate: new Date(), processUrgency: 3, creationTime: creationTime, notificationTime: notificationTime, currentStages: [5], initials: initials}, stages);
 };
+
 
 describe('1.0 add to current stages', function () {
 
@@ -113,7 +113,13 @@ describe('1.0 add to current stages', function () {
         assert.deepEqual([0], testProcess.currentStages);
     });
 
-    it('1.3 checks for undefined value', () => {
+    it('1.3 checks for non existing stage in stages', () => {
+        assert.deepEqual([0], testProcess.currentStages);
+        expect(() => testProcess.addCurrentStage(999)).to.throw();
+        assert.deepEqual([0], testProcess.currentStages);
+    });
+
+    it('1.4 checks for undefined value', () => {
         assert.deepEqual([0], testProcess.currentStages);
         expect(() => testProcess.addCurrentStage(undefined)).to.throw();
         assert.deepEqual([0], testProcess.currentStages);
@@ -153,7 +159,7 @@ describe('3.0 set time creation', function () {
 
     it('3.2 define time again', () => {
         expect(() => {
-            testProcess.creationTime = new Date()
+            testProcess.creationTime = new Date();
         }).to.throw();
         assert.deepEqual(creationTime, testProcess.creationTime);
     });
@@ -229,62 +235,11 @@ describe('5.0 get path', function () {
     });
 });
 
-describe('6.0 remove stage', function () {
+describe('6.0 advance process', function () {
 
     beforeEach(createActiveProcess1);
 
-    it('6.1 removes existing stage', () => {
-        assert.equal(testProcess.stages.length, 7);
-        testProcess.removeStage(0);
-        assert.equal(testProcess.stages.length, 6);
-        expect(() => testProcess.getStageByStageNum(0)).to.throw();
-        assert.deepEqual(testProcess.getStageByStageNum(1).stagesToWaitFor, []);
-
-    });
-
-    it('6.2 removes not existing stage', () => {
-        expect(() => testProcess.getStageByStageNum(-1)).to.throw();
-        expect(() => testProcess.getStageByStageNum(7)).to.throw();
-        expect(() => testProcess.getStageByStageNum(8)).to.throw();
-        expect(() => testProcess.getStageByStageNum(2.4)).to.throw();
-    });
-});
-
-describe('7.0 remove path stages', function () {
-
-    beforeEach(createActiveProcess1);
-
-    it('7.1 removes full process path', () => {
-        assert.equal(testProcess.stages.length, 7);
-        testProcess.removePathStages([0], []);
-        assert.equal(testProcess.stages.length, 0);
-    });
-
-    it('7.2 removes partial path', () => {
-        assert.equal(testProcess.stages.length, 7);
-        testProcess.removePathStages([3], [2, 4, 6]);
-        assert.equal(testProcess.stages.length, 5);
-        expect(() => testProcess.getStageByStageNum(3)).to.throw();
-        expect(() => testProcess.getStageByStageNum(5)).to.throw();
-    });
-
-    it('7.3 removes 2 paths except final stage', () => {
-        assert.equal(testProcess.stages.length, 7);
-        testProcess.removePathStages([1], [6]);
-        assert.equal(testProcess.stages.length, 2);
-        expect(() => testProcess.getStageByStageNum(1)).to.throw();
-        expect(() => testProcess.getStageByStageNum(2)).to.throw();
-        expect(() => testProcess.getStageByStageNum(3)).to.throw();
-        expect(() => testProcess.getStageByStageNum(4)).to.throw();
-        expect(() => testProcess.getStageByStageNum(5)).to.throw();
-    });
-});
-
-describe('8.0 advance process', function () {
-
-    beforeEach(createActiveProcess1);
-
-    it('8.1 advances 1 step', () => {
+    it('6.1 advances 1 step', () => {
         assert.deepEqual([0], testProcess.currentStages);
         testProcess.handleStage({stageNum: 0, filledForms:[], fileNames: [], comments: ""});
         testProcess.advanceProcess(0,[1]);
@@ -292,7 +247,7 @@ describe('8.0 advance process', function () {
         assert.equal(testProcess.stages.length, 7);
     });
 
-    it('8.2 advances 2 steps', () => {
+    it('6.2 advances 2 steps', () => {
         assert.deepEqual([0], testProcess.currentStages);
         testProcess.handleStage({stageNum: 0, filledForms:[], fileNames: [], comments: ""});
         testProcess.advanceProcess(0,[1]);
@@ -302,7 +257,7 @@ describe('8.0 advance process', function () {
         assert.equal(testProcess.stages.length, 7);
     });
 
-    it('8.3 advances 2 steps with selection of 1 path', () => {
+    it('6.3 advances 2 steps with selection of 1 path', () => {
         assert.deepEqual([0], testProcess.currentStages);
         testProcess.handleStage({stageNum: 0, filledForms:[], fileNames: [], comments: ""});
         testProcess.advanceProcess(0,[1]);
@@ -313,47 +268,124 @@ describe('8.0 advance process', function () {
     });
 });
 
-describe('9.0 check if process is waiting for the user', function () {
+describe('7.0 check if process is waiting for the user', function () {
 
-    beforeEach(createActiveProcess2);
+    beforeEach(createActiveProcess1);
 
-    it('9.1 check if process is waiting for the user when user exists in a current stage', () => {
-        assert.equal(testProcess.isWaitingForUser(4,'e@bgu.ac.il'), true);
+    it('7.1 check if process is waiting for the user when user exists in a current stage', () => {
+        assert.equal(testProcess.isWaitingForUser(1,'a@bgu.ac.il'), true);
     });
 
-    it('9.2 check if process is waiting for the user when step has no user assigned', () => {
-        assert.equal(testProcess.isWaitingForUser(5,''), true);
+    it('7.2 check if process is waiting for the user when step has no user assigned', () => {
+        assert.equal(testProcess.isWaitingForUser(5,''), false);
     });
 
-    it('9.3 check if process is waiting for the user when role doesnt exist in stages', () => {
+    it('7.3 check if process is waiting for the user when role doesnt exist in stages', () => {
         assert.equal(testProcess.isWaitingForUser(11,''), false);
     });
 
-    it('9.4 check if process is waiting for the user when role doesnt exist in a current stage', () => {
+    it('7.4 check if process is waiting for the user when role doesnt exist in a current stage', () => {
         assert.equal(testProcess.isWaitingForUser(3,''), false);
     });
 });
 
-describe('10.0 check if user participates in process', function () {
+describe('8.0 check if user participates in process', function () {
 
-    beforeEach(createActiveProcess2);
+    beforeEach(createActiveProcess1);
 
-    it('10.1 check if user participates in process true', () => {
+    it('8.1 check if user participates in process true', () => {
         assert.equal(testProcess.isParticipatingInProcess('e@bgu.ac.il'), true);
     });
 
-    it('10.2 check if user participates in process true', () => {
+    it('8.2 check if user participates in process false', () => {
         assert.equal(testProcess.isParticipatingInProcess('doesntparticipate@bgu.ac.il'), false);
     });
 });
 
-describe('11.0 update stage', function () {
+describe('9.0 check if process is available to role', function () {
 
-    beforeEach(createActiveProcess1);
+    beforeEach(createActiveProcess2);
 
-    it('11.1  add online form to stage', () => {
-        testProcess.attachOnlineFormToStage(2, onlineFormsUpdated[0]);
-        assert.equal(1, testProcess.stages[2].onlineForms.length);
-        assert.equal(onlineFormsUpdated[0], testProcess.stages[2].onlineForms[0]);
+    it('9.1 check if process is available to role true', () => {
+        assert.equal(testProcess.isAvailableForRole(6), true);
+    });
+
+    it('9.2 check if process is available to role false', () => {
+        assert.equal(testProcess.isParticipatingInProcess('1'), false);
+    });
+
+    it('9.3 check if process is available to non existent role', () => {
+        assert.equal(testProcess.isParticipatingInProcess('100'), false);
+    });
+});
+
+describe('10.0 return process to creator', function () {
+
+    beforeEach(createActiveProcess2);
+
+    it('10.1  return process to creator', () => {
+        testProcess.returnProcessToCreator();
+        assert.equal(testProcess.currentStages.length,1);
+        assert.deepEqual(testProcess.creatorRoleID, testProcess.getStageByStageNum(testProcess.currentStages[0]).roleID);
+        assert.deepEqual(testProcess.getStageByStageNum(2).stagesToWaitFor, testProcess.getStageByStageNum(2).originStagesToWaitFor);
+    });
+});
+
+describe('11.0 assign user and get current stage for user', function () {
+
+    beforeEach(createActiveProcess2);
+
+    it('11.1 assign user and get current stage for user true', () => {
+        let stage = testProcess.getStageByStageNum(5);
+        assert.equal(stage.userEmail,null);
+        assert.equal(testProcess.assignUserToStage({id : Buffer.from('6')},'c@post.bgu.ac.il'),true);
+        assert.equal(testProcess.getCurrentStageNumberForUser('c@post.bgu.ac.il'),5);
+        stage = testProcess.getStageByStageNum(5);
+        assert.equal(stage.userEmail,'c@post.bgu.ac.il');
+    });
+
+    it('11.2 assign user and get current stage for user false', () => {
+        let stage = testProcess.getStageByStageNum(6);
+        assert.equal(stage.userEmail,null);
+        expect(() => {
+            assert.equal(testProcess.assignUserToStage({id : Buffer.from('7')},'c@post.bgu.ac.il'),false);
+        }).to.throw();
+        stage = testProcess.getStageByStageNum(6);
+        assert.equal(stage.userEmail,null);
+    });
+
+});
+
+describe('12.0 assign user and unassign user', function () {
+
+    beforeEach(createActiveProcess2);
+
+    it('12.1 assign user and unassign user true', () => {
+        let stage = testProcess.getStageByStageNum(5);
+        assert.equal(stage.userEmail,null);
+        assert.equal(testProcess.assignUserToStage({id : Buffer.from('6')},'c@post.bgu.ac.il'),true);
+        stage = testProcess.getStageByStageNum(5);
+        assert.equal(stage.userEmail,'c@post.bgu.ac.il');
+        assert.equal(testProcess.unAssignUserToStage({id : Buffer.from('6')},'c@post.bgu.ac.il'),true);
+        stage = testProcess.getStageByStageNum(5);
+        assert.equal(stage.userEmail,null);
+    });
+
+    it('12.2 assign user and unassign user false', () => {
+        let stage = testProcess.getStageByStageNum(6);
+        assert.equal(stage.userEmail,null);
+        expect(() => {
+            assert.equal(testProcess.unAssignUserToStage({id : Buffer.from('7')},'c@post.bgu.ac.il'),false);
+        }).to.throw();
+        stage = testProcess.getStageByStageNum(6);
+        assert.equal(stage.userEmail,null);
+    });
+
+});
+
+describe('13.0 get participating users', function () {
+    beforeEach(createActiveProcess2);
+    it('13.1 get participating users', () => {
+        assert.deepEqual(testProcess.getParticipatingUsers(),['a@bgu.ac.il','b@bgu.ac.il','c@bgu.ac.il','d@bgu.ac.il','e@bgu.ac.il']);
     });
 });

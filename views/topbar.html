@@ -2,6 +2,7 @@
     <a class="top-bar-button" href="/notifications/myNotifications">
         <i class="ion ion-android-notifications" style="font-size: 30px"></i>
     </a>
+    <span class="badge" style="background-color:white; color:#231f20"><%= notificationCount %></span>
     <h3 class="top-bar-label"><%= userFullName %> - <%= roleName %></h3>
 </div>
 <div>
@@ -10,10 +11,10 @@
     </a>
 </div>
 <div class="top-bar-left-div">
-    <input style="margin-left: 20px;" type="color" id="color_picker" name="color_picker" value="#f6a500"
-           onchange="changeMainColor('')">
+    <a href="/permissionsControl" class="top-bar-permission-button" >
+        <img <%- permissionsStyle %> class="top-bar-permission-image" src="/images/permissions icon.png" alt="הרשאות">
+    </a>
     <a class="top-bar-button" href="/auth/logout">
         <i class="ion ion-log-out" style="font-size: 30px"></i>
     </a>
-
 </div>

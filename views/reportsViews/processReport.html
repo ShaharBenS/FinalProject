@@ -27,9 +27,6 @@
 
         };
 
-        $(document).ready(function () {
-            setTopBar();
-        });
 
     </script>
     <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
@@ -40,14 +37,13 @@
     <style>
         td {
             text-align: center;
-
         }
 
         th {
             text-align: center;
         }
 
-        p {
+        label {
             padding: 2px;
         }
 
@@ -56,36 +52,35 @@
             border-collapse: collapse;
             border: none;
         }
-
     </style>
 </head>
 <body dir="rtl">
 <div align="center">
-    <div class="top-bar" id="top-bar">
+    <div id="top-bar" class="top-bar">
     </div>
-    <div class="main-div-tables">
-        <h1>דו"ח <%=processDetails.processName%></h1>
+    <div align="center" class="main-div-tables">
+        <h1 style="margin: auto">דו"ח <%=processDetails.processName%></h1>
         <hr class="orange-hr">
-        <table class="no_borders" dir="rtl" style="font-size: medium">
+        <table class="no_borders" dir="rtl">
             <tr>
-                <td style="text-align: right;"><p>שם תהליך:</p></td>
-                <td style="text-align: right;"><p><%=processDetails.processName%></p></td>
+                <td><label>שם תהליך:</label></td>
+                <td><label><%=processDetails.processName%></label></td>
             </tr>
             <tr>
-                <td style="text-align: right;"><p>סטטוס:</p></td>
-                <td style="text-align: right;"><p><%=processDetails.status%></p></td>
+                <td><label>סטטוס:</label></td>
+                <td><label><%=processDetails.status%></label></td>
             </tr>
             <tr>
-                <td style="text-align: right;"><p>תאריך יצירה:</p></td>
-                <td style="text-align: right;"><p><%=processDetails.creationTime%></p></td>
+                <td><label>תאריך יצירה:</label></td>
+                <td><label><%=processDetails.creationTime%></label></td>
             </tr>
             <tr>
-                <td style="text-align: right;"><p>תכיפות התהליך:</p></td>
-                <td style="text-align: right;"><p><%=processDetails.urgency%></p></td>
+                <td><label>תכיפות התהליך:</label></td>
+                <td><label><%=processDetails.urgency%></label></td>
             </tr>
             <tr>
-                <td style="text-align: right;"><p>תאריך היעד:</p></td>
-                <td style="text-align: right;"><p><%=processDetails.processDate%></p></td>
+                <td><label>תאריך היעד:</label></td>
+                <td><label><%=processDetails.processDate%></label></td>
             </tr>
         </table>
 

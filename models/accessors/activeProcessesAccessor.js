@@ -48,40 +48,23 @@ module.exports.updateActiveProcess = (AP, update, callback) => {
     return activeProcessSchema.updateOne(AP, update, callback);
 };
 
+module.exports.updateAllActiveProcesses = (AP, update, callback) => {
+    return activeProcessSchema.update(AP, update, callback);
+};
 
 /*********************/
 /* Private Functions */
 /*********************/
 
 let getActiveProcessFromOriginal = function (activeProcess) {
-    return new ActiveProcess(activeProcess.processName,
-        activeProcess.creatorRoleID,
-        activeProcess.processDate,
-        activeProcess.processUrgency,
-        activeProcess.creationTime,
-        activeProcess.notificationTime,
-        activeProcess.currentStages,
-        activeProcess.initials,
-        getActiveProcessStagesFromOriginal(activeProcess.stages),
-        activeProcess.lastApproached);
+    return new ActiveProcess(activeProcess,getActiveProcessStagesFromOriginal(activeProcess.stages));
 };
 
 
 let getActiveProcessStagesFromOriginal = function (stages) {
     let newStages = [];
     stages.forEach((stage) => {
-        newStages.push(new ActiveProcessStage(
-            stage.roleID,
-            stage.userEmail,
-            stage.stageNum,
-            stage.nextStages,
-            stage.stagesToWaitFor,
-            stage.originStagesToWaitFor,
-            stage.approvalTime,
-            stage.onlineForms,
-            stage.filledOnlineForms,
-            stage.attachedFilesNames,
-            stage.comments));
+        newStages.push(new ActiveProcessStage(stage));
     });
     return newStages;
 };

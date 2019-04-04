@@ -4,14 +4,11 @@ let usersAndRolesController = require('../usersControllers/usersAndRolesControll
 let processReportController = require('../processesControllers/processReportController');
 let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
-let waitingActiveProcessNotification = require('../../domainObjects/notifications/waitingActiveProcessNotification');
-let activeProcessFinishedNotification = require('../../domainObjects/notifications/activeProcessFinishedNotification');
-let activeProcessBackToCreatorNotification = require('../../domainObjects/notifications/activeProcessBackToCreatorNotification');
-let activeProcessCancelNotification = require('../../domainObjects/notifications/activeProcessCancelNotification');
+let Notification = require('../../domainObjects/notification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
 let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
-
+let moment = require('moment');
 
 /**
  * attach form to process stage
@@ -107,17 +104,17 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     stages: newStages,
                                     lastApproached: today,
                                     processDate: processDate,
-                                    processUrgency: processUrgency
+                                    processUrgency: processUrgency,
+                                    processCreatorEmail: userEmail
                                 }, (err) => {
                                     if (err) callback(err);
-                                    else processReportController.addProcessReport(processName, today,processDate,processUrgency, (err)=>{
-                                        if(err){
+                                    else processReportController.addProcessReport(processName, today, processDate, processUrgency, userEmail, (err) => {
+                                        if (err) {
                                             callback(err);
                                         } else {
                                             // Notify first role
-                                            notificationsController.addNotificationToUser(userEmail, new waitingActiveProcessNotification(
-                                                "התהליך: " + processStructureName + ", שנקרא: " + processName + ", מחכה  לטיפולך"
-                                            ), callback)
+                                            notificationsController.addNotificationToUser(userEmail, new Notification(
+                                                processName + " מסוג " + processStructureName + " מחכה לטיפולך.", "תהליך בהמתנה"), callback)
                                         }
                                     });
                                 });
@@ -226,8 +223,8 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
                 else {
-                    usersAndRolesController.getAllChildren(userEmail,(err,children)=>{
-                        if(err) {
+                    usersAndRolesController.getAllChildren(userEmail, (err, children) => {
+                        if (err) {
                             callback(err);
                             return;
                         }
@@ -239,29 +236,23 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                             activeProcesses.forEach((process) => {
                                 let flag = true;
                                 let currUserEmails = [];
-                                if (process.isParticipatingInProcess(userEmail))
-                                {
+                                if (process.isParticipatingInProcess(userEmail)) {
                                     flag = false;
                                     toReturnActiveProcesses.push(process);
                                     currUserEmails = [userEmail];
                                 }
-                                children.forEach((child)=>{
-                                    if (process.isParticipatingInProcess(child))
-                                    {
-                                        if(flag === false)
-                                        {
+                                children.forEach((child) => {
+                                    if (process.isParticipatingInProcess(child)) {
+                                        if (flag === false) {
                                             currUserEmails = currUserEmails.concat(child);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             toReturnActiveProcesses.push(process);
                                             currUserEmails = [child];
                                             flag = false;
                                         }
                                     }
                                 });
-                                if(flag === false)
-                                {
+                                if (flag === false) {
                                     userEmailsArrays.push(currUserEmails);
                                 }
                             });
@@ -269,7 +260,7 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                                 callback(null, [toReturnActiveProcesses, arrayOfRoles, userEmailsArrays]);
                             });
                         } else {
-                            callback(null, [toReturnActiveProcesses, [] , []]);
+                            callback(null, [toReturnActiveProcesses, [], []]);
                         }
                     });
                 }
@@ -383,7 +374,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                                         prev(err);
                                                     } else {
                                                         notificationsController.addNotificationToUser(curr.userEmail,
-                                                            new activeProcessFinishedNotification("התהליך" + process.processName + " הושלם בהצלחה"), prev)
+                                                            new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
                                                     }
                                                 }
                                             }, (err) => {
@@ -399,7 +390,44 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                 }
                             });
                         } else {
-                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, callback);
+                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
+                                if (err) {
+                                    callback(err);
+                                } else {
+                                    process.currentStages.reduce((acc, curr) => {
+                                        return (err) => {
+                                            if (err) {
+                                                acc(err);
+                                            } else {
+                                                let stage = process.getStageByStageNum(curr);
+                                                usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
+                                                    emails.reduce((acc, curr) => {
+                                                        return (err) => {
+                                                            if (err) {
+                                                                acc(err);
+                                                            } else {
+                                                                notificationsController.addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
+                                                            }
+                                                        }
+                                                    }, (err) => {
+                                                        if (err) {
+                                                            acc(err);
+                                                        } else {
+                                                            acc(null);
+                                                        }
+                                                    })(null);
+                                                });
+                                            }
+                                        }
+                                    }, (err) => {
+                                        if (err) {
+                                            callback(err);
+                                        } else {
+                                            callback(null);
+                                        }
+                                    })(null);
+                                }
+                            });
                         }
                     }
                 });
@@ -433,8 +461,11 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
         else {
             processReport = processReport._doc;
             let returnProcessDetails = {
-                processName: processReport.processName, creationTime: processReport.creationTime,
-                status: processReport.status, urgency: processReport.processUrgency, processDate : processReport.processDate
+                processName: processReport.processName,
+                creationTime: processReport.creationTime,
+                status: processReport.status,
+                urgency: processReport.processUrgency,
+                processDate: processReport.processDate
             };
             returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
                 callback(null, [returnProcessDetails, newStages]);
@@ -584,7 +615,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
             filledForms: [],
             fileNames: [],
             action: "return",
-            stageNum: process.getStageNumberForUser(userEmail)
+            stageNum: process.getCurrentStageNumberForUser(userEmail)
         };
         processAccessor.updateActiveProcess({processName: processName}, {
             currentStages: process.currentStages,
@@ -597,7 +628,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
                     if (err) {
                         callback(err);
                     } else {
-                        notificationsController.addNotificationToUser(creatorEmail, new activeProcessBackToCreatorNotification("התהליך " + processName + " חזר אליך"), callback);
+                        notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + processName + " חזר אליך", "תהליך חזר ליוצר"), callback);
                     }
                 });
             }
@@ -615,7 +646,7 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                 filledForms: [],
                 fileNames: [],
                 action: "cancel",
-                stageNum: process.getStageNumberForUser(userEmail)
+                stageNum: process.getCurrentStageNumberForUser(userEmail)
             };
             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                 if (err) callback(err);
@@ -631,11 +662,10 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                                         prev(err);
                                     } else {
                                         notificationsController.addNotificationToUser(curr,
-                                            new activeProcessCancelNotification("התהליך " + processName + " בוטל על ידי " + userEmail), prev);
+                                            new Notification("התהליך " + processName + " בוטל על ידי " + userEmail, "תהליך בוטל"), prev);
                                     }
                                 }
                             }, (err) => {
-                                // Shahar Ben Shitrit is a living God
                                 if (err) {
                                     console.log(err);
                                     callback(err);
@@ -651,34 +681,74 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
     });
 };
 
-function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback){
-    if(index === filledFormIds.length)
-    {
+function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) {
+    if (index === filledFormIds.length) {
         callback(null, filledFormsArray);
         return;
     }
     filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
-        if(err) callback(err);
-        else{
+        if (err) callback(err);
+        else {
             filledFormsArray.push(forms);
-            getFilledOnlineForms(filledFormIds,index+1,filledFormsArray,callback);
+            getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
         }
     });
 }
+
+module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTree, rootID, callback) => {
+    processAccessor.getActiveProcesses((err, processes) => {
+        if (err) {
+            callback(err);
+        } else {
+            processes.forEach(process => {
+                process.stages.forEach(stage => {
+                    if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
+                        if (stage.userEmail === null) {
+                            let findReplacement = (roleId) => {
+                                let replacement = oldTree.getFatherOf(roleId);
+                                if (replacement === undefined) {
+                                    return rootID;
+                                }
+                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
+                                    return findReplacement(replacement);
+                                } else {
+                                    return replacement;
+                                }
+                            };
+                            stage.roleID = findReplacement(stage.roleID);
+                        }
+                    }
+                });
+            });
+
+            processes.reduce((prev, process) => {
+                return (err) => {
+                    if (err) {
+                        prev(err)
+                    } else {
+                        processAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev)
+                    }
+                }
+            }, callback)(null);
+        }
+    });
+};
 
 module.exports.processReport = function (process_name, callback) {
     this.getAllActiveProcessDetails(process_name, (err, result) => {
         if (err) callback(err);
         else {
-            this.convertJustCreationTime(result[0]);
-            this.convertJustProcessDate(result[0]);
-            this.convertDateInApprovalTime(result[1]);
-            getFilledOnlineForms(result[1],0,[],(err,formsArr)=>{
-                for(let i=0;i<formsArr.length;i++)
-                {
+            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
+            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
+            for (let i = 0; i < result[1].length; i++) {
+                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
+            }
+
+            getFilledOnlineForms(result[1], 0, [], (err, formsArr) => {
+                for (let i = 0; i < formsArr.length; i++) {
                     result[1][i].filledOnlineForms = formsArr[i];
                 }
-                callback(null,result);
+                callback(null, result);
             });
         }
     });
@@ -689,7 +759,6 @@ function convertDate(array, isArrayOfDates) {
     for (let i = 0; i < array.length; i++) {
         let creationTime;
         let lastApproached;
-
         if (isArrayOfDates === undefined) {
             creationTime = array[i]._creationTime;
             lastApproached = array[i]._lastApproached;
@@ -697,168 +766,18 @@ function convertDate(array, isArrayOfDates) {
             creationTime = array[i];
             lastApproached = array[i];
         }
-
-        let dayOfCreationTime = creationTime.getDate();
-        let dayOfLastApproached = lastApproached.getDate();
-        let monthOfCreationTime = creationTime.getMonth() + 1;
-        let monthOfLastApproached = lastApproached.getMonth() + 1;
-        let yearOfCreationTime = creationTime.getFullYear();
-        let yearOfLastApproached = lastApproached.getFullYear();
-        if (dayOfCreationTime < 10) {
-            dayOfCreationTime = '0' + dayOfCreationTime;
-        }
-        if (dayOfLastApproached < 10) {
-            dayOfLastApproached = '0' + dayOfLastApproached;
-        }
-        if (monthOfCreationTime < 10) {
-            monthOfCreationTime = '0' + monthOfCreationTime;
-        }
-        if (monthOfLastApproached < 10) {
-            monthOfLastApproached = '0' + monthOfLastApproached;
-        }
-        let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
-        let dateOfLastApproached = dayOfLastApproached + '/' + monthOfLastApproached + '/' + yearOfLastApproached;
-        let hourOfCreationTime = creationTime.getHours();
-        let hourOfLastApproached = lastApproached.getHours();
-        let minuteOfCreationTime = creationTime.getMinutes();
-        let minuteOfLastApproached = lastApproached.getMinutes();
-        let secondsOfCreationTime = creationTime.getSeconds();
-        let secondsOfLastApproached = lastApproached.getSeconds();
-        if (hourOfCreationTime.toString().length === 1)
-            hourOfCreationTime = '0' + hourOfCreationTime;
-        if (hourOfLastApproached.toString().length === 1)
-            hourOfLastApproached = '0' + hourOfLastApproached;
-        if (minuteOfCreationTime.toString().length === 1)
-            minuteOfCreationTime = '0' + minuteOfCreationTime;
-        if (minuteOfLastApproached.toString().length === 1)
-            minuteOfLastApproached = '0' + minuteOfLastApproached;
-        if (secondsOfCreationTime.toString().length === 1)
-            secondsOfCreationTime = '0' + secondsOfCreationTime;
-        if (secondsOfLastApproached.toString().length === 1)
-            secondsOfLastApproached = '0' + secondsOfLastApproached;
-        dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
-        dateOfLastApproached = dateOfLastApproached + ' ' + hourOfLastApproached + ':' + minuteOfLastApproached + ':' + secondsOfLastApproached;
+        creationTime = moment(creationTime).format("DD/MM/YYYY HH:mm:ss");
+        lastApproached = moment(lastApproached).format("DD/MM/YYYY HH:mm:ss");
         if (isArrayOfDates === undefined) {
-            array[i]._creationTime = dateOfCreationTime;
-            array[i]._lastApproached = dateOfLastApproached;
+            array[i]._creationTime = creationTime;
+            array[i]._lastApproached = lastApproached;
         } else {
-            array[i] = dateOfCreationTime;
+            array[i] = creationTime;
         }
     }
-}
-
-function convertJustProcessDate(process) {
-        let processDate = process.processDate;
-        let dayOfProcessDate = processDate.getDate();
-        let monthOfProcessDate = processDate.getMonth() + 1;
-        let yearOfProcessDate = processDate.getFullYear();
-        if (dayOfProcessDate < 10) {
-            dayOfProcessDate = '0' + dayOfProcessDate;
-        }
-        if (monthOfProcessDate < 10) {
-            monthOfProcessDate = '0' + monthOfProcessDate;
-        }
-        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
-        let hourOfProcessDate = processDate.getHours();
-        let minuteOfProcessDate  = processDate.getMinutes();
-        let secondsOfProcessDate  = processDate.getSeconds();
-        if (hourOfProcessDate.toString().length === 1)
-            hourOfProcessDate = '0' + hourOfProcessDate;
-        if (minuteOfProcessDate.toString().length === 1)
-            minuteOfProcessDate = '0' + minuteOfProcessDate;
-        if (secondsOfProcessDate.toString().length === 1)
-            secondsOfProcessDate = '0' + secondsOfProcessDate;
-        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
-        process.processDate = dateOfProcessDate;
 }
 
 /////////
-function convertDate2(array) {
-    for (let i = 0; i < array.length; i++) {
-        let processDate = array[i].processDate;
-        let dayOfProcessDate = processDate.getDate();
-        let monthOfProcessDate = processDate.getMonth() + 1;
-        let yearOfProcessDate = processDate.getFullYear();
-        if (dayOfProcessDate < 10) {
-            dayOfProcessDate = '0' + dayOfProcessDate;
-        }
-        if (monthOfProcessDate < 10) {
-            monthOfProcessDate = '0' + monthOfProcessDate;
-        }
-        let dateOfProcessDate = dayOfProcessDate + '/' + monthOfProcessDate + '/' + yearOfProcessDate;
-        let hourOfProcessDate = processDate.getHours();
-        let minuteOfProcessDate  = processDate.getMinutes();
-        let secondsOfProcessDate  = processDate.getSeconds();
-        if (hourOfProcessDate.toString().length === 1)
-            hourOfProcessDate = '0' + hourOfProcessDate;
-        if (minuteOfProcessDate.toString().length === 1)
-            minuteOfProcessDate = '0' + minuteOfProcessDate;
-        if (secondsOfProcessDate.toString().length === 1)
-            secondsOfProcessDate = '0' + secondsOfProcessDate;
-        dateOfProcessDate = dateOfProcessDate + ' ' + hourOfProcessDate + ':' + minuteOfProcessDate + ':' + secondsOfProcessDate;
-        array[i].processDate = dateOfProcessDate;
-    }
-}
-/////////
-
-function convertJustCreationTime(process) {
-    let creationTime = process.creationTime;
-    let dayOfCreationTime = creationTime.getDate();
-    let monthOfCreationTime = creationTime.getMonth() + 1;
-    let yearOfCreationTime = creationTime.getFullYear();
-    if (dayOfCreationTime < 10) {
-        dayOfCreationTime = '0' + dayOfCreationTime;
-    }
-    if (monthOfCreationTime < 10) {
-        monthOfCreationTime = '0' + monthOfCreationTime;
-    }
-    let dateOfCreationTime = dayOfCreationTime + '/' + monthOfCreationTime + '/' + yearOfCreationTime;
-    let hourOfCreationTime = creationTime.getHours();
-    let minuteOfCreationTime = creationTime.getMinutes();
-    let secondsOfCreationTime = creationTime.getSeconds();
-    if (hourOfCreationTime.toString().length === 1)
-        hourOfCreationTime = '0' + hourOfCreationTime;
-    if (minuteOfCreationTime.toString().length === 1)
-        minuteOfCreationTime = '0' + minuteOfCreationTime;
-    if (secondsOfCreationTime.toString().length === 1)
-        secondsOfCreationTime = '0' + secondsOfCreationTime;
-    dateOfCreationTime = dateOfCreationTime + ' ' + hourOfCreationTime + ':' + minuteOfCreationTime + ':' + secondsOfCreationTime;
-    process.creationTime = dateOfCreationTime;
-}
-
-function convertDateInApprovalTime(array) {
-    for (let i = 0; i < array.length; i++) {
-        let approvalTime = array[i].approvalTime;
-        let dayOfApprovalTime = approvalTime.getDate();
-        let monthOfApprovalTime = approvalTime.getMonth() + 1;
-        let yearOfApprovalTime = approvalTime.getFullYear();
-        if (dayOfApprovalTime < 10) {
-            dayOfApprovalTime = '0' + dayOfApprovalTime;
-        }
-        if (monthOfApprovalTime < 10) {
-            monthOfApprovalTime = '0' + monthOfApprovalTime;
-        }
-        let dateOfApprovalTime = dayOfApprovalTime + '/' + monthOfApprovalTime + '/' + yearOfApprovalTime;
-        let hourOfApprovalTime = approvalTime.getHours();
-        let minuteOfApprovalTime = approvalTime.getMinutes();
-        let secondsOfApprovalTime = approvalTime.getSeconds();
-        if (hourOfApprovalTime.toString().length === 1)
-            hourOfApprovalTime = '0' + hourOfApprovalTime;
-        if (minuteOfApprovalTime.toString().length === 1)
-            minuteOfApprovalTime = '0' + minuteOfApprovalTime;
-        if (secondsOfApprovalTime.toString().length === 1)
-            secondsOfApprovalTime = '0' + secondsOfApprovalTime;
-        dateOfApprovalTime = dateOfApprovalTime + ' ' + hourOfApprovalTime + ':' + minuteOfApprovalTime + ':' + secondsOfApprovalTime;
-        array[i].approvalTime = dateOfApprovalTime;
-    }
-}
-
-/////
-
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
-module.exports.convertDate2 = convertDate2;
 module.exports.convertDate = convertDate;
-module.exports.convertJustCreationTime = convertJustCreationTime;
-module.exports.convertDateInApprovalTime = convertDateInApprovalTime;
-module.exports.convertJustProcessDate = convertJustProcessDate;

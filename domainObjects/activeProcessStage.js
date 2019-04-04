@@ -1,24 +1,29 @@
-let processStructureStage = require("./processStructureStage");
-
 class activeProcessStage {
 
-    constructor(roleID, userEmail, stageNum, nextStages, stagesToWaitFor, originStagesToWaitFor, approvalTime, onlineForms, filledOnlineForms, attachedFilesNames, comments)
+    constructor(pureObject)
     {
-        this.roleID = roleID;
-        this.stageNum = stageNum;
-        this.nextStages = nextStages;
-        this.stagesToWaitFor = stagesToWaitFor;
-        this.onlineForms = onlineForms;
-        this.attachedFilesNames = attachedFilesNames;
-        this.userEmail = userEmail;
-        this.originStagesToWaitFor = originStagesToWaitFor;
-        this.approvalTime = approvalTime;
-        this.filledOnlineForms = filledOnlineForms;
-        this.comments = comments;
+        this.roleID = pureObject.roleID;
+        this.stageNum = pureObject.stageNum;
+        this.nextStages = pureObject.nextStages;
+        this.stagesToWaitFor = pureObject.stagesToWaitFor;
+        this.onlineForms = pureObject.onlineForms;
+        this.attachedFilesNames = pureObject.attachedFilesNames;
+        this.userEmail = pureObject.userEmail;
+        this.originStagesToWaitFor = pureObject.originStagesToWaitFor;
+        this.approvalTime = pureObject.approvalTime;
+        this.filledOnlineForms = pureObject.filledOnlineForms;
+        this.comments = pureObject.comments;
     }
 
     removeStagesToWaitFor(stages) {
-        this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
+        }
+        else
+        {
+            throw new Error();
+        }
     }
 
     handleStage(filledForms, fileNames, comments)

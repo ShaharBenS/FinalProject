@@ -6,6 +6,7 @@ const processReportSchema = new Schema({
     status: String,
     processDate: Date,
     processUrgency: { type: Number, min: 1, max: 10},
+    processCreatorEmail : String,
     creationTime: Date,
     currentStages: [Number],
     initials: [Number],

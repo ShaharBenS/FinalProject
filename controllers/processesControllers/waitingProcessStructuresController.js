@@ -4,8 +4,7 @@ let processStructureController = require('../processesControllers/processStructu
 let processStructureAccessor = require('../../models/accessors/processStructureAccessor');
 let usersPermissionsController = require('../usersControllers/UsersPermissionsController');
 let notificationController = require('../notificationsControllers/notificationController');
-let waitingProcessStructureApproved = require('../../domainObjects/notifications/waitingProcessStructureApproved');
-let waitingProcessStructureDisapproved = require('../../domainObjects/notifications/waitingProcessStructureDisapproved');
+let Notification = require('../../domainObjects/notification');
 
 module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) =>
 {
@@ -69,7 +68,7 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) =>
                                   callback(err);
                               }
                               else{
-                                  notificationController.addNotificationToUser(waitingStructure.userEmail,new waitingProcessStructureApproved("מבנה התהליך "+waitingStructure.structureName+" אושר בהצלחה"),callback)
+                                  notificationController.addNotificationToUser(waitingStructure.userEmail,new Notification("מבנה התהליך "+waitingStructure.structureName+" אושר בהצלחה","מבנה תהליך אושר"),callback)
                               }
                           })
                       };
@@ -112,7 +111,7 @@ module.exports.disapproveProcessStructure = (userEmail, _id,callback)=>{
                                callback(err);
                            }
                            else{
-                               notificationController.addNotificationToUser(waitingStructures[0].userEmail,new waitingProcessStructureDisapproved("מבנה התהליך "+waitingStructures[0].structureName+" אושר בהצלחה"))
+                               notificationController.addNotificationToUser(waitingStructures[0].userEmail,new Notification("מבנה התהליך "+waitingStructures[0].structureName+" אושר בהצלחה","מבנה תהליך לא אושר"))
                            }
                        });
                    }
