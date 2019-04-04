@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        let _formName = '';
+        let fields = undefined;
+
+        window.onload = function () {
+            _formName = '<%=formName%>';
+            document.title = _formName;
+            document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
+            let isForShow = '<%=isForShow%>' === 'true';
+            fields = '<%= fields %>';
+
+            setupInputs(_formName, isForShow, fields);
+        };
+
+    </script>
+    <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+
+    <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/javascripts/onlineForms.js"></script>
+    <link href="/stylesheets/onlineFormsStyle.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+</head>
+<body dir="rtl">
+<div align="center">
+    <div class="main-div-forms">
+        <h2 id="formTitle"><u></u></h2>
+        <h3 id="info"></h3>
+        <hr class="orange-hr">
+        <form id="form" onsubmit="return submitForm()">
+            <fieldset id="fieldset">
+                <table class="no_table" id="first" style="width: 30%;">
+                    <tbody>
+                    <tr>
+                        <td><label for="date">תאריך</label></td>
+                        <td><input id="date" name="date" type="text"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <table class="no_table" id="second" style="width:100%;">
+                    <tbody>
+                    <tr>
+                        <td width="20%"><label for="purpose">מטרת הרכישה</label></td>
+                        <td><input id="purpose" name="purpose" type="text"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+                <p align="right" style="font-size: large">מצ"ב העתקי הצעות המחיר הסופיות כפי שנתקבלו ע"פ דרישתי מהספקים
+                    הרלוונטיים‬.</p>
+
+                <table id="prices">
+                    <tbody>
+                    <tr>
+                        <th>מס"ד</th>
+                        <th>בגוף המציע</th>
+                        <th>עיקרי פרטי ההצעה</th>
+                        <th>סכום ההצעה</th>
+                        <th>שם איש הקשר מולו נערך המו"מ</th>
+                        <th>טלפון איש הקשר</th>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <table class="no_table" id="causes">
+                    <tbody>
+                    <tr>
+                        <td><label for="price">סעיף תקציבי</label></td>
+                        <td><input id="price" name="price" type="text"></td>
+                        <td><label>תנאי תשלום</label></td>
+                        <td><label>שוטף + 45</label></td>
+                    </tr>
+                    <tr>
+                        <td><label for="recommended">הצעת מחיר מומלצת</label></td>
+                        <td><input id="recommended" name="recommended" type="text"></td>
+                        <td><label for="cause1">סיבה</label></td>
+                        <td><input id="cause1" name="cause1" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="chosen">הצעת מחיר נבחרת</label></td>
+                        <td><input id="chosen" name="chosen" type="text"></td>
+                        <td><label for="cause2">סיבה</label></td>
+                        <td><input id="cause2" name="cause2" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="date2">תאריך</label></td>
+                        <td nowrap="nowrap"><input id="date2" name="date2" type="text"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <br>
+                <input class="btn-default" id="submitButton" type="submit" value="שלח">
+            </fieldset>
+        </form>
+
+        <br>
+        <button class="btn-default" id="close_win_button" onclick="window.close()">סגור טופס</button>
+    </div>
+</div>
+</body>
+</html>
