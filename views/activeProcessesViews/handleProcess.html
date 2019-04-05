@@ -11,7 +11,14 @@
     <script src="/javascripts/upload_js.js"></script>
     <script src="/javascripts/filledOnlineForms.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/javascripts/topbar.js"></script>
+    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
 
+    <script>
+        $(document).ready(function () {
+            setTopBar();
+        });
+    </script>
     <title>טיפול בתהליך </title>
 
     <style>
@@ -84,6 +91,8 @@
 </head>
 <body dir="rtl">
 <div align="center">
+    <div id="top-bar" class="top-bar">
+    </div>
     <div class="main-div">
         <h1>טיפול בתהליך <%=processName%></h1>
         <br>

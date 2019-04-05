@@ -10,10 +10,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+    <script src="/javascripts/topbar.js"></script>
+    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
 
     <script src="/javascripts/permissionsControlScript.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
-
+    <script>
+        $(document).ready(function () {
+            setTopBar();
+        });
+    </script>
     <style>
         label {
             margin-right: 5px;
@@ -23,6 +29,8 @@
 </head>
 <body dir="rtl">
 <div align="center">
+    <div id="top-bar" class="top-bar">
+    </div>
     <div class="main-div">
         <h2>הרשאות משתמשים</h2>
         <hr class="orange-hr">
