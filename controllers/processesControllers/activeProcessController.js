@@ -88,8 +88,6 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
                                         originStagesToWaitFor: stage.stagesToWaitFor,
                                         approvalTime: null,
-                                        onlineForms: stage.onlineForms,
-                                        filledOnlineForms: [],
                                         attachedFilesNames: stage.attachedFilesNames,
                                     });
                                 });
@@ -105,7 +103,9 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                     processDate: processDate,
                                     processUrgency: processUrgency,
-                                    processCreatorEmail: userEmail
+                                    processCreatorEmail: userEmail,
+                                    onlineForms: processStructure.onlineForms,
+                                    filledOnlineForms: []
                                 }, (err) => {
                                     if (err) callback(err);
                                     else processReportController.addProcessReport(processName, today, processDate, processUrgency, userEmail, (err) => {
@@ -307,11 +307,10 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
     let formsInfo = JSON.parse(fields.formsInfo);
     let stage = {
         comments: fields.comments,
-        filledForms: formsInfo,
         fileNames: fileNames,
         nextStageRoles: nextStageRoles
     };
-    handleProcess(userEmail, processName, stage, callback);
+    handleProcess(userEmail, processName, formsInfo, stage, callback);
 }
 
 function createOnlineFormsFromArray(forms, index, formIdArray, callback) {
@@ -336,10 +335,11 @@ function createOnlineFormsFromArray(forms, index, formIdArray, callback) {
  *
  * @param userEmail | the user that approved
  * @param processName | the process name that approved
+ * @param filledOnlineForms
  * @param stageDetails | all the stage details
  * @param callback
  */
-function handleProcess(userEmail, processName, stageDetails, callback) {
+function handleProcess(userEmail, processName, filledOnlineForms, stageDetails, callback) {
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
@@ -352,7 +352,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
             }
             createOnlineFormsFromArray(stageDetails.filledForms, 0, [], (err, filledFormsIDs) => {
                 let today = new Date();
-                stageDetails.filledForms = filledFormsIDs;
+                process.filledOnlineForms = filledFormsIDs;
                 stageDetails.stageNum = currentStage.stageNum;
                 stageDetails.action = "continue";
                 process.handleStage(stageDetails);
@@ -448,7 +448,7 @@ function advanceProcess(process, stageNum, nextStages, callback) {
     process.advanceProcess(stageNum, nextStages);
     let today = new Date();
     processAccessor.updateActiveProcess({processName: process.processName}, {
-        currentStages: process.currentStages, stages: process.stages, lastApproached: today
+        filledOnlineForms: process.filledOnlineForms, currentStages: process.currentStages, stages: process.stages, lastApproached: today
     }, (err, res) => {
         if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
         else callback(null, res);
@@ -488,8 +488,7 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
                     stageNum: stage.stageNum,
                     approvalTime: stage.approvalTime,
                     comments: stage.comments,
-                    files: stage.attachedFilesNames,
-                    filledOnlineForms: stage.filledOnlineForms,
+                    files: stage.attachedFilesNames
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }
@@ -554,23 +553,6 @@ function getRoleNamesForArray(stages, index, roleNamesArray, callback) {
     })(roleNamesArray, stages[index].stageNum);
 }
 
-function getFormNamesForArray(forms, index, formNameArray, callback) {
-    if (index === forms.length) {
-        callback(null, formNameArray);
-        return;
-    }
-    let formId = forms[index];
-    (function (array) {
-        onlineFormController.getOnlineFormByID(formId, (err, form) => {
-            if (err) callback(err);
-            else {
-                array.push(form.formName);
-                getFormNamesForArray(forms, index + 1, formNameArray, callback);
-            }
-        });
-    })(formNameArray);
-}
-
 module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEmail, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -592,10 +574,10 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
-                        getFormNamesForArray(currentStage.onlineForms, 0, [], (err, res) => {
+                        onlineFormController.findOnlineFormsNamesByFormsIDs(process._onlineForms, (err, onlineFormsNames) => {
                             if (err) callback(err);
                             else {
-                                callback(null, [rolesNames, res]);
+                                callback(null, [rolesNames, onlineFormsNames]);
                             }
                         });
                     }
