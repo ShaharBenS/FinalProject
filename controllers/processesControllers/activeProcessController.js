@@ -56,7 +56,7 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
  */
 
 module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, notificationTime, callback) => {
-    usersAndRolesController.getUserIDByEmail(userEmail,(err,userID)=>{
+    usersAndRolesController.getUserByEmail(userEmail,(err,user)=>{
         if(err) callback(err);
         else
         {
@@ -86,7 +86,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         processStructure.stages.forEach((stage) => {
                                             newStages.push({
                                                 role: stage.roleID,
-                                                user: stage.stageNum === initialStage ? userID : null,
+                                                user: stage.stageNum === initialStage ? user._id : null,
                                                 stageNum: stage.stageNum,
                                                 nextStages: stage.nextStages,
                                                 stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
@@ -457,14 +457,19 @@ function advanceProcess(process, stageNum, nextStages, callback) {
 }
 
 module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
+    usersAndRolesController.getUserByEmail(userEmail,(err,user)=>{
         if (err) callback(err);
         else {
-            usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+            processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
                 if (err) callback(err);
                 else {
-                    process.assignUserToStage(roleID, userEmail);
-                    processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
+                    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+                        if (err) callback(err);
+                        else {
+                            let stageNum = process.assignUserToStage(roleID, user);
+                            processAccessor.updateStageWithUserActiveProcess(processName, stageNum, user._id, callback);
+                        }
+                    });
                 }
             });
         }

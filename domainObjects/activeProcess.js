@@ -276,20 +276,17 @@ class activeProcess {
         return -1;
     }
 
-    assignUserToStage(role,userEmail){
-        let hasChanged = false;
+    assignUserToStage(role,user){
         for(let i=0;i<this._currentStages.length;i++)
         {
             let currentStage = this.getStageByStageNum(this._currentStages[i]);
-            if(currentStage.role.id.equals(role.id) && currentStage.user === null)
+            if(currentStage.role._id.id.equals(role.id) && currentStage.user === null)
             {
-                currentStage.user = {userEmail: userEmail};
-                hasChanged = true;
+                currentStage.user = user;
+                return this._currentStages[i];
             }
         }
-        if(!hasChanged)
-            throw new Error('cant assign user');
-        return true;
+        throw new Error('cant assign user');
     }
 
     unAssignUserToStage(roleID,userEmail){

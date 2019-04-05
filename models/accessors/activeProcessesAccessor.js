@@ -48,6 +48,9 @@ module.exports.updateActiveProcess = (AP, update, callback) => {
     return activeProcessSchema.updateOne(AP, update, callback);
 };
 
+module.exports.updateStageWithUserActiveProcess = (processName, stageNum, userID, callback) => {
+    return activeProcessSchema.update({processName: processName, "stages.stageNum:": stageNum }, {$set: { "stages.$.user" : userID } }, callback);
+};
 
 /*********************/
 /* Private Functions */

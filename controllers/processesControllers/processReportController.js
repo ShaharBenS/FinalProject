@@ -23,7 +23,7 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
     processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
-            usersAndRolesController.getUserIDByEmail(userEmail,(err,userID)=>{
+            usersAndRolesController.getUserByEmail(userEmail,(err,user)=>{
                 if (err) callback(err);
                 else
                 {
@@ -31,7 +31,7 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
                         if (err) callback(err);
                         else {
                             let newStage = {
-                                role: roleID, user: userID, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
+                                role: roleID, user: user._id, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
                                 comments: stageDetails.comments, action: stageDetails.action, filledOnlineForms: stageDetails.filledForms,
                                 attachedFilesNames: stageDetails.fileNames
                             };

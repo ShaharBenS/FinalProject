@@ -525,13 +525,13 @@ function getChildrenRecursive(role, roleMapping)
     return toReturn;
 }
 
-module.exports.getUserIDByEmail = (userEmail,callback)=>{
+module.exports.getUserByEmail = (userEmail,callback)=>{
     userAccessor.findUsername({userEmail: userEmail}, (err, user) =>
     {
         if (err) callback(err);
         else {
             if (user.length === 0) callback(new Error("no user found for username: " + username));
-            else callback(null, user[0]._id);
+            else callback(null, user[0]);
         }
     });
 };
