@@ -89,7 +89,7 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) =>
                               if (err) callback(err);
                               else {
                                   processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
-                                      formsNames,commonCallback);
+                                      waitingStructure.sankey, formsNames,commonCallback);
                               }
                           });
 
