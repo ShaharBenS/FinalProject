@@ -30,8 +30,8 @@ module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName
                         callback(new Error("no online form was found on db with the name: " + formName));
                     else {
                         try {
-                            process.attachOnlineFormToStage(stageNum, formName);
-                            processAccessor.updateActiveProcess({processName: activeProcessName}, {stages: process.stages}, callback)
+                            process.attachOnlineForm(formName);
+                            processAccessor.updateActiveProcess({processName: activeProcessName}, {onlineForms: process._onlineForms}, callback);
                         } catch (e) {
                             callback(e);
                         }

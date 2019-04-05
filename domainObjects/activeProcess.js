@@ -9,6 +9,8 @@ class activeProcess {
         this._notificationTime = processObject.notificationTime;
         this._currentStages = processObject.currentStages;
         this._initials = processObject.initials;
+        this._onlineForms = processObject.onlineForms;
+        this._filledOnlineForms = processObject.filledOnlineForms;
         this._stages = stages;
         this._lastApproached = processObject.lastApproached;
     }
@@ -95,11 +97,6 @@ class activeProcess {
         this._lastApproached = value;
     }
 
-    attachOnlineFormToStage(stageNum, formName) {
-        let stage = this.getStageByStageNum(stageNum);
-        stage.attachOnlineForm(formName);
-    }
-
     addCurrentStage(stageNum) {
         if(!this.isStageExists(stageNum))
         {
@@ -177,7 +174,8 @@ class activeProcess {
 
     handleStage(stageDetails) {
         let stage = this.getStageByStageNum(stageDetails.stageNum);
-        stage.handleStage(stageDetails.filledForms, stageDetails.fileNames, stageDetails.comments);
+        this._filledOnlineForms = stageDetails.filledForms;
+        stage.handleStage(stageDetails.fileNames, stageDetails.comments);
         for(let i=0;i<stage.nextStages.length;i++)
         {
             let currentStage = this.getStageByStageNum((stage.nextStages[i]));
@@ -336,6 +334,20 @@ class activeProcess {
                 isFoundStage = true;
             }});
         return isFoundStage;
+    }
+
+    attachOnlineForm(formName) {
+        let alreadyExist = false;
+        this._onlineForms.every((formName2) => {
+            if (formName === formName2) {
+                alreadyExist = true;
+                return false;
+            }
+            return true;
+        });
+        if (!alreadyExist) {
+            this._onlineForms = this._onlineForms.concat([formName]);
+        }
     }
 }
 
