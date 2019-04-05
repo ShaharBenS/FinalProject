@@ -11,7 +11,7 @@ module.exports.findProcessStructure = (criteria, callback) => {
         if (err) {
             callback(err);
         } else {
-            if (result === null || result.length === 0) callback(null, null);
+            if (result === null) callback(null, null);
             else callback(null, getProcessStructureFromOriginal(result));
         }
     });
@@ -44,7 +44,7 @@ let getProcessStructureFromOriginal = function (processStructure) {
     return new ProcessStructure(processStructure.structureName,
         processStructure.initials,
         getProcessStructureStagesFromOriginal(processStructure.stages),
-        processStructure.sankey, processStructure.available);
+        processStructure.sankey, processStructure.available, processStructure.onlineForms);
 };
 
 let getProcessStructureStagesFromOriginal = function (stages) {

@@ -27,6 +27,19 @@ router.get('/getAllOnlineForms', function (req, res) {
     });
 });
 
+router.get('/getAllOnlineFormsNames', function (req, res) {
+    onlineFormsController.getAllOnlineForms((err, forms) => {
+        if (err) res.send(err);
+        else {
+            let onlineForms = [];
+            forms.forEach((form) => {
+                onlineForms.push(form.formName);
+            });
+            res.send(onlineForms);
+        }
+    });
+});
+
 router.get('/display', function (req, res) {
     onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
         if (err) res.send(err);

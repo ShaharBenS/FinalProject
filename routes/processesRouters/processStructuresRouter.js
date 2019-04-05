@@ -128,43 +128,37 @@ router.get('/getAllProcessStructuresTakenNames', function (req, res) {
 });
 
 
-router.get('/getFormsToStages', function (req, res) {
+router.get('/getFormsOfProcess', function (req, res) {
     if(req.query.fromWaiting === 'true' && req.query.mongoId){
         waitingProcessStructuresController.getWaitingStructureById(req.query.mongoId,(err,waitingStructure)=>{
             if(err){
                 res.send(err);
             }
             else{
-                res.send(waitingStructure.onlineFormsOfStage);
+                onlineFormsController.findOnlineFormsNamesByFormsIDs(waitingStructure.onlineForms,(err,formsNames)=>{
+                    if(err) callback(err);
+                    else {
+                        res.send(formsNames);
+                    }
+                });
             }
         })
     }
     else if(req.query.fromWaiting === 'false') {
         processStructureController.getProcessStructure(req.query.processStructureName, (err, processStructure) => {
             if (err) res.send(err);
-            else if (processStructure !== null) {
-                onlineFormsController.getAllOnlineForms((err, onlineFormsObjects) => {
-                    if (err) res.send(err);
-                    else {
-                        let formsToStages = {};
-                        let formsIDsOfStages = processStructure.getFormsOfStage();
-                        let formsOfStages = {};
-                        onlineFormsObjects.forEach((form) => formsOfStages[form.formID] = form.formName);
-                        let count = Object.keys(formsIDsOfStages).length;
-                        Object.keys(formsIDsOfStages).forEach((key) => {
-                            userAndRoles.getRoleNameByRoleID(key, (err, roleName) => {
-                                //formsToStages[roleName] = formsIDsOfStages[key];
-                                formsToStages[roleName] = [];
-                                formsIDsOfStages[key].forEach((formID) => formsToStages[roleName].push(formsOfStages[formID]));
-                                count--;
-                                if (count === 0)
-                                    res.send(formsToStages);
-                            });
-                        });
-                    }
-                });
-
-            } else res.send({});
+            else {
+                if (processStructure !== null)
+                {
+                    onlineFormsController.findOnlineFormsNamesByFormsIDs(processStructure.onlineForms,(err,formsNames)=>{
+                        if(err) callback(err);
+                        else {
+                            res.send(formsNames);
+                        }
+                    });
+                }
+                else res.send([]);
+            }
         })
     }
 });

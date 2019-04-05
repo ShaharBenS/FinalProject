@@ -4,18 +4,18 @@ let add_label = function () {
 };
 let is_role_list_set = false;
 
-let formsOfStage = {};
-let onlineForms = {};
+let formsOfProcess = [];
+let onlineForms = [];
 
-let xmlHttpFormsOfStages = new XMLHttpRequest();
+let xmlHttpFormsOfProcess = new XMLHttpRequest();
 let params = "?processStructureName=" + processStructureName + '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false');
-xmlHttpFormsOfStages.onreadystatechange = function () {
-    if (xmlHttpFormsOfStages.readyState === 4 && xmlHttpFormsOfStages.status === 200) {
-        formsOfStage = JSON.parse(xmlHttpFormsOfStages.responseText)
+xmlHttpFormsOfProcess.onreadystatechange = function () {
+    if (xmlHttpFormsOfProcess.readyState === 4 && xmlHttpFormsOfProcess.status === 200) {
+        formsOfProcess = JSON.parse(xmlHttpFormsOfProcess.responseText)
     }
 };
-xmlHttpFormsOfStages.open("GET", '/processStructures/getFormsToStages/' + params, true);
-xmlHttpFormsOfStages.send(null);
+xmlHttpFormsOfProcess.open("GET", '/processStructures/getFormsOfProcess/' + params, true);
+xmlHttpFormsOfProcess.send(null);
 
 let xmlHttpOnlineForms = new XMLHttpRequest();
 xmlHttpOnlineForms.onreadystatechange = function () {
@@ -23,7 +23,7 @@ xmlHttpOnlineForms.onreadystatechange = function () {
         onlineForms = JSON.parse(xmlHttpOnlineForms.responseText);
     }
 };
-xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineForms/', true);
+xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineFormsNames/', true);
 xmlHttpOnlineForms.send(null);
 
 $(document).ready(function () {
@@ -106,24 +106,23 @@ function confirm() {
     }
 }
 
-function seeFormsOpened(roleName) {
+function seeFormsOpened() {
     let formsDiv = document.getElementById("forms-div");
     formsDiv.innerHTML = '';
-    if (formsOfStage[roleName] !== undefined) {
-        formsOfStage[roleName].forEach((formName) => {
+    if (formsOfProcess !== undefined) {
+        formsOfProcess.forEach((formName) => {
             let div = document.createElement("div");
             div.style.marginTop = "5px";
             let button = document.createElement("button");
             button.class = "btn";
             button.innerText = '-';
             button.onclick = () => {
-                let index = formsOfStage[roleName].indexOf(formName);
+                let index = formsOfProcess.indexOf(formName);
                 if (index > -1) {
-                    formsOfStage[roleName].splice(index, 1);
+                    formsOfProcess.splice(index, 1);
                 }
-                seeFormsOpened(roleName);
+                seeFormsOpened();
             };
-
             let a = document.createElement("a");
             a.style.color = "#ce8900";
             a.style.marginRight = "10px";
@@ -142,14 +141,14 @@ function seeFormsOpened(roleName) {
 
 
         });
-    } else formsOfStage[roleName] = [];
+    } else formsOfProcess = [];
     let div = document.createElement("div");
     div.setAttribute("style", "display:flex; flex-direction: row; margin-top: 5px");
     let select = document.createElement("select");
     select.setAttribute("id", "selectForm");
     select.style.marginRight = "10px";
 
-    Object.keys(onlineForms).forEach((formName) => {
+    onlineForms.forEach((formName) => {
         let optionElement = document.createElement('option');
         optionElement.appendChild(document.createTextNode(formName));
         select.appendChild(optionElement);
@@ -161,18 +160,19 @@ function seeFormsOpened(roleName) {
     button.onclick = () => {
         let selectValue = select.options[select.selectedIndex].innerText;
         let found = false;
-        formsOfStage[roleName].forEach(formName => {
+        formsOfProcess.forEach(formName => {
             if (formName === selectValue) {
                 found = true;
-                alert('טופס כבר קיים בשלב זה');
+                alert('טופס כבר קיים בתהליך זה');
             }
         });
         if (!found) {
-            formsOfStage[roleName].push(selectValue);
-            seeFormsOpened(roleName);
+            formsOfProcess.push(selectValue);
+            seeFormsOpened();
         }
     };
     div.appendChild(button);
     div.appendChild(select);
     formsDiv.append(div);
+    document.getElementById("see_forms_modal").style.display = "block";
 }
