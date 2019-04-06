@@ -10,38 +10,6 @@ let filledOnlineFormController = require('../onlineFormsControllers/filledOnline
 let fs = require('fs');
 let moment = require('moment');
 
-/**
- * attach form to process stage
- *
- * @param activeProcessName | the process to attach the form
- * @param stageNum | the stage in the process to attach the form
- * @param formName | the name of the from from a predefined forms
- * @param callback
- */
-
-module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName, callback) => {
-    processAccessor.getActiveProcessByProcessName(activeProcessName, (err, process) => {
-        if (err) callback(err);
-        else {
-            onlineFormController.getOnlineFormByName(formName, (err, form) => {
-                if (err) callback(err);
-                else {
-                    if (form === null)
-                        callback(new Error("no online form was found on db with the name: " + formName));
-                    else {
-                        try {
-                            process.attachOnlineForm(formName);
-                            processAccessor.updateActiveProcess({processName: activeProcessName}, {onlineForms: process._onlineForms}, callback);
-                        } catch (e) {
-                            callback(e);
-                        }
-                    }
-                }
-            });
-        }
-    })
-};
-
 
 /**
  * Starts new process from a defined structure
@@ -93,7 +61,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
-                                    creatorRoleID: roleID,
+                                    creatorUserEmail: userEmail,
                                     creationTime: today,
                                     notificationTime: notificationTime,
                                     currentStages: [initialStage],
@@ -350,7 +318,7 @@ function handleProcess(userEmail, processName, filledOnlineForms, stageDetails, 
                     break;
                 }
             }
-            createOnlineFormsFromArray(stageDetails.filledForms, 0, [], (err, filledFormsIDs) => {
+            createOnlineFormsFromArray(filledOnlineForms, 0, [], (err, filledFormsIDs) => {
                 let today = new Date();
                 process.filledOnlineForms = filledFormsIDs;
                 stageDetails.stageNum = currentStage.stageNum;
@@ -363,7 +331,7 @@ function handleProcess(userEmail, processName, filledOnlineForms, stageDetails, 
                             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                                 if (err) callback(err);
                                 else {
-                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
+                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail,filledFormsIDs, stageDetails, today, (err) => {
                                         if (err) {
                                             callback(err);
                                         } else {
@@ -390,7 +358,7 @@ function handleProcess(userEmail, processName, filledOnlineForms, stageDetails, 
                                 }
                             });
                         } else {
-                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
+                            processReportController.addActiveProcessDetailsToReport(processName, userEmail,filledFormsIDs, stageDetails, today, (err) => {
                                 if (err) {
                                     callback(err);
                                 } else {
@@ -594,7 +562,6 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
         let today = new Date();
         let stage = {
             comments: comments,
-            filledForms: [],
             fileNames: [],
             action: "return",
             stageNum: process.getCurrentStageNumberForUser(userEmail)
@@ -606,7 +573,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
         }, (err) => {
             if (err) callback(err);
             else {
-                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                processReportController.addActiveProcessDetailsToReport(processName, userEmail, [], stage, today, (err) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -634,7 +601,7 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                 if (err) callback(err);
                 else {
                     let usersToNotify = process.getParticipatingUsers();
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, [], stage, today, (err) => {
                         if (err) {
                             callback(err);
                         } else {

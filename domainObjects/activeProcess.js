@@ -2,7 +2,7 @@ class activeProcess {
 
     constructor(processObject,stages) {
         this._processName = processObject.processName;
-        this._creatorRoleID = processObject.creatorRoleID;
+        this._creatorUserEmail = processObject.creatorUserEmail;
         this._processDate = processObject.processDate;
         this._processUrgency = processObject.processUrgency;
         this._creationTime = processObject.creationTime;
@@ -23,12 +23,12 @@ class activeProcess {
         this._processName = value;
     }
 
-    get creatorRoleID() {
-        return this._creatorRoleID;
+    get creatorUserEmail() {
+        return this._creatorUserEmail;
     }
 
-    set creatorRoleID(value) {
-        this._creatorRoleID = value;
+    set creatorUserEmail(value) {
+        this._creatorUserEmail = value;
     }
 
     get creationTime() {
@@ -242,10 +242,11 @@ class activeProcess {
 
     returnProcessToCreator(){
         let flag = true;
-        for(let i=0;i<this._stages.length;i++)
+        let i = 0;
+        for(i=0;i<this._stages.length;i++)
         {
             this._stages[i].stagesToWaitFor = this._stages[i].originStagesToWaitFor;
-            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].roleID.id.equals(this._creatorRoleID.id))
+            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].userEmail.equals(this._creatorUserEmail))
             {
                 if(flag)
                 {
@@ -258,7 +259,7 @@ class activeProcess {
                 }
             }
         }
-        return this.getStageByStageNum(this._currentStages[0]).userEmail;
+        return this.getStageByStageNum(this._currentStages[i]).userEmail;
     }
 
     getCurrentStageNumberForUser(userEmail){
@@ -334,20 +335,6 @@ class activeProcess {
                 isFoundStage = true;
             }});
         return isFoundStage;
-    }
-
-    attachOnlineForm(formName) {
-        let alreadyExist = false;
-        this._onlineForms.every((formName2) => {
-            if (formName === formName2) {
-                alreadyExist = true;
-                return false;
-            }
-            return true;
-        });
-        if (!alreadyExist) {
-            this._onlineForms = this._onlineForms.concat([formName]);
-        }
     }
 }
 
