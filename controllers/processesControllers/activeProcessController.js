@@ -637,7 +637,7 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
     filledOnlineFormController.getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
         if (err) callback(err);
         else {
-            filledFormsArray.push(form.formObject);
+            filledFormsArray.push(form);
             getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
         }
     });
@@ -701,6 +701,11 @@ module.exports.processReport = function (process_name, callback) {
         }
     });
 };
+
+module.exports.addFilledOnlineFormToProcess = function(processName, formID, callback){
+    processAccessor.updateActiveProcess({processName: processName}, {$push : {filledOnlineForms: formID}}, callback);
+};
+
 
 /////Helper Functions
 function convertDate(array, isArrayOfDates) {

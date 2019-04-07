@@ -67,6 +67,7 @@ router.get('/fill', function (req, res) {
                     }
                 });
             } else {
+                form = form.formObject;
                 let fields = [];
                 form.fields.forEach((field) => {
                     fields.push({fieldName: field.fieldName, value: field.value})
@@ -103,7 +104,7 @@ router.post('/updateOrAddFilledForm', function (req, res) {
     data.parse(req, function (err, fields) {
         let processName = fields.processName;
         let formName = fields.formName;
-        let formFields = fields.info;
+        let formFields = JSON.parse(fields.info);
         filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields, (err) => {
             if (err) res.send(err);
             else res.send("success");

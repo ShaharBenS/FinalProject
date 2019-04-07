@@ -15,11 +15,11 @@ function receiveFormInfo(formName, info) {
     let data = new FormData();
     data.append('processName', processName);
     data.append('formName', formName);
-    data.append('info', info);
+    data.append('info', JSON.stringify(info));
     xhr.open("POST", '/onlineForms/updateOrAddFilledForm', true);
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            alert("הצליח לשלוח וןפס");
+            alert("הטופס נשלח בהצלחה");
         }
     };
     xhr.send(data);

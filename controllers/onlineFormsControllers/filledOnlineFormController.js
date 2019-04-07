@@ -62,7 +62,7 @@ module.exports.getFormReady = function (processName, formName, callback) {
                 else {
                     let myForm = undefined;
                     filledForms.forEach((form) => {
-                        if (form.formName === formName) {
+                        if (form.formObject.formName === formName) {
                             myForm = form;
                         }
                     });
@@ -81,14 +81,19 @@ module.exports.updateOrAddFilledForm = function (processName, formName, formFiel
                 this.createFilledOnlineFrom(formName, formFields, (err, dbForm) => {
                     if (err) callback(err);
                     else {
-                        //TODO:add this function ↓ ↓ ↓ ↓
                         activeProcessController.addFilledOnlineFormToProcess(processName, dbForm._id, callback);
                     }
                 });
             } else {
                 let formID = form.formID;
-                //TODO:add this function ↓ ↓ ↓ ↓
-                this.updateFiledsOfFilledOnlineForm(formID, formFields, callback);
+                let newField = [];
+                formFields.forEach(field=>{
+                   newField.push({fieldName: field.field, value: field.value});
+                });
+                filledOnlineFormAccessor.updateFilledOnlineForm({_id: formID}, {fields: newField}, (err,res)=>{
+                    if(err) callback(err);
+                    else callback(null);
+                });
             }
         }
     })

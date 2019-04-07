@@ -14,6 +14,10 @@ module.exports.findFilledOnlineFormByFormID = (formID, callback) => {
     });
 };
 
+module.exports.updateFilledOnlineForm = (AP, update, callback) => {
+    filledOnlineFormSchema.updateOne(AP, update, callback);
+};
+
 module.exports.getFilledOnlineFormFromSchemaRecord = (form) => {
     return new FilledOnlineForm(form.formName, form.fields)
 };
