@@ -1,6 +1,7 @@
 let usersAndRoles = require("../schemas/usersSchemas/UsersAndRolesSchema.js");
 let usersAndRolesTreeSankey = require('../schemas/usersSchemas/UsersAndRolesTreeSankeySchema.js');
 let userNames = require('../schemas/usersSchemas/UserNamesSchema');
+let AdminsSchema = require('../schemas/usersSchemas/AdminsSchema');
 
 module.exports.createRole = (newRole,callback)=>{
     return usersAndRoles.create(newRole,callback);
@@ -53,4 +54,12 @@ module.exports.createUser = (user,callback)=>{
 
 module.exports.deleteAllUserNames = (callback)=>{
     return userNames.deleteMany({},callback);
+};
+
+module.exports.findAdmins = (criteria,callback)=>{
+    return AdminsSchema.find({},callback);
+};
+
+module.exports.addAdmin = (admin,callback)=>{
+    return AdminsSchema.create(admin,callback);
 };

@@ -40,7 +40,7 @@ router.post('/setUserPermissions', (req, res) =>
     usersPermissionsController.setUserPermissions(userPermissions,(err)=>{
         if(err)
         {
-            res.send('error');
+            res.send(err);
         }
         else
         {
