@@ -635,10 +635,10 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
         callback(null, filledFormsArray);
         return;
     }
-    filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
+    filledOnlineFormController.getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
         if (err) callback(err);
         else {
-            filledFormsArray.push(forms);
+            filledFormsArray.push(form.formObject);
             getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
         }
     });
@@ -730,3 +730,4 @@ function convertDate(array, isArrayOfDates) {
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
+module.exports.getFilledOnlineForms = getFilledOnlineForms;

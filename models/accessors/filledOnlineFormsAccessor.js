@@ -9,7 +9,7 @@ module.exports.findFilledOnlineFormByFormID = (formID, callback) => {
     filledOnlineFormSchema.findOne({_id: formID}, (err, res) => {
         if (err)
             callback(err);
-        else if (res === null) callback(new Error("form does not found"));
+        else if (res === null) callback(new Error("form was not found"));
         else callback(null, {formID: formID, formObject: this.getFilledOnlineFormFromSchemaRecord(res)});
     });
 };
