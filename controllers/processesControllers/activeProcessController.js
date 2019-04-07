@@ -553,7 +553,6 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
             }
         }
     });
-
 };
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
