@@ -148,7 +148,7 @@ function startActiveProcess() {
             }
         }
     };
-    xmlHttp.open("GET", '/processStructures/getAllProcessStructures/', true);
+    xmlHttp.open("GET", '/processStructures/getAllProcessStructuresForUser/', true);
     xmlHttp.send(null);
 
 }

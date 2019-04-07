@@ -117,6 +117,17 @@ router.get('/getAllProcessStructures', function (req, res) {
     });
 });
 
+router.get('/getAllProcessStructuresForUser', (req,res)=>{
+    let userEmail = req.user.emails[0].value;
+    processStructureController.getAllProcessStructuresAvailableForUser(userEmail,(err, result) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 router.get('/getAllProcessStructuresTakenNames', function (req, res) {
     processStructureController.getAllProcessStructuresTakenNames((err, result) => {
         if (err) {
