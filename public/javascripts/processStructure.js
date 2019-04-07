@@ -44,14 +44,10 @@ $(document).ready(function () {
             modal1.style.display = "none";
         }
     };
-    if(diagramContext === "viewProcessStructure"){
-        let button = document.getElementById("saveButton");
-        button.parentNode.removeChild(button);
-    }
 });
 
 function onDrop_extension(type, command, figure) {
-    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure') {
+    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure') {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
             figure.label = figure.label = new draw2d.shape.basic.Label({
@@ -101,7 +97,7 @@ function deleteRoleById(id) {
 }
 
 function confirm() {
-    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure') {
+    if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure') {
         app.fileSave()
     }
 }

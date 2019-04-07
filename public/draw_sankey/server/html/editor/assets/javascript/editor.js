@@ -670,9 +670,10 @@ sankey.dialog.FileSave = Class.extend({
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
                 emailToFullName: diagramContext === '__tree__' ? JSON.stringify(emailToFullName) : undefined,
-                onlineFormsOfStage: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure')
+                onlineFormsOfStage: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
                     ? JSON.stringify(formsOfStage) : undefined,
                 processStructureName: processStructureName,
+                mongoId:mongoId,
             };
             $.ajax({
                     url: conf.backend.file.save,
@@ -694,6 +695,18 @@ sankey.dialog.FileSave = Class.extend({
                         else if(text === 'success_needApprove'){
                             alertify.alert("מבנה התהליך נקלט ומחכה לאישור",()=>{
                                 window.location.href = '/Home';
+                            });
+                        }
+                    }
+                    else{
+                        alertify.alert(text);
+                    }
+                }
+                else if(diagramContext === 'viewProcessStructure'){
+                    if(status === 'success'){
+                        if(text === 'success'){
+                            alertify.alert('מבנה התהליך הממתין נשמר בהצלחה (שים לב כי עליך עדיין לאשר אותו)!',()=>{
+                                window.location.href = '/processStructures/waitingForApproval/';
                             });
                         }
                     }

@@ -34,7 +34,18 @@ router.post('/file/save', function (req, res) {
                 }
             }
         })
-    } else if (req.body.context === '__tree__') {
+    }
+    else if(req.body.context === 'viewProcessStructure'){
+        waitingProcessStructuresController.updateStructure(req.body.mongoId,req.body.content,req.body.onlineFormsOfStage,(err)=>{
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.send("success");
+            }
+        })
+    }
+    else if (req.body.context === '__tree__') {
         UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content, JSON.parse(req.body.roleToEmails),JSON.parse(req.body.emailToFullName), (err) => {
             if (err) {
                 res.send(err);
