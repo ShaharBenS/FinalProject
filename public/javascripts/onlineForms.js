@@ -1,13 +1,22 @@
 let submitForm = function () {
     let oldWin = window.opener;
     let inputs = Array.prototype.slice.call(document.getElementsByTagName('input'));
-
+    let text_areas = Array.prototype.slice.call(document.getElementsByTagName('textarea'));
     let info = [];
     let tableInputs = {};
     let tables = Array.prototype.slice.call(document.getElementsByTagName('table'));
     tables.forEach((table) => {
         if (table.className !== "no_table")
             tableInputs[table.id] = [];
+    });
+    text_areas.forEach((text_area) => {
+        if (text_area.class === 'table_cell') {
+            let tableID = text_area.parentElement.parentElement.parentElement.parentElement.id;
+            tableInputs[tableID].push({
+                field: text_area.name,
+                value: text_area.value
+            });
+        }
     });
 
     inputs.forEach((input) => {
@@ -38,12 +47,13 @@ let submitForm = function () {
 };
 
 let encodeJSONtoNotJSON = function (str) {
-    str = whileReplace(str, '"', '2066quote2066');
+    str = CryptoJS.AES.encrypt(str, "code").toString();
+
     return str;
 };
 
 let decodeJSONtoNotJSON = function (str) {
-    str = whileReplace(str, '2066quote2066', '"');
+    str = CryptoJS.AES.decrypt(str, "code").toString(CryptoJS.enc.Utf8);
     return str;
 };
 
@@ -55,24 +65,52 @@ let whileReplace = function (str, replace, by) {
 
 let fillForm = function (fields) {
 
+
     fields = whileReplace(fields, '&#34;', '"');
     try {
         fields = JSON.parse(fields);
     } catch (e) {
         alert(e)
     }
+
     fields.forEach((field) => {
         if (field.fieldName.includes('__table_')) {
             let tableID = field.fieldName.substring(8, field.fieldName.length);
             let table = document.getElementById(tableID);
             let columns = table.rows[0].cells.length;
             let fieldValue = decodeJSONtoNotJSON(field.value);
-            let filledCells = JSON.parse(fieldValue);
+            let filledCells = "error man";
+            try {
+                filledCells = JSON.parse(fieldValue);
+            } catch (e) {
+                alert(e);
+            }
             let rows = filledCells.length / columns;
 
             setupTables(rows, tableID);
+            let rowsCounts = [];
+            for (let i = 0; i < rows; i++)
+                rowsCounts.push(0);
 
-            filledCells.forEach((cell) => document.getElementsByName(cell.field)[0].setAttribute("value", cell.value));
+            let i = 0;
+            let row = [];
+            filledCells.forEach((cell) => {
+                let element = document.getElementsByName(cell.field)[0];
+                element.value = cell.value;
+                let currentRows = countLines(cell.value, parseInt(element.cols));
+                element.rows = currentRows;
+                row.push(element);
+                let j = parseInt(i / columns);
+                if (rowsCounts[j] < currentRows)
+                    rowsCounts[j] = currentRows;
+                if ((i + 1) % columns === 0) {
+                    row.forEach((elem) => elem.rows = rowsCounts[j]);
+                    row = [];
+                }
+                i++;
+            });
+
+
         } else {
             let element = document.getElementsByName(field.fieldName)[0];
             if (element.type === 'text')
@@ -118,17 +156,48 @@ let setupInputs = function (formName, isForShow, fields) {
     }
 };
 
+let countLines = function (txt, cellCols) {
+    //TODO: count is wrong
+    let lines = txt.split(/\r*\n/);
+    let count = lines.length;
+    lines.forEach((line) => {
+        count += parseInt(line.length / cellCols, 10) - 1;
+    });
+    return count
+};
+
 let createTableRow = function (table) {
     let columnsCount = table.children[0].children.length;
     let rowsCount = table.children.length - 1;
     let nameCount = columnsCount * rowsCount + 1;
     let currentRowElement = document.createElement('tr');
+
+    let findMax = function () {
+        let max = 0;
+        currentRowElement.childNodes.forEach((tdElem) => {
+            let cellElem = tdElem.firstChild;
+            let lines = countLines(cellElem.value, parseInt(cellElem.cols), 10);
+            if (lines > max)
+                max = lines;
+        });
+        return max;
+    };
+
     for (let i = 1; i <= columnsCount; i++) {
         let td = document.createElement('td');
-        let cell = document.createElement('input');
-        cell.type = 'text';
+        let cell = document.createElement('textarea');
+        cell.style.resize = "none";
         cell.name = 'table_input_' + table.parentElement.id + '_' + nameCount;
         cell.class = 'table_cell';
+        cell.addEventListener('keydown', () => {
+            let max = findMax();
+            setTimeout(function () {
+                currentRowElement.childNodes.forEach((tdElem) => {
+                    tdElem.firstChild.rows = max;
+                });
+            }, 0);
+            currentRowElement.style.height = 'auto';
+        });
 
         nameCount++;
         td.appendChild(cell);

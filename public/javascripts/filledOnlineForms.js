@@ -28,6 +28,13 @@ function updateForms() {
     let formsInput = document.createElement('input');
     formsInput.setAttribute('type', 'hidden');
     formsInput.setAttribute('name', 'formsInfo');
+    try {
+        JSON.stringify(myForms)
+    } catch (e) {
+        console.log(myForms);
+        alert("its here " + e + "\n\n\n\n\n" + myForms);
+        return false;
+    }
     formsInput.setAttribute('value', JSON.stringify(myForms));
     document.getElementById('formsInfo').appendChild(formsInput);
 }

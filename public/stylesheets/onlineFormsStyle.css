@@ -1,5 +1,5 @@
 table, td, th {
-    border: 1px solid black;
+    border: 1px groove black;
 }
 
 table {
@@ -36,4 +36,14 @@ td > input {
     text-align: center;
     border: none;
     padding: 7px;
+}
+
+
+td > textarea {
+    width: 100%;
+    text-align: right;
+    border: none;
+    padding: 7px;
+    overflow: hidden;
+    line-height: 20px;
 }
