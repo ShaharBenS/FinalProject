@@ -90,7 +90,7 @@ let fillForm = function (fields) {
                 alert('type error');
         }
     });
-    disableForm();
+    //disableForm();
 };
 
 let disableForm = function () {
@@ -104,17 +104,19 @@ let disableForm = function () {
 let setupInputs = function (formName, isForShow, fields) {
 
     setupLabelCells();
-
+    let num_of_rows_to_add = 2;
     if (fields !== 'false') {
-        fillForm(fields)
-    } else if (isForShow) {
+        fillForm(fields);
+        num_of_rows_to_add = 0;
+    }
+    if (isForShow) {
         let info = document.createTextNode("טופס דמו של " + formName);
         document.getElementById("info").appendChild(info);
-        setupTables(2, 'every_table');
+        setupTables(num_of_rows_to_add, 'every_table');
         disableForm()
     } else {
         document.getElementById('close_win_button').style.display = "none";
-        setupTables(2, 'every_table');
+        setupTables(num_of_rows_to_add, 'every_table');
     }
 };
 

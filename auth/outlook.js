@@ -7,24 +7,39 @@ passport.use(new OutlookStrategy({
         clientSecret: "vqACHBJKZ69!zzcho429];#",
         callbackURL: 'http://localhost:3000/auth/outlook/callback'
     },
-    function (accessToken, refreshToken, profile, done) {
-        usersAccessor.findInSankeyTree({}, (err, _sankeyTree) => {
+    function (accessToken, refreshToken, profile, done)
+    {
+        usersAccessor.findInSankeyTree({}, (err, _sankeyTree) =>
+        {
             if (_sankeyTree[0] === undefined || _sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}") {
                 done(null, profile);
             }
             else {
                 let email = profile.emails[0].value;
-                usersAccessor.findUsername({userEmail: email}, (err, result) => {
+                usersAccessor.findAdmins({userEmail: email}, (err, results) =>
+                {
                     if (err) {
                         done(null, null);
                     }
-                    else if (result.length === 0) {
-                        done(null, null);
+                    else if (results.length === 0) {
+                        usersAccessor.findUsername({userEmail: email}, (err, result) =>
+                        {
+                            if (err) {
+                                done(null, null);
+                            }
+                            else if (result.length === 0) {
+                                done(null, null);
+                            }
+                            else {
+                                done(null, profile);
+                            }
+                        });
                     }
                     else {
-                        done(null, profile);
+                        done(null,profile);
                     }
                 });
+
             }
         });
     }

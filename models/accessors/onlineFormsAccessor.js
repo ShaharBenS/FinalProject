@@ -41,6 +41,36 @@ module.exports.findOnlineFormByID = (formID, callback) => {
     });
 };
 
+module.exports.findOnlineFormsIDsByFormsNames = (formsNames, callback) => {
+    onlineFormSchema.find({formName: {$in :formsNames}}, (err, res) => {
+        if (err)
+            callback(err);
+        else
+        {
+            let onlineForms = [];
+            res.forEach((frmObject)=>{
+                onlineForms.push(frmObject._id)
+            });
+            callback(null,onlineForms);
+        }
+    });
+};
+
+module.exports.findOnlineFormsNamesByFormsIDs = (formsIDs, callback) => {
+    onlineFormSchema.find({_id: {$in :formsIDs}}, (err, res) => {
+        if (err)
+            callback(err);
+        else
+        {
+            let onlineForms = [];
+            res.forEach((frmObject)=>{
+                onlineForms.push(frmObject.formName);
+            });
+            callback(null,onlineForms);
+        }
+    });
+};
+
 /**
  * Gets all available online form as OnlineForm object
  * @param callback

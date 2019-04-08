@@ -10,6 +10,8 @@ const activeProcessSchema = new Schema({
     notificationTime: Number,
     currentStages: [Number],
     initials: [Number],
+    onlineForms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
+    filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userEmail: String,
@@ -18,12 +20,10 @@ const activeProcessSchema = new Schema({
         stagesToWaitFor: [Number],
         originStagesToWaitFor: [Number],
         approvalTime: Date,
-        onlineForms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
-        filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
         attachedFilesNames: [String],
         comments: String
     }],
-    lastApproached: Date,
+    lastApproached: Date
 });
 
 module.exports = mongoose.model('ActiveProcess', activeProcessSchema);

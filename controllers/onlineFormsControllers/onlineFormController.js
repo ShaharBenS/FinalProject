@@ -28,6 +28,14 @@ module.exports.getOnlineFormByID = (formID, callback) => {
     onlineFormAccessor.findOnlineFormByID(formID, callback);
 };
 
+module.exports.findOnlineFormsIDsByFormsNames = (formsNames, callback) =>{
+    onlineFormAccessor.findOnlineFormsIDsByFormsNames(formsNames, callback);
+};
+
+module.exports.findOnlineFormsNamesByFormsIDs = (formsIDs, callback) =>{
+    onlineFormAccessor.findOnlineFormsNamesByFormsIDs(formsIDs, callback);
+};
+
 module.exports.getOnlineFormByName = (formName, callback) => {
     onlineFormAccessor.findOnlineFormByName(formName, callback);
 };

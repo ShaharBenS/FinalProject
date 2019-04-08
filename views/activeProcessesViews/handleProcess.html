@@ -11,7 +11,14 @@
     <script src="/javascripts/upload_js.js"></script>
     <script src="/javascripts/filledOnlineForms.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/javascripts/topbar.js"></script>
+    <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
 
+    <script>
+        $(document).ready(function () {
+            setTopBar();
+        });
+    </script>
     <title>טיפול בתהליך </title>
 
     <style>
@@ -73,17 +80,29 @@
             background-color: #f6a500;
             color: white;
         }
+
         .removal-button::before {
             content: 'X';
         }
+
         .removal-button:focus {
             outline: 0;
         }
 
     </style>
+
+    <script>
+        let processName = '';
+        window.onload = function () {
+            processName = '<%=processName%>';
+        };
+
+    </script>
 </head>
 <body dir="rtl">
 <div align="center">
+    <div id="top-bar" class="top-bar">
+    </div>
     <div class="main-div">
         <h1>טיפול בתהליך <%=processName%></h1>
         <br>
@@ -134,7 +153,7 @@
                 <br>
                 <br>
                 <%formsNames.forEach(function(formName){%>
-                <a class="btn-form" onclick="formClick('<%=formName%>')"><%=formName%></a>
+                <a class="btn-form" onclick="formClick('<%=formName%>','<%=processName%>')"><%=formName%></a>
                 <br><br>
                 <%})%>
             </div>
@@ -153,8 +172,7 @@
             </button>
             <br>
             <br>
-            <div id="formsInfo">
-            </div>
+
         </form>
     </div>
 </div>

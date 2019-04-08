@@ -394,20 +394,38 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
     userAccessor.findInSankeyTree({}, (err, _sankeyTree) =>
     {
         if (_sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}") {
-            userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
-            {
-                if (err) {
+            this.addAdmin(userEmail,(err)=>{
+                if(err){
                     callback(err);
                 }
-                else {
+                else{
                     commonCallback();
                 }
-            })
+            });
         }
         else {
             commonCallback();
         }
     });
+};
+
+module.exports.addAdmin = function (userEmail,callback){
+    userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else {
+            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
+                if(err){
+                    callback(err);
+                }
+                else{
+                    callback(null);
+                }
+            });
+        }
+    })
 };
 
 module.exports.getRoleIdByUsername = function (username, callback)
@@ -430,6 +448,17 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
         else {
             if (user.length === 0) callback(null, null);
             else callback(null, user[0].roleName);
+        }
+    });
+};
+
+module.exports.findAdmins = function (callback){
+    userAccessor.findAdmins({},(err,admins)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            callback(null,admins.map(admin=>admin.userEmail));
         }
     });
 };
@@ -481,16 +510,25 @@ module.exports.getFullNameByEmail = (email, callback) =>
 module.exports.getAllUsers = (callback) =>
 {
     let toReturn = [];
-    userAccessor.findUser({}, (err, res) =>
-    {
-        if (err) callback(err);
-        else {
-            for (let i = 0; i < res.length; i++) {
-                for (let j = 0; j < res[i].userEmail.length; j++) {
-                    toReturn.push(res[i].userEmail[j]);
+    userAccessor.findAdmins({},(err,admins)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            userAccessor.findUser({}, (err, res) =>
+            {
+                if (err) callback(err);
+                else {
+                    for (let i = 0; i < res.length; i++) {
+                        for (let j = 0; j < res[i].userEmail.length; j++) {
+                            if(!admins.map(admin=>admin.userEmail).includes(res[i].userEmail[j])){
+                                toReturn.push(res[i].userEmail[j]);
+                            }
+                        }
+                    }
+                    callback(null, toReturn);
                 }
-            }
-            callback(null, toReturn);
+            });
         }
     });
 };

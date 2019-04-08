@@ -13,3 +13,7 @@ module.exports.findWaitingProcessStructures = (criteria, callback) =>
 module.exports.removeWaitingProcessStructures = (critria, callback)=>{
     waitingProcessStructuresSchema.deleteMany(critria,callback);
 };
+
+module.exports.updateWaitingProcessStructures = (critria,update,callback)=>{
+    waitingProcessStructuresSchema.updateMany(critria,update,callback);
+};
