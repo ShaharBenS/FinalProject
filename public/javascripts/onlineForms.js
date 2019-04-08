@@ -160,11 +160,16 @@ let countLines = function (txt, cellCols) {
     //TODO: count is wrong
     let lines = txt.split(/\r*\n/);
     let count = lines.length;
-    lines.forEach((line) => {
-        count += parseInt(line.length / cellCols, 10) - 1;
-    });
+    /*lines.forEach((line) => {
+        count += parseInt(line.length / cellCols, 10);
+    });*/
+    console.log("cols: " + cellCols);
+    console.log("lines: " + lines.length);
+    console.log("count: " + count);
     return count
 };
+
+let mapOfHeights = {};
 
 let createTableRow = function (table) {
     let columnsCount = table.children[0].children.length;
@@ -172,35 +177,33 @@ let createTableRow = function (table) {
     let nameCount = columnsCount * rowsCount + 1;
     let currentRowElement = document.createElement('tr');
 
-    let findMax = function () {
-        let max = 0;
-        currentRowElement.childNodes.forEach((tdElem) => {
-            let cellElem = tdElem.firstChild;
-            let lines = countLines(cellElem.value, parseInt(cellElem.cols), 10);
-            if (lines > max)
-                max = lines;
-        });
-        return max;
-    };
-
     for (let i = 1; i <= columnsCount; i++) {
         let td = document.createElement('td');
-        let cell = document.createElement('textarea');
-        cell.style.resize = "none";
-        cell.name = 'table_input_' + table.parentElement.id + '_' + nameCount;
-        cell.class = 'table_cell';
-        cell.addEventListener('keydown', () => {
-            let max = findMax();
-            setTimeout(function () {
-                currentRowElement.childNodes.forEach((tdElem) => {
-                    tdElem.firstChild.rows = max;
-                });
-            }, 0);
-            currentRowElement.style.height = 'auto';
+        let currentTextArea = document.createElement('textarea');
+        currentTextArea.style.resize = "none";
+        currentTextArea.name = 'table_input_' + table.parentElement.id + '_' + nameCount;
+        currentTextArea.class = 'table_cell';
+        currentTextArea.addEventListener('keydown', () => {
+            let maxHeight = 0;
+            currentRowElement.childNodes.forEach((tdElem) => {
+                let textarea = tdElem.firstChild;
+                let originalHeight = textarea.style.height;
+                textarea.style.height = 'auto';
+                let h1 = textarea.scrollHeight;
+                textarea.style.height = originalHeight;
+                if (h1 > maxHeight)
+                    maxHeight = h1;
+            });
+            maxHeight = maxHeight + "px";
+            currentRowElement.childNodes.forEach((tdElem) => {
+                let textarea = tdElem.firstChild;
+                textarea.style.height = maxHeight;
+            });
+            currentRowElement.style.height = maxHeight;
         });
 
         nameCount++;
-        td.appendChild(cell);
+        td.appendChild(currentTextArea);
         currentRowElement.appendChild(td)
     }
     return currentRowElement;
