@@ -121,11 +121,11 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
     });
 };
 
-module.exports.updateStructure = (id, sankey, onlineFormsOfStage, callback) => {
+module.exports.updateStructure = (id, sankey, onlineForms, callback) => {
     waitingProcessStructuresAccessor.updateWaitingProcessStructures({_id: id}, {
         $set: {
             sankey: sankey,
-            onlineForms: onlineFormsOfStage
+            onlineForms: onlineForms
         }
     }, callback);
 };

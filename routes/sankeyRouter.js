@@ -36,7 +36,7 @@ router.post('/file/save', function (req, res) {
         })
     }
     else if(req.body.context === 'viewProcessStructure'){
-        waitingProcessStructuresController.updateStructure(req.body.mongoId,req.body.content,req.body.onlineFormsOfStage,(err)=>{
+        waitingProcessStructuresController.updateStructure(req.body.mongoId,req.body.content,JSON.parse(req.body.onlineFormsOfProcess),(err)=>{
             if(err){
                 res.send(err);
             }
