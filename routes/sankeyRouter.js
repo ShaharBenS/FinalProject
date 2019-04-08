@@ -3,47 +3,64 @@ var router = express.Router();
 let processStructure = require('../controllers/processesControllers/processStructureController');
 let UsersAndRolesTreeSankey = require('../controllers/usersControllers/usersAndRolesController');
 let waitingProcessStructuresController = require("../controllers/processesControllers/waitingProcessStructuresController");
+let onlineFormsController = require("../controllers/onlineFormsControllers/onlineFormController");
 
 router.post('/file/save', function (req, res) {
     let userEmail = req.user.emails[0].value;
     if (req.body.context === 'addProcessStructure') {
-        processStructure.addProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfProcess), (err,needApprove) => {
-            if (err) {
-                res.send(err);
-            }
-            else{
-                if(needApprove === 'approval'){
-                    res.send('success_needApprove');
-                }
-                else{
-                    res.send('success');
-                }
+        onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=>{
+            if(err) callback(err);
+            else {
+                processStructure.addProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs, (err, needApprove) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        if (needApprove === 'approval') {
+                            res.send('success_needApprove');
+                        }
+                        else {
+                            res.send('success');
+                        }
+                    }
+                });
             }
         });
     } else if (req.body.context === 'editProcessStructure') {
-        processStructure.editProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfProcess), (err,needApprove) => {
-            if (err) {
-                res.send(err);
+        onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=> {
+            if(err) callback(err);
+            else {
+                processStructure.editProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs, (err, needApprove) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        if (needApprove === 'approval') {
+                            res.send('success_needApprove');
+                        }
+                        else {
+                            res.send('success');
+                        }
+                    }
+                });
             }
-            else{
-                if(needApprove === 'approval'){
-                    res.send('success_needApprove');
-                }
-                else{
-                    res.send('success');
-                }
-            }
-        })
+        });
+
     }
     else if(req.body.context === 'viewProcessStructure'){
-        waitingProcessStructuresController.updateStructure(req.body.mongoId,req.body.content,JSON.parse(req.body.onlineFormsOfProcess),(err)=>{
-            if(err){
-                res.send(err);
+        onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=> {
+            if(err) callback(err);
+            else {
+                waitingProcessStructuresController.updateStructure(req.body.mongoId, req.body.content, onlineFormsIDs, (err) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        res.send("success");
+                    }
+                });
             }
-            else{
-                res.send("success");
-            }
-        })
+        });
     }
     else if (req.body.context === '__tree__') {
         UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content, JSON.parse(req.body.roleToEmails),JSON.parse(req.body.emailToFullName), (err) => {

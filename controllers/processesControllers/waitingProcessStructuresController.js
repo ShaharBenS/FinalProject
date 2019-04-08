@@ -63,25 +63,12 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                         };
 
                       if(waitingStructure.addOrEdit){
-                          onlineFormsController.findOnlineFormsNamesByFormsIDs(waitingStructure.onlineForms,(err,formsNames)=>{
-                             if(err) callback(err);
-                             else
-                             {
-                                 processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
-                                     waitingStructure.sankey,formsNames,commonCallback);
-                             }
-                          });
-
+                          processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
+                              waitingStructure.sankey,waitingStructure.onlineForms,commonCallback);
                       }
                       else{
-                          onlineFormsController.findOnlineFormsNamesByFormsIDs(waitingStructure.onlineForms,(err,formsNames)=> {
-                              if (err) callback(err);
-                              else {
-                                  processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
-                                      waitingStructure.sankey, formsNames,commonCallback);
-                              }
-                          });
-
+                          processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
+                              waitingStructure.sankey, waitingStructure.onlineForms,commonCallback);
                       }
                   }
               })
@@ -121,11 +108,11 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
     });
 };
 
-module.exports.updateStructure = (id, sankey, onlineForms, callback) => {
+module.exports.updateStructure = (id, sankey, onlineFormsIDs, callback) => {
     waitingProcessStructuresAccessor.updateWaitingProcessStructures({_id: id}, {
         $set: {
             sankey: sankey,
-            onlineForms: onlineForms
+            onlineForms: onlineFormsIDs
         }
     }, callback);
 };

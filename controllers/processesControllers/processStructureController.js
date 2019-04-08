@@ -7,7 +7,7 @@ let userPermissionsController = require('../usersControllers/UsersPermissionsCon
 let waitingProcessStructuresAccessor = require('../../models/accessors/waitingProcessStructuresAccessor');
 
 
-module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsNames, callback) =>
+module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs, callback) =>
 {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
     {
@@ -20,56 +20,50 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                 callback(err);
             }
             else {
-                onlineFormsController.findOnlineFormsIDsByFormsNames(onlineFormsNames,(err,onlineFormsIDs)=>{
-                    if(err) callback(err);
-                    else
-                    {
-                        let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent, false, onlineFormsIDs);
-                        if (newProcessStructure.checkNotDupStagesInStructure()) {
-                            if (newProcessStructure.checkInitialsExistInProcessStages()) {
-                                if (newProcessStructure.checkPrevNextSymmetric()) {
-                                    if (newProcessStructure.checkNextPrevSymmetric()) {
-                                        if (permissions.structureManagementPermission) {
-                                            processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), (err)=>{
-                                                if(err){
-                                                    callback(err);
-                                                }
-                                                else{
-                                                    callback(null);
-                                                }
-                                            });
+                let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent, false, onlineFormsIDs);
+                if (newProcessStructure.checkNotDupStagesInStructure()) {
+                    if (newProcessStructure.checkInitialsExistInProcessStages()) {
+                        if (newProcessStructure.checkPrevNextSymmetric()) {
+                            if (newProcessStructure.checkNextPrevSymmetric()) {
+                                if (permissions.structureManagementPermission) {
+                                    processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), (err)=>{
+                                        if(err){
+                                            callback(err);
                                         }
                                         else{
-                                            waitingProcessStructuresAccessor.addWaitingProcessStructure({
-                                                userEmail: userEmail,
-                                                structureName: structureName,
-                                                addOrEdit: true,
-                                                date: new Date(),
-                                                sankey: sankeyContent,
-                                                onlineForms: onlineFormsIDs,
-                                            },(err)=>{
-                                                if(err){
-                                                    callback(err);
-                                                }
-                                                else{
-                                                    callback(null,"approval");
-                                                }
-                                            })
+                                            callback(null);
                                         }
-                                    }
-                                    else
-                                        callback(new Error('קיימים שלבים הבאים שלא מכילים את הקודמים'));
+                                    });
                                 }
-                                else
-                                    callback(new Error('קיימים שלבים קודמים הלא מכילים את השלבים הבאים'));
+                                else{
+                                    waitingProcessStructuresAccessor.addWaitingProcessStructure({
+                                        userEmail: userEmail,
+                                        structureName: structureName,
+                                        addOrEdit: true,
+                                        date: new Date(),
+                                        sankey: sankeyContent,
+                                        onlineForms: onlineFormsIDs,
+                                    },(err)=>{
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            callback(null,"approval");
+                                        }
+                                    })
+                                }
                             }
                             else
-                                callback(new Error('חלק מהשלבים ההתחלתיים לא קיימים'));
+                                callback(new Error('קיימים שלבים הבאים שלא מכילים את הקודמים'));
                         }
                         else
-                            callback(new Error('קיימים שלבים כפולים'));
+                            callback(new Error('קיימים שלבים קודמים הלא מכילים את השלבים הבאים'));
                     }
-                });
+                    else
+                        callback(new Error('חלק מהשלבים ההתחלתיים לא קיימים'));
+                }
+                else
+                    callback(new Error('קיימים שלבים כפולים'));
 
             }
         });
@@ -77,7 +71,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
 };
 
 
-module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsNames, callback) => {
+module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs, callback) => {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
             callback(err);
@@ -87,64 +81,58 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                 callback(err);
             }
             else {
-                onlineFormsController.findOnlineFormsIDsByFormsNames(onlineFormsNames, (err, onlineFormsIDs) => {
-                    if (err) callback(err);
-                    else {
-                        let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
-                        if (newProcessStructure.checkNotDupStagesInStructure()) {
-                            if (newProcessStructure.checkInitialsExistInProcessStages()) {
-                                if (newProcessStructure.checkPrevNextSymmetric()) {
-                                    if (newProcessStructure.checkNextPrevSymmetric()) {
-                                        if (permissions.structureManagementPermission) {
-                                            processStructureAccessor.updateProcessStructure({structureName: structureName}, {
-                                                $set: {
-                                                    available: true,
-                                                    initials: structure.initials,
-                                                    stages: structure.stages,
-                                                    sankey: sankeyContent,
-                                                    onlineForms: onlineFormsIDs
-                                                }
-                                            }, (err) => {
-                                                if (err) {
-                                                    callback(err);
-                                                }
-                                                else {
-                                                    callback(null);
-                                                }
-                                            });
+                let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
+                if (newProcessStructure.checkNotDupStagesInStructure()) {
+                    if (newProcessStructure.checkInitialsExistInProcessStages()) {
+                        if (newProcessStructure.checkPrevNextSymmetric()) {
+                            if (newProcessStructure.checkNextPrevSymmetric()) {
+                                if (permissions.structureManagementPermission) {
+                                    processStructureAccessor.updateProcessStructure({structureName: structureName}, {
+                                        $set: {
+                                            available: true,
+                                            initials: structure.initials,
+                                            stages: structure.stages,
+                                            sankey: sankeyContent,
+                                            onlineForms: onlineFormsIDs
+                                        }
+                                    }, (err) => {
+                                        if (err) {
+                                            callback(err);
                                         }
                                         else {
-                                            waitingProcessStructuresAccessor.addWaitingProcessStructure({
-                                                userEmail: userEmail,
-                                                structureName: structureName,
-                                                addOrEdit: false,
-                                                date: new Date(),
-                                                sankey: sankeyContent,
-                                                onlineForms: onlineFormsIDs
-                                            }, (err) => {
-                                                if (err) {
-                                                    callback(err);
-                                                }
-                                                else {
-                                                    callback(null, 'approval');
-                                                }
-                                            })
+                                            callback(null);
                                         }
-                                    }
-                                    else
-                                        callback(new Error('Some stages have next stages that dont contain them for previous'));
+                                    });
                                 }
-                                else
-                                    callback(new Error('Some stages have previous stages that dont contain them for next'));
+                                else {
+                                    waitingProcessStructuresAccessor.addWaitingProcessStructure({
+                                        userEmail: userEmail,
+                                        structureName: structureName,
+                                        addOrEdit: false,
+                                        date: new Date(),
+                                        sankey: sankeyContent,
+                                        onlineForms: onlineFormsIDs
+                                    }, (err) => {
+                                        if (err) {
+                                            callback(err);
+                                        }
+                                        else {
+                                            callback(null, 'approval');
+                                        }
+                                    })
+                                }
                             }
                             else
-                                callback(new Error('Some initial stages do not exist'));
+                                callback(new Error('Some stages have next stages that dont contain them for previous'));
                         }
                         else
-                            callback(new Error('There are two stages with the same number'));
+                            callback(new Error('Some stages have previous stages that dont contain them for next'));
                     }
-
-                });
+                    else
+                        callback(new Error('Some initial stages do not exist'));
+                }
+                else
+                    callback(new Error('There are two stages with the same number'));
             }
         });
     });
