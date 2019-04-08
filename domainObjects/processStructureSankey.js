@@ -9,7 +9,7 @@ class processStructureSankey {
         });
     }
 
-    getStages(roleNameToIdFunc, onlineFormsOfStage) {
+    getStages(roleNameToIdFunc) {
         let sankeyStages = this.getSankeyStages();
         return sankeyStages.map((stage, index) => {
             let roleName = stage.labels[0].text;
@@ -18,7 +18,6 @@ class processStructureSankey {
                 stageNum: index,
                 nextStages: [],
                 stagesToWaitFor: [],
-                onlineForms: onlineFormsOfStage(roleName),
                 attachedFilesNames: []
             };
             this.getConnections().forEach(connection => {

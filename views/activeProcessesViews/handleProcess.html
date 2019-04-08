@@ -80,14 +80,24 @@
             background-color: #f6a500;
             color: white;
         }
+
         .removal-button::before {
             content: 'X';
         }
+
         .removal-button:focus {
             outline: 0;
         }
 
     </style>
+
+    <script>
+        let processName = '';
+        window.onload = function () {
+            processName = '<%=processName%>';
+        };
+
+    </script>
 </head>
 <body dir="rtl">
 <div align="center">
@@ -143,7 +153,7 @@
                 <br>
                 <br>
                 <%formsNames.forEach(function(formName){%>
-                <a class="btn-form" onclick="formClick('<%=formName%>')"><%=formName%></a>
+                <a class="btn-form" onclick="formClick('<%=formName%>','<%=processName%>')"><%=formName%></a>
                 <br><br>
                 <%})%>
             </div>
@@ -162,11 +172,8 @@
             </button>
             <br>
             <br>
-            <div id="formsInfo">
-            </div>
-        </form>
-        <button class="btn btn-default" onclick="alert(JSON.stringify(window.localStorage))">local storage</button>
 
+        </form>
     </div>
 </div>
 </body>

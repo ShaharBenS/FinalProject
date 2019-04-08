@@ -10,6 +10,7 @@ const processReportSchema = new Schema({
     creationTime: Date,
     currentStages: [Number],
     initials: [Number],
+    filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
     stages: [{
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRole'},
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
@@ -17,9 +18,8 @@ const processReportSchema = new Schema({
         approvalTime: Date,
         comments: String,
         action: {type: String, enum: ['cancel', 'continue', 'return']},
-        filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
-        attachedFilesNames: [String],
-    }],
+        attachedFilesNames: [String]
+    }]
 });
 
 module.exports = mongoose.model('ProcessReport', processReportSchema);

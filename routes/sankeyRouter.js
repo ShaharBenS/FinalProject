@@ -7,7 +7,7 @@ let waitingProcessStructuresController = require("../controllers/processesContro
 router.post('/file/save', function (req, res) {
     let userEmail = req.user.emails[0].value;
     if (req.body.context === 'addProcessStructure') {
-        processStructure.addProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err,needApprove) => {
+        processStructure.addProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfProcess), (err,needApprove) => {
             if (err) {
                 res.send(err);
             }
@@ -21,7 +21,7 @@ router.post('/file/save', function (req, res) {
             }
         });
     } else if (req.body.context === 'editProcessStructure') {
-        processStructure.editProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfStage), (err,needApprove) => {
+        processStructure.editProcessStructure(userEmail,req.body.processStructureName, req.body.content, JSON.parse(req.body.onlineFormsOfProcess), (err,needApprove) => {
             if (err) {
                 res.send(err);
             }

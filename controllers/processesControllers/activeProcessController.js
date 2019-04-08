@@ -10,38 +10,6 @@ let filledOnlineFormController = require('../onlineFormsControllers/filledOnline
 let fs = require('fs');
 let moment = require('moment');
 
-/**
- * attach form to process stage
- *
- * @param activeProcessName | the process to attach the form
- * @param stageNum | the stage in the process to attach the form
- * @param formName | the name of the from from a predefined forms
- * @param callback
- */
-
-module.exports.attachFormToProcessStage = (activeProcessName, stageNum, formName, callback) => {
-    processAccessor.getActiveProcessByProcessName(activeProcessName, (err, process) => {
-        if (err) callback(err);
-        else {
-            onlineFormController.getOnlineFormByName(formName, (err, form) => {
-                if (err) callback(err);
-                else {
-                    if (form === null)
-                        callback(new Error("no online form was found on db with the name: " + formName));
-                    else {
-                        try {
-                            process.attachOnlineFormToStage(stageNum, formName);
-                            processAccessor.updateActiveProcess({processName: activeProcessName}, {stages: process.stages}, callback)
-                        } catch (e) {
-                            callback(e);
-                        }
-                    }
-                }
-            });
-        }
-    })
-};
-
 
 /**
  * Starts new process from a defined structure
@@ -88,14 +56,12 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
                                         originStagesToWaitFor: stage.stagesToWaitFor,
                                         approvalTime: null,
-                                        onlineForms: stage.onlineForms,
-                                        filledOnlineForms: [],
                                         attachedFilesNames: stage.attachedFilesNames,
                                     });
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
-                                    creatorRoleID: roleID,
+                                    creatorUserEmail: userEmail,
                                     creationTime: today,
                                     notificationTime: notificationTime,
                                     currentStages: [initialStage],
@@ -105,7 +71,9 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     lastApproached: today,
                                     processDate: processDate,
                                     processUrgency: processUrgency,
-                                    processCreatorEmail: userEmail
+                                    processCreatorEmail: userEmail,
+                                    onlineForms: processStructure.onlineForms,
+                                    filledOnlineForms: []
                                 }, (err) => {
                                     if (err) callback(err);
                                     else processReportController.addProcessReport(processName, today, processDate, processUrgency, userEmail, (err) => {
@@ -304,31 +272,12 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
             nextStageRoles.push(parseInt(attr));
         }
     }
-    let formsInfo = JSON.parse(fields.formsInfo);
     let stage = {
         comments: fields.comments,
-        filledForms: formsInfo,
         fileNames: fileNames,
         nextStageRoles: nextStageRoles
     };
     handleProcess(userEmail, processName, stage, callback);
-}
-
-function createOnlineFormsFromArray(forms, index, formIdArray, callback) {
-    if (index === forms.length) {
-        callback(null, formIdArray);
-        return;
-    }
-    let form = forms[index];
-    (function (array, form) {
-        filledOnlineFormController.createFilledOnlineFrom(form.formName, form.fields, (err, formRecord) => {
-            if (err) callback(err);
-            else {
-                array.push(formRecord._id);
-                createOnlineFormsFromArray(forms, index + 1, formIdArray, callback);
-            }
-        });
-    })(formIdArray, form);
 }
 
 /**
@@ -350,87 +299,84 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                     break;
                 }
             }
-            createOnlineFormsFromArray(stageDetails.filledForms, 0, [], (err, filledFormsIDs) => {
-                let today = new Date();
-                stageDetails.filledForms = filledFormsIDs;
-                stageDetails.stageNum = currentStage.stageNum;
-                stageDetails.action = "continue";
-                process.handleStage(stageDetails);
-                advanceProcess(process, currentStage.stageNum, stageDetails.nextStageRoles, (err, result) => {
-                    if (err) callback(err);
-                    else {
-                        if (process.isFinished()) {
-                            processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
-                                if (err) callback(err);
-                                else {
-                                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
-                                        if (err) {
-                                            callback(err);
-                                        } else {
-                                            // notifying participants
-                                            process.stages.reduce((prev, curr) => {
-                                                return (err) => {
-                                                    if (err) {
-                                                        prev(err);
-                                                    } else {
-                                                        notificationsController.addNotificationToUser(curr.userEmail,
-                                                            new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
-                                                    }
-                                                }
-                                            }, (err) => {
+            let today = new Date();
+            stageDetails.stageNum = currentStage.stageNum;
+            stageDetails.action = "continue";
+            process.handleStage(stageDetails);
+            advanceProcess(process, currentStage.stageNum, stageDetails.nextStageRoles, (err, result) => {
+                if (err) callback(err);
+                else {
+                    if (process.isFinished()) {
+                        processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
+                            if (err) callback(err);
+                            else {
+                                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
+                                    if (err) {
+                                        callback(err);
+                                    } else {
+                                        // notifying participants
+                                        process.stages.reduce((prev, curr) => {
+                                            return (err) => {
                                                 if (err) {
-                                                    console.log(err);
-                                                    callback(err);
+                                                    prev(err);
                                                 } else {
-                                                    callback(null);
+                                                    notificationsController.addNotificationToUser(curr.userEmail,
+                                                        new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
                                                 }
-                                            })(null);
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
-                                if (err) {
-                                    callback(err);
-                                } else {
-                                    process.currentStages.reduce((acc, curr) => {
-                                        return (err) => {
+                                            }
+                                        }, (err) => {
                                             if (err) {
-                                                acc(err);
+                                                console.log(err);
+                                                callback(err);
                                             } else {
-                                                let stage = process.getStageByStageNum(curr);
-                                                usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
-                                                    emails.reduce((acc, curr) => {
-                                                        return (err) => {
-                                                            if (err) {
-                                                                acc(err);
-                                                            } else {
-                                                                notificationsController.addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
-                                                            }
-                                                        }
-                                                    }, (err) => {
+                                                callback(null);
+                                            }
+                                        })(null);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
+                            if (err) {
+                                callback(err);
+                            } else {
+                                process.currentStages.reduce((acc, curr) => {
+                                    return (err) => {
+                                        if (err) {
+                                            acc(err);
+                                        } else {
+                                            let stage = process.getStageByStageNum(curr);
+                                            usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
+                                                emails.reduce((acc, curr) => {
+                                                    return (err) => {
                                                         if (err) {
                                                             acc(err);
                                                         } else {
-                                                            acc(null);
+                                                            notificationsController.addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
                                                         }
-                                                    })(null);
-                                                });
-                                            }
+                                                    }
+                                                }, (err) => {
+                                                    if (err) {
+                                                        acc(err);
+                                                    } else {
+                                                        acc(null);
+                                                    }
+                                                })(null);
+                                            });
                                         }
-                                    }, (err) => {
-                                        if (err) {
-                                            callback(err);
-                                        } else {
-                                            callback(null);
-                                        }
-                                    })(null);
-                                }
-                            });
-                        }
+                                    }
+                                }, (err) => {
+                                    if (err) {
+                                        callback(err);
+                                    } else {
+                                        callback(null);
+                                    }
+                                })(null);
+                            }
+                        });
                     }
-                });
+                }
             });
         }
     });
@@ -465,7 +411,8 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
                 creationTime: processReport.creationTime,
                 status: processReport.status,
                 urgency: processReport.processUrgency,
-                processDate: processReport.processDate
+                processDate: processReport.processDate,
+                filledOnlineForms: processReport.filledOnlineForms
             };
             returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
                 callback(null, [returnProcessDetails, newStages]);
@@ -488,8 +435,7 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
                     stageNum: stage.stageNum,
                     approvalTime: stage.approvalTime,
                     comments: stage.comments,
-                    files: stage.attachedFilesNames,
-                    filledOnlineForms: stage.filledOnlineForms,
+                    files: stage.attachedFilesNames
                 });
                 returnStagesWithRoleName(index + 1, stages, newStages, callback);
             }
@@ -554,23 +500,6 @@ function getRoleNamesForArray(stages, index, roleNamesArray, callback) {
     })(roleNamesArray, stages[index].stageNum);
 }
 
-function getFormNamesForArray(forms, index, formNameArray, callback) {
-    if (index === forms.length) {
-        callback(null, formNameArray);
-        return;
-    }
-    let formId = forms[index];
-    (function (array) {
-        onlineFormController.getOnlineFormByID(formId, (err, form) => {
-            if (err) callback(err);
-            else {
-                array.push(form.formName);
-                getFormNamesForArray(forms, index + 1, formNameArray, callback);
-            }
-        });
-    })(formNameArray);
-}
-
 module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEmail, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -592,10 +521,10 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
-                        getFormNamesForArray(currentStage.onlineForms, 0, [], (err, res) => {
+                        onlineFormController.findOnlineFormsNamesByFormsIDs(process._onlineForms, (err, onlineFormsNames) => {
                             if (err) callback(err);
                             else {
-                                callback(null, [rolesNames, res]);
+                                callback(null, [rolesNames, onlineFormsNames]);
                             }
                         });
                     }
@@ -603,7 +532,6 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
             }
         }
     });
-
 };
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
@@ -612,7 +540,6 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
         let today = new Date();
         let stage = {
             comments: comments,
-            filledForms: [],
             fileNames: [],
             action: "return",
             stageNum: process.getCurrentStageNumberForUser(userEmail)
@@ -624,7 +551,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
         }, (err) => {
             if (err) callback(err);
             else {
-                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                processReportController.addActiveProcessDetailsToReport(processName, userEmail, [], stage, today, (err) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -652,7 +579,7 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                 if (err) callback(err);
                 else {
                     let usersToNotify = process.getParticipatingUsers();
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, [], stage, today, (err) => {
                         if (err) {
                             callback(err);
                         } else {
@@ -686,10 +613,10 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
         callback(null, filledFormsArray);
         return;
     }
-    filledOnlineFormController.getFilledOnlineFormsOfArray(filledFormIds[index].filledOnlineForms, (err, forms) => {
+    filledOnlineFormController.getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
         if (err) callback(err);
         else {
-            filledFormsArray.push(forms);
+            filledFormsArray.push(form);
             getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
         }
     });
@@ -743,16 +670,26 @@ module.exports.processReport = function (process_name, callback) {
             for (let i = 0; i < result[1].length; i++) {
                 result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
             }
-
-            getFilledOnlineForms(result[1], 0, [], (err, formsArr) => {
+            getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
                 for (let i = 0; i < formsArr.length; i++) {
-                    result[1][i].filledOnlineForms = formsArr[i];
+                    result[0].filledOnlineForms[i] = formsArr[i];
                 }
                 callback(null, result);
             });
         }
     });
 };
+
+module.exports.addFilledOnlineFormToProcess = function(processName, formID, callback){
+    processAccessor.updateActiveProcess({processName: processName}, {$push : {filledOnlineForms: formID}}, (err)=>{
+        if(err) callback(err);
+        else
+        {
+            processReportAccessor.updateProcessReport({processName: processName},{$push: {filledOnlineForms: formID}},callback);
+        }
+    });
+};
+
 
 /////Helper Functions
 function convertDate(array, isArrayOfDates) {
@@ -781,3 +718,4 @@ function convertDate(array, isArrayOfDates) {
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
+module.exports.getFilledOnlineForms = getFilledOnlineForms;

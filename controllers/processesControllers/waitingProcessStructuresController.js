@@ -1,7 +1,7 @@
 let waitingProcessStructuresAccessor = require('../../models/accessors/waitingProcessStructuresAccessor');
 let activeProcessController = require('./activeProcessController');
 let processStructureController = require('../processesControllers/processStructureController');
-let processStructureAccessor = require('../../models/accessors/processStructureAccessor');
+let onlineFormsController = require('../onlineFormsControllers/onlineFormController');
 let usersPermissionsController = require('../usersControllers/UsersPermissionsController');
 let notificationController = require('../notificationsControllers/notificationController');
 let Notification = require('../../domainObjects/notification');
@@ -20,7 +20,7 @@ module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
                 structureName: waitingProcessStructure.structureName,
                 addOrEdit: waitingProcessStructure.addOrEdit,
                 date: dates[index],
-                onlineFormsOfStage: waitingProcessStructure.onlineFormsOfStage,
+                onlineForms: waitingProcessStructure.onlineForms
             };
         });
         callback(null, waitingProcessStructuresWithFixedDates);
@@ -62,19 +62,34 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                             })
                         };
 
-                        if (waitingStructure.addOrEdit) {
-                            processStructureController.addProcessStructure(userEmail, waitingStructure.structureName,
-                                waitingStructure.sankey, JSON.parse(waitingStructure.onlineFormsOfStage), commonCallback)
-                        } else {
-                            processStructureController.editProcessStructure(userEmail, waitingStructure.structureName,
-                                waitingStructure.onlineFormsOfStage, commonCallback);
-                        }
-                    }
-                })
-            } else {
-                callback("ERROR: You don't have the required permissions to perform this operation")
-            }
-        }
+                      if(waitingStructure.addOrEdit){
+                          onlineFormsController.findOnlineFormsNamesByFormsIDs(waitingStructure.onlineForms,(err,formsNames)=>{
+                             if(err) callback(err);
+                             else
+                             {
+                                 processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
+                                     waitingStructure.sankey,formsNames,commonCallback);
+                             }
+                          });
+
+                      }
+                      else{
+                          onlineFormsController.findOnlineFormsNamesByFormsIDs(waitingStructure.onlineForms,(err,formsNames)=> {
+                              if (err) callback(err);
+                              else {
+                                  processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
+                                      waitingStructure.sankey, formsNames,commonCallback);
+                              }
+                          });
+
+                      }
+                  }
+              })
+          }
+          else{
+              callback("ERROR: You don't have the required permissions to perform this operation")
+          }
+      }
     });
 };
 
@@ -110,7 +125,7 @@ module.exports.updateStructure = (id, sankey, onlineFormsOfStage, callback) => {
     waitingProcessStructuresAccessor.updateWaitingProcessStructures({_id: id}, {
         $set: {
             sankey: sankey,
-            onlineFormsOfStage: onlineFormsOfStage
+            onlineForms: onlineFormsOfStage
         }
     }, callback);
 };

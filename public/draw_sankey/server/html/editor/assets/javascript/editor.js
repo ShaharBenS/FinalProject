@@ -670,8 +670,8 @@ sankey.dialog.FileSave = Class.extend({
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
                 emailToFullName: diagramContext === '__tree__' ? JSON.stringify(emailToFullName) : undefined,
-                onlineFormsOfStage: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
-                    ? JSON.stringify(formsOfStage) : undefined,
+                onlineFormsOfProcess: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
+                    ? JSON.stringify(formsOfProcess) : undefined,
                 processStructureName: processStructureName,
                 mongoId:mongoId,
             };
@@ -916,9 +916,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             if (diagramContext === '__tree__') {
                 items.users = {name: "<i style='font-size: 20px' class='ion ion-android-people'><label style='padding-right: 6px;font-weight: normal'>ראה משתמשים</label><i>"}
             }
-            else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure'){
-                items.users = {name: "<i style='font-size: 20px' class='ion ion-ios-browsers'><label style='padding-right: 6px;font-weight: normal'>ראה טפסים</label><i>"}
-            }
         }
         if ((figure instanceof sankey.shape.Start) ||
             (figure instanceof sankey.shape.End) ||
@@ -962,11 +959,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         if (diagramContext === '__tree__') {
                             rolesToHTML(figure.children.data[0].figure.text);
                             document.getElementById("select_users_modal").style.display = "block";
-                        }
-                        else if(diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure'){
-                            seeFormsOpened(figure.children.data[0].figure.text);
-                            document.getElementById("see_forms_modal").style.display = "block";
-
                         }
                         break;
                     default:
