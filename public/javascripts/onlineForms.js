@@ -132,6 +132,7 @@ let fillForm = function (fields) {
 };
 
 let disableForm = function () {
+    signaturePads.forEach((signPad) => signPad.off);
     document.getElementById("fieldset").setAttribute("disabled", "disabled");
     document.getElementById("submitButton").setAttribute("disabled", "disabled");
     let submit = document.getElementById("submitButton");
@@ -142,34 +143,20 @@ let disableForm = function () {
 let setupInputs = function (formName, isForShow, fields) {
 
     setupLabelCells();
+    initSignatures();
 
     if (fields !== 'false') {
         fillForm(fields)
     } else if (isForShow) {
         let info = document.createTextNode("טופס דמו של " + formName);
         document.getElementById("info").appendChild(info);
-        setupTables(2, 'every_table');
+        setupTables(1, 'every_table');
         disableForm()
     } else {
         document.getElementById('close_win_button').style.display = "none";
-        setupTables(2, 'every_table');
+        setupTables(1, 'every_table');
     }
 };
-
-let countLines = function (txt, cellCols) {
-    //TODO: count is wrong
-    let lines = txt.split(/\r*\n/);
-    let count = lines.length;
-    /*lines.forEach((line) => {
-        count += parseInt(line.length / cellCols, 10);
-    });*/
-    console.log("cols: " + cellCols);
-    console.log("lines: " + lines.length);
-    console.log("count: " + count);
-    return count
-};
-
-let mapOfHeights = {};
 
 let createTableRow = function (table) {
     let columnsCount = table.children[0].children.length;
@@ -181,6 +168,7 @@ let createTableRow = function (table) {
         let td = document.createElement('td');
         let currentTextArea = document.createElement('textarea');
         currentTextArea.style.resize = "none";
+        currentTextArea.rows = 1;
         currentTextArea.name = 'table_input_' + table.parentElement.id + '_' + nameCount;
         currentTextArea.class = 'table_cell';
         currentTextArea.addEventListener('keydown', () => {
@@ -265,17 +253,112 @@ let surroundTableWithDivAndAddButtons = function (table) {
         addBtn.type = 'button';
         addBtn.style.marginLeft = '10px';
         addBtn.onclick = () => table.appendChild(createTableRow(table));
-        addBtn.className = "btn-default";
+        addBtn.className = "btn-default no_print";
 
         removeBtn.innerText = 'הסר שורה';
         removeBtn.type = 'button';
         removeBtn.style.marginRight = '10px';
         removeBtn.onclick = () => removeTableRow(table);
-        removeBtn.className = "btn-default";
+        removeBtn.className = "btn-default no_print";
 
         div.appendChild(document.createElement('br'));
 
         div.appendChild(addBtn);
         div.appendChild(removeBtn);
     }
+};
+
+let signaturePads = [];
+
+let initSignatures = function () {
+    let divsForSignatures = [];
+    let canvases = [];
+
+    Array.prototype.slice.call(document.getElementsByTagName('div'))
+        .forEach((div) => {
+            if (div.id.includes('signature_') && div.id.includes('_div')) {
+                divsForSignatures.push(div);
+            }
+        });
+
+    divsForSignatures.forEach((div) => {
+        let leadID = div.id.replace('_div', '');
+
+        let canvas = document.createElement('canvas');
+        canvas.id = leadID + '_canvas';
+        canvas.style.width = '100%';
+        canvas.height = '200';
+
+        let input = document.createElement('input');
+        input.id = leadID;
+        input.name = input.id;
+        input.type = 'text';
+        input.hidden = true;
+
+        let buttonsWrapper = document.createElement('div');
+        buttonsWrapper.className = 'no_print';
+
+        let save = document.createElement('label');
+        save.id = leadID + '_save';
+        save.innerText = 'שמור חתימה';
+        save.className = 'btn-default';
+
+        let clear = document.createElement('label');
+        clear.id = leadID + '_clear';
+        clear.innerText = 'נקה';
+        clear.className = 'btn-default';
+
+        let load = document.createElement('label');
+        load.id = leadID + '_load';
+        load.innerText = 'טען חתימה קיימת';
+        load.className = 'btn-default';
+
+        buttonsWrapper.appendChild(save);
+        buttonsWrapper.appendChild(clear);
+        buttonsWrapper.appendChild(load);
+
+        div.appendChild(canvas);
+        div.appendChild(input);
+        div.appendChild(buttonsWrapper);
+
+        let signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+
+        signaturePads.push(signaturePad);
+        canvases.push(canvas);
+
+        save.addEventListener('click', function (event) {
+            let data = signaturePad.toData();
+            input.value = JSON.stringify(data);
+        });
+
+        clear.addEventListener('click', function (event) {
+            signaturePad.clear();
+        });
+
+        load.addEventListener('click', function (event) {
+            if (input.value !== '') {
+                signaturePad.fromData(JSON.parse(input.value));
+            } else alert('חתימה לא קיימת')
+        });
+    });
+
+    function resizeCanvas() {
+        canvases.forEach((canvas) => {
+            let ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+        });
+        signaturePads.forEach((signPad) => signPad.clear());
+    }
+
+    function disable() {
+        //TODO: disable signatures
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 };

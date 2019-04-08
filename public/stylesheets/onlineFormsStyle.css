@@ -2,6 +2,11 @@ table, td, th {
     border: 1px groove black;
 }
 
+canvas {
+    border-bottom: 1px groove black;
+
+}
+
 table {
     border-collapse: collapse;
     width: 100%;

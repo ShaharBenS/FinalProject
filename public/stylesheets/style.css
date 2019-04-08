@@ -167,3 +167,20 @@ body {
 .top-bar-permission-image{
     height: 34px;
 }
+
+@media print {
+    .no_print {
+        visibility: hidden;
+    }
+
+
+    .main-div-forms {
+        padding: 2% 2% 2%;
+        margin: 2%;
+        width: 95%;
+        border-radius: 60px;
+        border-color: var(--main-color);
+        border-width: 2px;
+        border-style: solid;
+    }
+}

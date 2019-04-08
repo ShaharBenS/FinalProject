@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 
     <script>
         let _formName = '';
@@ -116,26 +117,40 @@
 
                 <hr>
 
-                <table class="no_table" id="signatures">
+                <table class="no_table" id="signature1">
                     <tbody>
                     <tr>
                         <td><label for="date_1">תאריך</label></td>
                         <td><input id="date_1" name="date_1" type="text"></td>
-                        <td><label for="signature_1">חתימת השואל:</label></td>
-                        <td><input id="signature_1" name="signature_1" type="text"></td>
                     </tr>
+                    <tr>
+                        <td><label>חתימת השואל:</label></td>
+                        <td>
+                            <div id="signature_1_div"></div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <br>
+                <table class="no_table" id="signature2">
+                    <tbody>
                     <tr>
                         <td><label for="date_2">תאריך</label></td>
                         <td><input id="date_2" name="date_2" type="text"></td>
-                        <td><label for="signature_2">חתימת המשאיל:</label></td>
-                        <td><input id="signature_2" name="signature_2" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td><label>חתימת המשאיל:</label></td>
+                        <td>
+                            <div id="signature_2_div"></div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
 
                 <hr>
                 <br>
-                <input class="btn-default" id="submitButton" type="submit" value="שלח">
+                <input class="btn-default no_print" id="submitButton" type="submit" value="שלח">
             </fieldset>
         </form>
         <br>
