@@ -19,7 +19,7 @@ function addProcessReport(processName, creationTime,processDate,processUrgency,p
     });
 }
 
-function addActiveProcessDetailsToReport(processName, userEmail, filledOnlineForms,stageDetails, approvalTime, callback){
+function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, approvalTime, callback){
     processAccessor.findProcessReport({processName: processName}, (err) => {
         if (err) callback(err);
         else {
@@ -31,7 +31,7 @@ function addActiveProcessDetailsToReport(processName, userEmail, filledOnlineFor
                         comments: stageDetails.comments, action: stageDetails.action,
                         attachedFilesNames: stageDetails.fileNames
                     };
-                    processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage}, filledOnlineForms: filledOnlineForms}, (err) => {
+                    processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage}}, (err) => {
                         if (err) callback(err);
                         else callback(null);
                     });
