@@ -6,12 +6,10 @@ class activeProcessStage {
         this.stageNum = pureObject.stageNum;
         this.nextStages = pureObject.nextStages;
         this.stagesToWaitFor = pureObject.stagesToWaitFor;
-        this.onlineForms = pureObject.onlineForms;
         this.attachedFilesNames = pureObject.attachedFilesNames;
         this.userEmail = pureObject.userEmail;
         this.originStagesToWaitFor = pureObject.originStagesToWaitFor;
         this.approvalTime = pureObject.approvalTime;
-        this.filledOnlineForms = pureObject.filledOnlineForms;
         this.comments = pureObject.comments;
     }
 
@@ -26,11 +24,10 @@ class activeProcessStage {
         }
     }
 
-    handleStage(filledForms, fileNames, comments)
+    handleStage(fileNames, comments)
     {
         if (this.approvalTime === null && this.stagesToWaitFor.length === 0) {
             this.approvalTime = new Date();
-            this.filledOnlineForms = this.filledOnlineForms.concat(filledForms);
             this.attachedFilesNames = this.attachedFilesNames.concat(fileNames);
             this.comments = comments;
         } else throw new Error();
@@ -38,20 +35,6 @@ class activeProcessStage {
 
     haveNoOneToWaitFor() {
         return this.stagesToWaitFor.length === 0;
-    }
-
-    attachOnlineForm(formName) {
-        let alreadyExist = false;
-        this.onlineForms.every((formName2) => {
-            if (formName === formName2) {
-                alreadyExist = true;
-                return false;
-            }
-            return true;
-        });
-        if (!alreadyExist) {
-            this.onlineForms = this.onlineForms.concat([formName]);
-        }
     }
 }
 

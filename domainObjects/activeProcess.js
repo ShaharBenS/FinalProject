@@ -2,13 +2,15 @@ class activeProcess {
 
     constructor(processObject,stages) {
         this._processName = processObject.processName;
-        this._creatorRoleID = processObject.creatorRoleID;
+        this._creatorUserEmail = processObject.creatorUserEmail;
         this._processDate = processObject.processDate;
         this._processUrgency = processObject.processUrgency;
         this._creationTime = processObject.creationTime;
         this._notificationTime = processObject.notificationTime;
         this._currentStages = processObject.currentStages;
         this._initials = processObject.initials;
+        this._onlineForms = processObject.onlineForms;
+        this._filledOnlineForms = processObject.filledOnlineForms;
         this._stages = stages;
         this._lastApproached = processObject.lastApproached;
     }
@@ -21,12 +23,12 @@ class activeProcess {
         this._processName = value;
     }
 
-    get creatorRoleID() {
-        return this._creatorRoleID;
+    get creatorUserEmail() {
+        return this._creatorUserEmail;
     }
 
-    set creatorRoleID(value) {
-        this._creatorRoleID = value;
+    set creatorUserEmail(value) {
+        this._creatorUserEmail = value;
     }
 
     get creationTime() {
@@ -93,11 +95,6 @@ class activeProcess {
 
     set lastApproached(value) {
         this._lastApproached = value;
-    }
-
-    attachOnlineFormToStage(stageNum, formName) {
-        let stage = this.getStageByStageNum(stageNum);
-        stage.attachOnlineForm(formName);
     }
 
     addCurrentStage(stageNum) {
@@ -177,7 +174,8 @@ class activeProcess {
 
     handleStage(stageDetails) {
         let stage = this.getStageByStageNum(stageDetails.stageNum);
-        stage.handleStage(stageDetails.filledForms, stageDetails.fileNames, stageDetails.comments);
+        this._filledOnlineForms = stageDetails.filledForms;
+        stage.handleStage(stageDetails.fileNames, stageDetails.comments);
         for(let i=0;i<stage.nextStages.length;i++)
         {
             let currentStage = this.getStageByStageNum((stage.nextStages[i]));
@@ -244,10 +242,11 @@ class activeProcess {
 
     returnProcessToCreator(){
         let flag = true;
-        for(let i=0;i<this._stages.length;i++)
+        let i = 0;
+        for(i=0;i<this._stages.length;i++)
         {
             this._stages[i].stagesToWaitFor = this._stages[i].originStagesToWaitFor;
-            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].roleID.id.equals(this._creatorRoleID.id))
+            if(this._initials.includes(this._stages[i].stageNum) && this._stages[i].userEmail.equals(this._creatorUserEmail))
             {
                 if(flag)
                 {
@@ -260,7 +259,7 @@ class activeProcess {
                 }
             }
         }
-        return this.getStageByStageNum(this._currentStages[0]).userEmail;
+        return this.getStageByStageNum(this._currentStages[i]).userEmail;
     }
 
     getCurrentStageNumberForUser(userEmail){

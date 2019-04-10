@@ -11,15 +11,16 @@ function addProcessReport(processName, creationTime,processDate,processUrgency,p
         processUrgency: processUrgency,
         processCreatorEmail: processCreatorEmail,
         creationTime: creationTime,
-        stages: []
+        stages: [],
+        filledOnlineForms: []
     }, (err) => {
         if (err) callback(err);
         else callback(null);
     });
 }
 
-function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, approvalTime, callback){
-    processAccessor.findProcessReport({processName: processName}, (err, processReport) => {
+function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, approvalTime, callback){
+    processAccessor.findProcessReport({processName: processName}, (err) => {
         if (err) callback(err);
         else {
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
@@ -27,24 +28,10 @@ function addActiveProcessDetailsToReport(processName,userEmail, stageDetails, ap
                 else {
                     let newStage = {
                         roleID: roleID, userEmail: userEmail, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
-                        comments: stageDetails.comments, action: stageDetails.action, filledOnlineForms: stageDetails.filledForms,
+                        comments: stageDetails.comments, action: stageDetails.action,
                         attachedFilesNames: stageDetails.fileNames
                     };
-                    let stages = [];
-                    processReport.stages.forEach((stage) => {
-                        stages.push({
-                            roleID: stage.roleID,
-                            userEmail: stage.userEmail,
-                            stageNum: stage.stageNum,
-                            approvalTime: stage.approvalTime,
-                            comments: stage.comments,
-                            action: stage.action,
-                            filledOnlineForms: stage.filledOnlineForms,
-                            attachedFilesNames: stage.attachedFilesNames
-                        });
-                    });
-                    stages.push(newStage);
-                    processAccessor.updateProcessReport({processName: processName}, {stages: stages}, (err) => {
+                    processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage}}, (err) => {
                         if (err) callback(err);
                         else callback(null);
                     });

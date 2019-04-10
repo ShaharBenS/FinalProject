@@ -7,20 +7,20 @@ let userPermissionsController = require('../usersControllers/UsersPermissionsCon
 let waitingProcessStructuresAccessor = require('../../models/accessors/waitingProcessStructuresAccessor');
 
 
-module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsOfStage, callback) =>
+module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs, callback) =>
 {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
     {
         if (err) {
             callback(err);
         }
-        sankeyToStructure(sankeyContent, onlineFormsOfStage, (err, structure) =>
+        sankeyToStructure(sankeyContent, (err, structure) =>
         {
             if (err) {
                 callback(err);
             }
             else {
-                let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent);
+                let newProcessStructure = new ProcessStructure(structureName, structure.initials, structure.stages, sankeyContent, false, onlineFormsIDs);
                 if (newProcessStructure.checkNotDupStagesInStructure()) {
                     if (newProcessStructure.checkInitialsExistInProcessStages()) {
                         if (newProcessStructure.checkPrevNextSymmetric()) {
@@ -42,7 +42,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                         addOrEdit: true,
                                         date: new Date(),
                                         sankey: sankeyContent,
-                                        onlineFormsOfStage: JSON.stringify(onlineFormsOfStage),
+                                        onlineForms: onlineFormsIDs,
                                     },(err)=>{
                                         if(err){
                                             callback(err);
@@ -64,20 +64,19 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                 }
                 else
                     callback(new Error('קיימים שלבים כפולים'));
+
             }
         });
     });
 };
 
-module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsOfStage, callback) =>
-{
-    userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
-    {
+
+module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs, callback) => {
+    userPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
             callback(err);
         }
-        sankeyToStructure(sankeyContent, onlineFormsOfStage, (err, structure) =>
-        {
+        sankeyToStructure(sankeyContent, (err, structure) => {
             if (err) {
                 callback(err);
             }
@@ -94,29 +93,31 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                             initials: structure.initials,
                                             stages: structure.stages,
                                             sankey: sankeyContent,
+                                            onlineForms: onlineFormsIDs
                                         }
-                                    }, (err)=>{
-                                        if(err){
+                                    }, (err) => {
+                                        if (err) {
                                             callback(err);
                                         }
-                                        else{
+                                        else {
                                             callback(null);
                                         }
                                     });
                                 }
-                                else{
+                                else {
                                     waitingProcessStructuresAccessor.addWaitingProcessStructure({
                                         userEmail: userEmail,
                                         structureName: structureName,
                                         addOrEdit: false,
                                         date: new Date(),
                                         sankey: sankeyContent,
-                                    },(err)=>{
-                                        if(err){
+                                        onlineForms: onlineFormsIDs
+                                    }, (err) => {
+                                        if (err) {
                                             callback(err);
                                         }
-                                        else{
-                                            callback(null,'approval');
+                                        else {
+                                            callback(null, 'approval');
                                         }
                                     })
                                 }
@@ -206,6 +207,7 @@ module.exports.getProcessStructureForDB = function (originProcessStructure)
     return {
         structureName: originProcessStructure.structureName,
         initials: originProcessStructure.initials,
+        onlineForms: originProcessStructure.onlineForms,
         stages: this.getProcessStructureStagesForDB(originProcessStructure.stages),
         sankey: originProcessStructure.sankey
     };
@@ -220,7 +222,6 @@ module.exports.getProcessStructureStagesForDB = function (originStages)
             stageNum: originStages[i].stageNum,
             nextStages: originStages[i].nextStages,
             stagesToWaitFor: originStages[i].stagesToWaitFor,
-            onlineForms: originStages[i].onlineForms,
             attachedFilesNames: originStages[i].attachedFilesNames
         });
     }
@@ -232,7 +233,7 @@ module.exports.getProcessStructureStagesForDB = function (originStages)
 /* Private Functions */
 /*********************/
 
-let sankeyToStructure = function (sankeyContent, onlineFormsOfStage, callback)
+let sankeyToStructure = function (sankeyContent, callback)
 {
     let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
     let initials = processStructureSankeyObject.getInitials();
@@ -259,57 +260,33 @@ let sankeyToStructure = function (sankeyContent, onlineFormsOfStage, callback)
                 callback(err);
                 return;
             }
-            onlineFormsController.getAllOnlineForms((err, formsObjects) =>
+            let rolesMap = {};
+            roles.forEach((role) =>
             {
-                if (err) callback(err);
-                else {
-                    let rolesMap = {};
-                    let onlineFormsMap = {};
-                    let objectsMap = {};
-                    formsObjects.forEach((obj) => objectsMap[obj.formName] = obj);
-                    roles.forEach((role) =>
-                    {
-                        rolesMap[role.roleName] = role._id;
-                        let formsArray = [];
-                        let formIDsArray = [];
-                        if (onlineFormsOfStage[role.roleName] !== undefined)
-                            formsArray = onlineFormsOfStage[role.roleName];
-                        formsArray.forEach((formName) =>
-                        {
-                            if (err) callback(err);
-                            else {
-                                formIDsArray.push(objectsMap[formName].formID);
-                            }
-                        });
-                        onlineFormsMap[role._id] = formIDsArray
-                    });
-
-                    // Check if there are stages with no role.
-                    let rolesName = roles.map(role =>
-                    {
-                        return role.roleName
-                    });
-                    if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().map(sankeyStage =>
-                    {
-                        return sankeyStage.labels[0].text;
-                    }))).every(roleName =>
-                    {
-                        return rolesName.includes(roleName);
-                    })) {
-                        callback('שגיאה: יש שלב עם תפקיד שלא בעץ המשתמשים');
-                        return;
-                    }
-
-                    let stages = processStructureSankeyObject.getStages((roleName) =>
-                    {
-                        return rolesMap[roleName]
-                    }, (roleName) =>
-                    {
-                        return onlineFormsMap[rolesMap[roleName]]
-                    });
-                    callback(null, {initials: initials, stages: stages,});
-                }
+                rolesMap[role.roleName] = role._id;
             });
+
+            // Check if there are stages with no role.
+            let rolesName = roles.map(role =>
+            {
+                return role.roleName
+            });
+            if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().map(sankeyStage =>
+            {
+                return sankeyStage.labels[0].text;
+            }))).every(roleName =>
+            {
+                return rolesName.includes(roleName);
+            })) {
+                callback('שגיאה: יש שלב עם תפקיד שלא בעץ המשתמשים');
+                return;
+            }
+
+            let stages = processStructureSankeyObject.getStages((roleName) =>
+            {
+                return rolesMap[roleName]
+            });
+            callback(null, {initials: initials, stages: stages});
         })
     }
 };
@@ -378,34 +355,5 @@ module.exports.setProcessStructuresUnavailable = function (deletedRolesIds, dele
                 }
             });
         }
-    });
-};
-
-module.exports.getFormsToStages = function (structureName, callback) {
-    this.getProcessStructure(structureName, (err, processStructure) => {
-        if (err) callback(err);
-        else if (processStructure !== null) {
-            onlineFormsController.getAllOnlineForms((err, onlineFormsObjects) => {
-                if (err) callback(err);
-                else {
-                    let formsToStages = {};
-                    let formsIDsOfStages = processStructure.getFormsOfStage();
-                    let formsOfStages = {};
-                    onlineFormsObjects.forEach((form) => formsOfStages[form.formID] = form.formName);
-                    let count = Object.keys(formsIDsOfStages).length;
-                    Object.keys(formsIDsOfStages).forEach((key) => {
-                        usersAndRolesController.getRoleNameByRoleID(key, (err, roleName) => {
-                            //TODO OMRI: change this for to reduce or something
-                            formsToStages[roleName] = [];
-                            formsIDsOfStages[key].forEach((formID) => formsToStages[roleName].push(formsOfStages[formID]));
-                            count--;
-                            if (count === 0)
-                                callback(null, formsToStages);
-                        });
-                    });
-                }
-            });
-
-        } else callback(null, {});
     });
 };

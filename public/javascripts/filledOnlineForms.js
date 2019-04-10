@@ -11,14 +11,18 @@ let myForms = [];
  * @param info - array of maps {field:, value:}
  */
 function receiveFormInfo(formName, info) {
-    let formRecord = {formName: formName, fields: info};
-    for (let i = 0; i < myForms.length; i++) {
-        if (myForms[i].formName === formName) {
-            myForms[i] = formRecord;
-            return;
+    let xhr = new XMLHttpRequest();
+    let data = new FormData();
+    data.append('processName', processName);
+    data.append('formName', formName);
+    data.append('info', JSON.stringify(info));
+    xhr.open("POST", '/onlineForms/updateOrAddFilledForm', true);
+    xhr.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            alert("הטופס נשלח בהצלחה");
         }
-    }
-    myForms.push(formRecord);
+    };
+    xhr.send(data);
 }
 
 /**
@@ -42,9 +46,10 @@ function updateForms() {
 /**
  * called whenever @formName is clicked
  * @param formName
+ * @param processName
  * @returns {boolean}
  */
-function formClick(formName) {
-    window.open("/onlineForms/fill?formName=" + formName);
+function formClick(formName, processName) {
+    window.open("/onlineForms/fill?formName=" + formName + "&processName=" + processName);
     return false;
 }

@@ -82,6 +82,15 @@
                 <td><label>תאריך היעד:</label></td>
                 <td><label><%=processDetails.processDate%></label></td>
             </tr>
+            <tr>
+                <td><label>טפסים:</label></td>
+                <td id="filledOnlineForms">
+                    <%processDetails.filledOnlineForms.forEach(function(form) {%>
+                    <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
+                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
+                    <%})%>
+                </td>
+            </tr>
         </table>
 
         <br>
@@ -94,7 +103,6 @@
                         <th>שם ממלא התפקיד</th>
                         <th>תאריך ושעה</th>
                         <th>הערות</th>
-                        <th>טפסים</th>
                         <th>קבצים</th>
                     </tr>
                     </thead>
@@ -105,12 +113,6 @@
                         <td><%=step.userEmail%></td>
                         <td><%=step.approvalTime%></td>
                         <td><%=step.comments%></td>
-                        <td id="filledOnlineForms">
-                            <%step.filledOnlineForms.forEach(function(form) {%>
-                            <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
-                                  title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
-                            <%})%>
-                        </td>
                         <td>
                             <%step.files.forEach(function(file){%>
                             <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
