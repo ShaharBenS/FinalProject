@@ -19,7 +19,6 @@ function receiveFormInfo(formName, info) {
     xhr.open("POST", '/onlineForms/updateOrAddFilledForm', true);
     xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            alert("הטופס נשלח בהצלחה");
         }
     };
     xhr.send(data);

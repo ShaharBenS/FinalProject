@@ -1,5 +1,7 @@
 :root {
     --main-color: #f6a500;
+    --confirm-color: #00c400;
+    --gray: rgb(195, 195, 195);
 }
 
 body {
@@ -61,6 +63,23 @@ body {
     color: var(--main-color);
     border-radius: 20px;
     border-color: var(--main-color);
+    border-width: 2px;
+}
+
+.confirm {
+    background-color: var(--confirm-color);
+    color: white;
+    margin: 10px;
+    border-radius: 20px;
+    border-color: transparent;
+    border-width: 2px;
+}
+
+.confirm:hover {
+    background-color: white;
+    color: var(--confirm-color);
+    border-radius: 20px;
+    border-color: var(--confirm-color);
     border-width: 2px;
 }
 

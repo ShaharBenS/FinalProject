@@ -14,7 +14,7 @@ table {
 
 .no_table {
     border: none;
-    width: 70%;
+    width: auto;
 }
 
 label {

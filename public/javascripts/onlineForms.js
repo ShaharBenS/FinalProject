@@ -48,7 +48,6 @@ let submitForm = function () {
 
 let encodeJSONtoNotJSON = function (str) {
     str = CryptoJS.AES.encrypt(str, "code").toString();
-
     return str;
 };
 
@@ -63,9 +62,17 @@ let whileReplace = function (str, replace, by) {
     return str;
 };
 
+let signature_counter = 0;
+let fillSignature = function (element, field) {
+    canvasesPadsAndInputs[element.id].pad.fromData(JSON.parse(decodeJSONtoNotJSON(field.value)));
+    canvasesPadsAndInputs[element.id].pad.off();
+    let div = canvasesPadsAndInputs[element.id].div;
+    div.style.backgroundColor = 'var(--gray)';
+    div.lastChild.childNodes.forEach((button) => button.disabled = true);
+    signature_counter++;
+};
+
 let fillForm = function (fields) {
-
-
     fields = whileReplace(fields, '&#34;', '"');
     try {
         fields = JSON.parse(fields);
@@ -97,25 +104,35 @@ let fillForm = function (fields) {
             filledCells.forEach((cell) => {
                 let element = document.getElementsByName(cell.field)[0];
                 element.value = cell.value;
-                let currentRows = countLines(cell.value, parseInt(element.cols));
-                element.rows = currentRows;
+
+                let countHeight = function (textarea) {
+                    textarea.style.height = 'auto';
+                    return textarea.scrollHeight;
+                };
+
+                let currentHeight = countHeight(element);
+                element.style.height = currentHeight;
                 row.push(element);
                 let j = parseInt(i / columns);
-                if (rowsCounts[j] < currentRows)
-                    rowsCounts[j] = currentRows;
+                if (rowsCounts[j] < currentHeight)
+                    rowsCounts[j] = currentHeight;
                 if ((i + 1) % columns === 0) {
-                    row.forEach((elem) => elem.rows = rowsCounts[j]);
+                    console.log(rowsCounts[j] + " ***");
+                    row.forEach((elem) => {
+                        elem.style.height = rowsCounts[j] + 'px';
+                    });
                     row = [];
                 }
                 i++;
             });
-
-
         } else {
             let element = document.getElementsByName(field.fieldName)[0];
-            if (element.type === 'text')
+            if (element.type === 'text') {
                 element.setAttribute("value", field.value);
-            else if (element.type === 'checkbox')
+                if (element.id.includes('signature_') && field.value !== '') {//its a signature
+                    fillSignature(element, field);
+                }
+            } else if (element.type === 'checkbox')
                 element.checked = true;
             else if (element.type === 'radio') {
                 document.getElementsByName(field.fieldName).forEach((radioElement) => {
@@ -128,11 +145,12 @@ let fillForm = function (fields) {
                 alert('type error');
         }
     });
-    //disableForm();
+    if (signature_counter === Object.keys(canvasesPadsAndInputs).length)
+        disableForm();
 };
 
 let disableForm = function () {
-    signaturePads.forEach((signPad) => signPad.off);
+    document.getElementById('close_win_button').hidden = false;
     document.getElementById("fieldset").setAttribute("disabled", "disabled");
     document.getElementById("submitButton").setAttribute("disabled", "disabled");
     let submit = document.getElementById("submitButton");
@@ -156,7 +174,6 @@ let setupInputs = function (formName, isForShow, fields) {
         setupTables(num_of_rows_to_add, 'every_table');
         disableForm()
     } else {
-        document.getElementById('close_win_button').style.display = "none";
         setupTables(num_of_rows_to_add, 'every_table');
     }
 };
@@ -271,7 +288,8 @@ let surroundTableWithDivAndAddButtons = function (table) {
     }
 };
 
-let signaturePads = [];
+let canvasesPadsAndInputs = {};
+let mySignature = null;
 
 let initSignatures = function () {
     let divsForSignatures = [];
@@ -285,12 +303,13 @@ let initSignatures = function () {
         });
 
     divsForSignatures.forEach((div) => {
+        //lead ID must start with "signature"
         let leadID = div.id.replace('_div', '');
 
         let canvas = document.createElement('canvas');
         canvas.id = leadID + '_canvas';
-        canvas.style.width = '100%';
-        canvas.height = '200';
+        canvas.width = 400;
+        canvas.height = 150;
 
         let input = document.createElement('input');
         input.id = leadID;
@@ -301,24 +320,25 @@ let initSignatures = function () {
         let buttonsWrapper = document.createElement('div');
         buttonsWrapper.className = 'no_print';
 
-        let save = document.createElement('label');
-        save.id = leadID + '_save';
-        save.innerText = 'שמור חתימה';
-        save.className = 'btn-default';
+        let createDefaultButton = function (id, innerText) {
+            let element = document.createElement('button');
+            element.id = id;
+            element.innerText = innerText;
+            element.className = 'btn-default';
+            element.type = 'button';
+            return element;
+        };
 
-        let clear = document.createElement('label');
-        clear.id = leadID + '_clear';
-        clear.innerText = 'נקה';
-        clear.className = 'btn-default';
-
-        let load = document.createElement('label');
-        load.id = leadID + '_load';
-        load.innerText = 'טען חתימה קיימת';
-        load.className = 'btn-default';
+        let save = createDefaultButton(leadID + '_save', 'שמור חתימה');
+        let clear = createDefaultButton(leadID + '_clear', 'נקה');
+        let load = createDefaultButton(leadID + '_load', 'טען חתימה קיימת');
+        let sign = createDefaultButton(leadID + '_sign', 'חתום!');
+        sign.className = 'confirm';
 
         buttonsWrapper.appendChild(save);
         buttonsWrapper.appendChild(clear);
         buttonsWrapper.appendChild(load);
+        buttonsWrapper.appendChild(sign);
 
         div.appendChild(canvas);
         div.appendChild(input);
@@ -328,24 +348,81 @@ let initSignatures = function () {
             backgroundColor: 'rgba(255, 255, 255, 0)',
             penColor: 'rgb(0, 0, 0)'
         });
+        signaturePad.minWidth = 1;
+        signaturePad.maxWidth = 1;
 
-        signaturePads.push(signaturePad);
+        canvasesPadsAndInputs[leadID] = {canvas: canvas, pad: signaturePad, div: div};
         canvases.push(canvas);
 
         save.addEventListener('click', function (event) {
             let data = signaturePad.toData();
-            input.value = JSON.stringify(data);
+            let jsonData = JSON.stringify(data);
+            let encodedJsonData = encodeJSONtoNotJSON(jsonData);
+            let formData = new FormData();
+            formData.append("signature", encodedJsonData);
+
+            let request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState === 4) {
+                    if (request.status === 200) {
+                        alert("חתימה נשמרה בהצלחה");
+                        mySignature = jsonData;
+                    } else {
+                        alert(request.responseText);
+                    }
+                }
+            };
+            request.open("POST", "/signature/updateSignature/", true);
+            request.send(formData);
         });
 
-        clear.addEventListener('click', function (event) {
+        let clearListener = function (event) {
             signaturePad.clear();
+            input.value = "";
+            mySignature = null;
+        };
+
+        let loadListener = function (event) {
+            if (mySignature !== null) {
+                signaturePad.fromData(JSON.parse(mySignature));
+            } else {
+                let xmlHttpRequest = new XMLHttpRequest();
+                xmlHttpRequest.onreadystatechange = function () {
+                    if (xmlHttpRequest.readyState === 4) {
+                        if (xmlHttpRequest.status === 200) {
+                            try {
+                                mySignature = JSON.parse(decodeJSONtoNotJSON(xmlHttpRequest.responseText));
+                                signaturePad.fromData(mySignature);
+                            } catch (e) {
+                                alert("load error: " + e);
+                            }
+                        } else {
+                            alert('חתימה לא קיימת');
+                        }
+                    }
+                };
+                xmlHttpRequest.open("GET", '/signature/getSignature/', true);
+                xmlHttpRequest.send(null);
+            }
+        };
+
+        clear.addEventListener('click', clearListener);
+
+        load.addEventListener('click', loadListener);
+
+        sign.addEventListener('click', function (event) {
+            let ans = confirm('בטוח שאתה רוצה לחתום?' + '\n' + 'לאחר החתימה אין אפשרות לעדכן אותה!' + '\n' + 'שים לב! אם כל החתימות מולאו הטופס ינעל!');
+            if (ans) {
+                let data = signaturePad.toData();
+                input.value = encodeJSONtoNotJSON(JSON.stringify(data));
+                signaturePad.off();
+                div.style.backgroundColor = 'var(--gray)';
+                clear.disabled = true;
+                load.disabled = true;
+                sign.disabled = true;
+            }
         });
 
-        load.addEventListener('click', function (event) {
-            if (input.value !== '') {
-                signaturePad.fromData(JSON.parse(input.value));
-            } else alert('חתימה לא קיימת')
-        });
     });
 
     function resizeCanvas() {
@@ -355,13 +432,12 @@ let initSignatures = function () {
             canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio);
         });
-        signaturePads.forEach((signPad) => signPad.clear());
+        for (let id in canvasesPadsAndInputs) {
+            canvasesPadsAndInputs[id].pad.clear();
+        }
     }
 
-    function disable() {
-        //TODO: disable signatures
-    }
-
-    window.addEventListener("resize", resizeCanvas);
+// need to decide if to allow this or not
+//  window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 };

@@ -13,6 +13,7 @@ let uploadFilesRouter = require('./uploadFiles/uploadFilesRouter');
 let userPermissionsControl = require('./usersRouters/permissionsControlRouter');
 
 let onlineFormsRouter = require('./onlineFormsRoutes/onlineFormsRouter');
+let signaturesRouter = require('./onlineFormsRoutes/signatureRouter');
 
 module.exports = (app) => {
     app.use('/', indexRouter);
@@ -33,5 +34,6 @@ module.exports = (app) => {
     app.use('/uploadFile', uploadFilesRouter);
     app.use('/permissionsControl', userPermissionsControl);
     app.use('/uploadFile', uploadFilesRouter);
-    app.use('/onlineForms', onlineFormsRouter)
+    app.use('/onlineForms', onlineFormsRouter);
+    app.use('/signature', signaturesRouter);
 };
