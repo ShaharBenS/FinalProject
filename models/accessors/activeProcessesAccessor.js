@@ -49,7 +49,7 @@ module.exports.updateActiveProcess = (AP, update, callback) => {
 };
 
 module.exports.updateAllActiveProcesses = (AP, update, callback) => {
-    return activeProcessSchema.update(AP, update, callback);
+    return activeProcessSchema.updateMany(AP, update, callback);
 };
 
 /*********************/
