@@ -908,10 +908,16 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         /*if (figure instanceof draw2d.shape.basic.Label) {
             items.fontcolor = {name: "Font Color", icon: "x ion-android-color-palette"};
         }
-
+        */
         if (!(figure instanceof draw2d.Connection)) {
-            items.bgcolor = {name: "Background Color", icon: "x ion-android-color-palette"};
-        }*/
+            if((figure instanceof sankey.shape.State)){
+                items.bgcolor = {name: "<i style='font-size: 20px' class='ion ion-shuffle'><label style='padding-right: 6px;font-weight: normal'>דרג</label><i>"};
+            }
+            else{
+                return;
+            }
+
+        }
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
                 items.users = {name: "<i style='font-size: 20px' class='ion ion-android-people'><label style='padding-right: 6px;font-weight: normal'>ראה משתמשים</label><i>"}

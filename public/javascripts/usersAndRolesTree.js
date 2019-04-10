@@ -50,27 +50,32 @@ function onDrop_extension(type, command, figure) {
     alertify.prompt("הכנס את שם התפקיד","",(evt,role_name)=>{
         if(role_name != null){
             if(roleToEmails[role_name] === undefined){
-                idToRole[figure.id] = role_name;
-                roleToEmails[role_name] = [];
-                figure.label = figure.label = new draw2d.shape.basic.Label({
-                    text: role_name,
-                    angle: 0,
-                    fontColor: "#FFFFFF",
-                    fontSize: 18,
-                    stroke: 0,
-                    editor: new draw2d.ui.LabelInplaceEditor({
-                        onCommit: function () {
-                            figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
-                        }
-                    })
-                });
-                figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
-                app.view.getCommandStack().execute(command);
-                figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
-                figure.setHeight(figure.height+30);
+                if(role_name === ""){
+                    alertify.alert('שם תפקיד לא יכול להיות ריק');
+                }
+                else{
+                    idToRole[figure.id] = role_name;
+                    roleToEmails[role_name] = [];
+                    figure.label = figure.label = new draw2d.shape.basic.Label({
+                        text: role_name,
+                        angle: 0,
+                        fontColor: "#FFFFFF",
+                        fontSize: 18,
+                        stroke: 0,
+                        editor: new draw2d.ui.LabelInplaceEditor({
+                            onCommit: function () {
+                                figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
+                            }
+                        })
+                    });
+                    figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
+                    app.view.getCommandStack().execute(command);
+                    figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
+                    figure.setHeight(figure.height+30);
+                }
             }
             else{
-                alertify.alert('A role with that name already exists');
+                alertify.alert('שם תפקיד זה כבר קיים');
             }
         }
     });
