@@ -30,7 +30,9 @@ let submitForm = function () {
             } else if (input.type === 'checkbox' || input.type === 'radio') {
                 if (input.checked)
                     info.push({field: input.name, value: input.value});
-            } else info.push({field: input.name, value: input.value});
+            } else if (input.id.includes("signature_"))
+                info.push({field: input.name, value: input.value});
+            else info.push({field: input.name, value: encodeJSONtoNotJSON(input.value)});
         }
     });
 
@@ -132,9 +134,11 @@ let fillForm = function (fields) {
         } else {
             let element = document.getElementsByName(field.fieldName)[0];
             if (element.type === 'text') {
-                element.setAttribute("value", field.value);
                 if (element.id.includes('signature_') && field.value !== '') {//its a signature
+                    element.setAttribute("value", (field.value));
                     fillSignature(element, field);
+                } else {
+                    element.setAttribute("value", decodeJSONtoNotJSON(field.value));
                 }
             } else if (element.type === 'checkbox')
                 element.checked = true;
@@ -149,12 +153,12 @@ let fillForm = function (fields) {
                 alert('type error');
         }
     });
-    if (signature_counter === Object.keys(canvasesPadsAndInputs).length)
+    if (signature_counter > 0 && signature_counter === Object.keys(canvasesPadsAndInputs).length)
         disableForm();
 };
 
 let disableForm = function () {
-    document.getElementById('close_win_button').hidden = false;
+    document.getElementById('close_win_button').style.display = "block";
     document.getElementById("fieldset").setAttribute("disabled", "disabled");
     document.getElementById("submitButton").setAttribute("disabled", "disabled");
     let submit = document.getElementById("submitButton");
@@ -167,6 +171,8 @@ let setupInputs = function (formName, isForShow, fields) {
 
     setupLabelCells();
     initSignatures();
+
+    document.getElementById('close_win_button').style.display = "none";
 
     let num_of_rows_to_add = 2;
     if (fields !== 'false') {
@@ -313,7 +319,7 @@ let initSignatures = function () {
 
         let canvas = document.createElement('canvas');
         canvas.id = leadID + '_canvas';
-        canvas.width = 300;
+        canvas.width = 400;
         canvas.height = 150;
 
         let input = document.createElement('input');
