@@ -65,11 +65,15 @@ let whileReplace = function (str, replace, by) {
 let signature_counter = 0;
 let fillSignature = function (element, field) {
     canvasesPadsAndInputs[element.id].pad.fromData(JSON.parse(decodeJSONtoNotJSON(field.value)));
-    canvasesPadsAndInputs[element.id].pad.off();
-    let div = canvasesPadsAndInputs[element.id].div;
+    disableSignature(element.id);
+    signature_counter++;
+};
+
+let disableSignature = function (id_of_input) {
+    canvasesPadsAndInputs[id_of_input].pad.off();
+    let div = canvasesPadsAndInputs[id_of_input].div;
     div.style.backgroundColor = 'var(--gray)';
     div.lastChild.childNodes.forEach((button) => button.disabled = true);
-    signature_counter++;
 };
 
 let fillForm = function (fields) {
@@ -156,6 +160,7 @@ let disableForm = function () {
     let submit = document.getElementById("submitButton");
     let submitParent = submit.parentElement;
     submitParent.removeChild(submit);
+    Object.keys(canvasesPadsAndInputs).forEach((id) => disableSignature(id));
 };
 
 let setupInputs = function (formName, isForShow, fields) {
@@ -308,7 +313,7 @@ let initSignatures = function () {
 
         let canvas = document.createElement('canvas');
         canvas.id = leadID + '_canvas';
-        canvas.width = 400;
+        canvas.width = 300;
         canvas.height = 150;
 
         let input = document.createElement('input');
@@ -348,8 +353,7 @@ let initSignatures = function () {
             backgroundColor: 'rgba(255, 255, 255, 0)',
             penColor: 'rgb(0, 0, 0)'
         });
-        signaturePad.minWidth = 1;
-        signaturePad.maxWidth = 1;
+
 
         canvasesPadsAndInputs[leadID] = {canvas: canvas, pad: signaturePad, div: div};
         canvases.push(canvas);
@@ -391,8 +395,8 @@ let initSignatures = function () {
                     if (xmlHttpRequest.readyState === 4) {
                         if (xmlHttpRequest.status === 200) {
                             try {
-                                mySignature = JSON.parse(decodeJSONtoNotJSON(xmlHttpRequest.responseText));
-                                signaturePad.fromData(mySignature);
+                                mySignature = decodeJSONtoNotJSON(xmlHttpRequest.responseText);
+                                signaturePad.fromData(JSON.parse(mySignature));
                             } catch (e) {
                                 alert("load error: " + e);
                             }
@@ -427,9 +431,9 @@ let initSignatures = function () {
 
     function resizeCanvas() {
         canvases.forEach((canvas) => {
-            let ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
+            var ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.width * ratio;
+            canvas.height = canvas.height * ratio;
             canvas.getContext("2d").scale(ratio, ratio);
         });
         for (let id in canvasesPadsAndInputs) {
@@ -439,5 +443,5 @@ let initSignatures = function () {
 
 // need to decide if to allow this or not
 //  window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+//  resizeCanvas();
 };

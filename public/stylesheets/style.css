@@ -8,6 +8,11 @@ body {
     background-color: #FFFFFF;
 }
 
+.btn-sm {
+    background-color: var(--main-color);
+    color: #FFFFFF
+}
+
 .btn-primary{
     border-color: var(--main-color);
     background-color:var(--main-color)
@@ -83,11 +88,6 @@ body {
     border-width: 2px;
 }
 
-/*.btn-default:focus {
-    background-color: orange;
-    color: white;
-    border-color: black;
-}*/
 
 #palette {
     background-color: #c7c7c7;
