@@ -61,38 +61,28 @@
     <div align="center" class="main-div-tables">
         <h1 style="margin: auto">דו"ח <%=processDetails.processName%></h1>
         <hr class="orange-hr">
-        <table class="no_borders" dir="rtl">
+        <table>
+            <col width="250">
+            <col width="250">
             <tr>
-                <td><label>שם אירוע:</label></td>
-                <td><label><%=processDetails.processName%></label></td>
+                <td><label>תאריך יצירה: <%=processDetails.creationTime%></label></td>
+                <td><label>תאריך היעד: <%=processDetails.processDate%></label></td>
             </tr>
             <tr>
-                <td><label>סטטוס:</label></td>
-                <td><label><%=processDetails.status%></label></td>
+                <td><label>דחיפות התהליך: <%=processDetails.urgency%></label></td>
+                <td><label>סטטוס: <%=processDetails.status%></label></td>
             </tr>
+        </table>
+        <table>
             <tr>
-                <td><label>תאריך יצירה:</label></td>
-                <td><label><%=processDetails.creationTime%></label></td>
-            </tr>
-            <tr>
-                <td><label>דחיפות התהליך:</label></td>
-                <td><label><%=processDetails.urgency%></label></td>
-            </tr>
-            <tr>
-                <td><label>תאריך היעד:</label></td>
-                <td><label><%=processDetails.processDate%></label></td>
-            </tr>
-            <tr>
-                <td><label>טפסים:</label></td>
                 <td id="filledOnlineForms">
-                    <%processDetails.filledOnlineForms.forEach(function(form) {%>
+                    <label>טפסים:</label><%processDetails.filledOnlineForms.forEach(function(form) {%>
                     <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
-                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
+                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u> ,
                     <%})%>
                 </td>
             </tr>
         </table>
-
         <br>
         <div class="row">
             <div align="center" style="margin: auto; width:83%">
