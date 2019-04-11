@@ -1,15 +1,14 @@
 class processStructure {
 
-    constructor(structureName, initials, stages,sankey,available,onlineForms) {
+    constructor(structureName, stages,sankey,available,onlineForms) {
         this.structureName = structureName;
-        this.initials = initials;
         this.stages = stages;
         this.sankey = sankey;
         this.available = available;
         this.onlineForms = onlineForms;
     }
 
-    getInitialStageByRoleID(roleID) {
+    /*getInitialStageByRoleID(roleID) {
         let initialStage = -1;
         this.stages.every((stage) => {
             let roleEqual = stage.roleID.id.toString() === roleID.id.toString();
@@ -21,7 +20,7 @@ class processStructure {
             return true;
         });
         return initialStage;
-    }
+    }*/
     checkNotDupStagesInStructure()
     {
         for(let i=0;i<this.stages.length;i++)
@@ -40,7 +39,7 @@ class processStructure {
         return true;
     };
 
-    checkInitialsExistInProcessStages()
+    /*checkInitialsExistInProcessStages()
     {
         for(let i=0;i<this.initials.length;i++)
         {
@@ -58,7 +57,7 @@ class processStructure {
             }
         }
         return true;
-    };
+    };*/
 
     checkPrevNextSymmetric()
     {

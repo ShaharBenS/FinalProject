@@ -42,7 +42,6 @@ module.exports.updateProcessStructure = (criteria, newProcessStructure, callback
 
 let getProcessStructureFromOriginal = function (processStructure) {
     return new ProcessStructure(processStructure.structureName,
-        processStructure.initials,
         getProcessStructureStagesFromOriginal(processStructure.stages),
         processStructure.sankey, processStructure.available, processStructure.onlineForms);
 };
@@ -51,7 +50,10 @@ let getProcessStructureStagesFromOriginal = function (stages) {
     let newStages = [];
     stages.forEach((stage) => {
         newStages.push(new ProcessStructureStage(
+            stage.kind,
             stage.roleID,
+            stage.color,
+            stage.aboveCreatorNumber,
             stage.stageNum,
             stage.nextStages,
             stage.stagesToWaitFor,

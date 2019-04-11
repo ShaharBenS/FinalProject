@@ -88,7 +88,9 @@ function onDrop_extension(type, command, figure,kind) {
                 if(kind === 'ByColor'){
                     figure.setBackgroundColor("#0003ff");
                 }
-                figure.setBackgroundColor("#000000");
+                else{
+                    figure.setBackgroundColor("#000000");
+                }
             }
             figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
             app.view.getCommandStack().execute(command);

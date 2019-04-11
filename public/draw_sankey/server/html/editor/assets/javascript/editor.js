@@ -910,10 +910,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
             if((figure instanceof sankey.shape.State) && ((diagramContext === '__tree__') || (figure.children.data[0].figure.text === ""))){
                 items.bgcolor = {name: "<i style='font-size: 20px' class='ion ion-shuffle'><label style='padding-right: 6px;font-weight: normal'>דרג</label><i>"};
             }
-            else{
-                return;
-            }
-
         }
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
