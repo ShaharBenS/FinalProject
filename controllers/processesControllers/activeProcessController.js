@@ -1,4 +1,5 @@
 let processAccessor = require('../../models/accessors/activeProcessesAccessor');
+let userAccessor = require('../../models/accessors/usersAccessor');
 let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let processReportController = require('../processesControllers/processReportController');
@@ -177,6 +178,25 @@ function bringRoles(subArray, fullArray, i, j, activeProcesses, callback) {
             }
         });
     })(subArray);
+}
+
+function replaceRoleIDWithRoleName(activeProcesses, callback) {
+    userAccessor.findRole({}, (err, roles) => {
+        if (err) {
+            callback(err);
+        } else {
+            let roleIDToRoleName = {};
+            roles.forEach(role => {
+                roleIDToRoleName[role._id.toString()] = role.roleName
+            });
+            callback(null,activeProcesses.map(activeProcess => {
+                activeProcess.stages.forEach(stage => {
+                    stage.roleName = roleIDToRoleName[stage.roleID];
+                });
+                return activeProcess;
+            }));
+        }
+    });
 }
 
 module.exports.getAllActiveProcesses = function (callback) {
