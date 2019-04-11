@@ -20,11 +20,6 @@ module.exports.createAllOnlineForms = () => {
             });
         }
     }
-
-    this.createOnlineFrom("טופס קניות", "טופס_קניות", (err) => {
-    });
-    this.createOnlineFrom("טופס דרישה", "טופס_דרישה_פנימית", (err) => {
-    });
 };
 
 module.exports.createOnlineFrom = (formName, srcHTML, callback) => {
