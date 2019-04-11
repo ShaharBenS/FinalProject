@@ -426,8 +426,8 @@ sankey.anchor.ConnectionAnchor = draw2d.layout.anchor.ConnectionAnchor.extend({
 var colors = [
     {
         "50": "#ff0000",
-        "100": "#9950aa",
-        "200": "#6200ea"
+        "100": "#8326aa",
+        "200": "#ea13d3"
     },
     {
         "50": "#29b6f6",
@@ -436,8 +436,8 @@ var colors = [
     },
     {
         "50": "#f6a500",
-        "100": "#d7ccc8",
-        "200": "#000000"
+        "100": "#b0a3a2",
+        "200": "#0003ff",
     },
 ];
 

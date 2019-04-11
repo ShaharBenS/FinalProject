@@ -565,18 +565,15 @@ sankey.View = draw2d.Canvas.extend({
     onDrop: function (droppedDomNode, x, y, shiftKey, ctrlKey)
     {
         var type = $(droppedDomNode).data("shape");
-        let color = '#ff9d6d';
-        if(type === "sankey.shape.State"){
-            color = '#f6a500';
-        }
-        if (type === "sankey.shape.Start") {
+        let kind = type.substring(19,type.length);
+        if(type.substring(0,18) === "sankey.shape.State"){
             type = "sankey.shape.State";
         }
-        var figure = eval("new " + type + "({bgColor:color});");
+        var figure = eval("new " + type);
         // create a command for the undo/redo support
 
         var command = new draw2d.command.CommandAdd(this, figure, x, y);
-        onDrop_extension(type, command, figure);
+        onDrop_extension(type, command, figure,kind);
     },
 
     getBoundingBox: function ()
@@ -910,7 +907,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         }
         */
         if (!(figure instanceof draw2d.Connection)) {
-            if((figure instanceof sankey.shape.State)){
+            if((figure instanceof sankey.shape.State) && ((diagramContext === '__tree__') || (figure.children.data[0].figure.text === ""))){
                 items.bgcolor = {name: "<i style='font-size: 20px' class='ion ion-shuffle'><label style='padding-right: 6px;font-weight: normal'>דרג</label><i>"};
             }
             else{

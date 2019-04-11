@@ -32,7 +32,7 @@ describe('1. addUsersAndRole', function () {
 
 
     it('1.1 adds 1 valid role', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c'], (err, userAndRole) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c'],"#000000", (err, userAndRole) => {
             if (err) done(err);
             else {
                 assert.deepEqual(userAndRole.userEmail, ['a@b.c']);
@@ -44,9 +44,9 @@ describe('1. addUsersAndRole', function () {
     });
 
     it('1.2 adds the same role', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c'], (err, userAndRole) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c'], "#000000", (err, userAndRole) => {
             if (err) done(err);
-            else usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c'], (err, userAndRole2) => {
+            else usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c'], "#000000", (err, userAndRole2) => {
                 if (err) done();
                 else {
                     console.log(userAndRole);
@@ -58,7 +58,7 @@ describe('1. addUsersAndRole', function () {
     });
 
     it('1.3 adds the same email', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c', 'a@b.c'], (err, userAndRole) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a@b.c', 'a@b.c'], "#000000", (err, userAndRole) => {
             if (err) done();
             else done(new Error("should not allow duplicated email addresses"))
         });
@@ -85,9 +85,9 @@ describe('2. getAllRoles', function () {
     });
 
     it('2.2 checks on several roles', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['a1@b.c'], (err, role0) => {
-            usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a2@b.c'], (err, role1) => {
-                usersAndRolesController.addUsersAndRole(undefined, 'role2', ['a3@b.c'], (err, role2) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['a1@b.c'], "#000000", (err, role0) => {
+            usersAndRolesController.addUsersAndRole(undefined, 'role1', ['a2@b.c'], "#000000", (err, role1) => {
+                usersAndRolesController.addUsersAndRole(undefined, 'role2', ['a3@b.c'], "#000000", (err, role2) => {
                     usersAndRolesController.getAllRoles((err, roles) => {
                         if (err) done(err);
                         else {
@@ -115,8 +115,8 @@ describe('3. addChildrenToRole', function () {
     after(globalAfter);
 
     it('3.1 adds one child', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role0', [], (_, role0) => {
-            usersAndRolesController.addUsersAndRole(undefined, 'childOfRole0', [], (_, child) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role0', [], "#000000", (_, role0) => {
+            usersAndRolesController.addUsersAndRole(undefined, 'childOfRole0', [], "#000000", (_, child) => {
                 usersAndRolesController.addChildrenToRole(role0._id, child._id, (err, modificationMsg) => {
                     if (err) done(err);
                     else {
@@ -138,10 +138,10 @@ describe('3. addChildrenToRole', function () {
     });
 
     it('3.2 adds several children', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role0', [], (_, role0) => {
-            usersAndRolesController.addUsersAndRole(undefined, 'child1OfRole0', [], (_, child1) => {
-                usersAndRolesController.addUsersAndRole(undefined, 'child2OfRole0', [], (_, child2) => {
-                    usersAndRolesController.addUsersAndRole(undefined, 'child3OfRole0', [], (_, child3) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role0', [], "#000000", (_, role0) => {
+            usersAndRolesController.addUsersAndRole(undefined, 'child1OfRole0', [], "#000000", (_, child1) => {
+                usersAndRolesController.addUsersAndRole(undefined, 'child2OfRole0', [], "#000000", (_, child2) => {
+                    usersAndRolesController.addUsersAndRole(undefined, 'child3OfRole0', [], "#000000", (_, child3) => {
                         usersAndRolesController.addChildrenToRole(role0._id, child1._id, (_, modificationMsg1) => {
                             usersAndRolesController.addChildrenToRole(role0._id, child2._id, (_, modificationMsg2) => {
                                 usersAndRolesController.addChildrenToRole(role0._id, child3._id, (_, modificationMsg3) => {
@@ -184,7 +184,7 @@ describe('4. getRoleByRoleName', function () {
     });
 
     it('4.2 checks on existing role', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['email1', 'email2'], (err, role0) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['email1', 'email2'],"#000000",  (err, role0) => {
             if (err) done(err);
             else {
                 assert.equal('role0', role0.roleName);
@@ -212,7 +212,7 @@ describe('5. getRoleIdByUsername', function () {
     });
 
     it('5.2 checks on existing role', function (done) {
-        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['email1', 'email2'], (_, role0) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['email1', 'email2'], "#000000", (_, role0) => {
             usersAndRolesController.getRoleIdByUsername('email1', (err, roleID) => {
                 if (err) done(err);
                 else {
@@ -240,7 +240,7 @@ describe('6. getRoleNameByRoleID', function () {
 
     it('6.2 checks on existing role', function (done) {
         this.timeout(5000);
-        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['email1', 'email2'], (_, role0) => {
+        usersAndRolesController.addUsersAndRole(undefined, 'role0', ['email1', 'email2'], "#000000", (_, role0) => {
             usersAndRolesController.getRoleNameByRoleID(role0._id, (err, roleName) => {
                 if (err) done(err);
                 else {
