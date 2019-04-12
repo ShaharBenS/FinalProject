@@ -286,7 +286,7 @@ module.exports.setProcessStructuresUnavailable = function (deletedRolesIds, dele
             let processStructuresToSetUnavailable = processStructures.filter(processStructure =>
             {
                 let sankey = new processStructureSankey(JSON.parse(processStructure.sankey));
-                sankey.getSankeyStages().forEach(stage =>
+                sankey.getSankeyStages().filter(stage=>(stage.bgColor!=="#000000" && stage.labels[0].text !== "")).forEach(stage =>
                 {
                     if (deletedRolesNames.includes(stage.labels[0].text)) {
                         sankey.setStageToNotFound(stage.id);

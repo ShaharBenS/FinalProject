@@ -207,7 +207,7 @@ class processStructureSankey {
     setStageToNotFound(id){
         this.getSankeyStages().forEach(stage=>{
             if(stage.id===id){
-                stage.bgColor = "#ff0003"
+                stage.bgColor = "#000001";
             }
         })
     }

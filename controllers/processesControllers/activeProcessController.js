@@ -628,7 +628,7 @@ module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTre
             callback(err);
         } else {
             processes.forEach(process => {
-                process.stages.forEach(stage => {
+                process.stages.filter(stage=>stage.roleID !== undefined).forEach(stage => {
                     if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
                         if (stage.userEmail === null) {
                             let findReplacement = (roleId) => {

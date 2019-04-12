@@ -694,6 +694,9 @@ sankey.dialog.FileSave = Class.extend({
                                 window.location.href = '/Home';
                             });
                         }
+                        else{
+                            alertify.alert(text);
+                        }
                     }
                     else{
                         alertify.alert(text);
@@ -705,6 +708,9 @@ sankey.dialog.FileSave = Class.extend({
                             alertify.alert('מבנה התהליך הממתין נשמר בהצלחה (שים לב כי עליך עדיין לאשר אותו)!',()=>{
                                 window.location.href = '/processStructures/waitingForApproval/';
                             });
+                        }
+                        else{
+                            alertify.alert(text);
                         }
                     }
                     else{
