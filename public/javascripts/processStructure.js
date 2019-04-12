@@ -56,6 +56,10 @@ $(document).ready(function () {
 
         }
     };
+
+    if(diagramContext !== "editProcessStructure"){
+        document.getElementById("deleteButton").style.display = "none";
+    }
 });
 
 var rolesToColor = [];
@@ -138,6 +142,35 @@ function onDrop_extension(type, command, figure,kind) {
 
 function deleteRoleById(id) {
 
+}
+
+function deleteStructureClicked() {
+    alertify.confirm('', 'האם אתה בטוח שברצונך למחוק את מבנה התהליך ' + processStructureName +"?", function(){
+        let data = {
+            structureName: processStructureName
+        };
+
+        $.ajax({
+                url: '/processStructures/removeProcessStructure/',
+                method: "POST",
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: data,
+            }
+        ).done(function (responseText, status)
+        {
+            if (status === "success") {
+                if (responseText === "success") {
+                    alert("מבנה התהליך נמחק בהצלחה");
+                    window.location.href = '/Home/';
+                }
+                else {
+                    alert(responseText);
+                }
+            }
+        });
+    },()=>{});
 }
 
 function confirm() {

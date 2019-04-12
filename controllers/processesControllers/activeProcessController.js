@@ -690,7 +690,6 @@ module.exports.addFilledOnlineFormToProcess = function(processName, formID, call
     });
 };
 
-
 /////Helper Functions
 function convertDate(array, isArrayOfDates) {
     for (let i = 0; i < array.length; i++) {
