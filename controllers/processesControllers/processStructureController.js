@@ -202,7 +202,7 @@ module.exports.getProcessStructureStagesForDB = function (originStages)
         returnStages.push({
             kind: originStages[i].kind,
             roleID: originStages[i].roleID,
-            color: originStages[i].color,
+            dereg: originStages[i].dereg,
             aboveCreatorNumber: originStages[i].aboveCreatorNumber,
             stageNum: originStages[i].stageNum,
             nextStages: originStages[i].nextStages,
@@ -254,7 +254,7 @@ let sankeyToStructure = function (sankeyContent, callback)
             });
             if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().filter(sankeyStage =>
             {
-                return sankeyStage.bgColor !== "#000000" && sankeyStage.labels[0].text !== "";
+                return sankeyStage.bgColor.toLowerCase() === "#f6a500";
 
             }).map(stage=>stage.labels[0].text))).every(roleName =>
             {
@@ -286,7 +286,7 @@ module.exports.setProcessStructuresUnavailable = function (deletedRolesIds, dele
             let processStructuresToSetUnavailable = processStructures.filter(processStructure =>
             {
                 let sankey = new processStructureSankey(JSON.parse(processStructure.sankey));
-                sankey.getSankeyStages().filter(stage=>(stage.bgColor!=="#000000" && stage.labels[0].text !== "")).forEach(stage =>
+                sankey.getSankeyStages().filter(stage=>(stage.bgColor.toLowerCase() === "#f6a500")).forEach(stage =>
                 {
                     if (deletedRolesNames.includes(stage.labels[0].text)) {
                         sankey.setStageToNotFound(stage.id);

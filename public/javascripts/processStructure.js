@@ -6,6 +6,8 @@ let is_role_list_set = false;
 
 let formsOfProcess = [];
 let onlineForms = [];
+let roleToDereg = {};
+
 
 let xmlHttpFormsOfProcess = new XMLHttpRequest();
 let params = "?processStructureName=" + processStructureName + '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false');
@@ -26,21 +28,34 @@ xmlHttpOnlineForms.onreadystatechange = function () {
 xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineFormsNames/', true);
 xmlHttpOnlineForms.send(null);
 
+
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+    {
+        roleToDereg = JSON.parse(xmlHttp.responseText)
+    }
+};
+xmlHttp.open("GET", '/usersAndRoles/getRoleToDereg/', true);
+xmlHttp.send(null);
+
 $(document).ready(function () {
-    var modal = document.getElementById('select_role_modal');
-    var span = document.getElementsByClassName("close")[0];
+    let modal = document.getElementById('select_role_modal');
+    let span = document.getElementsByClassName("close")[0];
 
     span.onclick = function () {
         modal.style.display = "none";
     };
 
-    var modal1 = document.getElementById('see_forms_modal');
+    let modal1 = document.getElementById('see_forms_modal');
 
-    var modal2 = document.getElementById("select_number_modal");
-    var span2 = document.getElementsByClassName("close")[1];
+    let modal2 = document.getElementById("select_number_modal");
+    let span2 = document.getElementsByClassName("close")[1];
     span2.onclick = function () {
         modal2.style.display = "none";
     };
+
+    let modal3 = document.getElementById('select-dereg-modal');
 
     window.onclick = function (event) {
         if (event.target === modal) {
@@ -52,8 +67,8 @@ $(document).ready(function () {
         else if (event.target === modal2){
             modal2.style.display = "none";
         }
-        else{
-
+        else if(event.target === modal3){
+            modal3.style.display = "none";
         }
     };
 
@@ -62,12 +77,11 @@ $(document).ready(function () {
     }
 });
 
-var rolesToColor = [];
-
 function onDrop_extension(type, command, figure,kind) {
     if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure') {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
+            let deregSelector = document.getElementById("dereg-select");
             if (kind === 'ByRole') {
                 figure.label = new draw2d.shape.basic.Label({
                     text: selector.options[selector.selectedIndex].innerText,
@@ -79,18 +93,19 @@ function onDrop_extension(type, command, figure,kind) {
                             figure.setHeight(Math.max(figure.getHeight(),figure.label.getWidth()));
                         }})*/
                 });
-                figure.setBackgroundColor(rolesToColor[selector.options[selector.selectedIndex].innerText]);
+                figure.setBackgroundColor("#f6a500");
             } else {
                 let aboveCreatorText = document.getElementById("number-selector").value;
                 figure.label = new draw2d.shape.basic.Label({
-                    text: kind === 'ByColor' ? "" : (kind === "Creator" ? "יוצר התהליך" :"דרגות מעל יוצר התהליך: " +aboveCreatorText),
+                    text: kind === 'ByDereg' ? deregSelector.options[deregSelector.selectedIndex].innerText :
+                        (kind === "Creator" ? "יוצר התהליך" :"דרגות מעל יוצר התהליך: " +aboveCreatorText),
                     angle: 0,
                     fontColor: "#FFFFFF",
                     fontSize: 18,
                     stroke: 0,
                 });
-                if(kind === 'ByColor'){
-                    figure.setBackgroundColor("#0003ff");
+                if(kind === 'ByDereg'){
+                    figure.setBackgroundColor("#00000"+deregSelector.options[deregSelector.selectedIndex].value);
                 }
                 else{
                     figure.setBackgroundColor("#000000");
@@ -102,17 +117,19 @@ function onDrop_extension(type, command, figure,kind) {
             figure.setHeight(figure.height + 30);
             document.getElementById("select_role_modal").style.display = "none";
             document.getElementById("select_number_modal").style.display = "none";
+            document.getElementById("select-dereg-modal").style.display = "none";
         };
 
-        if(kind !== 'ByRole'){
-            if(kind === 'AboveCreator'){
-                document.getElementById("select_number_modal").style.display = "block";
-            }
-            else{
-                select_role_clicked();
-            }
+        if(kind === 'AboveCreator'){
+            document.getElementById("select_number_modal").style.display = "block";
         }
-        else{
+        else if(kind === "ByDereg"){
+            document.getElementById("select-dereg-modal").style.display = "block";
+        }
+        else if(kind === "Creator"){
+            select_role_clicked();
+        }
+        else if(kind === 'ByRole'){
             if (is_role_list_set) {
                 document.getElementById("select_role_modal").style.display = "block";
             } else {
@@ -126,7 +143,6 @@ function onDrop_extension(type, command, figure,kind) {
                             option.value = role._id;
                             option.innerText = role.roleName;
                             selector.appendChild(option);
-                            rolesToColor[role.roleName] = role.color;
                         });
                         is_role_list_set = true;
                         document.getElementById("select_role_modal").style.display = "block";

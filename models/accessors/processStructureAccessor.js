@@ -52,7 +52,7 @@ let getProcessStructureStagesFromOriginal = function (stages) {
         newStages.push(new ProcessStructureStage(
             stage.kind,
             stage.roleID,
-            stage.color,
+            stage.dereg,
             stage.aboveCreatorNumber,
             stage.stageNum,
             stage.nextStages,

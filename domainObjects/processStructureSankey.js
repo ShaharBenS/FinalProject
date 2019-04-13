@@ -15,7 +15,7 @@ class processStructureSankey {
             let roleName = stage.labels[0].text;
             let kind = '';
             let roleID = undefined;
-            let color = "";
+            let dereg = "";
             let aboveCreatorNumber = -1;
             if(stage.bgColor === "#000000"){
                 if(roleName === "יוצר התהליך"){
@@ -27,9 +27,9 @@ class processStructureSankey {
                 }
             }
             else{
-                if(roleName === ""){
-                    kind = "ByColor";
-                    color = stage.bgColor;
+                if(stage.bgColor.toLowerCase() !== "#f6a500"){
+                    kind = "ByDereg";
+                    dereg = stage.bgColor[6];
                 }
                 else{
                     kind = "ByRole";
@@ -39,7 +39,7 @@ class processStructureSankey {
             let stageToReturn = {
                 kind: kind,
                 roleID: roleID,
-                color: color,
+                dereg: dereg,
                 aboveCreatorNumber: aboveCreatorNumber,
                 stageNum: index,
                 nextStages: [],
@@ -170,32 +170,6 @@ class processStructureSankey {
             }
             return true;
         });
-    }
-
-    firstStageIsNotInitial(){
-        let connections = this.getConnections();
-        let flows = [];
-        this.getSankeyStages().forEach((role)=>{
-            let result = true;
-            connections.forEach((connection)=>{
-                if(connection.target.node === role.id){
-                    result = false;
-                }
-            });
-            if(result){
-                flows.push(role.id)
-            }
-        });
-        return flows.every((flow)=>{
-            let initials = this.getSankeyStages().filter((figure) =>
-            {
-                return figure.bgColor.toLowerCase() === '#ff9d6d';
-
-            }).map(stage=>{
-                return stage.id;
-            });
-            return !initials.includes(flow);
-        })
     }
 
     hasNoStages()
