@@ -667,6 +667,7 @@ sankey.dialog.FileSave = Class.extend({
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
                 emailToFullName: diagramContext === '__tree__' ? JSON.stringify(emailToFullName) : undefined,
+                roleToDereg: diagramContext === '__tree__' ? JSON.stringify(roleToDereg) : undefined,
                 onlineFormsOfProcess: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
                     ? JSON.stringify(formsOfProcess) : undefined,
                 processStructureName: processStructureName,
@@ -945,7 +946,11 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         this._setColor(figure, "color");
                         break;
                     case "bgcolor":
-                        this._setColor(figure, "bgColor");
+                        //this._setColor(figure, "bgColor");
+                        let roleName = figure.children.data[0].figure.text;
+                        $('#dereg-select').val(roleToDereg[roleName]).change();
+                        currentRoleNameClicked = roleName;
+                        document.getElementById('select-dereg-modal').style.display = 'block';
                         break;
                     case "fontcolor":
                         this._setColor(figure, "fontColor");

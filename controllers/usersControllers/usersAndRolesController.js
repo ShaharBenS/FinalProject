@@ -18,6 +18,17 @@ module.exports.getRoleToEmails = (callback) =>
     })
 };
 
+module.exports.getRoleToDereg = (callback) =>
+{
+    userAccessor.findRole({}, (err, roles) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        callback(null, new usersAndRolesTree(roles).getRoleToDereg())
+    })
+};
+
 module.exports.getEmailToFullName = (callback) =>
 {
     userAccessor.findUsernames((err, result) =>
@@ -60,7 +71,7 @@ module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 };
 
-module.exports.addUsersAndRole = (_id, roleName, usersEmail,color, callback) =>
+module.exports.addUsersAndRole = (_id, roleName, usersEmail,dereg, callback) =>
 {
     let countsArray = {};
     usersEmail.forEach((email) =>
@@ -79,8 +90,8 @@ module.exports.addUsersAndRole = (_id, roleName, usersEmail,color, callback) =>
     if (dupEmails)
         callback(new Error("should not allow duplicated emails"));
     else {
-        let params = {roleName: roleName, userEmail: usersEmail,color:color, children: []};
-        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,color:color, children: []};
+        let params = {roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
+        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
         userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
         {
             if (err) {
@@ -122,7 +133,7 @@ module.exports.getUsersAndRolesTree = (callback) =>
     });
 };
 
-module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, callback) =>
+module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName,roleToDereg, callback) =>
 {
     let commonCallback = () =>
     {
@@ -222,7 +233,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                             if (existingRoleIndex > -1) {
                                                                                 _id = oldUsersAndRoles.getIdByRoleName(roleName);
                                                                             }
-                                                                            this.addUsersAndRole(_id, roleName, roleToEmails[roleName],role_figure.bgColor, (_err, usersAndRole) =>
+                                                                            this.addUsersAndRole(_id, roleName, roleToEmails[roleName],roleToDereg[roleName], (_err, usersAndRole) =>
                                                                             {
                                                                                 if (err) {
                                                                                     acc(err);

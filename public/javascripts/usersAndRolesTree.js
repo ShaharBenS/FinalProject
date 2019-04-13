@@ -3,6 +3,8 @@ let add_label = function () {};
 let roleToEmails = {};     // roleName to usersEmail
 let idToRole = {};
 let emailToFullName = {};
+let roleToDereg = {};
+
 
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.onreadystatechange = function() {
@@ -25,13 +27,27 @@ xmlHttp1.onreadystatechange = function() {
 xmlHttp1.open("GET", '/usersAndRoles/getEmailToFullName/', true);
 xmlHttp1.send(null);
 
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+    {
+        roleToDereg = JSON.parse(xmlHttp.responseText)
+    }
+};
+xmlHttp.open("GET", '/usersAndRoles/getRoleToDereg/', true);
+xmlHttp.send(null);
+
 $(document).ready(()=>{
     var modal = document.getElementById('select_users_modal');
+    var modal2 = document.getElementById('select-dereg-modal');
 
     window.onclick = function(event)
     {
         if (event.target === modal) {
             modal.style.display = "none";
+        }
+        if (event.target === modal2) {
+            modal2.style.display = "none";
         }
     };
 
@@ -54,6 +70,7 @@ function onDrop_extension(type, command, figure) {
                     alertify.alert('שם תפקיד לא יכול להיות ריק');
                 }
                 else{
+                    roleToDereg[role_name] = "1";
                     idToRole[figure.id] = role_name;
                     roleToEmails[role_name] = [];
                     figure.label = figure.label = new draw2d.shape.basic.Label({
@@ -69,6 +86,7 @@ function onDrop_extension(type, command, figure) {
                         })
                     });
                     figure.add(figure.label, new draw2d.layout.locator.CenterLocator());
+                    figure.setBackgroundColor("f6a500");
                     app.view.getCommandStack().execute(command);
                     figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
                     figure.setHeight(figure.height+30);
@@ -79,6 +97,14 @@ function onDrop_extension(type, command, figure) {
             }
         }
     });
+}
+
+let currentRoleNameClicked = '';
+
+function changeDeregClicked(){
+    let selector = document.getElementById('dereg-select');
+    roleToDereg[currentRoleNameClicked] = selector.options[selector.selectedIndex].value;
+    document.getElementById('select-dereg-modal').style.display = 'none';
 }
 
 

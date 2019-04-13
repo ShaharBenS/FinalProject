@@ -63,7 +63,7 @@ router.post('/file/save', function (req, res) {
         });
     }
     else if (req.body.context === '__tree__') {
-        UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content, JSON.parse(req.body.roleToEmails),JSON.parse(req.body.emailToFullName), (err) => {
+        UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content, JSON.parse(req.body.roleToEmails),JSON.parse(req.body.emailToFullName),JSON.parse(req.body.roleToDereg), (err) => {
             if (err) {
                 res.send(err);
             }

@@ -11,6 +11,13 @@ class usersAndRolesTree {
         }, {})
     }
 
+    getRoleToDereg(){
+        return this.usersAndRoles.reduce((acc, role) => {
+            acc[role.roleName] = role.dereg;
+            return acc;
+        }, {})
+    }
+
     getIdByRoleName(roleName) {
         let index = this.usersAndRoles.findIndex(usersAndRole => {
             return usersAndRole.roleName === roleName;

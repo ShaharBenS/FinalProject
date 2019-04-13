@@ -49,6 +49,20 @@ router.get('/getRoleToEmails', (req, res) =>
     });
 });
 
+
+router.get('/getRoleToDereg', (req, res) =>
+{
+    UsersAndRolesController.getRoleToDereg((err, getRoleToDereg) =>
+    {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send(getRoleToDereg);
+        }
+    });
+});
+
 router.get('/getEmailToFullName', (req, res) =>
 {
     UsersAndRolesController.getEmailToFullName((err,emailToFullName)=>{
