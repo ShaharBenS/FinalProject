@@ -4,7 +4,7 @@ let roleToEmails = {};     // roleName to usersEmail
 let idToRole = {};
 let emailToFullName = {};
 let roleToDereg = {};
-
+let roleToMador = {};
 
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.onreadystatechange = function() {
@@ -37,9 +37,20 @@ xmlHttp.onreadystatechange = function() {
 xmlHttp.open("GET", '/usersAndRoles/getRoleToDereg/', true);
 xmlHttp.send(null);
 
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+    {
+        roleToMador = JSON.parse(xmlHttp.responseText)
+    }
+};
+xmlHttp.open("GET", '/usersAndRoles/getRoleToMador/', true);
+xmlHttp.send(null);
+
 $(document).ready(()=>{
     var modal = document.getElementById('select_users_modal');
     var modal2 = document.getElementById('select-dereg-modal');
+    var modal3 = document.getElementById('select-mador-modal');
 
     window.onclick = function(event)
     {
@@ -48,6 +59,9 @@ $(document).ready(()=>{
         }
         if (event.target === modal2) {
             modal2.style.display = "none";
+        }
+        if (event.target === modal3) {
+            modal3.style.display = "none";
         }
     };
 
@@ -70,6 +84,7 @@ function onDrop_extension(type, command, figure) {
                     alertify.alert('שם תפקיד לא יכול להיות ריק');
                 }
                 else{
+                    roleToMador[role_name] = "";
                     roleToDereg[role_name] = "1";
                     idToRole[figure.id] = role_name;
                     roleToEmails[role_name] = [];
@@ -107,6 +122,12 @@ function changeDeregClicked(){
     document.getElementById('select-dereg-modal').style.display = 'none';
 }
 
+
+function changeMadorClicked()
+{
+    roleToMador[currentRoleNameClicked] = document.getElementById("mador-input").value;
+    document.getElementById('select-mador-modal').style.display = 'none';
+}
 
 function rolesToHTML(roleName)
 {

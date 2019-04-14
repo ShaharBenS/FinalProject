@@ -12,6 +12,7 @@ var UsersAndRolesSchema = new Schema({
         5 - יו"ר
      */
     dereg : {type:String,enum:["1","2","3","4","5"]},
+    mador: String,
     children: [{type:Schema.Types.ObjectId, ref:'UsersAndRolesSchema'}]
 });
 
