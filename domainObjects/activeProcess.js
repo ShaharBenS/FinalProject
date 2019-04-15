@@ -20,9 +20,9 @@ class activeProcess {
         {
             throw new Error('stage doesnt exist');
         }
-        if(Number.isInteger(stageNum) && !this._currentStages.includes(stageNum))
+        if(Number.isInteger(stageNum) && !this.currentStages.includes(stageNum))
         {
-            this._currentStages.push(stageNum);
+            this.currentStages.push(stageNum);
         }
         else
         {
@@ -35,10 +35,10 @@ class activeProcess {
         {
             throw new Error('stage doesnt exist');
         }
-        if(Number.isInteger(stageNum) && this._currentStages.includes(stageNum))
+        if(Number.isInteger(stageNum) && this.currentStages.includes(stageNum))
         {
-            let index = this._currentStages.indexOf(stageNum);
-            this._currentStages.splice(index, 1);
+            let index = this.currentStages.indexOf(stageNum);
+            this.currentStages.splice(index, 1);
         }
         else
         {
@@ -171,7 +171,7 @@ class activeProcess {
             {
                 if(flag)
                 {
-                    this._currentStages = [this.stages[i].stageNum];
+                    this.currentStages = [this.stages[i].stageNum];
                     flag = false;
                 }
                 else
@@ -180,13 +180,13 @@ class activeProcess {
                 }
             }
         }
-        return this.getStageByStageNum(this._currentStages[i]).userEmail;
+        return this.getStageByStageNum(this.currentStages[i]).userEmail;
     }
 
     getCurrentStageNumberForUser(userEmail){
-        for(let i=0;i<this._currentStages.length;i++)
+        for(let i=0;i<this.currentStages.length;i++)
         {
-            let stage = this.getStageByStageNum(this._currentStages[i]);
+            let stage = this.getStageByStageNum(this.currentStages[i]);
             if(stage.userEmail === userEmail)
             {
                 return stage.stageNum;
@@ -199,8 +199,8 @@ class activeProcess {
         let hasChanged = false;
         for(let i=0;i<this.currentStages.length;i++)
         {
-            let currentStage = this.getStageByStageNum(this._currentStages[i]);
-            if(currentStage.roleID.id.equals(roleID.id) && this._currentStages[i].userEmail === undefined)
+            let currentStage = this.getStageByStageNum(this.currentStages[i]);
+            if(currentStage.roleID.id.equals(roleID.id) && this.currentStages[i].userEmail === undefined)
             {
                 currentStage.userEmail = userEmail;
                 hasChanged = true;
@@ -229,7 +229,7 @@ class activeProcess {
 
     isFinished()
     {
-        return this._currentStages.length === 0;
+        return this.currentStages.length === 0;
     }
 
     getParticipatingUsers(){
