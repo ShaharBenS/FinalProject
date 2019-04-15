@@ -13,8 +13,7 @@ table {
 }
 
 .no_table {
-    border: none;
-    width: auto;
+    width: 85%;
 }
 
 label {
@@ -24,6 +23,7 @@ label {
 
 .no_input {
     background-color: whitesmoke;
+    width: 20%;
 }
 
 tr > th {
@@ -50,5 +50,21 @@ td > textarea {
     border: none;
     padding: 7px;
     overflow: hidden;
-    line-height: 20px;
 }
+
+.no_table_cell {
+    resize: none;
+    height: auto;
+}
+
+.padding {
+    padding: 7px;
+    background-color: whitesmoke;
+    text-align: center;
+
+}
+
+.signature_table {
+    width: 40%;
+}
+

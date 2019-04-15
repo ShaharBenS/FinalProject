@@ -17,6 +17,8 @@ module.exports.createAllOnlineForms = () => {
             let fileNameNoHTML = fileName.replace('.html', '');
             let formName = whileReplace(fileNameNoHTML, '_', ' ');
             this.createOnlineFrom(formName, fileNameNoHTML, (err) => {
+                if (err)
+                    console.log(err.message);
             });
         }
     }

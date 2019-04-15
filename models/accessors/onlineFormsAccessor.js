@@ -10,7 +10,7 @@ module.exports.createOnlineForm = (newOnlineForm, callback) => {
     this.findOnlineFormByName(newOnlineForm.formName, (err, form) => {
         if (err || form === null)
             onlineFormSchema.create(newOnlineForm, callback);
-        else callback(new Error("form already exists in db"));
+        else callback(new Error("The form \"" + newOnlineForm.formName + "\" already exists in db"));
     });
 };
 

@@ -1,22 +1,29 @@
 let submitForm = function () {
     let oldWin = window.opener;
     let inputs = Array.prototype.slice.call(document.getElementsByTagName('input'));
-    let text_areas = Array.prototype.slice.call(document.getElementsByTagName('textarea'));
+    let text_areas = Array.prototype.slice.call(document.getElementsByClassName('table_cell'));
+    let general_text_areas = Array.prototype.slice.call(document.getElementsByClassName('no_table_cell'));
     let info = [];
     let tableInputs = {};
     let tables = Array.prototype.slice.call(document.getElementsByTagName('table'));
     tables.forEach((table) => {
-        if (table.className !== "no_table")
+        if (!table.className.includes("no_table"))
             tableInputs[table.id] = [];
     });
+
     text_areas.forEach((text_area) => {
-        if (text_area.class === 'table_cell') {
-            let tableID = text_area.parentElement.parentElement.parentElement.parentElement.id;
-            tableInputs[tableID].push({
-                field: text_area.name,
-                value: text_area.value
-            });
-        }
+        let tableID = text_area.parentElement.parentElement.parentElement.parentElement.id;
+        tableInputs[tableID].push({
+            field: text_area.name,
+            value: text_area.value
+        });
+    });
+
+    general_text_areas.forEach((text_area) => {
+        info.push({
+            field: text_area.name,
+            value: encodeJSONtoNotJSON(text_area.value)
+        });
     });
 
     inputs.forEach((input) => {
@@ -123,7 +130,6 @@ let fillForm = function (fields) {
                 if (rowsCounts[j] < currentHeight)
                     rowsCounts[j] = currentHeight;
                 if ((i + 1) % columns === 0) {
-                    console.log(rowsCounts[j] + " ***");
                     row.forEach((elem) => {
                         elem.style.height = rowsCounts[j] + 'px';
                     });
@@ -149,8 +155,18 @@ let fillForm = function (fields) {
                     }
                     return true;
                 });
-            } else
-                alert('type error');
+            } else if (element.className.includes('no_table_cell')) {
+                element.value = decodeJSONtoNotJSON(field.value);
+                element.style.height = 'auto';
+                element.style.height = element.scrollHeight + 'px';
+            } else {
+                console.log('type error');
+                console.log(element.id);
+                console.log(element.tagName);
+                console.log(element.className);
+                console.log(' ');
+                alert('type error: contact website owner');
+            }
         }
     });
     if (signature_counter > 0 && signature_counter === Object.keys(canvasesPadsAndInputs).length)
@@ -167,9 +183,41 @@ let disableForm = function () {
     Object.keys(canvasesPadsAndInputs).forEach((id) => disableSignature(id));
 };
 
+let setupTextAreasNoTableCells = function () {
+
+    let tds = Array.prototype.slice.call(document.getElementsByTagName('td'));
+    tds.forEach((td) => {
+        try {
+            if (td.parentElement.parentElement.parentElement.className.includes('no_table')) {
+                if (td.firstChild.tagName !== undefined) {
+                    if (td.firstChild.tagName.toLowerCase() === 'textarea') {
+                        td.firstChild.className += ' no_table_cell';
+                    } else if (td.firstChild.tagName.toLowerCase() === 'label') {
+                        td.className += ' no_input';
+                    }
+                }
+            }
+        } catch (e) {
+            console.log(e);
+            console.log(td.parentElement.parentElement.parentElement.id);
+            console.log(td.innerHTML);
+        }
+    });
+
+    let textAreas = Array.prototype.slice.call(document.getElementsByClassName('no_table_cell'));
+    textAreas.forEach((currentTextArea) => {
+        currentTextArea.rows = 1;
+        currentTextArea.addEventListener('keydown', () => {
+            currentTextArea.style.height = 'auto';
+            let h1 = currentTextArea.scrollHeight;
+            currentTextArea.style.height = h1 + 'px';
+        });
+    });
+};
+
 let setupInputs = function (formName, isForShow, fields) {
 
-    setupLabelCells();
+    setupTextAreasNoTableCells();
     initSignatures();
 
     document.getElementById('close_win_button').style.display = "none";
@@ -201,7 +249,7 @@ let createTableRow = function (table) {
         currentTextArea.style.resize = "none";
         currentTextArea.rows = 1;
         currentTextArea.name = 'table_input_' + table.parentElement.id + '_' + nameCount;
-        currentTextArea.class = 'table_cell';
+        currentTextArea.className = 'table_cell';
         currentTextArea.addEventListener('keydown', () => {
             let maxHeight = 0;
             currentRowElement.childNodes.forEach((tdElem) => {
@@ -235,7 +283,7 @@ let removeTableRow = function (table) {
 };
 
 let setupTable = function (num_of_rows, table) {
-    if (table.className !== "no_table") {
+    if (!table.className.includes("no_table")) {
         table = table.children[0]; //TBODY
         let currentRows = 0;
         while (currentRows < num_of_rows) {
@@ -245,12 +293,6 @@ let setupTable = function (num_of_rows, table) {
     }
 };
 
-let setupLabelCells = function () {
-    let tds = Array.prototype.slice.call(document.getElementsByTagName('td'));
-    tds.forEach((td) => {
-        if (td.children[0].tagName.toLowerCase() === 'label') td.className = 'no_input'
-    })
-};
 
 let setupTables = function (num_of_rows, table_id) {
     let tables;
@@ -268,7 +310,7 @@ let setupTables = function (num_of_rows, table_id) {
 let surroundTableWithDivAndAddButtons = function (table) {
 
     // surround table with div
-    if (table.className !== "no_table") {
+    if (!table.className.includes("no_table")) {
         let parent = table.parentNode;
         let div = document.createElement('div');
         parent.replaceChild(div, table);
