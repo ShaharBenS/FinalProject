@@ -967,11 +967,9 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         currentRoleNameClicked = roleName2;
                         document.getElementById('select-mador-modal').style.display = 'block';
                         break;
-
-                        break;
                     case "del":
                         var cmd = new draw2d.command.CommandDelete(figure);
-                        if(deleteRoleById !== undefined){
+                        if((!(figure instanceof sankey.shape.Connection)) && deleteRoleById !== undefined ){
                             deleteRoleById(figure.id);
                         }
                         this.canvas.getCommandStack().execute(cmd);

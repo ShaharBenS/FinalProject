@@ -146,6 +146,7 @@ module.exports.getUsersAndRolesTree = (callback) =>
 
 module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, roleToDereg, roleToMador,callback) =>
 {
+    let firstTime = false;
     let commonCallback = () =>
     {
         userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
@@ -154,7 +155,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                 callback(err);
             }
             else {
-                if (permissions.usersManagementPermission) {
+                if (firstTime || permissions.usersManagementPermission) {
                     let sankeyTree = new usersAndRolesTreeSankey(JSON.parse(sankey));
                     let emails = Object.values(roleToEmails).reduce((prev, curr) =>
                     {
@@ -387,7 +388,14 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                                 return true;
                                                                                             }
                                                                                         })._id;
-                                                                                        activeProcessController.updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, callback);
+                                                                                        activeProcessController.updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, (err)=>{
+                                                                                            if(err){
+                                                                                                callback(err);
+                                                                                            }
+                                                                                            else{
+                                                                                                this.addAdmin(userEmail,callback);
+                                                                                            }
+                                                                                        });
                                                                                     }
                                                                                 });
                                                                             }
@@ -416,18 +424,9 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
     userAccessor.findInSankeyTree({}, (err, _sankeyTree) =>
     {
         if (_sankeyTree[0].sankey === "{\"content\":{\"diagram\":[]}}") {
-            this.addAdmin(userEmail,(err)=>{
-                if(err){
-                    callback(err);
-                }
-                else{
-                    commonCallback();
-                }
-            });
+            firstTime = true;
         }
-        else {
-            commonCallback();
-        }
+        commonCallback();
     });
 };
 
