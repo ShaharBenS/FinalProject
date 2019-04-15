@@ -7,22 +7,17 @@ const processStructureSchema = new Schema({
     structureName: {type:String,unique:true},
     onlineForms: [{type: Schema.Types.ObjectId, ref:'OnlineForm'}],
     stages: [{
-        kind: {type:String, enum: ["ByRole","ByDereg","Creator","AboveCreator"]},
-
+        kind: {type:String, enum: ["ByRole","ByDereg","Creator"]},
         /*
             If the kind is ByRole the RoleID field is being used
             If the kind is ByDereg the dereg field is being used, and the roleID should be undefined
             If the kind is Creator the stage is of the creator
-            If the kind is AboveCreator the aboveCreatorNumber field represents the number of roles above the creator
          */
         roleID: {type: Schema.Types.ObjectId, ref: 'UsersAndRoles'},
         dereg : {type:String,enum:["1","2","3","4","5"]},
-        aboveCreatorNumber: Number,
-
         stageNum: Number,
         nextStages: [Number],
-        stagesToWaitFor: [Number],
-        attachedFilesNames: [String],
+        stagesToWaitFor: [Number]
     }],
     sankey: String,
     available: {type:Boolean, default: true}

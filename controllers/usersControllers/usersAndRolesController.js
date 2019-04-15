@@ -462,6 +462,18 @@ module.exports.getRoleIdByUsername = function (username, callback)
     });
 };
 
+module.exports.getRoleByUsername = function (username, callback)
+{
+    userAccessor.findRole({userEmail: username}, (err, role) =>
+    {
+        if (err) callback(err);
+        else {
+            if (role.length === 0) callback(new Error("no role found for username: " + username));
+            else callback(null, {roleID: role[0]._id, dereg: role[0].dereg, mador: role[0].mador});
+        }
+    });
+};
+
 module.exports.getRoleNameByRoleID = function (roleID, callback)
 {
     userAccessor.findRole({_id: roleID}, (err, user) =>
@@ -580,6 +592,40 @@ function getAllChildren(userEmail, callback)
     });
 }
 
+function getFatherOfDeregByArrayOfRoleIDs(roleID, deregs, callback)
+{
+    userAccessor.findRole({}, (err, res) =>
+    {
+        if (err) callback(err);
+        else {
+            let toReturn = {};
+            for(let i=0;i<deregs.length;i++)
+            {
+                toReturn[deregs[i]] = recursiveFatherOfDeregFinder(res,roleID,deregs[i]);
+            }
+            callback(null, toReturn);
+        }
+    });
+}
+
+function recursiveFatherOfDeregFinder(tree, roleID, dereg)
+{
+    for(let i=0;i<tree.length;i++)
+    {
+        if(tree[i].children.includes(roleID))
+        {
+            if(dereg === tree[i].dereg)
+            {
+                return tree[i]._id;
+            }
+            else
+            {
+                return recursiveFatherOfDeregFinder(tree, tree[i]._id, dereg);
+            }
+        }
+    }
+}
+
 function getChildrenRecursive(role, roleMapping)
 {
     let toReturn = [];
@@ -604,6 +650,6 @@ function emailValidator(email)
 
 
 module.exports.getAllChildren = getAllChildren;
-
+module.exports.getFatherOfDeregByArrayOfRoleIDs = getFatherOfDeregByArrayOfRoleIDs;
 
 

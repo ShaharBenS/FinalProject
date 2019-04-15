@@ -1,12 +1,13 @@
 
 class processStructureStage {
 
-    constructor(roleID, stageNum, nextStages, stagesToWaitFor, attachedFilesNames) {
-        this.roleID = roleID;
+    constructor(kind, roleID, dereg, stageNum, nextStages, stagesToWaitFor) {
         this.stageNum = stageNum;
+        this.roleID = roleID;
+        this.kind = kind;
+        this.dereg = dereg;
         this.nextStages = nextStages;
         this.stagesToWaitFor = stagesToWaitFor;
-        this.attachedFilesNames = attachedFilesNames;
     }
 }
 

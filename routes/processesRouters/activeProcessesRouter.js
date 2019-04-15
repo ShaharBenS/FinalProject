@@ -151,24 +151,24 @@ router.get('/getAllProcessesReportsByUser', function (req, res) {
 
 function handleRolesAndStages(array) {
     for (let i = 0; i < array[0].length; i++) {
-        let currentStages = array[0][i]._currentStages;
-        array[0][i]._currentStages = [];
-        for (let j = 0; j < array[0][i]._stages.length; j++) {
-            if (currentStages.includes(array[0][i]._stages[j].stageNum)) {
-                array[0][i]._currentStages.push(array[0][i]._stages[j]);
+        let currentStages = array[0][i].currentStages;
+        array[0][i].currentStages = [];
+        for (let j = 0; j < array[0][i].stages.length; j++) {
+            if (currentStages.includes(array[0][i].stages[j].stageNum)) {
+                array[0][i].currentStages.push(array[0][i].stages[j]);
             }
         }
     }
     for (let i = 0; i < array[0].length; i++) {
-        for (let j = 0; j < array[0][i]._currentStages.length; j++) {
-            array[0][i]._currentStages[j].roleID = array[1][i][j];
+        for (let j = 0; j < array[0][i].currentStages.length; j++) {
+            array[0][i].currentStages[j].roleID = array[1][i][j];
         }
     }
     if(array[2] !== undefined)
     {
         for(let i=0;i<array[0].length;i++)
         {
-            array[0][i]._child = array[2][i];
+            array[0][i].child = array[2][i];
         }
     }
 }

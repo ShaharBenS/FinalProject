@@ -1,6 +1,6 @@
 class processStructure {
 
-    constructor(structureName, stages,sankey,available,onlineForms) {
+    constructor(structureName, stages, sankey,available,onlineForms) {
         this.structureName = structureName;
         this.stages = stages;
         this.sankey = sankey;
@@ -8,19 +8,25 @@ class processStructure {
         this.onlineForms = onlineForms;
     }
 
-    /*getInitialStageByRoleID(roleID) {
-        let initialStage = -1;
-        this.stages.every((stage) => {
-            let roleEqual = stage.roleID.id.toString() === roleID.id.toString();
-            let initialsInclude = this.initials.includes(stage.stageNum);
-            if (roleEqual && initialsInclude) {
-                initialStage = stage.stageNum;
-                return false;
+    getInitialStageByRoleID(roleID, dereg) {
+        let initialStages = this.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
+        while(initialStages.length !== 0)
+        {
+            let firstStage = initialStages[0];
+            initialStages = initialStages.splice(0,1);
+            if(firstStage.kind === 'ByRole' && roleID.id.toString() === firstStage.roleID.toString())
+            {
+                return firstStage.stageNum;
             }
-            return true;
-        });
-        return initialStage;
-    }*/
+            if(firstStage.kind === 'ByDereg' && dereg === firstStage.dereg)
+            {
+                return firstStage.stageNum;
+            }
+            initialStages = initialStages.concat(firstStage.nextStages);
+        }
+        return -1;
+    }
+
     checkNotDupStagesInStructure()
     {
         for(let i=0;i<this.stages.length;i++)
