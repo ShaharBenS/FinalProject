@@ -53,12 +53,9 @@ let getProcessStructureStagesFromOriginal = function (stages) {
             stage.kind,
             stage.roleID,
             stage.dereg,
-            stage.aboveCreatorNumber,
             stage.stageNum,
             stage.nextStages,
-            stage.stagesToWaitFor,
-            stage.onlineForms,
-            stage.attachedFilesNames
+            stage.stagesToWaitFor
         ));
     });
     return newStages;

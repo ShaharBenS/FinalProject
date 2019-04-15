@@ -24,7 +24,7 @@ let moment = require('moment');
  */
 
 module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, notificationTime, callback) => {
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+    usersAndRolesController.getRoleByUsername(userEmail, (err, role) => {
         if (err) {
             callback(err);
         } else {
@@ -41,7 +41,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                             callback(err);
                         } else {
                             if (activeProcesses === null) {
-                                let initialStage = processStructure.getInitialStageByRoleID(roleID);
+                                let initialStage = processStructure.getInitialStageByRoleID(role.roleID, role.dereg);
                                 if (initialStage === -1) {
                                     callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
                                     return;
@@ -49,24 +49,26 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                 let newStages = [];
                                 processStructure.stages.forEach((stage) => {
                                     newStages.push({
-                                        roleID: stage.roleID,
+                                        roleID: role.roleID,
+                                        kind: stage.kind,
+                                        dereg: stage.dereg,
                                         userEmail: stage.stageNum === initialStage ? userEmail : null,
                                         stageNum: stage.stageNum,
                                         nextStages: stage.nextStages,
                                         stagesToWaitFor: stage.stageNum === initialStage ? [] : stage.stagesToWaitFor,
                                         originStagesToWaitFor: stage.stagesToWaitFor,
                                         approvalTime: null,
-                                        attachedFilesNames: stage.attachedFilesNames,
+                                        attachedFilesNames: [],
                                     });
                                 });
                                 let today = new Date();
                                 processAccessor.createActiveProcess({
                                     creatorUserEmail: userEmail,
+                                    startingMador: role.mador,
                                     creationTime: today,
                                     notificationTime: notificationTime,
                                     currentStages: [initialStage],
                                     processName: processName,
-                                    initials: processStructure.initials,
                                     stages: newStages,
                                     lastApproached: today,
                                     processDate: processDate,
@@ -104,28 +106,22 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
  * @param callback
  */
 module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
-        if (err) {
-            callback(err);
-        } else {
-            let waitingActiveProcesses = [];
-            processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
-                if (err) callback(err);
-                else {
-                    if (activeProcesses !== null) {
-                        activeProcesses.forEach((process) => {
-                            if (process.isWaitingForUser(roleID, userEmail)) {
-                                waitingActiveProcesses.push(process);
-                            }
-                        });
-                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
-                            callback(null, [waitingActiveProcesses, arrayOfRoles]);
-                        });
-                    } else {
-                        callback(null, [waitingActiveProcesses, []]);
+    let waitingActiveProcesses = [];
+    processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
+        if (err) callback(err);
+        else {
+            if (activeProcesses !== null) {
+                activeProcesses.forEach((process) => {
+                    if (process.isWaitingForUser(userEmail)) {
+                        waitingActiveProcesses.push(process);
                     }
-                }
-            });
+                });
+                bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
+                    callback(null, [waitingActiveProcesses, arrayOfRoles]);
+                });
+            } else {
+                callback(null, [waitingActiveProcesses, []]);
+            }
         }
     });
 };
@@ -160,12 +156,12 @@ function bringRoles(subArray, fullArray, i, j, activeProcesses, callback) {
         callback(null, fullArray);
         return;
     }
-    if (j === activeProcesses[i]._currentStages.length) {
+    if (j === activeProcesses[i].currentStages.length) {
         fullArray.push(subArray);
         bringRoles([], fullArray, i + 1, 0, activeProcesses, callback);
         return;
     }
-    let currentStageNumber = activeProcesses[i]._currentStages[j];
+    let currentStageNumber = activeProcesses[i].currentStages[j];
     let currentStage = activeProcesses[i].stages[currentStageNumber];
     let roleID = currentStage.roleID;
     (function (variable) {
@@ -382,6 +378,28 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
     });
 }
 
+
+function getRoleIDsOfNextDeregStages(process, nextStages, callback)
+{
+    usersAndRolesController.getRoleIdByUsername(process.creatorUserEmail, (err,roleID)=>{
+       if(err) callback(err);
+       else
+       {
+           let deregs = [];
+           for(let i=0;i<nextStages.length;i++)
+           {
+               let stage = process.getStageByStageNum(nextStages[i]);
+               if(stage.kind === 'ByDereg')
+               {
+                   deregs.push(stage.dereg);
+               }
+           }
+           usersAndRolesController.getFatherOfDeregByArrayOfRoleIDs(roleID, deregs, callback);
+       }
+    });
+
+}
+
 /**
  * Advance process to next stage if able
  *
@@ -391,13 +409,19 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
  * @param callback
  */
 function advanceProcess(process, stageNum, nextStages, callback) {
-    process.advanceProcess(stageNum, nextStages);
-    let today = new Date();
-    processAccessor.updateActiveProcess({processName: process.processName}, {
-        currentStages: process.currentStages, stages: process.stages, lastApproached: today
-    }, (err, res) => {
-        if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
-        else callback(null, res);
+    getRoleIDsOfNextDeregStages(process,nextStages,(err, mapOfRoleIDs)=>{
+       if(err) callback(err);
+       else
+       {
+           process.advanceProcess(stageNum, nextStages, mapOfRoleIDs);
+           let today = new Date();
+           processAccessor.updateActiveProcess({processName: process.processName}, {
+               currentStages: process.currentStages, stages: process.stages, lastApproached: today
+           }, (err, res) => {
+               if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
+               else callback(null, res);
+           });
+       }
     });
 }
 

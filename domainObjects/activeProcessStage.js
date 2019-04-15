@@ -3,6 +3,8 @@ class activeProcessStage {
     constructor(pureObject)
     {
         this.roleID = pureObject.roleID;
+        this.kind = pureObject.kind;
+        this.dereg = pureObject.dereg;
         this.stageNum = pureObject.stageNum;
         this.nextStages = pureObject.nextStages;
         this.stagesToWaitFor = pureObject.stagesToWaitFor;
