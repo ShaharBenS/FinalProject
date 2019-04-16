@@ -26,25 +26,25 @@ xmlHttp1.onreadystatechange = function() {
 xmlHttp1.open("GET", '/usersAndRoles/getEmailToFullName/', true);
 xmlHttp1.send(null);
 
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+var xmlHttp2 = new XMLHttpRequest();
+xmlHttp2.onreadystatechange = function() {
+    if (xmlHttp2.readyState === 4 && xmlHttp2.status === 200)
     {
-        roleToDereg = JSON.parse(xmlHttp.responseText)
+        roleToDereg = JSON.parse(xmlHttp2.responseText)
     }
 };
-xmlHttp.open("GET", '/usersAndRoles/getRoleToDereg/', true);
-xmlHttp.send(null);
+xmlHttp2.open("GET", '/usersAndRoles/getRoleToDereg/', true);
+xmlHttp2.send(null);
 
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+var xmlHttp3 = new XMLHttpRequest();
+xmlHttp3.onreadystatechange = function() {
+    if (xmlHttp3.readyState === 4 && xmlHttp3.status === 200)
     {
-        roleToMador = JSON.parse(xmlHttp.responseText)
+        roleToMador = JSON.parse(xmlHttp3.responseText)
     }
 };
-xmlHttp.open("GET", '/usersAndRoles/getRoleToMador/', true);
-xmlHttp.send(null);
+xmlHttp3.open("GET", '/usersAndRoles/getRoleToMador/', true);
+xmlHttp3.send(null);
 
 $(document).ready(()=>{
     var modal = document.getElementById('select_users_modal');
