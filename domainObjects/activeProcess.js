@@ -2,7 +2,6 @@ class activeProcess {
 
     constructor(processObject,stages) {
         this.processName = processObject.processName;
-        this.startingMador = processObject.startingMador;
         this.creatorUserEmail = processObject.creatorUserEmail;
         this.processDate = processObject.processDate;
         this.processUrgency = processObject.processUrgency;
