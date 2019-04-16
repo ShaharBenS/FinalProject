@@ -597,9 +597,6 @@ sankey.View = draw2d.Canvas.extend({
 
     centerDocument: function ()
     {
-        alert(JSON.stringify(roleToEmails));
-        alert(JSON.stringify(roleToDereg));
-        alert(JSON.stringify(emailToFullName));
         var bb = null;
         var c = $("#draw2dCanvasWrapper");
         if (this.getFigures().getSize() > 0) {
