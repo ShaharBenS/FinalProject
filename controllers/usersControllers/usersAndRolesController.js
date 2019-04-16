@@ -399,7 +399,12 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                                 callback(err);
                                                                                             }
                                                                                             else{
-                                                                                                this.addAdmin(userEmail,callback);
+                                                                                                if(firstTime){
+                                                                                                    this.addAdmin(userEmail,callback);
+                                                                                                }
+                                                                                                else{
+                                                                                                    callback(null);
+                                                                                                }
                                                                                             }
                                                                                         });
                                                                                     }
