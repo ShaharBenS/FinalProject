@@ -14,7 +14,9 @@ module.exports.getRoleToEmails = (callback) =>
         if (err) {
             callback(err);
         }
-        callback(null, new usersAndRolesTree(roles).getRoleToEmails())
+        else{
+            callback(null, new usersAndRolesTree(roles).getRoleToEmails());
+        }
     })
 };
 
@@ -25,7 +27,9 @@ module.exports.getRoleToDereg = (callback) =>
         if (err) {
             callback(err);
         }
-        callback(null, new usersAndRolesTree(roles).getRoleToDereg())
+        else{
+            callback(null, new usersAndRolesTree(roles).getRoleToDereg())
+        }
     })
 };
 
@@ -36,7 +40,9 @@ module.exports.getRoleToMador = (callback) =>
         if (err) {
             callback(err);
         }
-        callback(null, new usersAndRolesTree(roles).getRoleToMador())
+        else{
+            callback(null, new usersAndRolesTree(roles).getRoleToMador())
+        }
     })
 };
 

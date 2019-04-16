@@ -16,7 +16,6 @@ xmlHttp.onreadystatechange = function() {
 xmlHttp.open("GET", '/usersAndRoles/getRoleToEmails/', true);
 xmlHttp.send(null);
 
-
 var xmlHttp1 = new XMLHttpRequest();
 xmlHttp1.onreadystatechange = function() {
     if (xmlHttp1.readyState === 4 && xmlHttp1.status === 200)
