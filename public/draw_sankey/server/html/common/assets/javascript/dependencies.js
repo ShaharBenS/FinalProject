@@ -21640,7 +21640,6 @@ function RGBColor(color_string) {
     global.canvg = factory(global.RGBColor, global.stackBlur);
 
 }(typeof window !== 'undefined' ? window : this, function (RGBColor, stackBlur) {
-
     // canvg(target, s)
     // empty parameters: replace all 'svg' elements on page with 'canvas' elements
     // target: canvas element or the id of a canvas element
@@ -21771,6 +21770,7 @@ function RGBColor(color_string) {
     }
 
     function build(opts) {
+
         var svg = {opts: opts};
 
         svg.FRAMERATE = 30;
@@ -24518,6 +24518,7 @@ function RGBColor(color_string) {
         svg.Element.feColorMatrix.prototype = new svg.Element.ElementBase;
 
         svg.Element.feGaussianBlur = function (node) {
+
             this.base = svg.Element.ElementBase;
             this.base(node);
 
@@ -24525,6 +24526,9 @@ function RGBColor(color_string) {
             this.extraFilterDistance = this.blurRadius;
 
             this.apply = function (ctx, x, y, width, height) {
+                if(stackBlur === undefined){
+                    alertify.alert('לא ניתן לשמור כאשר אחד מהקוביות מסומנות, לחץ על האזור הלבן ונסה שוב.');
+                }
                 if (typeof (stackBlur.canvasRGBA) == 'undefined') {
                     svg.log('ERROR: StackBlur.js must be included for blur to work');
                     return;
