@@ -14,6 +14,24 @@ class activeProcess {
         this.lastApproached = processObject.lastApproached;
     }
 
+    removeStage(stageToRemove){
+        if(Number.isInteger(stageToRemove))
+        {
+            for(let i=0;i<this.stages.length;i++)
+            {
+                if(this.stages[i].stageNum === stageToRemove)
+                {
+                    this.stages.splice(i,1);
+                    return;
+                }
+            }
+        }
+        else {
+            throw new Error('stage isnt numeric');
+        }
+
+    }
+
     addCurrentStage(stageNum) {
         if(!this.isStageExists(stageNum))
         {

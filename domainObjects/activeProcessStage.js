@@ -26,6 +26,45 @@ class activeProcessStage {
         }
     }
 
+    addStagesToWaitFor(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            stages.forEach(stage=>{
+               if(!this.stagesToWaitFor.includes(stage))
+                   this.stagesToWaitFor.push(stage);
+            });
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
+    removeNextStages(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            this.nextStages = this.nextStages.filter((stage)=>!stages.includes(stage));
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
+    addNextStages(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            stages.forEach(stage=>{
+                if(!this.nextStages.includes(stage))
+                    this.nextStages.push(stage);
+            });
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
     handleStage(fileNames, comments)
     {
         if (this.approvalTime === null && this.stagesToWaitFor.length === 0) {

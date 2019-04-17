@@ -12,8 +12,7 @@ class processStructure {
         let initialStages = this.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
         while(initialStages.length !== 0)
         {
-            let firstStage = initialStages[0];
-            initialStages = initialStages.splice(0,1);
+            let firstStage = initialStages.shift();
             if(firstStage.kind === 'ByRole' && roleID.id.toString() === firstStage.roleID.toString())
             {
                 return firstStage.stageNum;

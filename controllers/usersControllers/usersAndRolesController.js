@@ -602,7 +602,7 @@ function getAllChildren(userEmail, callback)
     });
 }
 
-function getFatherOfDeregByArrayOfRoleIDs(roleID, deregs, callback)
+function getFatherOfDeregByArrayOfRoleIDs(roleID,deregs, callback)
 {
     userAccessor.findRole({}, (err, res) =>
     {
@@ -618,22 +618,34 @@ function getFatherOfDeregByArrayOfRoleIDs(roleID, deregs, callback)
     });
 }
 
+function includesRoleID(arr,roleID)
+{
+    for(let i=0;i<arr.length;i++)
+    {
+        if(arr[i].id.equals(roleID.id))
+            return true;
+    }
+    return false;
+}
+
 function recursiveFatherOfDeregFinder(tree, roleID, dereg)
 {
     for(let i=0;i<tree.length;i++)
     {
-        if(tree[i].children.includes(roleID))
+        if(roleID.id.equals(tree[i]._id.id) && dereg === tree[i].dereg)
+        {
+            return tree[i]._id;
+        }
+        if(includesRoleID(tree[i].children,roleID))
         {
             if(dereg === tree[i].dereg)
             {
                 return tree[i]._id;
             }
-            else
-            {
-                return recursiveFatherOfDeregFinder(tree, tree[i]._id, dereg);
-            }
+            return recursiveFatherOfDeregFinder(tree, tree[i]._id, dereg);
         }
     }
+    return null;
 }
 
 function getChildrenRecursive(role, roleMapping)
