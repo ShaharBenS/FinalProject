@@ -119,11 +119,9 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
                                 waitingActiveProcesses.push(process);
                             }
                         });
-                        bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
-                            callback(null, [waitingActiveProcesses, arrayOfRoles]);
-                        });
+                        callback(null, waitingActiveProcesses);
                     } else {
-                        callback(null, [waitingActiveProcesses, []]);
+                        callback(null, waitingActiveProcesses);
                     }
                 }
             });
@@ -155,33 +153,6 @@ module.exports.getAvailableActiveProcessesByUser = (userEmail, callback) => {
         }
     });
 };
-
-function bringRoles(subArray, fullArray, i, j, activeProcesses, callback) {
-    if (i === activeProcesses.length) {
-        callback(null, fullArray);
-        return;
-    }
-    if (j === activeProcesses[i]._currentStages.length) {
-        fullArray.push(subArray);
-        bringRoles([], fullArray, i + 1, 0, activeProcesses, callback);
-        return;
-    }
-    let currentStageNumber = activeProcesses[i]._currentStages[j];
-    let currentStage = activeProcesses[i].stages[currentStageNumber];
-    let roleID = currentStage.roleID;
-    (function (variable) {
-        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                variable.push(roleName);
-                bringRoles(subArray, fullArray, i, j + 1, activeProcesses, callback);
-            }
-        });
-    })(subArray);
-}
-
-
-
 module.exports.getAllActiveProcesses = function (callback) {
     processAccessor.getActiveProcesses(callback);
 };

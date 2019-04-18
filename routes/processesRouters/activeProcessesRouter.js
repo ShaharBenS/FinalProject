@@ -140,7 +140,6 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
     activeProcessController.getAllActiveProcessesByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
         else {
-            let x = 5;
             replaceRoleIDWithRoleName(array, ((err, result) => {
                 activeProcessController.convertDate(result);
                 for (let i = 0; i < result.length; i++) {
@@ -198,14 +197,30 @@ function handleRolesAndStages(array) {
     }
 }
 
+
+
+
+
+
+
+
+
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getWaitingActiveProcessesByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
         else {
-            handleRolesAndStages(array);
-            activeProcessController.convertDate(array[0]);
-            res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
+            replaceRoleIDWithRoleName(array, ((err, result) => {
+                activeProcessController.convertDate(result);
+                result.map((activeProcess)=>
+                {
+                    activeProcess._currentStages.map((currentStage) =>
+                    {
+                        activeProcess._currentStages[currentStage] = activeProcess._stages[currentStage];
+                    });
+                });
+                res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: result, username: userName});
+            }));
         }
     });
 });

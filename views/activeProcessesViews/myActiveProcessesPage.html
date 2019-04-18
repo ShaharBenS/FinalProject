@@ -44,7 +44,6 @@
                         <th>שם התהליך</th>
                         <th>דחיפות התהליך</th>
                         <th>תאריך יעד</th>
-                        <th>מי לוקח חלק בתהליך</th>
                         <th>האדם אצלו נמצא התהליך כרגע</th>
                         <th>התפקיד אצלו נמצא התהליך כרגע</th>
                         <th>הזמן בו עודכן לאחרונה</th>
@@ -57,9 +56,6 @@
                         <td><%=process._processName%></td>
                         <td><%=process._processUrgency%></td>
                         <td><%=process._processDate%></td>
-                        <td>
-                            3
-                        </td>
                         <td>
                             <%process._currentStages.forEach(function(stage){%>
                             <%=stage.userEmail%>
