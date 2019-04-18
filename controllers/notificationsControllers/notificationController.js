@@ -136,8 +136,6 @@ module.exports.notifyNotFinishedProcess = (process, callback) =>
                 acc(err);
             } else {
                 let stage = process.getStageByStageNum(curr);
-                if(stage.userEmail === null)
-                {
                     usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
                         emails.reduce((acc, curr) => {
                             return (err) => {
@@ -157,7 +155,6 @@ module.exports.notifyNotFinishedProcess = (process, callback) =>
                     });
                 }
             }
-        }
     }, (err) => {
         if (err) {
             callback(err);

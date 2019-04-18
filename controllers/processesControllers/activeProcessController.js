@@ -46,7 +46,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
             {
                 let stage = processStructure.stages[i];
                 let stageRoleID = stage.roleID;
-                let stageUserEmail = '';
+                let stageUserEmail = null;
                 if(stage.stageNum === initialStage)
                 {
                     stageUserEmail = userEmail;

@@ -154,9 +154,10 @@ class activeProcess {
     }
 
     isAvailableForRole(roleID){
-        for(let i=0;i<this.stages.length;i++)
+        for(let i=0;i<this.currentStages.length;i++)
         {
-            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.toString() === roleID.toString() && this.stages[i].userEmail === null) {
+            let stage = this.getStageByStageNum(this.currentStages[i]);
+            if (stage.roleID !== null && stage.roleID.id.equals(roleID.id) && stage.userEmail === null) {
                 return true;
             }
         }
