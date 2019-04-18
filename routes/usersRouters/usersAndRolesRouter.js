@@ -49,6 +49,33 @@ router.get('/getRoleToEmails', (req, res) =>
     });
 });
 
+
+router.get('/getRoleToDereg', (req, res) =>
+{
+    UsersAndRolesController.getRoleToDereg((err, roleToDereg) =>
+    {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send(roleToDereg);
+        }
+    });
+});
+
+router.get('/getRoleToMador', (req, res) =>
+{
+    UsersAndRolesController.getRoleToMador((err, roleToMador) =>
+    {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            res.send(roleToMador);
+        }
+    });
+});
+
 router.get('/getEmailToFullName', (req, res) =>
 {
     UsersAndRolesController.getEmailToFullName((err,emailToFullName)=>{

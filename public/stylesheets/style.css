@@ -174,8 +174,9 @@ body {
     padding-bottom: 10px;
 }
 
-.top-bar-logo {
-    height: 42px;
+.top-bar-home {
+    font-size: 40px;
+    color: white;
 }
 
 .top-bar-permission-button{

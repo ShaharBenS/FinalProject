@@ -18,7 +18,14 @@ let router = express.Router();
 
 router.post('/removeProcessStructure', function (req, res) {
     let structureName = req.body.structureName;
-    processStructureController.removeProcessStructure(structureName, (result) => res.send(result));
+    processStructureController.removeProcessStructure(structureName, (err)=>{
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.send("success");
+        }
+    });
 });
 
 router.post('/approveStructure', function (req,res){

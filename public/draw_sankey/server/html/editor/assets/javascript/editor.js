@@ -565,18 +565,15 @@ sankey.View = draw2d.Canvas.extend({
     onDrop: function (droppedDomNode, x, y, shiftKey, ctrlKey)
     {
         var type = $(droppedDomNode).data("shape");
-        let color = '#ff9d6d';
-        if(type === "sankey.shape.State"){
-            color = '#f6a500';
-        }
-        if (type === "sankey.shape.Start") {
+        let kind = type.substring(19,type.length);
+        if(type.substring(0,18) === "sankey.shape.State"){
             type = "sankey.shape.State";
         }
-        var figure = eval("new " + type + "({bgColor:color});");
+        var figure = eval("new " + type);
         // create a command for the undo/redo support
 
         var command = new draw2d.command.CommandAdd(this, figure, x, y);
-        onDrop_extension(type, command, figure);
+        onDrop_extension(type, command, figure,kind);
     },
 
     getBoundingBox: function ()
@@ -670,6 +667,8 @@ sankey.dialog.FileSave = Class.extend({
                 context: diagramContext,
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
                 emailToFullName: diagramContext === '__tree__' ? JSON.stringify(emailToFullName) : undefined,
+                roleToDereg: diagramContext === '__tree__' ? JSON.stringify(roleToDereg) : undefined,
+                roleToMador: diagramContext === '__tree__' ? JSON.stringify(roleToMador) : undefined,
                 onlineFormsOfProcess: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
                     ? JSON.stringify(formsOfProcess) : undefined,
                 processStructureName: processStructureName,
@@ -697,6 +696,9 @@ sankey.dialog.FileSave = Class.extend({
                                 window.location.href = '/Home';
                             });
                         }
+                        else{
+                            alertify.alert(text);
+                        }
                     }
                     else{
                         alertify.alert(text);
@@ -708,6 +710,9 @@ sankey.dialog.FileSave = Class.extend({
                             alertify.alert('מבנה התהליך הממתין נשמר בהצלחה (שים לב כי עליך עדיין לאשר אותו)!',()=>{
                                 window.location.href = '/processStructures/waitingForApproval/';
                             });
+                        }
+                        else{
+                            alertify.alert(text);
                         }
                     }
                     else{
@@ -908,10 +913,19 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
         /*if (figure instanceof draw2d.shape.basic.Label) {
             items.fontcolor = {name: "Font Color", icon: "x ion-android-color-palette"};
         }
+        */
+
+        if (figure instanceof sankey.shape.State) {
+            if (diagramContext === '__tree__') {
+                items.fontcolor = {name: "<i style='font-size: 20px' class='ion ion-android-contact'><label style='padding-right: 6px;font-weight: normal'>מדור</label><i>"}
+            }
+        }
 
         if (!(figure instanceof draw2d.Connection)) {
-            items.bgcolor = {name: "Background Color", icon: "x ion-android-color-palette"};
-        }*/
+            if((figure instanceof sankey.shape.State) && ((diagramContext === '__tree__') || (figure.children.data[0].figure.text === ""))){
+                items.bgcolor = {name: "<i style='font-size: 20px' class='ion ion-shuffle'><label style='padding-right: 6px;font-weight: normal'>דרג</label><i>"};
+            }
+        }
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
                 items.users = {name: "<i style='font-size: 20px' class='ion ion-android-people'><label style='padding-right: 6px;font-weight: normal'>ראה משתמשים</label><i>"}
@@ -940,14 +954,22 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         this._setColor(figure, "color");
                         break;
                     case "bgcolor":
-                        this._setColor(figure, "bgColor");
+                        //this._setColor(figure, "bgColor");
+                        let roleName = figure.children.data[0].figure.text;
+                        $('#dereg-select').val(roleToDereg[roleName]).change();
+                        currentRoleNameClicked = roleName;
+                        document.getElementById('select-dereg-modal').style.display = 'block';
                         break;
                     case "fontcolor":
-                        this._setColor(figure, "fontColor");
+                        //this._setColor(figure, "fontColor");
+                        let roleName2 = figure.children.data[0].figure.text;
+                        document.getElementById("mador-input").value = roleToMador[roleName2];
+                        currentRoleNameClicked = roleName2;
+                        document.getElementById('select-mador-modal').style.display = 'block';
                         break;
                     case "del":
                         var cmd = new draw2d.command.CommandDelete(figure);
-                        if(deleteRoleById !== undefined){
+                        if((!(figure instanceof sankey.shape.Connection)) && deleteRoleById !== undefined ){
                             deleteRoleById(figure.id);
                         }
                         this.canvas.getCommandStack().execute(cmd);

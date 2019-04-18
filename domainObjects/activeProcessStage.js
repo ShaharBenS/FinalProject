@@ -3,6 +3,8 @@ class activeProcessStage {
     constructor(pureObject)
     {
         this.roleID = pureObject.roleID;
+        this.kind = pureObject.kind;
+        this.dereg = pureObject.dereg;
         this.stageNum = pureObject.stageNum;
         this.nextStages = pureObject.nextStages;
         this.stagesToWaitFor = pureObject.stagesToWaitFor;
@@ -17,6 +19,45 @@ class activeProcessStage {
         if(Array.isArray(stages) && !stages.some(isNaN))
         {
             this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
+    addStagesToWaitFor(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            stages.forEach(stage=>{
+               if(!this.stagesToWaitFor.includes(stage))
+                   this.stagesToWaitFor.push(stage);
+            });
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
+    removeNextStages(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            this.nextStages = this.nextStages.filter((stage)=>!stages.includes(stage));
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
+    addNextStages(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            stages.forEach(stage=>{
+                if(!this.nextStages.includes(stage))
+                    this.nextStages.push(stage);
+            });
         }
         else
         {

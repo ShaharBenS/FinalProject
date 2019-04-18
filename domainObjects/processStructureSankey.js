@@ -13,8 +13,34 @@ class processStructureSankey {
         let sankeyStages = this.getSankeyStages();
         return sankeyStages.map((stage, index) => {
             let roleName = stage.labels[0].text;
+            let kind = '';
+            let roleID = undefined;
+            let dereg = undefined;
+            let aboveCreatorNumber = -1;
+            if(stage.bgColor === "#000000"){
+                if(roleName === "יוצר התהליך"){
+                    kind = "Creator";
+                }
+                else{
+                    kind = "AboveCreator";
+                    aboveCreatorNumber = Number(roleName.substring(roleName.indexOf(":")+1,roleName.length));
+                }
+            }
+            else{
+                if(stage.bgColor.toLowerCase() !== "#f6a500"){
+                    kind = "ByDereg";
+                    dereg = stage.bgColor[6];
+                }
+                else{
+                    kind = "ByRole";
+                    roleID = roleNameToIdFunc(roleName);
+                }
+            }
             let stageToReturn = {
-                roleID: roleNameToIdFunc(roleName),
+                kind: kind,
+                roleID: roleID,
+                dereg: dereg,
+                aboveCreatorNumber: aboveCreatorNumber,
                 stageNum: index,
                 nextStages: [],
                 stagesToWaitFor: [],
@@ -52,7 +78,7 @@ class processStructureSankey {
         });
     }
 
-    getInitials()
+    /*getInitials()
     {
         return this.getSankeyStages().filter((figure) =>
         {
@@ -69,7 +95,7 @@ class processStructureSankey {
             });
             return index;
         });
-    }
+    }*/
 
     hasMoreThanOneFlow(){
         let connections = this.getConnections();
@@ -146,32 +172,6 @@ class processStructureSankey {
         });
     }
 
-    firstStageIsNotInitial(){
-        let connections = this.getConnections();
-        let flows = [];
-        this.getSankeyStages().forEach((role)=>{
-            let result = true;
-            connections.forEach((connection)=>{
-                if(connection.target.node === role.id){
-                    result = false;
-                }
-            });
-            if(result){
-                flows.push(role.id)
-            }
-        });
-        return flows.every((flow)=>{
-            let initials = this.getSankeyStages().filter((figure) =>
-            {
-                return figure.bgColor.toLowerCase() === '#ff9d6d';
-
-            }).map(stage=>{
-                return stage.id;
-            });
-            return !initials.includes(flow);
-        })
-    }
-
     hasNoStages()
     {
         return this.getSankeyStages().length === 0;
@@ -181,7 +181,7 @@ class processStructureSankey {
     setStageToNotFound(id){
         this.getSankeyStages().forEach(stage=>{
             if(stage.id===id){
-                stage.bgColor = "#ff0003"
+                stage.bgColor = "#ff1100";
             }
         })
     }

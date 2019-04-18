@@ -1,6 +1,7 @@
 let notificationAccessor = require('../../models/accessors/notificationsAccessor');
 let activeProcessController = require('../processesControllers/activeProcessController');
 let Notification = require('../../domainObjects/notification');
+let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 
 module.exports.getUserNotifications = (userEmail, callback) =>
 {
@@ -26,14 +27,14 @@ module.exports.getUserNotifications = (userEmail, callback) =>
     })
 };
 
-module.exports.addNotificationToUser = (email, notification, callback) =>
+function addNotificationToUser(email, notification, callback)
 {
     let notificationObject = notification.getNotification();
     notificationAccessor.addNotification({
         userEmail: email,
         notification: notification.getNotification(),
     }, callback);
-};
+}
 
 module.exports.deleteNotification = (_id, callback) =>
 {
@@ -103,3 +104,64 @@ module.exports.updateNotifications = () =>
         }
     })
 };
+
+module.exports.notifyFinishedProcess = (process, callback) =>
+{
+    // notifying participants
+    process.stages.reduce((prev, curr) => {
+        return (err) => {
+            if (err) {
+                prev(err);
+            } else {
+                addNotificationToUser(curr.userEmail,
+                    new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
+            }
+        }
+    }, (err) => {
+        if (err) {
+            console.log(err);
+            callback(err);
+        } else {
+            callback(null);
+        }
+    })(null);
+};
+
+module.exports.notifyNotFinishedProcess = (process, callback) =>
+{
+    //TODO Kuti Notify Only the stages that are promoted not all current
+    process.currentStages.reduce((acc, curr) => {
+        return (err) => {
+            if (err) {
+                acc(err);
+            } else {
+                let stage = process.getStageByStageNum(curr);
+                    usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
+                        emails.reduce((acc, curr) => {
+                            return (err) => {
+                                if (err) {
+                                    acc(err);
+                                } else {
+                                    addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
+                                }
+                            }
+                        }, (err) => {
+                            if (err) {
+                                acc(err);
+                            } else {
+                                acc(null);
+                            }
+                        })(null);
+                    });
+                }
+            }
+    }, (err) => {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null);
+        }
+    })(null);
+};
+
+module.exports.addNotificationToUser = addNotificationToUser;

@@ -273,11 +273,80 @@
     </div>
 </div>
 
+
+<div dir="ltr" id="select-mador-modal" class="modal">
+    <div class="modal-content">
+        <div>
+            <div dir="rtl" class="modal-header">
+                <h4 class="media-heading">הגדר מדור</h4>
+            </div>
+            <div class="modal-body">
+                <div class="media">
+                    <div class="media-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <div dir="rtl" class="col-lg-12">
+                                    <input id="mador-input">
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary okButton" id="no-id12345"
+                        onclick="changeMadorClicked()"><span>אוקיי</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div dir="ltr" id="figureConfigDialog">
     <div class="figureAddLabel configMenuEntry"><span class="ion-ios-pricetag-outline"></span> Add label</div>
     <div class="figureSetColor configMenuEntry"><span class="ion-android-color-palette"></span> Color</div>
 </div>
 
+<div dir="ltr" id="select-dereg-modal" class="modal">
+    <div class="modal-content">
+        <div>
+            <div dir="rtl" class="modal-header">
+                <h4 class="media-heading">בחר דרג</h4>
+            </div>
+            <div class="modal-body">
+                <div class="media">
+                    <div class="media-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <div dir="rtl" class="col-lg-12" id="dereg-div">
+                                    <select id="dereg-select">
+                                        <option value="1">דרג רכז</option>
+                                        <option value="2">דרג מנהל</option>
+                                        <option value="3">דרג רמ"ד</option>
+                                        <option value="4">דרג סיו"ר</option>
+                                        <option value="5">דרג יו"ר</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary okButton" id="no-id1234"
+                        onclick="changeDeregClicked()"><span>אוקיי</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div dir="ltr" id="figureConfigDialog">
+    <div class="figureAddLabel configMenuEntry"><span class="ion-ios-pricetag-outline"></span> Add label</div>
+    <div class="figureSetColor configMenuEntry"><span class="ion-android-color-palette"></span> Color</div>
+</div>
 
 <script id="template_startNode" type="hogan/template">
     <table class="table" id="transitions">
