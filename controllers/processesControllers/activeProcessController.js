@@ -67,7 +67,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 }
                 let activeProcessStage = new ActiveProcessStage({
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
-                    stageNum: stage.stageNum, nextStage: stage.nextStages,
+                    stageNum: stage.stageNum, nextStages: stage.nextStages,
                     stagesToWaitFor: stage.stagesToWaitFor, attachedFilesNames: [],
                     userEmail: stageUserEmail, originStagesToWaitFor: stage.stagesToWaitFor,
                     approvalTime: null, comments: ''
@@ -84,17 +84,17 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
             for(let i=0;i<activeProcessToReturn.stages.length;i++)
             {
                 let stage = activeProcessToReturn.stages[i];
-                if(stage.kind === "ByDereg" && parseInt(stage.dereg) < startingDereg)
+                if(stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg))
                 {
                     for(let j=0;j<stage.stagesToWaitFor.length;j++)
                     {
-                        let prevStage = activeProcessToReturn.getStageByStageNum(stage.stagesToWaitFor[i]);
+                        let prevStage = activeProcessToReturn.getStageByStageNum(stage.stagesToWaitFor[j]);
                         prevStage.removeNextStages([stage.stageNum]);
                         prevStage.addNextStages(stage.nextStages);
                     }
                     for(let j=0;j<stage.nextStages.length;j++)
                     {
-                        let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[i]);
+                        let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[j]);
                         nextStage.removeStagesToWaitFor([stage.stageNum]);
                         nextStage.addStagesToWaitFor(stage.stagesToWaitFor);
                     }
@@ -433,19 +433,13 @@ function getRoleIDsOfNextDeregStages(process, nextStages, callback)
  * @param callback
  */
 function advanceProcess(process, stageNum, nextStages, callback) {
-    getRoleIDsOfNextDeregStages(process,nextStages,(err, mapOfRoleIDs)=>{
-       if(err) callback(err);
-       else
-       {
-           process.advanceProcess(stageNum, nextStages, mapOfRoleIDs);
-           let today = new Date();
-           processAccessor.updateActiveProcess({processName: process.processName}, {
-               currentStages: process.currentStages, stages: process.stages, lastApproached: today
-           }, (err, res) => {
-               if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
-               else callback(null, res);
-           });
-       }
+    process.advanceProcess(stageNum, nextStages);
+    let today = new Date();
+    processAccessor.updateActiveProcess({processName: process.processName}, {
+        currentStages: process.currentStages, stages: process.stages, lastApproached: today
+    }, (err, res) => {
+        if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
+        else callback(null, res);
     });
 }
 

@@ -118,7 +118,7 @@ class activeProcess {
         }
     }
 
-    advanceProcess(stageNum, nextStages, nextStagesRoleIDsOfDereg) {
+    advanceProcess(stageNum, nextStages) {
         let stage = this.getStageByStageNum(stageNum);
         this.removeCurrentStage(stageNum);
         let nextChosenStages = stage.nextStages.filter((value) => nextStages.includes(value));
@@ -128,7 +128,7 @@ class activeProcess {
         let stagesToRemoveFromStagesToWaitFor = notChosenPath.filter((value) => !chosenPath.includes(value));
         for(let i=0;i<this.stages.length;i++)
         {
-            this.getStageByStageNum(this.stages[i]).removeStagesToWaitFor(stagesToRemoveFromStagesToWaitFor);
+            this.stages[i].removeStagesToWaitFor(stagesToRemoveFromStagesToWaitFor);
         }
         for(let i=0;i<stage.nextStages.length;i++)
         {
@@ -138,10 +138,6 @@ class activeProcess {
                 if(nextChosenStages.includes(nextStage.stageNum))
                 {
                     this.addCurrentStage(nextStage.stageNum);
-                    if(nextStage.kind === 'ByDereg')
-                    {
-                        nextStage.roleID = nextStagesRoleIDsOfDereg[nextStage.dereg];
-                    }
                 }
             }
         }
@@ -150,7 +146,7 @@ class activeProcess {
     isWaitingForUser(userEmail){
         for(let i=0;i<this.stages.length;i++)
         {
-            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].roleID.toString() === roleID.toString() && this.stages[i].userEmail === userEmail) {
+            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].userEmail === userEmail) {
                 return true;
             }
         }
