@@ -6,6 +6,8 @@ let filledOnlineFormsController = require('../../controllers/onlineFormsControll
 let router = express.Router();
 let formidable = require('formidable');
 let moment = require('moment');
+let userAccessor = require('../../models/accessors/usersAccessor');
+
 
 /*
   _____   ____   _____ _______
@@ -64,7 +66,7 @@ router.post('/unTakePartInProcess', function (req, res) {
     form.parse(req, function (err, fields) {
         let userEmail = req.user.emails[0].value;
         let processName = fields.processName;
-        activeProcessController.unTakePartInActiveProcess(processName,userEmail, (err) => {
+        activeProcessController.unTakePartInActiveProcess(processName, userEmail, (err) => {
             if (err) res.render('errorViews/error');
             else {
                 res.send("success");
@@ -80,7 +82,7 @@ router.post('/startProcess', function (req, res) {
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
     let notificationTime = req.body.notificationTime;
-    activeProcessController.startProcessByUsername(username, structureName, processName,processDate, processUrgency,notificationTime, (err) => {
+    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, notificationTime, (err) => {
         if (err) res.render('errorViews/error');
         else {
             res.send("success");
@@ -113,20 +115,46 @@ router.post('/cancelProcess', function (req, res) {
 
  */
 
+function replaceRoleIDWithRoleName(activeProcesses, callback) {
+    userAccessor.findRole({}, (err, roles) => {
+        if (err) {
+            callback(err);
+        } else {
+            let roleIDToRoleName = {};
+            roles.forEach(role => {
+                roleIDToRoleName[role._id.toString()] = role.roleName
+            });
+            callback(null, activeProcesses.map(activeProcess => {
+                activeProcess.stages.forEach(stage => {
+                    stage.roleName = roleIDToRoleName[stage.roleID];
+                });
+                return activeProcess;
+            }));
+        }
+    });
+}
+
+
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getAllActiveProcessesByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
-        else
-        {
-            handleRolesAndStages(array);
-            activeProcessController.convertDate(array[0]);
-            for (let i = 0; i < array[0].length; i++) {
-                array[0][i].processDate =  moment(array[0][i].processDate).format("DD/MM/YYYY HH:mm:ss");
-            }
-
-
-            res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: array[0]});
+        else {
+            let x = 5;
+            replaceRoleIDWithRoleName(array, ((err, result) => {
+                activeProcessController.convertDate(result);
+                for (let i = 0; i < result.length; i++) {
+                    result[i].processDate = moment(result[i].processDate).format("DD/MM/YYYY HH:mm:ss");
+                }
+                result.map((activeProcess)=>
+                {
+                   activeProcess._currentStages.map((currentStage) =>
+                   {
+                       activeProcess._currentStages[currentStage] = activeProcess._stages[currentStage];
+                   });
+                });
+                res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: result});
+            }));
         }
     });
 });
@@ -136,17 +164,16 @@ router.get('/getAllProcessesReportsByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
-        if(array === undefined)
-        {
+        if (array === undefined) {
             res.render('reportsViews/processReportPage', {processReports: []});
         }
-        else
-        {
+        else {
             processReportController.convertDate(array);
             res.render('reportsViews/processReportPage', {processReports: array});
         }
     });
 });
+
 /////////////////
 
 function handleRolesAndStages(array) {
@@ -164,10 +191,8 @@ function handleRolesAndStages(array) {
             array[0][i]._currentStages[j].roleID = array[1][i][j];
         }
     }
-    if(array[2] !== undefined)
-    {
-        for(let i=0;i<array[0].length;i++)
-        {
+    if (array[2] !== undefined) {
+        for (let i = 0; i < array[0].length; i++) {
             array[0][i]._child = array[2][i];
         }
     }
@@ -176,9 +201,8 @@ function handleRolesAndStages(array) {
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getWaitingActiveProcessesByUser(userName, (err, array) => {
-        if(err) res.render('errorViews/error');
-        else
-        {
+        if (err) res.render('errorViews/error');
+        else {
             handleRolesAndStages(array);
             activeProcessController.convertDate(array[0]);
             res.render('activeProcessesViews/myWaitingProcessesPage', {waitingProcesses: array[0], username: userName});
@@ -189,10 +213,12 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
 router.get('/getAvailableActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getAvailableActiveProcessesByUser(userName, (err, array) => {
-        if(err) res.render('errorViews/error');
-        else
-        {
-            res.render('activeProcessesViews/myAvailableProcessesPage', {availableProcesses: array, username: userName});
+        if (err) res.render('errorViews/error');
+        else {
+            res.render('activeProcessesViews/myAvailableProcessesPage', {
+                availableProcesses: array,
+                username: userName
+            });
         }
     });
 });

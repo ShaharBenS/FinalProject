@@ -180,24 +180,7 @@ function bringRoles(subArray, fullArray, i, j, activeProcesses, callback) {
     })(subArray);
 }
 
-function replaceRoleIDWithRoleName(activeProcesses, callback) {
-    userAccessor.findRole({}, (err, roles) => {
-        if (err) {
-            callback(err);
-        } else {
-            let roleIDToRoleName = {};
-            roles.forEach(role => {
-                roleIDToRoleName[role._id.toString()] = role.roleName
-            });
-            callback(null,activeProcesses.map(activeProcess => {
-                activeProcess.stages.forEach(stage => {
-                    stage.roleName = roleIDToRoleName[stage.roleID];
-                });
-                return activeProcess;
-            }));
-        }
-    });
-}
+
 
 module.exports.getAllActiveProcesses = function (callback) {
     processAccessor.getActiveProcesses(callback);
@@ -244,11 +227,9 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
                                     userEmailsArrays.push(currUserEmails);
                                 }
                             });
-                            bringRoles([], [], 0, 0, activeProcesses, (err, arrayOfRoles) => {
-                                callback(null, [toReturnActiveProcesses, arrayOfRoles, userEmailsArrays]);
-                            });
+                            callback(null, toReturnActiveProcesses);
                         } else {
-                            callback(null, [toReturnActiveProcesses, [], []]);
+                            callback(null, toReturnActiveProcesses);
                         }
                     });
                 }

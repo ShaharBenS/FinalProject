@@ -58,11 +58,8 @@
                         <td><%=process._processUrgency%></td>
                         <td><%=process._processDate%></td>
                         <td>
-                            <%process._child.forEach(function(children){%>
-                            <%=children%>
-                            <%})%>
+                            3
                         </td>
-
                         <td>
                             <%process._currentStages.forEach(function(stage){%>
                             <%=stage.userEmail%>
@@ -70,7 +67,7 @@
                         </td>
                         <td>
                             <%process._currentStages.forEach(function(stage){%>
-                            <%=stage.roleID%>
+                            <%=stage.roleName%>
                             <%})%>
                         </td>
                         <td><%=process._lastApproached%></td>
