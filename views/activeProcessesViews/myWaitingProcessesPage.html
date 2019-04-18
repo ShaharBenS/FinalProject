@@ -44,7 +44,6 @@
                         <th>שם התהליך</th>
                         <th>זמן יצירת התהליך</th>
                         <th>האדם אצלו נמצא התהליך כרגע</th>
-                        <th>התפקיד אצלו נמצא התהליך כרגע</th>
                         <th>הזמן בו עודכן לאחרונה</th>
                         <th>טיפול בתהליך</th>
                     </tr>
@@ -56,11 +55,8 @@
                         <td><%=process._creationTime%></td>
                         <td>
                             <%process._currentStages.forEach(function(stage){%>
-                            <%=stage.userEmail%>
-                            <%})%>
-                        </td>
-                        <td>
-                            <%process._currentStages.forEach(function(stage){%>
+                            <%=stage.userName%>
+                            -
                             <%=stage.roleName%>
                             <%})%>
                         </td>

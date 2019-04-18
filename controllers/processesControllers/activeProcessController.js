@@ -404,6 +404,7 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
                 newStages.push({
                     roleID: roleName,
                     userEmail: stage.userEmail,
+                    userName: stage.userName,
                     stageNum: stage.stageNum,
                     approvalTime: stage.approvalTime,
                     comments: stage.comments,

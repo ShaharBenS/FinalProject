@@ -59,6 +59,7 @@
     <div id="top-bar" class="top-bar">
     </div>
     <div align="center" class="main-div-tables">
+        <br>
         <h1 style="margin: auto">דו"ח <%=processDetails.processName%></h1>
         <hr class="orange-hr">
         <table>
@@ -89,8 +90,7 @@
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
-                        <th>שם התפקיד</th>
-                        <th>שם ממלא התפקיד</th>
+                        <th>שם התפקיד וממלאו</th>
                         <th>תאריך ושעה</th>
                         <th>הערות</th>
                         <th>קבצים</th>
@@ -99,8 +99,11 @@
                     <tbody>
                     <%table.forEach(function(step){%>
                     <tr>
-                        <td><%=step.roleID%></td>
-                        <td><%=step.userEmail%></td>
+                        <td>
+                            <%=step.userName%>
+                            -
+                            <%=step.roleID%>
+                        </td>
                         <td><%=step.approvalTime%></td>
                         <td><%=step.comments%></td>
                         <td>

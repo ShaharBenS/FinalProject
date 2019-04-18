@@ -26,14 +26,23 @@ function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, ap
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) callback(err);
                 else {
-                    let newStage = {
-                        roleID: roleID, userEmail: userEmail, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
-                        comments: stageDetails.comments, action: stageDetails.action,
-                        attachedFilesNames: stageDetails.fileNames
-                    };
-                    processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage}}, (err) => {
-                        if (err) callback(err);
-                        else callback(null);
+                    usersAndRolesController.getFullNameByEmail(userEmail, (err2,userName) =>
+                    {
+                        if(err2) {
+                            callback(err2);
+                        }
+                        else
+                        {
+                            let newStage = {
+                                roleID: roleID, userEmail: userEmail, userName: userName, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
+                                comments: stageDetails.comments, action: stageDetails.action,
+                                attachedFilesNames: stageDetails.fileNames
+                            };
+                            processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage}}, (err) => {
+                                if (err) callback(err);
+                                else callback(null);
+                            });
+                        }
                     });
                 }
             });
