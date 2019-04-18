@@ -28,7 +28,7 @@ function getRoleIDsOfDeregStages(stages, userEmail, callback)
                     deregs.push(stage.dereg);
                 }
             }
-            usersAndRolesController.getFatherOfDeregByArrayOfRoleIDs(roleID, deregs, callback);
+            usersAndRolesController.getFatherOfDeregByArrayOfRoleIDs(roleID,deregs, callback);
         }
     });
 }
@@ -41,6 +41,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
         else
         {
             let activeProcessStages = [];
+            let startingDereg = parseInt(role.dereg);
             for(let i=0;i<processStructure.stages.length;i++)
             {
                 let stage = processStructure.stages[i];
@@ -66,12 +67,13 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 }
                 let activeProcessStage = new ActiveProcessStage({
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
-                    stageNum: stage.stageNum, nextStage: stage.nextStages,
+                    stageNum: stage.stageNum, nextStages: stage.nextStages,
                     stagesToWaitFor: stage.stagesToWaitFor, attachedFilesNames: [],
                     userEmail: stageUserEmail, originStagesToWaitFor: stage.stagesToWaitFor,
                     approvalTime: null, comments: ''
                 });
                 activeProcessStages.push(activeProcessStage);
+
             }
             let activeProcessToReturn = new ActiveProcess({
                 processName: processName, creatorUserEmail: userEmail,
@@ -79,7 +81,28 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 notificationTime: notificationTime, currentStages: [initialStage], onlineForms: process.onlineForms,
                 filledOnlineForms: [], lastApproached: today
             }, activeProcessStages);
-            return activeProcessToReturn;
+            for(let i=0;i<activeProcessToReturn.stages.length;i++)
+            {
+                let stage = activeProcessToReturn.stages[i];
+                if(stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg))
+                {
+                    for(let j=0;j<stage.stagesToWaitFor.length;j++)
+                    {
+                        let prevStage = activeProcessToReturn.getStageByStageNum(stage.stagesToWaitFor[j]);
+                        prevStage.removeNextStages([stage.stageNum]);
+                        prevStage.addNextStages(stage.nextStages);
+                    }
+                    for(let j=0;j<stage.nextStages.length;j++)
+                    {
+                        let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[j]);
+                        nextStage.removeStagesToWaitFor([stage.stageNum]);
+                        nextStage.addStagesToWaitFor(stage.stagesToWaitFor);
+                    }
+                    activeProcessToReturn.removeStage(stage.stageNum);
+                    i--;
+                }
+            }
+            callback(null, activeProcessToReturn);
         }
     });
 
@@ -326,63 +349,7 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
     handleProcess(userEmail, processName, stage, callback);
 }
 
-function notifyFinishedProcess(process, callback)
-{
-    // notifying participants
-    process.stages.reduce((prev, curr) => {
-        return (err) => {
-            if (err) {
-                prev(err);
-            } else {
-                notificationsController.addNotificationToUser(curr.userEmail,
-                    new Notification("התהליך" + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
-            }
-        }
-    }, (err) => {
-        if (err) {
-            console.log(err);
-            callback(err);
-        } else {
-            callback(null);
-        }
-    })(null);
-}
 
-function notifyNotFinishedProcess(process, callback)
-{
-    process.currentStages.reduce((acc, curr) => {
-        return (err) => {
-            if (err) {
-                acc(err);
-            } else {
-                let stage = process.getStageByStageNum(curr);
-                usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
-                    emails.reduce((acc, curr) => {
-                        return (err) => {
-                            if (err) {
-                                acc(err);
-                            } else {
-                                notificationsController.addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
-                            }
-                        }
-                    }, (err) => {
-                        if (err) {
-                            acc(err);
-                        } else {
-                            acc(null);
-                        }
-                    })(null);
-                });
-            }
-        }
-    }, (err) => {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null);
-        }
-    })(null);
-}
 
 /**
  * approving process and updating stages
@@ -417,7 +384,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                                 processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
                                     if (err) callback(err);
                                     else {
-                                        notifyFinishedProcess(process, callback);
+                                        notificationsController.notifyFinishedProcess(process, callback);
                                     }
                                 });
                             }
@@ -426,7 +393,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                         processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetails, today, (err) => {
                             if(err) callback(err);
                             else {
-                                notifyNotFinishedProcess(process, callback);
+                                notificationsController.notifyNotFinishedProcess(process, callback);
                             }
                         });
                     }
@@ -466,19 +433,13 @@ function getRoleIDsOfNextDeregStages(process, nextStages, callback)
  * @param callback
  */
 function advanceProcess(process, stageNum, nextStages, callback) {
-    getRoleIDsOfNextDeregStages(process,nextStages,(err, mapOfRoleIDs)=>{
-       if(err) callback(err);
-       else
-       {
-           process.advanceProcess(stageNum, nextStages, mapOfRoleIDs);
-           let today = new Date();
-           processAccessor.updateActiveProcess({processName: process.processName}, {
-               currentStages: process.currentStages, stages: process.stages, lastApproached: today
-           }, (err, res) => {
-               if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
-               else callback(null, res);
-           });
-       }
+    process.advanceProcess(stageNum, nextStages);
+    let today = new Date();
+    processAccessor.updateActiveProcess({processName: process.processName}, {
+        currentStages: process.currentStages, stages: process.stages, lastApproached: today
+    }, (err, res) => {
+        if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
+        else callback(null, res);
     });
 }
 
