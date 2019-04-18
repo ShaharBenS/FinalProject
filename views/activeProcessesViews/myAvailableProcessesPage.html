@@ -48,10 +48,10 @@
                     <tbody>
                     <%availableProcesses.forEach(function(process){%>
                     <tr>
-                        <td><%=process._processName%></td>
+                        <td><%=process.processName%></td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" id="<%=process._processName%>"
-                                    onclick="takePartInProcess('<%=process._processName%>','<%=username%>')">לקח חלק
+                                    onclick="takePartInProcess('<%=process.processName%>','<%=username%>')">לקח חלק
                                 בתהליך
                             </button>
                         </td>

@@ -51,19 +51,19 @@
                     <tbody>
                     <%waitingProcesses.forEach(function(process){%>
                     <tr>
-                        <td><%=process._processName%></td>
-                        <td><%=process._creationTime%></td>
+                        <td><%=process.processName%></td>
+                        <td><%=process.creationTime%></td>
                         <td>
-                            <%process._currentStages.forEach(function(stage){%>
+                            <%process.currentStages.forEach(function(stage){%>
                             <%=stage.userName%>
 
                             <%=stage.roleName%>
                             <%})%>
                         </td>
-                        <td><%=process._lastApproached%></td>
+                        <td><%=process.lastApproached%></td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" id="<%=process._processName%>"
-                                    onclick="handleProcess('<%=process._processName%>','<%=username%>')">טפל בתהליך
+                                    onclick="handleProcess('<%=process.processName%>','<%=username%>')">טפל בתהליך
                             </button>
                         </td>
                     </tr>

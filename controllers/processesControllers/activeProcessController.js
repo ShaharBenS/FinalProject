@@ -540,7 +540,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
-                        onlineFormController.findOnlineFormsNamesByFormsIDs(process._onlineForms, (err, onlineFormsNames) => {
+                        onlineFormController.findOnlineFormsNamesByFormsIDs(process.onlineForms, (err, onlineFormsNames) => {
                             if (err) callback(err);
                             else {
                                 callback(null, [rolesNames, onlineFormsNames]);
@@ -715,8 +715,8 @@ function convertDate(array, isArrayOfDates) {
         let creationTime;
         let lastApproached;
         if (isArrayOfDates === undefined) {
-            creationTime = array[i]._creationTime;
-            lastApproached = array[i]._lastApproached;
+            creationTime = array[i].creationTime;
+            lastApproached = array[i].lastApproached;
         } else {
             creationTime = array[i];
             lastApproached = array[i];
@@ -724,8 +724,8 @@ function convertDate(array, isArrayOfDates) {
         creationTime = moment(creationTime).format("DD/MM/YYYY HH:mm:ss");
         lastApproached = moment(lastApproached).format("DD/MM/YYYY HH:mm:ss");
         if (isArrayOfDates === undefined) {
-            array[i]._creationTime = creationTime;
-            array[i]._lastApproached = lastApproached;
+            array[i].creationTime = creationTime;
+            array[i].lastApproached = lastApproached;
         } else {
             array[i] = creationTime;
         }

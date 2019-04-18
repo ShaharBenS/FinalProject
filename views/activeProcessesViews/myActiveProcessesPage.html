@@ -52,17 +52,17 @@
                     <tbody>
                     <%activeProcesses.forEach(function(process){%>
                     <tr>
-                        <td><%=process._processName%></td>
-                        <td><%=process._processUrgency%></td>
-                        <td><%=process._processDate%></td>
+                        <td><%=process.processName%></td>
+                        <td><%=process.processUrgency%></td>
+                        <td><%=process.processDate%></td>
                         <td>
-                            <%process._currentStages.forEach(function(stage){%>
+                            <%process.currentStages.forEach(function(stage){%>
                             <%=stage.userName%>
 
                             <%=stage.roleName%>
                             <%})%>
                         </td>
-                        <td><%=process._lastApproached%></td>
+                        <td><%=process.lastApproached%></td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" id="<%=process._processName%>"
                                     onclick="generateSummary(this.id)">הפק דו"ח
