@@ -254,7 +254,7 @@ let sankeyToStructure = function (sankeyContent, callback)
             });
             if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().filter(sankeyStage =>
             {
-                return sankeyStage.bgColor.toLowerCase() === "#f6a500";
+                return sankeyStage.bgColor.toLowerCase() === "#f6a500" || sankeyStage.bgColor.toLowerCase() === "#ff1100";
 
             }).map(stage=>stage.labels[0].text))).every(roleName =>
             {
@@ -297,7 +297,7 @@ module.exports.setProcessStructuresUnavailable = function (deletedRolesIds, dele
                 });
                 updatedSankey[processStructure._id.toString()] = sankey.sankeyToString();
 
-                return processStructure.stages.findIndex(stage =>
+                return processStructure.stages.filter(stage=>stage.roleID !== undefined).findIndex(stage =>
                 {
                     return deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString());
                 }) > -1;
