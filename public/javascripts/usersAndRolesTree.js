@@ -110,7 +110,6 @@ function rolesToHTML(roleName)
 {
     let users_div = document.getElementById("users-div");
     users_div.innerHTML = '';
-    alert(JSON.stringify(roleToEmails));
     roleToEmails[roleName].forEach((userEmail) =>
     {
         let outerDiv = document.createElement("div");
