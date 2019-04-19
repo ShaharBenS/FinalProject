@@ -105,10 +105,10 @@ function onDrop_extension(type, command, figure,kind) {
                     stroke: 0,
                 });
                 if(kind === 'ByDereg'){
-                    figure.setBackgroundColor("#6599f"+deregSelector.options[deregSelector.selectedIndex].value);
+                    figure.setBackgroundColor("#d8a2c"+deregSelector.options[deregSelector.selectedIndex].value);
                 }
                 else{
-                    figure.setBackgroundColor("#ffde00");
+                    figure.setBackgroundColor("#ff9d6d");
                 }
             }
             figure.add(figure.label, new draw2d.layout.locator.CenterLocator());

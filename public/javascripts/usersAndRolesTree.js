@@ -132,7 +132,7 @@ function rolesToHTML(roleName)
 {
     let users_div = document.getElementById("users-div");
     users_div.innerHTML = '';
-
+    alert(JSON.stringify(roleToEmails));
     roleToEmails[roleName].forEach((userEmail) =>
     {
         let outerDiv = document.createElement("div");
@@ -158,16 +158,19 @@ function rolesToHTML(roleName)
             rolesToHTML(roleName);
         };
 
-        let label = document.createElement("label");
-        label.innerText = userEmail;
+        let input = document.createElement("input");
+        input.className += " email";
+        input.value = userEmail;
         div.appendChild(a);
-        div.appendChild(label);
+        div.appendChild(input);
 
         outerDiv.append(div);
 
-        label = document.createElement("label");
-        label.innerText = emailToFullName[userEmail];
-        outerDiv.append(label);
+        input = document.createElement("input");
+        input.className += " name";
+        input.dir = "rtl";
+        input.value = emailToFullName[userEmail];
+        outerDiv.append(input);
 
         users_div.append(outerDiv);
     });
@@ -194,6 +197,7 @@ function rolesToHTML(roleName)
                 if(!found){
                     setTimeout(()=>{
                         alertify.prompt("הכנס שם מלא:","",(evt,fullName)=>{
+                            updateUsersMaps(roleName);
                             emailToFullName[email] = fullName;
                             roleToEmails[roleName].push(email);
                             rolesToHTML(roleName);
@@ -206,6 +210,22 @@ function rolesToHTML(roleName)
     users_div.appendChild(document.createElement("br"));
     div.appendChild(a);
     users_div.append(div);
+}
+
+function updateUsersMaps(roleName){
+    let emails = document.getElementsByClassName("email");
+    let names = document.getElementsByClassName("name");
+    let emailsArray = [];
+    for(let i = 0; i < emails.length; i++){
+        emailsArray.push(emails[i].value);
+        emailToFullName[emails[i].value] = names[i].value
+    }
+    roleToEmails[roleName] = emailsArray;
+}
+
+function updateUsername(){
+    updateUsersMaps(currentRoleNameClicked);
+    document.getElementById('select_users_modal').style.display = 'none';
 }
 
 function deleteRoleById(id){

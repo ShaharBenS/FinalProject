@@ -979,6 +979,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         break;
                     case "users":
                         if (diagramContext === '__tree__') {
+                            currentRoleNameClicked = figure.children.data[0].figure.text;
                             rolesToHTML(figure.children.data[0].figure.text);
                             document.getElementById("select_users_modal").style.display = "block";
                         }
