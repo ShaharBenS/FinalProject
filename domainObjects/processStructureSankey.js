@@ -17,7 +17,7 @@ class processStructureSankey {
             let roleID = undefined;
             let dereg = undefined;
             let aboveCreatorNumber = -1;
-            if(stage.bgColor.toLowerCase() === "#28bff0"){
+            if(stage.bgColor.toLowerCase() === "#ffde00"){
                 if(roleName === "יוצר התהליך"){
                     kind = "Creator";
                 }
