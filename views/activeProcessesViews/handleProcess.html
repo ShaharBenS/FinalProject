@@ -135,7 +135,7 @@
                 <br>
 
                 <hr>
-
+                <%if (nextRoles.length > 0) { %>
                 <h4>תפקידים לשלב הבא</h4>
                 <%if (nextRoles.length == 1) { %>
                 <label class="checkbox-roles" style="direction: rtl">
@@ -151,6 +151,9 @@
                 </label>
                 <br>
                 <%})%>
+                <% } %>
+                <% } else{%>
+                <input name="isFinish" type="hidden" value="true"/>
                 <% } %>
                 <%if (formsNames.length > 0) { %>
                 <hr>
@@ -173,7 +176,7 @@
             <button class="btn btn-default" id="cancel" onclick="cancelProcess('<%=processName%>');return false;">ביטול
                 תהליך
             </button>
-            <button class="btn btn-default" id="advanceProcess">העבר לשלב הבא</button>
+            <button class="btn btn-default" id="advanceProcess" onclick="return isChecked();">העבר לשלב הבא</button>
 
             <button class="btn btn-default" id="returnToCreator1"
                     onclick="returnToCreator('<%=processName%>');return false;"

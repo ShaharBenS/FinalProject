@@ -292,17 +292,6 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
     let dirToUpload = dirOfProcess + '/' + userEmail;
     let fileNames = [];
     let flag = true;
-    let hasAtLeastOneChecked = false;
-    for (let attr in fields) {
-        if (!isNaN(attr)) {
-            hasAtLeastOneChecked = true;
-        }
-    }
-    if(!hasAtLeastOneChecked)
-    {
-        callback(null,'unchecked');
-        return;
-    }
     for (let file in files) {
         if (files[file].name !== "") {
             if (flag) {
@@ -427,7 +416,9 @@ function advanceProcess(process, stageNum, nextStages, callback) {
         currentStages: process.currentStages, stages: process.stages, lastApproached: today
     }, (err, res) => {
         if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
-        else callback(null, res);
+        else {
+            callback(null,res);
+        }
     });
 }
 
@@ -726,6 +717,18 @@ function convertDate(array, isArrayOfDates) {
         }
     }
 }
+
+module.exports.checkUpdateResult = (result)=>{
+    let keys = Array.from(Object.keys(result));
+    if(keys.includes("n") && keys.includes("nModified") && keys.includes("ok") && keys.length === 3)
+    {
+        if(result["n"] === 1 && result["nModified"] === 1 && result["ok"] === 1)
+        {
+            return true;
+        }
+    }
+    return false;
+};
 
 /////////
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
