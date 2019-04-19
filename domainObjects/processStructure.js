@@ -13,7 +13,7 @@ class processStructure {
         while(initialStages.length !== 0)
         {
             let firstStage = initialStages.shift();
-            if(firstStage.kind === 'ByRole' && roleID.id.toString() === firstStage.roleID.toString())
+            if(firstStage.kind === 'ByRole' && roleID.id.equals(firstStage.roleID.id))
             {
                 return firstStage.stageNum;
             }
@@ -21,7 +21,10 @@ class processStructure {
             {
                 return firstStage.stageNum;
             }
-            initialStages = initialStages.concat(firstStage.nextStages);
+            for(let i=0;i<firstStage.nextStages.length;i++)
+            {
+                initialStages.push(this.getStageByStageNum(firstStage.nextStages[i]));
+            }
         }
         return -1;
     }
@@ -105,6 +108,24 @@ class processStructure {
         }
         return true;
     };
+
+    getStageByStageNum(stageNum) {
+        if(Number.isInteger(stageNum))
+        {
+            let foundStage = null;
+            this.stages.every((stage) => {
+                if (stage.stageNum === stageNum) {
+                    foundStage = stage;
+                    return false;
+                }
+                return true;
+            });
+            if (foundStage === null)
+                throw new Error("stage does not exist");
+            return foundStage;
+        }
+        throw new Error("stage not numeric");
+    }
 
     getFormsOfStage() {
         return this.stages.reduce((acc, stage) => {
