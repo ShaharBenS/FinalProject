@@ -26,7 +26,7 @@ router.post('/handleProcess', function (req, res) {
         activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files, (err, ret) => {
             if (err) res.render('errorViews/error');
             else {
-                res.send("success");
+                res.send(ret);
             }
         });
     });

@@ -55,6 +55,13 @@ $(document).ready(function() {
             alert('התהליך הועבר לשלב הבא בהצלחה');
             window.location.href = "/Home";
         }
+        else
+        {
+            if(response === "unchecked")
+            {
+                alert('אנא בחר לפחות תפקיד אחד לשלב הבא');
+            }
+        }
     });
 });
 

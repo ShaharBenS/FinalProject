@@ -292,6 +292,17 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
     let dirToUpload = dirOfProcess + '/' + userEmail;
     let fileNames = [];
     let flag = true;
+    let hasAtLeastOneChecked = false;
+    for (let attr in fields) {
+        if (!isNaN(attr)) {
+            hasAtLeastOneChecked = true;
+        }
+    }
+    if(!hasAtLeastOneChecked)
+    {
+        callback(null,'unchecked');
+        return;
+    }
     for (let file in files) {
         if (files[file].name !== "") {
             if (flag) {
