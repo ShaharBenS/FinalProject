@@ -33,19 +33,6 @@ module.exports.getRoleToDereg = (callback) =>
     })
 };
 
-module.exports.getRoleToMador = (callback) =>
-{
-    userAccessor.findRole({}, (err, roles) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else{
-            callback(null, new usersAndRolesTree(roles).getRoleToMador())
-        }
-    })
-};
-
 module.exports.getEmailToFullName = (callback) =>
 {
     userAccessor.findUsernames((err, result) =>
@@ -88,7 +75,7 @@ module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 };
 
-module.exports.addUsersAndRole = (_id, roleName, usersEmail,dereg,mador, callback) =>
+module.exports.addUsersAndRole = (_id, roleName, usersEmail,dereg, callback) =>
 {
     let countsArray = {};
     usersEmail.forEach((email) =>
@@ -107,8 +94,8 @@ module.exports.addUsersAndRole = (_id, roleName, usersEmail,dereg,mador, callbac
     if (dupEmails)
         callback(new Error("should not allow duplicated emails"));
     else {
-        let params = {roleName: roleName, userEmail: usersEmail,dereg:dereg,mador:mador, children: []};
-        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,dereg:dereg,mador:mador, children: []};
+        let params = {roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
+        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
         userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
         {
             if (err) {
@@ -150,7 +137,7 @@ module.exports.getUsersAndRolesTree = (callback) =>
     });
 };
 
-module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, roleToDereg, roleToMador,callback) =>
+module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, roleToDereg,callback) =>
 {
     let firstTime = false;
     let commonCallback = () =>
@@ -251,7 +238,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                             if (existingRoleIndex > -1) {
                                                                                 _id = oldUsersAndRoles.getIdByRoleName(roleName);
                                                                             }
-                                                                            this.addUsersAndRole(_id, roleName, roleToEmails[roleName],roleToDereg[roleName],roleToMador[roleName], (_err, usersAndRole) =>
+                                                                            this.addUsersAndRole(_id, roleName, roleToEmails[roleName],roleToDereg[roleName], (_err, usersAndRole) =>
                                                                             {
                                                                                 if (err) {
                                                                                     acc(err);
@@ -479,7 +466,7 @@ module.exports.getRoleByUsername = function (username, callback)
         if (err) callback(err);
         else {
             if (role.length === 0) callback(new Error("no role found for username: " + username));
-            else callback(null, {roleID: role[0]._id, dereg: role[0].dereg, mador: role[0].mador});
+            else callback(null, {roleID: role[0]._id, dereg: role[0].dereg});
         }
     });
 };

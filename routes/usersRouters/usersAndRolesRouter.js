@@ -63,18 +63,6 @@ router.get('/getRoleToDereg', (req, res) =>
     });
 });
 
-router.get('/getRoleToMador', (req, res) =>
-{
-    UsersAndRolesController.getRoleToMador((err, roleToMador) =>
-    {
-        if (err) {
-            res.send(err);
-        }
-        else {
-            res.send(roleToMador);
-        }
-    });
-});
 
 router.get('/getEmailToFullName', (req, res) =>
 {

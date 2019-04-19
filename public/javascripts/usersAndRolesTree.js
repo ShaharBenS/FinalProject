@@ -4,7 +4,6 @@ let roleToEmails = {};     // roleName to usersEmail
 let idToRole = {};
 let emailToFullName = {};
 let roleToDereg = {};
-let roleToMador = {};
 
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.onreadystatechange = function() {
@@ -36,20 +35,10 @@ xmlHttp2.onreadystatechange = function() {
 xmlHttp2.open("GET", '/usersAndRoles/getRoleToDereg/', true);
 xmlHttp2.send(null);
 
-var xmlHttp3 = new XMLHttpRequest();
-xmlHttp3.onreadystatechange = function() {
-    if (xmlHttp3.readyState === 4 && xmlHttp3.status === 200)
-    {
-        roleToMador = JSON.parse(xmlHttp3.responseText)
-    }
-};
-xmlHttp3.open("GET", '/usersAndRoles/getRoleToMador/', true);
-xmlHttp3.send(null);
 
 $(document).ready(()=>{
     var modal = document.getElementById('select_users_modal');
     var modal2 = document.getElementById('select-dereg-modal');
-    var modal3 = document.getElementById('select-mador-modal');
 
     window.onclick = function(event)
     {
@@ -58,9 +47,6 @@ $(document).ready(()=>{
         }
         if (event.target === modal2) {
             modal2.style.display = "none";
-        }
-        if (event.target === modal3) {
-            modal3.style.display = "none";
         }
     };
 
@@ -83,7 +69,6 @@ function onDrop_extension(type, command, figure) {
                     alertify.alert('שם תפקיד לא יכול להיות ריק');
                 }
                 else{
-                    roleToMador[role_name] = "";
                     roleToDereg[role_name] = "1";
                     idToRole[figure.id] = role_name;
                     roleToEmails[role_name] = [];
@@ -119,13 +104,6 @@ function changeDeregClicked(){
     let selector = document.getElementById('dereg-select');
     roleToDereg[currentRoleNameClicked] = selector.options[selector.selectedIndex].value;
     document.getElementById('select-dereg-modal').style.display = 'none';
-}
-
-
-function changeMadorClicked()
-{
-    roleToMador[currentRoleNameClicked] = document.getElementById("mador-input").value;
-    document.getElementById('select-mador-modal').style.display = 'none';
 }
 
 function rolesToHTML(roleName)

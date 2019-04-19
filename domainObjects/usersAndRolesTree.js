@@ -18,12 +18,6 @@ class usersAndRolesTree {
         }, {})
     }
 
-    getRoleToMador(){
-        return this.usersAndRoles.reduce((acc, role) => {
-            acc[role.roleName] = role.mador;
-            return acc;
-        }, {})
-    }
 
     getIdByRoleName(roleName) {
         let index = this.usersAndRoles.findIndex(usersAndRole => {

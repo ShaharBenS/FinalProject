@@ -668,7 +668,6 @@ sankey.dialog.FileSave = Class.extend({
                 roleToEmails: diagramContext === '__tree__' ? JSON.stringify(roleToEmails) : undefined,
                 emailToFullName: diagramContext === '__tree__' ? JSON.stringify(emailToFullName) : undefined,
                 roleToDereg: diagramContext === '__tree__' ? JSON.stringify(roleToDereg) : undefined,
-                roleToMador: diagramContext === '__tree__' ? JSON.stringify(roleToMador) : undefined,
                 onlineFormsOfProcess: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
                     ? JSON.stringify(formsOfProcess) : undefined,
                 processStructureName: processStructureName,
@@ -917,7 +916,7 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
 
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
-                items.fontcolor = {name: "<i style='font-size: 20px' class='ion ion-android-contact'><label style='padding-right: 6px;font-weight: normal'>מדור</label><i>"}
+                //items.fontcolor = {name: "<i style='font-size: 20px' class='ion ion-android-contact'><label style='padding-right: 6px;font-weight: normal'>מדור</label><i>"}
             }
         }
 
@@ -962,10 +961,6 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         break;
                     case "fontcolor":
                         //this._setColor(figure, "fontColor");
-                        let roleName2 = figure.children.data[0].figure.text;
-                        document.getElementById("mador-input").value = roleToMador[roleName2];
-                        currentRoleNameClicked = roleName2;
-                        document.getElementById('select-mador-modal').style.display = 'block';
                         break;
                     case "del":
                         var cmd = new draw2d.command.CommandDelete(figure);
