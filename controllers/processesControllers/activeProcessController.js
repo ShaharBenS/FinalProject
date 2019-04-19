@@ -79,7 +79,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
             let activeProcessToReturn = new ActiveProcess({
                 processName: processName, creatorUserEmail: userEmail,
                 processDate: processDate, processUrgency: processUrgency, creationTime: today,
-                notificationTime: notificationTime, currentStages: [initialStage], onlineForms: process.onlineForms,
+                notificationTime: notificationTime, currentStages: [initialStage], onlineForms: processStructure.onlineForms,
                 filledOnlineForms: [], lastApproached: today
             }, activeProcessStages);
             for(let i=0;i<activeProcessToReturn.stages.length;i++)

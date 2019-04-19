@@ -57,7 +57,7 @@ module.exports.getFormReady = function (processName, formName, callback) {
     activeProcessController.getActiveProcessByProcessName(processName, (err, activeProcess) => {
         if (err) callback(err);
         else {
-            activeProcessController.getFilledOnlineForms(activeProcess._filledOnlineForms, 0, [], (err, filledForms) => {
+            activeProcessController.getFilledOnlineForms(activeProcess.filledOnlineForms, 0, [], (err, filledForms) => {
                 if (err) callback(err);
                 else {
                     let myForm = undefined;
