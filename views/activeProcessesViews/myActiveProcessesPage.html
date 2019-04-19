@@ -57,9 +57,13 @@
                         <td><%=process.processDate%></td>
                         <td>
                             <%process.currentStages.forEach(function(stage){%>
+                            <% if(stage.userName !== ''){ %>
                             <%=stage.userName%>
-
+                            -
                             <%=stage.roleName%>
+                            <% } else{ %>
+                            <%=stage.roleName%>
+                            <% } %>
                             <%})%>
                         </td>
                         <td><%=process.lastApproached%></td>

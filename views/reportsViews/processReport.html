@@ -100,9 +100,13 @@
                     <%table.forEach(function(step){%>
                     <tr>
                         <td>
-                            <%=step.userName%>
+                            <% if(stage.userName !== ''){ %>
+                            <%=stage.userName%>
                             -
-                            <%=step.roleID%>
+                            <%=stage.roleName%>
+                            <% } else{ %>
+                            <%=stage.roleName%>
+                            <% } %>
                         </td>
                         <td><%=step.approvalTime%></td>
                         <td><%=step.comments%></td>

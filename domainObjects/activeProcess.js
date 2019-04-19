@@ -144,9 +144,10 @@ class activeProcess {
     }
 
     isWaitingForUser(userEmail){
-        for(let i=0;i<this.stages.length;i++)
+        for(let i=0;i<this.currentStages.length;i++)
         {
-            if (this.currentStages.includes(this.stages[i].stageNum) && this.stages[i].userEmail === userEmail) {
+            let stage = this.getStageByStageNum(this.currentStages[i]);
+            if(stage.userEmail === userEmail) {
                 return true;
             }
         }
@@ -211,34 +212,67 @@ class activeProcess {
 
     assignUserToStage(roleID,userEmail){
         let hasChanged = false;
+        let currentStage = null;
         for(let i=0;i<this.currentStages.length;i++)
         {
-            let currentStage = this.getStageByStageNum(this.currentStages[i]);
-            if(currentStage.roleID.id.equals(roleID.id) && this.currentStages[i].userEmail === undefined)
+            currentStage = this.getStageByStageNum(this.currentStages[i]);
+            if(currentStage.roleID.id.equals(roleID.id) && currentStage.userEmail === null)
             {
                 currentStage.userEmail = userEmail;
                 hasChanged = true;
+                break;
             }
         }
         if(!hasChanged)
             throw new Error('cant assign user');
-        return true;
+        else {
+            if (currentStage.kind === 'ByDereg') {
+                let dereg = currentStage.dereg;
+                let initialStages = [currentStage];
+                while (initialStages.length !== 0) {
+                    let firstStage = initialStages.shift();
+                    if (firstStage.kind === 'ByDereg' && dereg === firstStage.dereg && firstStage.userEmail === null) {
+                        currentStage.userEmail = userEmail;
+                    }
+                    for (let i = 0; i < firstStage.nextStages.length; i++) {
+                        initialStages.push(this.getStageByStageNum(firstStage.nextStages[i]));
+                    }
+                }
+            }
+        }
     }
 
     unAssignUserToStage(roleID,userEmail){
         let hasChanged = false;
+        let currentStage = null;
         for(let i=0;i<this.currentStages.length;i++)
         {
-            let currentStage = this.getStageByStageNum(this.currentStages[i]);
-            if(currentStage.roleID.id.equals(roleID.id) && this.currentStages[i].userEmail === userEmail)
+            currentStage = this.getStageByStageNum(this.currentStages[i]);
+            if(currentStage.roleID.id.equals(roleID.id) && currentStage.userEmail === userEmail)
             {
-                currentStage.userEmail = undefined;
+                currentStage.userEmail = null;
                 hasChanged = true;
+                break;
             }
         }
         if(!hasChanged)
             throw new Error('cant unassign user');
-        return true;
+        else
+        {
+            if (currentStage.kind === 'ByDereg') {
+                let dereg = currentStage.dereg;
+                let initialStages = [currentStage];
+                while (initialStages.length !== 0) {
+                    let firstStage = initialStages.shift();
+                    if (firstStage.kind === 'ByDereg' && dereg === firstStage.dereg && firstStage.userEmail === userEmail) {
+                        currentStage.userEmail = null;
+                    }
+                    for (let i = 0; i < firstStage.nextStages.length; i++) {
+                        initialStages.push(this.getStageByStageNum(firstStage.nextStages[i]));
+                    }
+                }
+            }
+        }
     }
 
     isFinished()

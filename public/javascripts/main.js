@@ -141,7 +141,7 @@ function startActiveProcess() {
             });
             let urgencySelector = document.getElementById("start-processes-urgency");
             document.getElementById("start-active-process-modal").style.display = "block";
-            for(let i=1; i<=10; i++){
+            for(let i=1; i<=3; i++){
                 let option = document.createElement('option');
                 option.value = i;
                 option.innerText = i.toString();
