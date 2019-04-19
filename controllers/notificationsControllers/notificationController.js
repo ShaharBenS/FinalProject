@@ -164,4 +164,26 @@ module.exports.notifyNotFinishedProcess = (process, callback) =>
     })(null);
 };
 
+module.exports.notifyCancelledProcess = (process, callback) =>
+{
+    let usersToNotify = process.getParticipatingUsers();
+    usersToNotify.reduce((prev, curr) => {
+        return (err) => {
+            if (err) {
+                prev(err);
+            } else {
+                addNotificationToUser(curr,
+                    new Notification("התהליך " + processName + " בוטל על ידי " + userEmail, "תהליך בוטל"), prev);
+            }
+        }
+    }, (err) => {
+        if (err) {
+            console.log(err);
+            callback(err);
+        } else {
+            callback(null);
+        }
+    })(null);
+};
+
 module.exports.addNotificationToUser = addNotificationToUser;

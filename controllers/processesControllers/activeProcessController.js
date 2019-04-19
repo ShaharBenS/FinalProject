@@ -609,28 +609,11 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                 if (err) callback(err);
                 else {
-                    let usersToNotify = process.getParticipatingUsers();
                     processReportController.addActiveProcessDetailsToReport(processName, userEmail, [], stage, today, (err) => {
                         if (err) {
                             callback(err);
                         } else {
-                            usersToNotify.reduce((prev, curr) => {
-                                return (err) => {
-                                    if (err) {
-                                        prev(err);
-                                    } else {
-                                        notificationsController.addNotificationToUser(curr,
-                                            new Notification("התהליך " + processName + " בוטל על ידי " + userEmail, "תהליך בוטל"), prev);
-                                    }
-                                }
-                            }, (err) => {
-                                if (err) {
-                                    console.log(err);
-                                    callback(err);
-                                } else {
-                                    callback(null);
-                                }
-                            })(null);
+                            notificationsController.notifyCancelledProcess(process,callback);
                         }
                     });
                 }
