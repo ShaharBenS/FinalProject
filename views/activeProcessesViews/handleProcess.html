@@ -137,6 +137,12 @@
                 <hr>
 
                 <h4>תפקידים לשלב הבא</h4>
+                <%if (nextRoles.length == 1) { %>
+                <label class="checkbox-roles" style="direction: rtl">
+                    <input name="<%=nextRoles[0][1]%>" type="checkbox" checked>
+                    <%=nextRoles[0][0]%>
+                </label>
+                <% } else{%>
                 <h5 style="color: #888888;">(בחר לפחות אחד)</h5>
                 <%nextRoles.forEach(function(roleIdAndName){%>
                 <label class="checkbox-roles" style="direction: rtl">
@@ -145,8 +151,8 @@
                 </label>
                 <br>
                 <%})%>
-
-
+                <% } %>
+                <%if (formsNames.length > 0) { %>
                 <hr>
 
                 אנא מלא את הטפסים הבאים:
@@ -156,6 +162,9 @@
                 <a class="btn-form" onclick="formClick('<%=formName%>','<%=processName%>')"><%=formName%></a>
                 <br><br>
                 <%})%>
+                <% } %>
+
+
             </div>
             <br>
 

@@ -131,8 +131,7 @@ function replaceRoleIDWithRoleNameAndUserEmailWithUserName(activeProcesses, call
                     });
                     let userEmailToUserName = {};
                     userNames.forEach(userName => {
-                        //Remember delete [0] after Shahar's Fix.
-                        userEmailToUserName[userName.userEmail] = userName.userName[0]
+                        userEmailToUserName[userName.userEmail] = userName.userName;
                     });
                     callback(null, activeProcesses.map(activeProcess => {
                         activeProcess.stages.forEach(stage => {
@@ -159,8 +158,8 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
                     result[i].processDate = moment(result[i].processDate).format("DD/MM/YYYY HH:mm:ss");
                 }
                 result.map((activeProcess) => {
-                    activeProcess._currentStages.map((currentStage) => {
-                        activeProcess._currentStages[currentStage] = activeProcess._stages[currentStage];
+                    activeProcess.currentStages.map((currentStage) => {
+                        activeProcess.currentStages[currentStage] = activeProcess.stages[currentStage];
                     });
                 });
                 res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: result});
@@ -193,8 +192,8 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
             replaceRoleIDWithRoleNameAndUserEmailWithUserName(array, ((err, result) => {
                 activeProcessController.convertDate(result);
                 result.map((activeProcess) => {
-                    activeProcess._currentStages.map((currentStage) => {
-                        activeProcess._currentStages[currentStage] = activeProcess._stages[currentStage];
+                    activeProcess.currentStages.map((currentStage) => {
+                        activeProcess.currentStages[currentStage] = activeProcess.stages[currentStage];
                     });
                 });
                 res.render('activeProcessesViews/myWaitingProcessesPage', {

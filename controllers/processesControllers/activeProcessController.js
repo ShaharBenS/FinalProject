@@ -150,13 +150,14 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     if(err) callback(err);
                                     else {
                                         processAccessor.createActiveProcess(activeProcess, (err) => {
+                                            //TODO Kuti Send Name and not email of creator
                                             processReportController.addProcessReport(processName, activeProcess.creationTime, processDate, processUrgency, userEmail, (err) => {
                                                 if (err) {
                                                     callback(err);
                                                 } else {
                                                     // Notify first role
                                                     notificationsController.addNotificationToUser(userEmail, new Notification(
-                                                        processName + " מסוג " + processStructureName + " מחכה לטיפולך.", "תהליך בהמתנה"), callback)
+                                                        processName + " מסוג " + processStructureName + " מחכה לטיפולך.", "תהליך בהמתנה"), callback);
                                                 }
                                             })
                                         });
@@ -190,7 +191,7 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
                 else {
                     if (activeProcesses !== null) {
                         activeProcesses.forEach((process) => {
-                            if (process.isWaitingForUser(roleID, userEmail)) {
+                            if (process.isWaitingForUser(userEmail)) {
                                 waitingActiveProcesses.push(process);
                             }
                         });
