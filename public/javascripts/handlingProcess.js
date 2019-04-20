@@ -52,15 +52,20 @@ $(document).ready(function() {
     $('#frm').ajaxForm(function(response) {
         if(response === "success")
         {
-            alert('התהליך הועבר לשלב הבא בהצלחה');
+            let isFinish = document.getElementsByName('isFinish').length !== 0;
+            if(isFinish)
+            {
+                alert('התהליך הסתיים בהצלחה');
+            }
+            else
+            {
+                alert('התהליך הועבר לשלב הבא בהצלחה');
+            }
             window.location.href = "/Home";
         }
         else
         {
-            if(response === "unchecked")
-            {
-                alert('אנא בחר לפחות תפקיד אחד לשלב הבא');
-            }
+            alert('קרתה שגיאה בעת העברת התהליך לשלב הבא');
         }
     });
 });
@@ -87,5 +92,26 @@ function cancelProcess(processName)
         }
     };
     xhr.send(data);
+}
+
+function isChecked()
+{
+    let hasAtLeastOneChecked = false;
+    let isFinish = document.getElementsByName('isFinish').length !== 0;
+    let allInput = document.getElementsByTagName('input');
+    for(let i=0;i<allInput.length;i++)
+    {
+        if(allInput[i].type === 'checkbox' && !isNaN(allInput[i].name) && allInput[i].checked)
+        {
+            hasAtLeastOneChecked = true;
+            break;
+        }
+    }
+    if((isFinish && !hasAtLeastOneChecked) || hasAtLeastOneChecked)
+    {
+        return true;
+    }
+    alert('אנא בחר לפחות תפקיד אחד לשלב הבא');
+    return false;
 }
 

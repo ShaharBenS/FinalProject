@@ -4,6 +4,10 @@ let userNames = require('../schemas/usersSchemas/UserNamesSchema');
 let AdminsSchema = require('../schemas/usersSchemas/AdminsSchema');
 let signaturesSchema = require('../schemas/usersSchemas/UsersSignaturesSchema');
 
+module.exports.findRolesByArray = (rolesIDs, callback) => {
+    usersAndRoles.find({_id: {$in :rolesIDs}}, callback);
+};
+
 module.exports.createRole = (newRole, callback) => {
     return usersAndRoles.create(newRole, callback);
 };

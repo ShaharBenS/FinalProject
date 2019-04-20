@@ -10,8 +10,9 @@ class activeProcess {
         this.currentStages = processObject.currentStages;
         this.onlineForms = processObject.onlineForms;
         this.filledOnlineForms = processObject.filledOnlineForms;
-        this.stages = stages;
         this.lastApproached = processObject.lastApproached;
+        this.stageToReturnTo = processObject.stageToReturnTo;
+        this.stages = stages;
     }
 
     removeStage(stageToRemove){
@@ -92,7 +93,7 @@ class activeProcess {
                     coverage.push(startingStages[i]);
                 }
                 let stage = this.getStageByStageNum(startingStages[i]);
-                this.getCoverage(stage.nextStages,coverage).forEach((stage)=>{
+                this.getCoverage(stage.nextStages).forEach((stage)=>{
                     if(!coverage.includes(stage))
                     {
                         coverage.push(stage);
@@ -109,6 +110,7 @@ class activeProcess {
 
     handleStage(stageDetails) {
         let stage = this.getStageByStageNum(stageDetails.stageNum);
+        if(stage.kind === 'Creator') this.stageToReturnTo = stageDetails.stageNum;
         this.filledOnlineForms = stageDetails.filledForms;
         stage.handleStage(stageDetails.fileNames, stageDetails.comments);
         for(let i=0;i<stage.nextStages.length;i++)
@@ -126,6 +128,7 @@ class activeProcess {
         let chosenPath = this.getCoverage(nextStages,[]);
         let notChosenPath = this.getCoverage(nextNotChosenStages,[]);
         let stagesToRemoveFromStagesToWaitFor = notChosenPath.filter((value) => !chosenPath.includes(value));
+        let addedStages = [];
         for(let i=0;i<this.stages.length;i++)
         {
             this.stages[i].removeStagesToWaitFor(stagesToRemoveFromStagesToWaitFor);
@@ -138,9 +141,11 @@ class activeProcess {
                 if(nextChosenStages.includes(nextStage.stageNum))
                 {
                     this.addCurrentStage(nextStage.stageNum);
+                    addedStages.push(nextStage.stageNum);
                 }
             }
         }
+        return addedStages;
     }
 
     isWaitingForUser(userEmail){
@@ -177,25 +182,26 @@ class activeProcess {
     }
 
     returnProcessToCreator(){
-        let flag = true;
-        let i = 0;
-        for(i=0;i<this.stages.length;i++)
+        let stagesToRevert = [];
+        let stageToReturnTo = this.getStageByStageNum(this.stageToReturnTo);
+        stagesToRevert.push(stageToReturnTo);
+        while(stagesToRevert.length !== 0)
         {
-            this.stages[i].stagesToWaitFor = this.stages[i].originStagesToWaitFor;
-            if(this.initials.includes(this.stages[i].stageNum) && this.stages[i].userEmail.equals(this.creatorUserEmail))
+            let firstStage = stagesToRevert.shift();
+            if(firstStage.approvalTime !== null)
             {
-                if(flag)
+                firstStage.approvalTime = null;
+                firstStage.stagesToWaitFor = this.stageToReturnTo === firstStage.stageNum?firstStage.originStagesToWaitFor:[];
+                firstStage.attachedFilesNames = [];
+                firstStage.comments = '';
+                for(let i=0;i<firstStage.nextStages.length;i++)
                 {
-                    this.currentStages = [this.stages[i].stageNum];
-                    flag = false;
-                }
-                else
-                {
-                    throw new Error("two initials with same roles");
+                    stagesToRevert.push(this.getStageByStageNum(firstStage.nextStages[i]));
                 }
             }
         }
-        return this.getStageByStageNum(this.currentStages[i]).userEmail;
+        this.currentStages = [this.stageToReturnTo];
+        return stageToReturnTo.userEmail;
     }
 
     getCurrentStageNumberForUser(userEmail){
@@ -232,7 +238,7 @@ class activeProcess {
                 while (initialStages.length !== 0) {
                     let firstStage = initialStages.shift();
                     if (firstStage.kind === 'ByDereg' && dereg === firstStage.dereg && firstStage.userEmail === null) {
-                        currentStage.userEmail = userEmail;
+                        firstStage.userEmail = userEmail;
                     }
                     for (let i = 0; i < firstStage.nextStages.length; i++) {
                         initialStages.push(this.getStageByStageNum(firstStage.nextStages[i]));
@@ -265,7 +271,7 @@ class activeProcess {
                 while (initialStages.length !== 0) {
                     let firstStage = initialStages.shift();
                     if (firstStage.kind === 'ByDereg' && dereg === firstStage.dereg && firstStage.userEmail === userEmail) {
-                        currentStage.userEmail = null;
+                        firstStage.userEmail = null;
                     }
                     for (let i = 0; i < firstStage.nextStages.length; i++) {
                         initialStages.push(this.getStageByStageNum(firstStage.nextStages[i]));
