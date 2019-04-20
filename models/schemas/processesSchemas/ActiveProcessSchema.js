@@ -24,7 +24,8 @@ const activeProcessSchema = new Schema({
         attachedFilesNames: [String],
         comments: String
     }],
-    lastApproached: Date
+    lastApproached: Date,
+    stageToReturnTo: Number
 });
 
 module.exports = mongoose.model('ActiveProcess', activeProcessSchema);

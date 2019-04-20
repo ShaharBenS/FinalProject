@@ -176,7 +176,13 @@
             <button class="btn btn-default" id="cancel" onclick="cancelProcess('<%=processName%>');return false;">ביטול
                 תהליך
             </button>
-            <button class="btn btn-default" id="advanceProcess" onclick="return isChecked();">העבר לשלב הבא</button>
+            <button class="btn btn-default" id="advanceProcess" onclick="return isChecked();">
+                <%if (nextRoles.length > 0) { %>
+                העבר לשלב הבא
+                <% } else {%>
+                סיים תהליך
+                <% }%>
+            </button>
 
             <button class="btn btn-default" id="returnToCreator1"
                     onclick="returnToCreator('<%=processName%>');return false;"

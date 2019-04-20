@@ -57,7 +57,15 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 {
                     if(stage.kind === 'ByDereg')
                     {
-                        stageRoleID = mapOfDeregAndRole[stage.dereg];
+                        if(stage.dereg === startingDereg)
+                        {
+                            stageUserEmail = userEmail;
+                            stageRoleID = role.roleID;
+                        }
+                        else
+                        {
+                            stageRoleID = mapOfDeregAndRole[stage.dereg];
+                        }
                     }
                     else {
                         if (stage.kind === 'Creator') {
@@ -80,7 +88,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 processName: processName, creatorUserEmail: userEmail,
                 processDate: processDate, processUrgency: processUrgency, creationTime: today,
                 notificationTime: notificationTime, currentStages: [initialStage], onlineForms: processStructure.onlineForms,
-                filledOnlineForms: [], lastApproached: today
+                filledOnlineForms: [], lastApproached: today, stageToReturnTo: initialStage
             }, activeProcessStages);
             for(let i=0;i<activeProcessToReturn.stages.length;i++)
             {
@@ -181,26 +189,20 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
  * @param callback
  */
 module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
-        if (err) {
-            callback(err);
-        } else {
-            let waitingActiveProcesses = [];
-            processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
-                if (err) callback(err);
-                else {
-                    if (activeProcesses !== null) {
-                        activeProcesses.forEach((process) => {
-                            if (process.isWaitingForUser(userEmail)) {
-                                waitingActiveProcesses.push(process);
-                            }
-                        });
-                        callback(null, waitingActiveProcesses);
-                    } else {
-                        callback(null, waitingActiveProcesses);
+    let waitingActiveProcesses = [];
+    processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
+        if (err) callback(err);
+        else {
+            if (activeProcesses !== null) {
+                activeProcesses.forEach((process) => {
+                    if (process.isWaitingForUser(userEmail)) {
+                        waitingActiveProcesses.push(process);
                     }
-                }
-            });
+                });
+                callback(null, waitingActiveProcesses);
+            } else {
+                callback(null, waitingActiveProcesses);
+            }
         }
     });
 };
@@ -380,27 +382,6 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
     });
 }
 
-
-function getRoleIDsOfNextDeregStages(process, nextStages, callback)
-{
-    usersAndRolesController.getRoleIdByUsername(process.creatorUserEmail, (err,roleID)=>{
-       if(err) callback(err);
-       else
-       {
-           let deregs = [];
-           for(let i=0;i<nextStages.length;i++)
-           {
-               let stage = process.getStageByStageNum(nextStages[i]);
-               if(stage.kind === 'ByDereg')
-               {
-                   deregs.push(stage.dereg);
-               }
-           }
-           usersAndRolesController.getFatherOfDeregByArrayOfRoleIDs(roleID, deregs, callback);
-       }
-    });
-}
-
 /**
  * Advance process to next stage if able
  *
@@ -413,7 +394,8 @@ function advanceProcess(process, stageNum, nextStages, callback) {
     process.advanceProcess(stageNum, nextStages);
     let today = new Date();
     processAccessor.updateActiveProcess({processName: process.processName}, {
-        currentStages: process.currentStages, stages: process.stages, lastApproached: today
+        currentStages: process.currentStages, stages: process.stages, lastApproached: today,
+        stageToReturnTo: process.stageToReturnTo
     }, (err, res) => {
         if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
         else {
