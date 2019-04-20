@@ -128,6 +128,7 @@ class activeProcess {
         let chosenPath = this.getCoverage(nextStages,[]);
         let notChosenPath = this.getCoverage(nextNotChosenStages,[]);
         let stagesToRemoveFromStagesToWaitFor = notChosenPath.filter((value) => !chosenPath.includes(value));
+        let addedStages = [];
         for(let i=0;i<this.stages.length;i++)
         {
             this.stages[i].removeStagesToWaitFor(stagesToRemoveFromStagesToWaitFor);
@@ -140,9 +141,11 @@ class activeProcess {
                 if(nextChosenStages.includes(nextStage.stageNum))
                 {
                     this.addCurrentStage(nextStage.stageNum);
+                    addedStages.push(nextStage.stageNum);
                 }
             }
         }
+        return addedStages;
     }
 
     isWaitingForUser(userEmail){
@@ -178,32 +181,6 @@ class activeProcess {
         return false;
     }
 
-    getLastCreatorStageNumber() {
-        if(!startingStages.some(isNaN))
-        {
-            let coverage = [];
-            for(let i=0;i<startingStages.length;i++)
-            {
-                if(!coverage.includes(startingStages[i]))
-                {
-                    coverage.push(startingStages[i]);
-                }
-                let stage = this.getStageByStageNum(startingStages[i]);
-                this.getCoverage(stage.nextStages).forEach((stage)=>{
-                    if(!coverage.includes(stage))
-                    {
-                        coverage.push(stage);
-                    }
-                });
-            }
-            return coverage;
-        }
-        else
-        {
-            throw new Error();
-        }
-    }
-
     returnProcessToCreator(){
         let stagesToRevert = [];
         let stageToReturnTo = this.getStageByStageNum(this.stageToReturnTo);
@@ -223,6 +200,7 @@ class activeProcess {
                 }
             }
         }
+        this.currentStages = [this.stageToReturnTo];
         return stageToReturnTo.userEmail;
     }
 

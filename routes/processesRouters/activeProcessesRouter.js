@@ -157,10 +157,12 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
                 for (let i = 0; i < result.length; i++) {
                     result[i].processDate = moment(result[i].processDate).format("DD/MM/YYYY HH:mm:ss");
                 }
-                result.map((activeProcess) => {
-                    activeProcess.currentStages.map((currentStage) => {
-                        activeProcess.currentStages[currentStage] = activeProcess.stages[currentStage];
+                result.forEach((activeProcess) => {
+                    let currStages = [];
+                    activeProcess.currentStages.forEach((currentStage)=>{
+                        currStages.push(activeProcess.getStageByStageNum(currentStage));
                     });
+                    activeProcess.currentStages = currStages;
                 });
                 res.render('activeProcessesViews/myActiveProcessesPage', {activeProcesses: result});
             }));
@@ -191,10 +193,12 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
         else {
             replaceRoleIDWithRoleNameAndUserEmailWithUserName(array, ((err, result) => {
                 activeProcessController.convertDate(result);
-                result.map((activeProcess) => {
-                    activeProcess.currentStages.map((currentStage) => {
-                        activeProcess.currentStages[currentStage] = activeProcess.stages[currentStage];
+                result.forEach((activeProcess) => {
+                    let currStages = [];
+                    activeProcess.currentStages.forEach((currentStage)=>{
+                        currStages.push(activeProcess.getStageByStageNum(currentStage));
                     });
+                    activeProcess.currentStages = currStages;
                 });
                 res.render('activeProcessesViews/myWaitingProcessesPage', {
                     waitingProcesses: result,
