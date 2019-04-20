@@ -52,7 +52,15 @@ $(document).ready(function() {
     $('#frm').ajaxForm(function(response) {
         if(response === "success")
         {
-            alert('התהליך הועבר לשלב הבא בהצלחה');
+            let isFinish = document.getElementsByName('isFinish').length !== 0;
+            if(isFinish)
+            {
+                alert('התהליך הסתיים בהצלחה');
+            }
+            else
+            {
+                alert('התהליך הועבר לשלב הבא בהצלחה');
+            }
             window.location.href = "/Home";
         }
         else
