@@ -537,6 +537,9 @@ module.exports.getFullNameByEmail = (email, callback) =>
     });
 };
 
+module.exports.findRolesByArray = (roleIDs, callback) =>{
+    userAccessor.findRolesByArray(roleIDs,callback);
+};
 
 module.exports.getAllUsers = (callback) =>
 {

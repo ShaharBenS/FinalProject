@@ -1,3 +1,3 @@
-function handleProcess(processName,username) {
-    window.location.href = 'handleProcessView/?process_name=' + processName + '&username=' +username;
+function handleProcess(processName) {
+    window.location.href = 'handleProcessView/?process_name=' + processName;
 }

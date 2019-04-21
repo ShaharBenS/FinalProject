@@ -77,10 +77,14 @@
         <table>
             <tr>
                 <td id="filledOnlineForms">
+                    <% if(processDetails.filledOnlineForms.length !== 0){ %>
                     <label>טפסים:</label><%processDetails.filledOnlineForms.forEach(function(form) {%>
                     <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
                           title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u> ,
                     <%})%>
+                    <% } else{ %>
+                    <label>אין טפסים המשוייכים לתהליך זה</label>
+                    <% } %>
                 </td>
             </tr>
         </table>
@@ -100,12 +104,12 @@
                     <%table.forEach(function(step){%>
                     <tr>
                         <td>
-                            <% if(stage.userName !== ''){ %>
-                            <%=stage.userName%>
+                            <% if(step.userName !== ''){ %>
+                            <%=step.userName%>
                             -
-                            <%=stage.roleName%>
+                            <%=step.roleName%>
                             <% } else{ %>
-                            <%=stage.roleName%>
+                            <%=step.roleName%>
                             <% } %>
                         </td>
                         <td><%=step.approvalTime%></td>
