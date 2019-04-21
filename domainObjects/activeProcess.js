@@ -111,7 +111,6 @@ class activeProcess {
     handleStage(stageDetails) {
         let stage = this.getStageByStageNum(stageDetails.stageNum);
         if(stage.kind === 'Creator') this.stageToReturnTo = stageDetails.stageNum;
-        this.filledOnlineForms = stageDetails.filledForms;
         stage.handleStage(stageDetails.fileNames, stageDetails.comments);
         for(let i=0;i<stage.nextStages.length;i++)
         {
