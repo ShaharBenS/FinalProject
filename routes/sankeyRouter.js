@@ -11,7 +11,7 @@ router.post('/file/save', function (req, res) {
         onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=>{
             if(err) callback(err);
             else {
-                processStructure.addProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs, (err, needApprove) => {
+                processStructure.addProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime,(err, needApprove) => {
                     if (err) {
                         res.send(err);
                     }
@@ -30,7 +30,7 @@ router.post('/file/save', function (req, res) {
         onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=> {
             if(err) callback(err);
             else {
-                processStructure.editProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs, (err, needApprove) => {
+                processStructure.editProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs, req.body.automaticAdvanceTime,(err, needApprove) => {
                     if (err) {
                         res.send(err);
                     }
@@ -51,7 +51,7 @@ router.post('/file/save', function (req, res) {
         onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=> {
             if(err) callback(err);
             else {
-                waitingProcessStructuresController.updateStructure(req.body.mongoId, req.body.content, onlineFormsIDs, (err) => {
+                waitingProcessStructuresController.updateStructure(req.body.mongoId, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime, (err) => {
                     if (err) {
                         res.send(err);
                     }

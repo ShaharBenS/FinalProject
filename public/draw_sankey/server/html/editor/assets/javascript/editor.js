@@ -660,6 +660,11 @@ sankey.dialog.FileSave = Class.extend({
         // });
         new draw2d.io.png.Writer().marshal(app.view, function (imageDataUrl)
         {
+            let automaticAdvanceTime = undefined;
+            if((diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')){
+                let selector = document.getElementById("automaticTimeSelect");
+                automaticAdvanceTime = selector.options[selector.selectedIndex].value;
+            }
             var data = {
                 base64Image: imageDataUrl,
                 id: $("#githubSaveFileDialog .githubFileName").val(),
@@ -670,6 +675,7 @@ sankey.dialog.FileSave = Class.extend({
                 roleToDereg: diagramContext === '__tree__' ? JSON.stringify(roleToDereg) : undefined,
                 onlineFormsOfProcess: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
                     ? JSON.stringify(formsOfProcess) : undefined,
+                automaticAdvanceTime: automaticAdvanceTime,
                 processStructureName: processStructureName,
                 mongoId:mongoId,
             };

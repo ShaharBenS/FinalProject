@@ -1,33 +1,25 @@
-class usersAndRolesTreeSankey
-{
+class usersAndRolesTreeSankey {
 
-    constructor(sankey)
-    {
+    constructor(sankey) {
         this.sankey = sankey;
     }
 
-    getRoles()
-    {
-        return this.sankey.content.diagram.filter((figure) =>
-        {
+    getRoles() {
+        return this.sankey.content.diagram.filter((figure) => {
             return figure.type === "sankey.shape.State";
         });
     }
 
-    getConnections()
-    {
-        return this.sankey.content.diagram.filter((figure) =>
-        {
+    getConnections() {
+        return this.sankey.content.diagram.filter((figure) => {
             return figure.type === "sankey.shape.Connection";
         });
     }
 
-    getIdToRole()
-    {
+    getIdToRole() {
         let IdToRole = {};
-        this.sankey.content.diagram.forEach((figure) =>
-        {
-            if(figure.type !== "sankey.shape.Connection"){
+        this.sankey.content.diagram.forEach((figure) => {
+            if (figure.type !== "sankey.shape.Connection") {
                 IdToRole[figure.id] = figure.labels[0].text;
             }
         });
@@ -37,58 +29,65 @@ class usersAndRolesTreeSankey
     /*
         returns true if tree has at least 1 cycle, false otherwise
     */
-    hasCycles(){
+    hasCycles() {
         let connections = this.getConnections();
-        let trees = [];
-        this.getRoles().forEach((role)=>{
-            let result = true;
-            connections.forEach((connection)=>{
-                if(connection.target.node === role.id){
-                    result = false;
+        let roles = this.getRoles();
+        let cycle = false;
+
+        let DFSUtil = (v,visited) => {
+            // Mark the current node as visited
+            visited.push(v);
+
+            // Recur for all the vertices adjacent to this vertex
+            let neighbors = [];
+            connections.forEach(connection => {
+                if(connection.source.node === v){
+                    neighbors.push(connection.target.node);
+                }
+                if(connection.target.node === v){
+                    neighbors.push(connection.source.node);
                 }
             });
-            if(result){
-                trees.push(role.id);
-            }
-        });
-
-        var isCyclic = function (stack,node_id){
-            stack.push(node_id);
-            let result = !connections.every((connection)=>{
-                if(connection.source.node ===  node_id){
-                    if(stack.includes(connection.target.node)){
-                        return false;
+            let counter = 0;
+            neighbors.forEach(neighbor=>{
+                if(!visited.includes(neighbor)){
+                    DFSUtil(neighbor,visited);
+                }
+                else{
+                    if(counter > 0){
+                        cycle = true;
                     }
                     else{
-                        return !isCyclic(stack,connection.target.node);
+                        counter++;
                     }
                 }
-                return true;
             });
-            stack.pop();
-            return result;
         };
 
-        return !this.getRoles().every((role)=>{
-            if(trees.includes(role.id)){
-                //Start scanning the tree from this root
-                return !isCyclic([], role.id);
-
+        // Call the recursive helper function to print DFS traversal
+        // starting from all vertices one by one
+        let visited = [];
+        for (let i = 0; i < roles.length; ++i) {
+            let discovered = [];
+            if (!visited.includes(roles[i].id)) {
+                DFSUtil(roles[i].id,discovered);
+                visited = visited.concat(discovered);
             }
-            return true;
-        });
+        }
+
+        return cycle;
     }
 
     /*
         returns true if 2 nodes that has more than 1 connection exists, false otherwise
     */
-    hasMultipleConnections(){
+    hasMultipleConnections() {
         let result = false;
-        this.getConnections().forEach(connection=>{
-            this.getConnections().forEach(_connection=>{
-                if(_connection.id !== connection.id){
-                    if(_connection.source.node === connection.source.node){
-                        if(_connection.target.node === connection.target.node){
+        this.getConnections().forEach(connection => {
+            this.getConnections().forEach(_connection => {
+                if (_connection.id !== connection.id) {
+                    if (_connection.source.node === connection.source.node) {
+                        if (_connection.target.node === connection.target.node) {
                             result = true;
                         }
                     }
@@ -101,42 +100,66 @@ class usersAndRolesTreeSankey
     /*
         returns true if sankey graph contains 2 or more trees, true otherwise
     */
-    hasMoreThanOneTree(){
+    hasMoreThanOneTree() {
         let connections = this.getConnections();
-        let trees = 0;
-        this.getRoles().forEach((role)=>{
-            let result = true;
-            connections.forEach((connection)=>{
-                if(connection.target.node === role.id){
-                    result = false;
+        let roles = this.getRoles();
+        let trees = [];
+
+
+        let DFSUtil = (v,visited) => {
+            // Mark the current node as visited
+            visited.push(v);
+
+            // Recur for all the vertices adjacent to this vertex
+            let neighbors = [];
+            connections.forEach(connection => {
+                if(connection.source.node === v){
+                    neighbors.push(connection.target.node);
+                }
+                if(connection.target.node === v){
+                    neighbors.push(connection.source.node);
                 }
             });
-            if(result){
-                trees++;
+            neighbors.forEach(neighbor=>{
+                if(!visited.includes(neighbor)){
+                    DFSUtil(neighbor,visited);
+                }
+            });
+        };
+
+        // Call the recursive helper function to print DFS traversal
+        // starting from all vertices one by one
+        let visited = [];
+        for (let i = 0; i < roles.length; ++i) {
+            let discovered = [];
+            if (!visited.includes(roles[i].id)) {
+                DFSUtil(roles[i].id,discovered);
+                visited = visited.concat(discovered);
+                trees.push(discovered);
             }
-        });
-        return trees > 1;
+        }
+
+        return trees.length > 1;
     }
 
-    hasNoRoot()
-    {
+    hasNoRoot() {
         return this.getRoles().length === 0;
     }
+
     /*
         @pre: there is at least one role in the tree
      */
-    getRootName()
-    {
+    getRootName() {
         let connections = this.getConnections();
         let trees = [];
-        this.getRoles().forEach((role)=>{
+        this.getRoles().forEach((role) => {
             let result = true;
-            connections.forEach((connection)=>{
-                if(connection.target.node === role.id){
+            connections.forEach((connection) => {
+                if (connection.target.node === role.id) {
                     result = false;
                 }
             });
-            if(result){
+            if (result) {
                 trees.push(role);
             }
         });

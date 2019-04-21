@@ -28,9 +28,13 @@ class usersAndRolesTree {
     }
 
     getFatherOf(roleID) {
-        return this.usersAndRoles.find((userAndRole) => {
+        let toReturn = this.usersAndRoles.find((userAndRole) => {
             return userAndRole.children.map(x => x.toString()).includes(roleID.toString());
-        })._id;
+        });
+        if(toReturn === undefined){
+            return undefined;
+        }
+        return toReturn._id;
     }
 }
 

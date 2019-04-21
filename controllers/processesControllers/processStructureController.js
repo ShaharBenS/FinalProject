@@ -7,7 +7,7 @@ let userPermissionsController = require('../usersControllers/UsersPermissionsCon
 let waitingProcessStructuresAccessor = require('../../models/accessors/waitingProcessStructuresAccessor');
 
 
-module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs, callback) =>
+module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, callback) =>
 {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
     {
@@ -20,7 +20,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                 callback(err);
             }
             else {
-                let newProcessStructure = new ProcessStructure(structureName, structure.stages, sankeyContent, false, onlineFormsIDs);
+                let newProcessStructure = new ProcessStructure(structureName, structure.stages, sankeyContent, false, onlineFormsIDs, automaticAdvanceTime);
                 if (newProcessStructure.checkNotDupStagesInStructure()) {
                     if (newProcessStructure.checkPrevNextSymmetric()) {
                         if (newProcessStructure.checkNextPrevSymmetric()) {
@@ -42,6 +42,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                     date: new Date(),
                                     sankey: sankeyContent,
                                     onlineForms: onlineFormsIDs,
+                                    automaticAdvanceTime:automaticAdvanceTime,
                                 },(err)=>{
                                     if(err){
                                         callback(err);
@@ -67,7 +68,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
 };
 
 
-module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs, callback) => {
+module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, callback) => {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
             callback(err);
@@ -77,7 +78,7 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                 callback(err);
             }
             else {
-                let newProcessStructure = new ProcessStructure(structureName, structure.stages, sankeyContent);
+                let newProcessStructure = new ProcessStructure(structureName, structure.stages, sankeyContent,automaticAdvanceTime);
                 if (newProcessStructure.checkNotDupStagesInStructure()) {
                     if (newProcessStructure.checkPrevNextSymmetric()) {
                         if (newProcessStructure.checkNextPrevSymmetric()) {
@@ -87,7 +88,8 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                         available: true,
                                         stages: structure.stages,
                                         sankey: sankeyContent,
-                                        onlineForms: onlineFormsIDs
+                                        onlineForms: onlineFormsIDs,
+                                        automaticAdvanceTime: automaticAdvanceTime
                                     }
                                 }, (err) => {
                                     if (err) {
@@ -105,7 +107,8 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                     addOrEdit: false,
                                     date: new Date(),
                                     sankey: sankeyContent,
-                                    onlineForms: onlineFormsIDs
+                                    onlineForms: onlineFormsIDs,
+                                    automaticAdvanceTime: automaticAdvanceTime
                                 }, (err) => {
                                     if (err) {
                                         callback(err);
@@ -191,7 +194,8 @@ module.exports.getProcessStructureForDB = function (originProcessStructure)
         structureName: originProcessStructure.structureName,
         onlineForms: originProcessStructure.onlineForms,
         stages: this.getProcessStructureStagesForDB(originProcessStructure.stages),
-        sankey: originProcessStructure.sankey
+        sankey: originProcessStructure.sankey,
+        automaticAdvanceTime: originProcessStructure.automaticAdvanceTime
     };
 };
 

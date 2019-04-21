@@ -145,6 +145,31 @@ router.get('/getAllProcessStructuresTakenNames', function (req, res) {
     });
 });
 
+router.get('/getAutomaticAdvanceTime', (req,res)=>{
+    if(req.query.fromWaiting === 'true' && req.query.mongoId){
+        waitingProcessStructuresController.getWaitingStructureById(req.query.mongoId,(err,waitingStructure)=>{
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.send(waitingStructure.automaticAdvanceTime);
+            }
+        })
+    }
+    else if(req.query.fromWaiting === 'false') {
+        processStructureController.getProcessStructure(req.query.processStructureName, (err, processStructure) => {
+            if (err) res.send(err);
+            else {
+                if (processStructure !== null)
+                {
+                    res.send(processStructure.automaticAdvanceTime);
+                }
+                else res.send([]);
+            }
+        })
+    }
+});
+
 
 router.get('/getFormsOfProcess', function (req, res) {
     if(req.query.fromWaiting === 'true' && req.query.mongoId){

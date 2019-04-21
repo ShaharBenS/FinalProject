@@ -6,8 +6,6 @@ let is_role_list_set = false;
 
 let formsOfProcess = [];
 let onlineForms = [];
-let roleToDereg = {};
-
 
 let xmlHttpFormsOfProcess = new XMLHttpRequest();
 let params = "?processStructureName=" + processStructureName + '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false');
@@ -29,16 +27,6 @@ xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineFormsNames/', true);
 xmlHttpOnlineForms.send(null);
 
 
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-    {
-        roleToDereg = JSON.parse(xmlHttp.responseText)
-    }
-};
-xmlHttp.open("GET", '/usersAndRoles/getRoleToDereg/', true);
-xmlHttp.send(null);
-
 $(document).ready(function () {
     let modal = document.getElementById('select_role_modal');
     let span = document.getElementsByClassName("close")[0];
@@ -56,6 +44,7 @@ $(document).ready(function () {
     };
 
     let modal3 = document.getElementById('select-dereg-modal');
+    let modal4 = document.getElementById('define-auto-time-modal');
 
     window.onclick = function (event) {
         if (event.target === modal) {
@@ -70,10 +59,26 @@ $(document).ready(function () {
         else if(event.target === modal3){
             modal3.style.display = "none";
         }
+        else if(event.target === modal4){
+            modal4.style.display = "none";
+        }
     };
 
     if(diagramContext !== "editProcessStructure"){
         document.getElementById("deleteButton").style.display = "none";
+    }
+
+    if(diagramContext !== "addProcessStructure")
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+            {
+                document.getElementById("automaticTimeSelect").value = xmlHttp.responseText;
+            }
+        };
+        xmlHttp.open("GET", '/processStructures/getAutomaticAdvanceTime/'+"?processStructureName=" +processStructureName+ '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false'), true);
+        xmlHttp.send(null);
     }
 });
 

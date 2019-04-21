@@ -20,7 +20,8 @@ const processStructureSchema = new Schema({
         stagesToWaitFor: [Number]
     }],
     sankey: String,
-    available: {type:Boolean, default: true}
+    available: {type:Boolean, default: true},
+    automaticAdvanceTime: {type:String, enum:["0","24","48","72","96","120","144"]} // 0 means there's no automaticAdvanceTime
 });
 
 processStructureSchema.plugin(idValidator);
