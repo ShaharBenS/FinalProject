@@ -8,7 +8,6 @@ const processReportSchema = new Schema({
     processUrgency: { type: Number, min: 1, max: 3},
     processCreatorEmail : String,
     creationTime: Date,
-    currentStages: [Number],
     filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
     stages: [{
         roleName: String,
