@@ -464,21 +464,16 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
         callback(null, newStages);
     } else {
         let stage = stages[index];
-        usersAndRolesController.getRoleNameByRoleID(stage.roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                newStages.push({
-                    roleID: roleName,
-                    userEmail: stage.userEmail,
-                    userName: stage.userName,
-                    stageNum: stage.stageNum,
-                    approvalTime: stage.approvalTime,
-                    comments: stage.comments,
-                    files: stage.attachedFilesNames
-                });
-                returnStagesWithRoleName(index + 1, stages, newStages, callback);
-            }
+        newStages.push({
+            roleName: stage.roleName,
+            userEmail: stage.userEmail,
+            userName: stage.userName,
+            stageNum: stage.stageNum,
+            approvalTime: stage.approvalTime,
+            comments: stage.comments,
+            files: stage.attachedFilesNames
         });
+        returnStagesWithRoleName(index + 1, stages, newStages, callback);
     }
 };
 
