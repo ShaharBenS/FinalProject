@@ -11,7 +11,9 @@ class activeProcessStage {
         this.attachedFilesNames = pureObject.attachedFilesNames;
         this.userEmail = pureObject.userEmail;
         this.originStagesToWaitFor = pureObject.originStagesToWaitFor;
+        this.assignmentTime = pureObject.assignmentTime;
         this.approvalTime = pureObject.approvalTime;
+        this.notificationsCycle = pureObject.notificationsCycle;
         this.comments = pureObject.comments;
     }
 

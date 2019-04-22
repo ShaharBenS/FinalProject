@@ -216,6 +216,7 @@ class activeProcess {
     }
 
     assignUserToStage(roleID,userEmail){
+        let today = new Date();
         let hasChanged = false;
         let currentStage = null;
         for(let i=0;i<this.currentStages.length;i++)
@@ -224,6 +225,7 @@ class activeProcess {
             if(currentStage.roleID.id.equals(roleID.id) && currentStage.userEmail === null)
             {
                 currentStage.userEmail = userEmail;
+                currentStage.assignmentTime = today;
                 hasChanged = true;
                 break;
             }
@@ -256,6 +258,7 @@ class activeProcess {
             if(currentStage.roleID.id.equals(roleID.id) && currentStage.userEmail === userEmail)
             {
                 currentStage.userEmail = null;
+                currentStage.assignmentTime = null;
                 hasChanged = true;
                 break;
             }
@@ -309,6 +312,15 @@ class activeProcess {
                 isFoundStage = true;
             }});
         return isFoundStage;
+    }
+
+    incrementNotificationsCycle(stageNumbers)
+    {
+        for(let i=0;i<stageNumbers.length;i++)
+        {
+            let stage = this.getStageByStageNum(stageNumbers[i]);
+            stage.notificationsCycle = stage.notificationsCycle + 1;
+        }
     }
 }
 

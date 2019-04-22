@@ -48,10 +48,12 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let stage = processStructure.stages[i];
                 let stageRoleID = stage.roleID;
                 let stageUserEmail = null;
+                let assignmentTime = null;
                 if(stage.stageNum === initialStage)
                 {
                     stageUserEmail = userEmail;
                     stageRoleID = role.roleID;
+                    assignmentTime = today;
                 }
                 else
                 {
@@ -79,7 +81,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
                     stagesToWaitFor: stage.stagesToWaitFor, attachedFilesNames: [],
                     userEmail: stageUserEmail, originStagesToWaitFor: stage.stagesToWaitFor,
-                    approvalTime: null, comments: ''
+                    approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1, comments: ''
                 });
                 activeProcessStages.push(activeProcessStage);
 
@@ -87,7 +89,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
             let activeProcessToReturn = new ActiveProcess({
                 processName: processName, creatorUserEmail: userEmail,
                 processDate: processDate, processUrgency: processUrgency, creationTime: today,
-                notificationTime: notificationTime, currentStages: [initialStage], onlineForms: processStructure.onlineForms,
+                notificationTime: parseInt(notificationTime), automaticAdvanceTime: processStructure.automaticAdvanceTime, currentStages: [initialStage], onlineForms: processStructure.onlineForms,
                 filledOnlineForms: [], lastApproached: today, stageToReturnTo: initialStage
             }, activeProcessStages);
             for(let i=0;i<activeProcessToReturn.stages.length;i++)
@@ -729,6 +731,23 @@ function convertDate(array, isArrayOfDates) {
         }
     }
 }
+
+module.exports.incrementStageCycle = (processName, stageNumbers, callback)=>{
+    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
+        if(err) callback(err);
+        else
+        {
+            process.incrementNotificationsCycle(stageNumbers);
+            processAccessor.updateActiveProcess({processName: processName},{stages: process.stages},callback);
+        }
+    })
+};
+
+
+
+
+
+
 
 module.exports.checkUpdateResult = (result)=>{
     let keys = Array.from(Object.keys(result));

@@ -8,6 +8,7 @@ const activeProcessSchema = new Schema({
     processUrgency: { type: Number, min: 1, max: 10},
     creationTime: Date,
     notificationTime: Number,
+    automaticAdvanceTime: Number,
     currentStages: [Number],
     onlineForms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
     filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
@@ -20,7 +21,9 @@ const activeProcessSchema = new Schema({
         nextStages: [Number],
         stagesToWaitFor: [Number],
         originStagesToWaitFor: [Number],
+        assignmentTime: Date,
         approvalTime: Date,
+        notificationsCycle: Number,
         attachedFilesNames: [String],
         comments: String
     }],
