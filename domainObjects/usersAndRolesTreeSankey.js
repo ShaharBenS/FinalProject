@@ -34,30 +34,28 @@ class usersAndRolesTreeSankey {
         let roles = this.getRoles();
         let cycle = false;
 
-        let DFSUtil = (v,visited) => {
+        let DFSUtil = (v, visited) => {
             // Mark the current node as visited
             visited.push(v);
 
             // Recur for all the vertices adjacent to this vertex
             let neighbors = [];
             connections.forEach(connection => {
-                if(connection.source.node === v){
+                if (connection.source.node === v) {
                     neighbors.push(connection.target.node);
                 }
-                if(connection.target.node === v){
+                if (connection.target.node === v) {
                     neighbors.push(connection.source.node);
                 }
             });
             let counter = 0;
-            neighbors.forEach(neighbor=>{
-                if(!visited.includes(neighbor)){
-                    DFSUtil(neighbor,visited);
-                }
-                else{
-                    if(counter > 0){
+            neighbors.forEach(neighbor => {
+                if (!visited.includes(neighbor)) {
+                    DFSUtil(neighbor, visited);
+                } else {
+                    if (counter > 0) {
                         cycle = true;
-                    }
-                    else{
+                    } else {
                         counter++;
                     }
                 }
@@ -70,7 +68,7 @@ class usersAndRolesTreeSankey {
         for (let i = 0; i < roles.length; ++i) {
             let discovered = [];
             if (!visited.includes(roles[i].id)) {
-                DFSUtil(roles[i].id,discovered);
+                DFSUtil(roles[i].id, discovered);
                 visited = visited.concat(discovered);
             }
         }
@@ -106,23 +104,23 @@ class usersAndRolesTreeSankey {
         let trees = [];
 
 
-        let DFSUtil = (v,visited) => {
+        let DFSUtil = (v, visited) => {
             // Mark the current node as visited
             visited.push(v);
 
             // Recur for all the vertices adjacent to this vertex
             let neighbors = [];
             connections.forEach(connection => {
-                if(connection.source.node === v){
+                if (connection.source.node === v) {
                     neighbors.push(connection.target.node);
                 }
-                if(connection.target.node === v){
+                if (connection.target.node === v) {
                     neighbors.push(connection.source.node);
                 }
             });
-            neighbors.forEach(neighbor=>{
-                if(!visited.includes(neighbor)){
-                    DFSUtil(neighbor,visited);
+            neighbors.forEach(neighbor => {
+                if (!visited.includes(neighbor)) {
+                    DFSUtil(neighbor, visited);
                 }
             });
         };
@@ -133,13 +131,48 @@ class usersAndRolesTreeSankey {
         for (let i = 0; i < roles.length; ++i) {
             let discovered = [];
             if (!visited.includes(roles[i].id)) {
-                DFSUtil(roles[i].id,discovered);
+                DFSUtil(roles[i].id, discovered);
                 visited = visited.concat(discovered);
                 trees.push(discovered);
             }
         }
 
         return trees.length > 1;
+    }
+
+    /*
+        returns true only if the graph is a tree: each node has 1 father except the root and there's one root
+     */
+    isTree() {
+        let connections = this.getConnections();
+        let roles = this.getRoles();
+        let roots = 0;
+        let rootID = '';
+        roles.forEach(role => {
+            if(connections.every(connection=>{
+                return connection.target.node !== role.id;
+            })){
+                roots++;
+                rootID = role.id;
+            }
+        });
+
+        if(roots !== 1){
+            return false;
+        }
+
+        return roles.every(role => {
+            if(role.id !== rootID){
+                let input = 0;
+                connections.forEach(connection=>{
+                    if(connection.target.node === role.id){
+                        input++;
+                    }
+                });
+                return input === 1;
+            }
+            return true;
+        });
     }
 
     hasNoRoot() {
@@ -163,7 +196,7 @@ class usersAndRolesTreeSankey {
                 trees.push(role);
             }
         });
-        return trees[0].labels[0].text;
+        return trees.length === 0 ? undefined : trees[0].labels[0].text;
     }
 }
 

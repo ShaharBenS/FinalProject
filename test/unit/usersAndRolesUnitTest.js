@@ -17,6 +17,8 @@ let tree3_roles = JSON.parse(fs.readFileSync("./test/inputs/trees/tree3/tree3_ro
 let tree4 = JSON.parse(fs.readFileSync("./test/inputs/trees/tree4/tree4.json"));
 let tree5 = JSON.parse(fs.readFileSync("./test/inputs/trees/tree5/tree5.json"));
 let tree6 = JSON.parse(fs.readFileSync("./test/inputs/trees/tree6/tree6.json"));
+let tree7 = JSON.parse(fs.readFileSync("./test/inputs/trees/tree7/tree7.json"));
+let tree8 = JSON.parse(fs.readFileSync("./test/inputs/trees/tree8/tree8.json"));
 
 
 describe('1. users and roles tree', function ()
@@ -294,6 +296,24 @@ describe('2. users and roles tree sankey', function ()
         done();
     });
 
+    it('2.4.4 users and roles tree sankey has cycles', function (done)
+    {
+        assert.deepEqual(new usersAndRolesTreeSankey(tree5).hasCycles(), true);
+        done();
+    });
+
+    it('2.4.5 users and roles tree sankey has cycles', function (done)
+    {
+        assert.deepEqual(new usersAndRolesTreeSankey(tree7).hasCycles(), false);
+        done();
+    });
+
+    it('2.4.6 users and roles tree sankey has cycles', function (done)
+    {
+        assert.deepEqual(new usersAndRolesTreeSankey(tree8).hasCycles(), false);
+        done();
+    });
+
     it('2.5.1 users and roles tree sankey has cycles', function (done)
     {
         assert.deepEqual(new usersAndRolesTreeSankey(tree6).hasMultipleConnections(), true);
@@ -302,19 +322,19 @@ describe('2. users and roles tree sankey', function ()
 
     it('2.5.2 users and roles tree sankey has cycles', function (done)
     {
-        assert.deepEqual(new usersAndRolesTreeSankey(tree5).hasMultipleConnections(), false);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree8).hasMultipleConnections(), false);
         done();
     });
 
     it('2.5.3 users and roles tree sankey has cycles', function (done)
     {
-        assert.deepEqual(new usersAndRolesTreeSankey(tree4).hasMultipleConnections(), false);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree3).hasMultipleConnections(), false);
         done();
     });
 
     it('2.6.1 users and roles tree sankey has more than one tree', function (done)
     {
-        assert.deepEqual(new usersAndRolesTreeSankey(tree4).hasMoreThanOneTree(), true);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree4).hasMoreThanOneTree(), false);
         done();
     });
 
@@ -326,179 +346,32 @@ describe('2. users and roles tree sankey', function ()
 
     it('2.6.3 users and roles tree sankey has more than one tree', function (done)
     {
-        assert.deepEqual(new usersAndRolesTreeSankey(tree6).hasMoreThanOneTree(), true);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree7).hasMoreThanOneTree(), false);
         done();
     });
-});
 
-
-
-
-describe('3. process structure sankey', function ()
-{
-    it('3.1.1 process structure sankey get sankey stages', function (done)
+    it('2.7.1 users and roles tree sankey has no root', function (done)
     {
-        assert.deepEqual(new processStructureSankey(JSON.parse(tree1)).getSankeyStages(),[]);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree1).hasNoRoot(), true);
         done();
     });
 
-    it('3.1.2 process structure sankey get sankey stages', function (done)
+    it('2.7.2 users and roles tree sankey has no root', function (done)
     {
-        assert.deepEqual(new processStructureSankey(JSON.parse(process_structure_sankey1)).getSankeyStages(),JSON.parse(process_structure_sankey1_sankey_stages));
+        assert.deepEqual(new usersAndRolesTreeSankey(tree2).hasNoRoot(), false);
         done();
     });
 
-    it('3.2.1 process structure sankey get stages', function (done)
+    it('2.7.1 users and roles tree sankey has more than one tree', function (done)
     {
-        assert.deepEqual(new processStructureSankey(JSON.parse(tree1)).getStages(),[]);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree1).getRootName(), undefined);
         done();
     });
 
-    it('3.2.2 process structure sankey get stages', function (done)
+    it('2.7.2 users and roles tree sankey has more than one tree', function (done)
     {
-        let rolesToId = {'DD':'1','CC':'2','RR':'3'};
-        assert.deepEqual(new processStructureSankey(JSON.parse(process_structure_sankey1)).getStages((roleName)=>rolesToId[roleName]),[
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    1
-                ],
-                "onlineForms": [],
-                "roleID": "1",
-                "stageNum": 0,
-                "stagesToWaitFor": []
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    2
-                ],
-                "onlineForms": [],
-                "roleID": "2",
-                "stageNum": 1,
-                "stagesToWaitFor": [
-                    0
-                ],
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [],
-                "onlineForms": [],
-                "roleID": "3",
-                "stageNum": 2,
-                "stagesToWaitFor": [
-                    1
-                ]
-            }
-        ]);
+        assert.deepEqual(new usersAndRolesTreeSankey(tree8).getRootName(), "AA");
         done();
     });
 
-    it('3.2.3 process structure sankey get stages', function (done)
-    {
-        let rolesToId = {'DD':'1','CC':'2','RR':'3'};
-        assert.deepEqual(new processStructureSankey(JSON.parse(process_structure_sankey2)).getStages((roleName)=>rolesToId[roleName]),[
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    1
-                ],
-                "onlineForms": [],
-                "roleID": "3",
-                "stageNum": 0,
-                "stagesToWaitFor": [],
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    2
-                ],
-                "onlineForms": [],
-                "roleID": "1",
-                "stageNum": 1,
-                "stagesToWaitFor": [
-                    0
-                ],
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    4,
-                    3
-                ],
-                "onlineForms": [],
-                "roleID": "2",
-                "stageNum": 2,
-                "stagesToWaitFor": [
-                    1
-                ]
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    5
-                ],
-                "onlineForms": [],
-                "roleID": "1",
-                "stageNum": 3,
-                "stagesToWaitFor": [
-                    2
-                ]
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [
-                    5
-                ],
-                "onlineForms": [],
-                "roleID": "3",
-                "stageNum": 4,
-                "stagesToWaitFor": [
-                    2
-                ],
-            },
-            {
-                "attachedFilesNames": [],
-                "nextStages": [],
-                "onlineForms": [],
-                "roleID": "2",
-                "stageNum": 5,
-                "stagesToWaitFor": [
-                    4,
-                    3
-                ]
-            }
-        ]);
-        done();
-    });
-
-    it('3.3.1 process structure sankey get connections', function (done)
-    {
-        assert.deepEqual(new processStructureSankey(JSON.parse(tree1)).getConnections(),[]);
-        done();
-    });
-
-    it('3.3.2 process structure sankey get connections', function (done)
-    {
-        assert.deepEqual(new processStructureSankey(JSON.parse(process_structure_sankey1)).getConnections(),JSON.parse(process_structure_sankey1_connections));
-        done();
-    });
-
-    it('3.4.1 process structure sankey get initials', function (done)
-    {
-        assert.deepEqual(new processStructureSankey(JSON.parse(tree1)).getInitials(),[]);
-        done();
-    });
-
-    it('3.4.2 process structure sankey get initials', function (done)
-    {
-        assert.deepEqual(new processStructureSankey(JSON.parse(process_structure_sankey1)).getInitials(),[0]);
-        done();
-    });
-
-    it('3.4.3 process structure sankey get initials', function (done)
-    {
-        assert.deepEqual(new processStructureSankey(JSON.parse(process_structure_sankey2)).getInitials(),[0,2]);
-        done();
-    });
 });

@@ -173,6 +173,9 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                     else if (sankeyTree.hasCycles()) {
                         callback('שגיאה: העץ מכיל מעגלים.');
                     }
+                    else if(!sankeyTree.isTree()){
+                        callback('שגיאה: אין מבנה של עץ.');
+                    }
                     else if (emails.filter(emailValidator).length !== emails.length) {
                         callback('שגיאה: אחד או יותר מהמיילים שצורפו לא תקינים.'); //TODO: tell what specific email is not okay.
                     }
