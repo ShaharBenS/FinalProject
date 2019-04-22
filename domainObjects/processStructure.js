@@ -9,26 +9,6 @@ class processStructure {
         this.automaticAdvanceTime = automaticAdvanceTime;
     }
 
-    getInitialStageByRoleID(roleID, dereg) {
-        let initialStages = this.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
-        while(initialStages.length !== 0)
-        {
-            let firstStage = initialStages.shift();
-            if(firstStage.kind === 'ByRole' && roleID.id.equals(firstStage.roleID.id))
-            {
-                return firstStage.stageNum;
-            }
-            if(firstStage.kind === 'ByDereg' && dereg === firstStage.dereg)
-            {
-                return firstStage.stageNum;
-            }
-            for(let i=0;i<firstStage.nextStages.length;i++)
-            {
-                initialStages.push(this.getStageByStageNum(firstStage.nextStages[i]));
-            }
-        }
-        return -1;
-    }
 
     checkNotDupStagesInStructure()
     {
@@ -48,25 +28,6 @@ class processStructure {
         return true;
     };
 
-    /*checkInitialsExistInProcessStages()
-    {
-        for(let i=0;i<this.initials.length;i++)
-        {
-            let found = false;
-            for(let j=0;j<this.stages.length;j++)
-            {
-                if(this.initials[i] === this.stages[j].stageNum)
-                {
-                    found = true;
-                }
-            }
-            if(!found)
-            {
-                return false;
-            }
-        }
-        return true;
-    };*/
 
     checkPrevNextSymmetric()
     {
@@ -126,13 +87,6 @@ class processStructure {
             return foundStage;
         }
         throw new Error("stage not numeric");
-    }
-
-    getFormsOfStage() {
-        return this.stages.reduce((acc, stage) => {
-            acc[stage.roleID] = stage.onlineForms;
-            return acc;
-        }, {})
     }
 }
 

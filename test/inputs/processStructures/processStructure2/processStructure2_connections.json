@@ -1,0 +1,53 @@
+[
+    {
+        "type": "sankey.shape.Connection",
+        "id": "540da842-a8bf-15ed-47ca-396466c433af",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 969,
+            "y": 369
+          },
+          {
+            "x": 1069,
+            "y": 369
+          },
+          {
+            "x": 1069,
+            "y": 371
+          },
+          {
+            "x": 1169,
+            "y": 371
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "b2865fcb-efd9-81c8-f24a-1849c47df8fa",
+          "port": "output0"
+        },
+        "target": {
+          "node": "6e7044f9-7a6f-ebe5-0aac-634323b4cc21",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      }
+]

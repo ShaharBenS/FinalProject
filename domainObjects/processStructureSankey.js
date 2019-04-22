@@ -44,7 +44,6 @@ class processStructureSankey {
                 stageNum: index,
                 nextStages: [],
                 stagesToWaitFor: [],
-                attachedFilesNames: []
             };
             this.getConnections().forEach(connection => {
                 // connection.source.node , connection.target.node
@@ -77,25 +76,6 @@ class processStructureSankey {
             return figure.type === "sankey.shape.Connection";
         });
     }
-
-    /*getInitials()
-    {
-        return this.getSankeyStages().filter((figure) =>
-        {
-            return figure.bgColor.toLowerCase() === '#ff9d6d';
-
-        }).map((figure) =>
-        {
-            let index;
-            this.getSankeyStages().forEach((stage, _index) =>
-            {
-                if (stage.id === figure.id) {
-                    index = _index;
-                }
-            });
-            return index;
-        });
-    }*/
 
     hasMoreThanOneFlow(){
         let connections = this.getConnections();
@@ -132,44 +112,55 @@ class processStructureSankey {
 
     hasCycles(){
         let connections = this.getConnections();
-        let flows = [];
-        this.getSankeyStages().forEach((role)=>{
-            let result = true;
-            connections.forEach((connection)=>{
-                if(connection.target.node === role.id){
-                    result = false;
-                }
-            });
-            if(result){
-                flows.push(role.id);
-            }
-        });
+        let stages = this.getSankeyStages();
 
-        var isCyclic = function (stack,node_id){
-            stack.push(node_id);
-            let result = !connections.every((connection)=>{
-                if(connection.source.node ===  node_id){
-                    if(stack.includes(connection.target.node)){
-                        return false;
-                    }
-                    else{
-                        return !isCyclic(stack,connection.target.node);
-                    }
-                }
+        let isCyclicUtil = (i, visited, recStack)=>
+        {
+            // Mark the current node as visited and
+            // part of recursion stack
+            if (recStack.includes(i))
                 return true;
+
+            if (visited.includes(i))
+                return false;
+
+            visited.push(i);
+            recStack.push(i);
+
+            let neighbors = [];
+            connections.forEach(connection => {
+                if (connection.source.node === i) {
+                    neighbors.push(connection.target.node);
+                }
             });
-            stack.pop();
-            return result;
+
+            for (let j = 0; j < neighbors.length; j++)
+            {
+                if (isCyclicUtil(neighbors[j], visited, recStack))
+                    return true;
+            }
+
+            recStack.pop();
+            return false;
         };
 
-        return !this.getSankeyStages().every((role)=>{
-            if(flows.includes(role.id)){
-                //Start scanning the tree from this root
-                return !isCyclic([], role.id);
+        let isCyclic = ()=>
+        {
+            let visited =[];
+            let recStack = [];
 
+
+            for (let i = 0; i < stages.length; i++)
+            {
+                if (isCyclicUtil(stages[i].id, visited, recStack)) {
+                    return true;
+                }
             }
-            return true;
-        });
+
+            return false;
+        };
+
+        return isCyclic();
     }
 
     hasNoStages()
