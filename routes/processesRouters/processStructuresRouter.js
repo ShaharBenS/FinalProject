@@ -152,7 +152,7 @@ router.get('/getAutomaticAdvanceTime', (req,res)=>{
                 res.send(err);
             }
             else{
-                res.send(waitingStructure.automaticAdvanceTime);
+                res.send(""+waitingStructure.automaticAdvanceTime);
             }
         })
     }
@@ -162,7 +162,7 @@ router.get('/getAutomaticAdvanceTime', (req,res)=>{
             else {
                 if (processStructure !== null)
                 {
-                    res.send(processStructure.automaticAdvanceTime);
+                    res.send(""+processStructure.automaticAdvanceTime);
                 }
                 else res.send([]);
             }

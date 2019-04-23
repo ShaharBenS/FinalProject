@@ -614,7 +614,7 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                 if (err) callback(err);
                 else {
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, [], stage, today, (err) => {
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
                         if (err) {
                             callback(err);
                         } else {

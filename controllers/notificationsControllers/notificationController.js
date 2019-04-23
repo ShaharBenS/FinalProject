@@ -157,7 +157,7 @@ module.exports.notifyCancelledProcess = (process, callback) => {
                 prev(err);
             } else {
                 addNotificationToUser(curr,
-                    new Notification("התהליך " + processName + " בוטל על ידי " + userEmail, "תהליך בוטל"), prev);
+                    new Notification("התהליך " + process.processName + " בוטל על ידי " + curr, "תהליך בוטל"), prev);
             }
         }
     }, (err) => {
