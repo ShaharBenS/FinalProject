@@ -20,7 +20,8 @@ module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
                 structureName: waitingProcessStructure.structureName,
                 addOrEdit: waitingProcessStructure.addOrEdit,
                 date: dates[index],
-                onlineForms: waitingProcessStructure.onlineForms
+                onlineForms: waitingProcessStructure.onlineForms,
+                automaticAdvanceTime:waitingProcessStructure.automaticAdvanceTime
             };
         });
         callback(null, waitingProcessStructuresWithFixedDates);
@@ -64,11 +65,11 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
 
                       if(waitingStructure.addOrEdit){
                           processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
-                              waitingStructure.sankey,waitingStructure.onlineForms,commonCallback);
+                              waitingStructure.sankey,waitingStructure.onlineForms,waitingStructure.automaticAdvanceTime,commonCallback);
                       }
                       else{
                           processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
-                              waitingStructure.sankey, waitingStructure.onlineForms,commonCallback);
+                              waitingStructure.sankey, waitingStructure.onlineForms,waitingStructure.automaticAdvanceTime,commonCallback);
                       }
                   }
               })
@@ -113,7 +114,7 @@ module.exports.updateStructure = (id, sankey, onlineFormsIDs,automaticAdvanceTim
         $set: {
             sankey: sankey,
             onlineForms: onlineFormsIDs,
-            automaticAdvanceTime: automaticAdvanceTime
+            automaticAdvanceTime: parseInt(automaticAdvanceTime)
         }
     }, callback);
 };

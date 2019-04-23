@@ -42,7 +42,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                     date: new Date(),
                                     sankey: sankeyContent,
                                     onlineForms: onlineFormsIDs,
-                                    automaticAdvanceTime:automaticAdvanceTime,
+                                    automaticAdvanceTime:parseInt(automaticAdvanceTime),
                                 },(err)=>{
                                     if(err){
                                         callback(err);
@@ -89,7 +89,7 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                         stages: structure.stages,
                                         sankey: sankeyContent,
                                         onlineForms: onlineFormsIDs,
-                                        automaticAdvanceTime: automaticAdvanceTime
+                                        automaticAdvanceTime: parseInt(automaticAdvanceTime)
                                     }
                                 }, (err) => {
                                     if (err) {

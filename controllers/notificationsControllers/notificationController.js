@@ -3,18 +3,14 @@ let activeProcessController = require('../processesControllers/activeProcessCont
 let Notification = require('../../domainObjects/notification');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 
-module.exports.getUserNotifications = (userEmail, callback) =>
-{
-    notificationAccessor.findNotifications({userEmail: userEmail}, (err, result) =>
-    {
+module.exports.getUserNotifications = (userEmail, callback) => {
+    notificationAccessor.findNotifications({userEmail: userEmail}, (err, result) => {
         if (err) {
             callback(err);
-        }
-        else {
+        } else {
             let dates = result.map(notification => notification.notification.date);
             activeProcessController.convertDate(dates, true);
-            let toReturn = result.map((notification, i) =>
-            {
+            let toReturn = result.map((notification, i) => {
                 return {
                     mongoId: notification._id,
                     notificationType: notification.notification.notificationType,
@@ -27,8 +23,7 @@ module.exports.getUserNotifications = (userEmail, callback) =>
     })
 };
 
-function addNotificationToUser(email, notification, callback)
-{
+function addNotificationToUser(email, notification, callback) {
     let notificationObject = notification.getNotification();
     notificationAccessor.addNotification({
         userEmail: email,
@@ -36,77 +31,68 @@ function addNotificationToUser(email, notification, callback)
     }, callback);
 }
 
-module.exports.deleteNotification = (_id, callback) =>
-{
-    notificationAccessor.deleteAllNotifications({_id:_id},callback);
+module.exports.deleteNotification = (_id, callback) => {
+    notificationAccessor.deleteAllNotifications({_id: _id}, callback);
 };
 
-module.exports.deleteAllNotification = (callback) =>
-{
-    notificationAccessor.deleteAllNotifications({},callback);
+module.exports.deleteAllNotification = (callback) => {
+    notificationAccessor.deleteAllNotifications({}, callback);
 };
 
-module.exports.countNotifications = (email, callback) =>
-{
-    notificationAccessor.countNotifications({userEmail:email},callback)
+module.exports.countNotifications = (email, callback) => {
+    notificationAccessor.countNotifications({userEmail: email}, callback)
 };
 
 /*
     TODO: This function has a bug that need to be fixed. When the active process diverges into two roles, the last approach time , however, applies on both of them.
  */
-module.exports.updateNotifications = () =>
-{
-    activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
-    {
+module.exports.updateNotifications = () => {
+    activeProcessController.getAllActiveProcesses((err, activeProcesses) => {
         if (err) {
-        }
-        else {
-            activeProcesses.forEach(activeProcess =>
-            {
+        } else {
+            activeProcesses.forEach(activeProcess => {
                 let timePassedInHours = ((new Date()) - activeProcess.lastApproached) / 36e5;
                 if (timePassedInHours % activeProcess.notificationTime === 0) {
                     let emails = [];
-                    activeProcess.currentStages.forEach(curr =>
-                    {
-                        emails.push(activeProcess.stages[curr].userEmail);
+                    let incrementCycles = [];
+                    activeProcess.currentStages.forEach(curr => {
+                        if (activeProcess.stages[curr].notificationsCycle <= timePassedInHours / activeProcess.notificationTime) {
+                            incrementCycles.push(curr);
+                            emails.push(activeProcess.stages[curr].userEmail);
+                        }
                     });
-                    emails.reduce((prev, curr) =>
-                    {
-                        return (err) =>
-                        {
+                    activeProcessController.incrementStageCycle(activeProcess.processName, incrementCycles, (_) => {
+                        emails.reduce((prev, curr) => {
+                            return (err) => {
+                                if (err) {
+                                    prev(err);
+                                } else {
+                                    this.addNotificationToUser(curr,
+                                        new Notification(
+                                            "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות", "תזכורת להתליך בהמתנה"),
+                                        (err) => {
+                                            if (err) {
+                                                prev(err);
+                                            } else {
+                                                prev(null);
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                        }, (err) => {
                             if (err) {
-                                prev(err);
+                                console.log(err);
                             }
-                            else {
-                                this.addNotificationToUser(curr,
-                                    new Notification(
-                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות","תזכורת להתליך בהמתנה"),
-                                    (err) =>
-                                    {
-                                        if (err) {
-                                            prev(err);
-                                        }
-                                        else {
-                                            prev(null);
-                                        }
-                                    }
-                                );
-                            }
-                        }
-                    }, (err) =>
-                    {
-                        if (err) {
-                            console.log(err);
-                        }
-                    })(null);
+                        })(null);
+                    });
                 }
             });
         }
     })
 };
 
-module.exports.notifyFinishedProcess = (process, callback) =>
-{
+module.exports.notifyFinishedProcess = (process, callback) => {
     // notifying participants
     process.stages.reduce((prev, curr) => {
         return (err) => {
@@ -127,8 +113,7 @@ module.exports.notifyFinishedProcess = (process, callback) =>
     })(null);
 };
 
-module.exports.notifyNotFinishedProcess = (process, callback) =>
-{
+module.exports.notifyNotFinishedProcess = (process, callback) => {
     //TODO Kuti Notify Only the stages that are promoted not all current
     process.currentStages.reduce((acc, curr) => {
         return (err) => {
@@ -136,25 +121,25 @@ module.exports.notifyNotFinishedProcess = (process, callback) =>
                 acc(err);
             } else {
                 let stage = process.getStageByStageNum(curr);
-                    usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
-                        emails.reduce((acc, curr) => {
-                            return (err) => {
-                                if (err) {
-                                    acc(err);
-                                } else {
-                                    addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
-                                }
-                            }
-                        }, (err) => {
+                usersAndRolesController.getEmailsByRoleId(stage.roleID, (err, emails) => {
+                    emails.reduce((acc, curr) => {
+                        return (err) => {
                             if (err) {
                                 acc(err);
                             } else {
-                                acc(null);
+                                addNotificationToUser(curr, new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין"), acc);
                             }
-                        })(null);
-                    });
-                }
+                        }
+                    }, (err) => {
+                        if (err) {
+                            acc(err);
+                        } else {
+                            acc(null);
+                        }
+                    })(null);
+                });
             }
+        }
     }, (err) => {
         if (err) {
             callback(err);
@@ -164,8 +149,7 @@ module.exports.notifyNotFinishedProcess = (process, callback) =>
     })(null);
 };
 
-module.exports.notifyCancelledProcess = (process, callback) =>
-{
+module.exports.notifyCancelledProcess = (process, callback) => {
     let usersToNotify = process.getParticipatingUsers();
     usersToNotify.reduce((prev, curr) => {
         return (err) => {
