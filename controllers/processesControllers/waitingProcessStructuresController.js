@@ -19,9 +19,10 @@ module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
                 userEmail: waitingProcessStructure.userEmail,
                 structureName: waitingProcessStructure.structureName,
                 addOrEdit: waitingProcessStructure.addOrEdit,
+                deleteRequest: waitingProcessStructure.deleteRequest,
                 date: dates[index],
                 onlineForms: waitingProcessStructure.onlineForms,
-                automaticAdvanceTime:waitingProcessStructure.automaticAdvanceTime
+                automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime
             };
         });
         callback(null, waitingProcessStructuresWithFixedDates);
@@ -63,21 +64,23 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                             })
                         };
 
-                      if(waitingStructure.addOrEdit){
-                          processStructureController.addProcessStructure(userEmail,waitingStructure.structureName,
-                              waitingStructure.sankey,waitingStructure.onlineForms,waitingStructure.automaticAdvanceTime,commonCallback);
-                      }
-                      else{
-                          processStructureController.editProcessStructure(userEmail,waitingStructure.structureName,
-                              waitingStructure.sankey, waitingStructure.onlineForms,waitingStructure.automaticAdvanceTime,commonCallback);
-                      }
-                  }
-              })
-          }
-          else{
-              callback("ERROR: You don't have the required permissions to perform this operation")
-          }
-      }
+                        if (waitingStructure.deleteRequest) {
+                            processStructureController.removeProcessStructure(userEmail, waitingStructure.structureName, commonCallback);
+                        } else {
+                            if (waitingStructure.addOrEdit) {
+                                processStructureController.addProcessStructure(userEmail, waitingStructure.structureName,
+                                    waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, commonCallback);
+                            } else {
+                                processStructureController.editProcessStructure(userEmail, waitingStructure.structureName,
+                                    waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, commonCallback);
+                            }
+                        }
+                    }
+                })
+            } else {
+                callback("ERROR: You don't have the required permissions to perform this operation")
+            }
+        }
     });
 };
 
@@ -109,12 +112,32 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
     });
 };
 
-module.exports.updateStructure = (id, sankey, onlineFormsIDs,automaticAdvanceTime, callback) => {
-    waitingProcessStructuresAccessor.updateWaitingProcessStructures({_id: id}, {
-        $set: {
-            sankey: sankey,
-            onlineForms: onlineFormsIDs,
-            automaticAdvanceTime: parseInt(automaticAdvanceTime)
+module.exports.updateStructure = (userEmail, id, sankey, onlineFormsIDs, automaticAdvanceTime, callback) => {
+    usersPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
+        if (err) {
+           callback(err);
         }
-    }, callback);
+        else{
+            if(permissions.structureManagementPermission){
+                waitingProcessStructuresAccessor.updateWaitingProcessStructures({_id: id}, {
+                    $set: {
+                        sankey: sankey,
+                        onlineForms: onlineFormsIDs,
+                        automaticAdvanceTime: parseInt(automaticAdvanceTime)
+                    }
+                }, (err)=>{
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        callback(null,'success');
+                    }
+                });
+            }
+            else{
+                callback(null,"אין לך הרשאות")
+            }
+        }
+    });
+
 };

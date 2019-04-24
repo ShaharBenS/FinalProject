@@ -51,12 +51,12 @@ router.post('/file/save', function (req, res) {
         onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=> {
             if(err) callback(err);
             else {
-                waitingProcessStructuresController.updateStructure(req.body.mongoId, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime, (err) => {
+                waitingProcessStructuresController.updateStructure(userEmail,req.body.mongoId, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime, (err,status) => {
                     if (err) {
                         res.send(err);
                     }
                     else {
-                        res.send("success");
+                        res.send(status);
                     }
                 });
             }

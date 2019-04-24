@@ -18,12 +18,12 @@ let router = express.Router();
 
 router.post('/removeProcessStructure', function (req, res) {
     let structureName = req.body.structureName;
-    processStructureController.removeProcessStructure(structureName, (err)=>{
+    processStructureController.removeProcessStructure(req.user.emails[0].value, structureName, (err,needApprove)=>{
         if(err){
             res.send(err);
         }
         else{
-            res.send("success");
+            res.send("success"+needApprove);
         }
     });
 });

@@ -6,6 +6,7 @@ const waitingProcessStructuresSchema = new Schema({
     userEmail: String,
     structureName: String,
     addOrEdit: Boolean, // true for add
+    deleteRequest: {type:Boolean, default: false},
     date: Date,
     sankey: String,
     onlineForms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],

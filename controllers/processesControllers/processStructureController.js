@@ -132,9 +132,44 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
     });
 };
 
-module.exports.removeProcessStructure = (structureName, callback) =>
+module.exports.removeProcessStructure = (userEmail, structureName, callback) =>
 {
-    processStructureAccessor.deleteOneProcessStructure({structureName: structureName}, callback)
+    userPermissionsController.getUserPermissions(userEmail,(err,permissions)=>{
+        if(err){
+            callback(err);
+        }
+        else{
+            if (permissions.structureManagementPermission) {
+                processStructureAccessor.deleteOneProcessStructure({structureName: structureName}, (err)=>{
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        callback(null,'');
+                    }
+                });
+            }
+            else{
+                waitingProcessStructuresAccessor.addWaitingProcessStructure({
+                    userEmail: userEmail,
+                    structureName: structureName,
+                    deleteRequest:true,
+                    addOrEdit: true,
+                    date: new Date(),
+                    sankey: undefined,
+                    onlineForms: undefined,
+                    automaticAdvanceTime:undefined,
+                },(err)=>{
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        callback(null,'approval');
+                    }
+                })
+            }
+        }
+    });
 };
 
 module.exports.getProcessStructure = (name, callback) =>

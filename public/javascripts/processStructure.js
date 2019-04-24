@@ -182,9 +182,16 @@ function deleteStructureClicked() {
         ).done(function (responseText, status)
         {
             if (status === "success") {
-                if (responseText === "success") {
-                    alert("מבנה התהליך נמחק בהצלחה");
-                    window.location.href = '/Home/';
+                if (responseText.substring(0,7) === "success") {
+                    let commonCallback = ()=>{
+                        window.location.href = '/Home/';
+                    };
+                    if(responseText === "success"){
+                        alertify.alert("מבנה התהליך נמחק בהצלחה",commonCallback);
+                    }
+                    else{
+                        alertify.alert("מחיקת מבנה התהליך עברה לאישור בהצלחה",commonCallback);
+                    }
                 }
                 else {
                     alert(responseText);
