@@ -97,18 +97,6 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let stage = activeProcessToReturn.stages[i];
                 if(stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg))
                 {
-                    for(let j=0;j<stage.stagesToWaitFor.length;j++)
-                    {
-                        let prevStage = activeProcessToReturn.getStageByStageNum(stage.stagesToWaitFor[j]);
-                        prevStage.removeNextStages([stage.stageNum]);
-                        prevStage.addNextStages(stage.nextStages);
-                    }
-                    for(let j=0;j<stage.nextStages.length;j++)
-                    {
-                        let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[j]);
-                        nextStage.removeStagesToWaitFor([stage.stageNum]);
-                        nextStage.addStagesToWaitFor(stage.stagesToWaitFor);
-                    }
                     activeProcessToReturn.removeStage(stage.stageNum);
                     i--;
                 }

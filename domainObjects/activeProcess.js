@@ -18,19 +18,33 @@ class activeProcess {
     removeStage(stageToRemove){
         if(Number.isInteger(stageToRemove))
         {
-            for(let i=0;i<this.stages.length;i++)
+            let stage = null, i;
+            for(i=0;i<this.stages.length;i++)
             {
                 if(this.stages[i].stageNum === stageToRemove)
                 {
-                    this.stages.splice(i,1);
-                    return;
+                    stage = this.stages[i];
+                    break;
                 }
             }
+            if(stage === null) throw new Error('stage wasnt found');
+            for(let j=0;j<stage.stagesToWaitFor.length;j++)
+            {
+                let prevStage = this.getStageByStageNum(stage.stagesToWaitFor[j]);
+                prevStage.removeNextStages([stage.stageNum]);
+                prevStage.addNextStages(stage.nextStages);
+            }
+            for(let j=0;j<stage.nextStages.length;j++)
+            {
+                let nextStage = this.getStageByStageNum(stage.nextStages[j]);
+                nextStage.removeStagesToWaitFor([stage.stageNum]);
+                nextStage.addStagesToWaitFor(stage.stagesToWaitFor);
+            }
+            this.stages.splice(i,1);
         }
         else {
             throw new Error('stage isnt numeric');
         }
-
     }
 
     addCurrentStage(stageNum) {
@@ -140,6 +154,7 @@ class activeProcess {
                 if(nextChosenStages.includes(nextStage.stageNum))
                 {
                     this.addCurrentStage(nextStage.stageNum);
+                    if(nextStage.userEmail !== null) nextStage.assignmentTime = new Date();
                     addedStages.push(nextStage.stageNum);
                 }
             }
@@ -187,10 +202,10 @@ class activeProcess {
         while(stagesToRevert.length !== 0)
         {
             let firstStage = stagesToRevert.shift();
-            if(firstStage.approvalTime !== null)
+            if(firstStage.assignmentTime !== null)
             {
                 firstStage.approvalTime = null;
-                firstStage.stagesToWaitFor = this.stageToReturnTo === firstStage.stageNum?firstStage.originStagesToWaitFor:[];
+                firstStage.stagesToWaitFor = this.stageToReturnTo === firstStage.stageNum?[]:firstStage.originStagesToWaitFor;
                 firstStage.attachedFilesNames = [];
                 firstStage.comments = '';
                 for(let i=0;i<firstStage.nextStages.length;i++)
