@@ -85,7 +85,7 @@ let createActiveProcess2 = function () {
       +----> 6 <----+
            +---+
     */
-    stage0 = new ActiveProcessStage({roleID: {id : Buffer.from('1')}, stageNum: 0, nextStages: [1], stagesToWaitFor: [], originStagesToWaitFor: [], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
+    stage0 = new ActiveProcessStage({roleID: {id : Buffer.from('1')}, kind: 'ByRole', dereg: '', stageNum: 0, nextStages: [1], stagesToWaitFor: [], originStagesToWaitFor: [], attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', approvalTime: null, comments:comments});
     stage1 = new ActiveProcessStage({roleID: {id : Buffer.from('2')}, stageNum: 1, nextStages: [2,3], stagesToWaitFor: [], originStagesToWaitFor: [0], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'b@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     stage2 = new ActiveProcessStage({roleID: {id : Buffer.from('3')}, stageNum: 2, nextStages: [4], stagesToWaitFor: [], originStagesToWaitFor: [1], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'c@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
     stage3 = new ActiveProcessStage({roleID: {id : Buffer.from('4')}, stageNum: 3, nextStages: [5], stagesToWaitFor: [], originStagesToWaitFor: [1], onlineForms: onlineForms, attachedFilesNames: attachedFilesNames, userEmail: 'd@bgu.ac.il', approvalTime: null, filledOnlineForms:filledOnlineForms, comments:comments});
