@@ -80,7 +80,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
                     stagesToWaitFor: stage.stagesToWaitFor, attachedFilesNames: [],
-                    userEmail: stageUserEmail, originStagesToWaitFor: stage.stagesToWaitFor,
+                    userEmail: stageUserEmail,
                     approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1, comments: ''
                 });
                 activeProcessStages.push(activeProcessStage);
