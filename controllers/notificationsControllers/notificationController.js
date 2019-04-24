@@ -51,7 +51,7 @@ module.exports.updateNotifications = () => {
         if (err) {
         } else {
             activeProcesses.forEach(activeProcess => {
-                let timePassedInHours = ((new Date()) - activeProcess.lastApproached) / 36e5;
+                let timePassedInHours = Math.floor(((new Date()) - activeProcess.lastApproached) / 36e5);
                 if (timePassedInHours % activeProcess.notificationTime === 0) {
                     let emails = [];
                     let incrementCycles = [];
