@@ -285,3 +285,31 @@ describe('4.0 sankey tests', function () {
         assert.deepEqual(new processStructureSankey(processStructure2).hasNoStages(), false);
     });
 });
+
+describe('5.0 check get stage by stage num', function () {
+
+    it('5.1 check get stage by stage num', () => {
+        createProcessStructure1();
+        assert.deepEqual(0, testProcess.getInitialStageByRoleID({id:{equals:(x)=>x===0}},"2"));
+    });
+
+    it('5.2 check get stage by stage num', () => {
+        createProcessStructure1();
+        assert.deepEqual(1, testProcess.getInitialStageByRoleID({id:{equals:(x)=>x===1}},"1"));
+    });
+
+    it('5.3 check get stage by stage num', () => {
+        createProcessStructure1();
+        assert.deepEqual(2, testProcess.getInitialStageByRoleID({id:{equals:(x)=>x===4}},"1"));
+    });
+
+    it('5.4 check get stage by stage num', () => {
+        createProcessStructure1();
+        assert.deepEqual(2, testProcess.getInitialStageByRoleID({id:{equals:(x)=>x===5}},"1"));
+    });
+
+    it('5.5 check get stage by stage num', () => {
+        createProcessStructure1();
+        assert.deepEqual(-1, testProcess.getInitialStageByRoleID({id:{equals:(x)=>x===3}},"3"));
+    });
+});
