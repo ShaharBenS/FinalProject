@@ -363,8 +363,8 @@ describe('10.0 return process to creator', function () {
         testProcess.advanceProcess(3,[4]);
         testProcess.assignUserToStage({id : Buffer.from('4')},'c@bgu.ac.il');
         testProcess.returnProcessToCreator();
-        assert.equal(testProcess.currentStages.length,1);
-        assert.deepEqual(testProcess.creatorUserEmail, testProcess.getStageByStageNum(testProcess.currentStages[0]).userEmail);
+        assert.deepEqual(testProcess.currentStages,[3]);
+        assert.deepEqual(testProcess.creatorUserEmail, testProcess.getStageByStageNum(3).userEmail);
         assert.deepEqual(testProcess.getStageByStageNum(4).stagesToWaitFor, testProcess.getStageByStageNum(4).originStagesToWaitFor);
     });
 });

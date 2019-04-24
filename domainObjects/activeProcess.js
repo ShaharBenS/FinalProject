@@ -126,11 +126,6 @@ class activeProcess {
         let stage = this.getStageByStageNum(stageDetails.stageNum);
         if(stage.kind === 'Creator') {
             this.stageToReturnTo = stageDetails.stageNum;
-            let coverage = this.getCoverage([this.stageToReturnTo]);
-            coverage.forEach(stageNum=>{
-                let stage = this.getStageByStageNum(stageNum);
-                stage.originStagesToWaitFor = stage.stagesToWaitFor;
-            });
         }
         stage.handleStage(stageDetails.fileNames, stageDetails.comments);
         for(let i=0;i<stage.nextStages.length;i++)
