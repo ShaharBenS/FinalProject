@@ -79,6 +79,7 @@ class activeProcessStage {
     haveNoOneToWaitFor() {
         return this.stagesToWaitFor.length === 0;
     }
+
 }
 
 module.exports = activeProcessStage;
