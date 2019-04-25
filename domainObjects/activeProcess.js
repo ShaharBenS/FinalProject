@@ -309,7 +309,7 @@ class activeProcess {
         let userEmails = [];
         for(let i=0;i<this.stages.length;i++)
         {
-            if(this.stages[i].userEmail !== null && this.stages[i].userEmail !== undefined && !userEmails.includes(this.stages[i].userEmail))
+            if(this.stages[i].userEmail !== null && !userEmails.includes(this.stages[i].userEmail))
             {
                 userEmails.push(this.stages[i].userEmail);
             }
@@ -319,16 +319,21 @@ class activeProcess {
 
     isStageExists(stageNum)
     {
-        let isFoundStage = false;
-        this.stages.forEach((stage) => {
-            if(stage.stageNum === stageNum){
-                if(isFoundStage)
-                {
-                    throw new Error();
+        if(!isNaN(stageNum))
+        {
+            for(let i=0;i<this.stages.length;i++)
+            {
+                let stage = this.stages[i];
+                if(stage.stageNum === stageNum) {
+                    return true;
                 }
-                isFoundStage = true;
-            }});
-        return isFoundStage;
+            }
+            return false;
+        }
+        else
+        {
+            throw new Error('stage isnt numeric');
+        }
     }
 
     incrementNotificationsCycle(stageNumbers)
