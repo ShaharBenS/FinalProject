@@ -36,7 +36,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true,limit:'50mb'}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -69,6 +69,8 @@ passport.deserializeUser(function (user, done) {
 });
 
 onlineFormsController.createAllOnlineForms();
+
+
 
 // Thread for updating notifications
 let updateTimeInMinutes = 10;
