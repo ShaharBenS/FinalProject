@@ -19,15 +19,7 @@ let globalBefore = async function () {
 };
 
 let globalBeforeEach = function (done) {
-    userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) =>
-    {
-        if (err) {
-            done(err);
-        }
-        else {
-            done();
-        }
-    });
+
     //modelUsersAndRoles.createIndexes();
     //usersAndRolesTreeSankey.createIndexes();
 };
@@ -42,19 +34,25 @@ let globalAfterEach = function () {
 
 describe('1. graphics test', function () {
     before(globalBefore);
-    beforeEach(globalBeforeEach);
-    afterEach(globalAfterEach);
     after(globalAfter);
     it('1.1 graphics test', function (done) {
-        UsersAndRolesTreeSankey.setUsersAndRolesTree('a@outlook.co.il', JSON.stringify(sankeyContent),
-            rolesToEmails,emailsToFullName,
-            rolesToDereg, (err) => {
-                if (err) {
-                    done(err);
-                }
-                else{
-                    done();
-                }
-            })
+        userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) => {
+            if (err) {
+                done(err);
+            }
+            else {
+                UsersAndRolesTreeSankey.setUsersAndRolesTree('a@outlook.co.il', JSON.stringify(sankeyContent),
+                    rolesToEmails, emailsToFullName,
+                    rolesToDereg, (err) => {
+                        if (err) {
+                            done(err);
+                        }
+                        else {
+                            done();
+                        }
+                    });
+            }
+        });
+
     });
 });
