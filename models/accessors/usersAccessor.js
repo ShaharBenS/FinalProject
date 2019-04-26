@@ -62,7 +62,7 @@ module.exports.deleteAllUserNames = (callback) => {
 };
 
 module.exports.findAdmins = (criteria, callback) => {
-    return AdminsSchema.find({}, callback);
+    return AdminsSchema.find(criteria, callback);
 };
 
 module.exports.addAdmin = (admin, callback) => {

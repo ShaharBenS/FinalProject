@@ -1,5 +1,8 @@
 let usersAndRolesController = require('../../controllers/usersControllers/usersAndRolesController');
-let modelUsersAndRoles = require('../../models/schemas/usersSchemas/UsersAndRolesSchema');
+let UsersPermissionsController = require('../../controllers/usersControllers/UsersPermissionsController');
+let processStructureController = require('../../controllers/processesControllers/processStructureController');
+let waitingProcessStructuresController = require('../../controllers/processesControllers/waitingProcessStructuresController');
+let UserPermissions = require('../../domainObjects/UserPermissions');
 let mongoose = require('mongoose');
 let mocha = require('mocha');
 let describe = mocha.describe;
@@ -11,12 +14,6 @@ let globalBefore = async function ()
 {
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-    modelUsersAndRoles.createIndexes();
-};
-
-let globalBeforeEach = function ()
-{
-    modelUsersAndRoles.createIndexes();
 };
 
 let globalAfter = function ()
@@ -35,6 +32,7 @@ describe('1. addUsersAndRole', function ()
     before(globalBefore);
     after(globalAfter);
     let tree9_string = fs.readFileSync("./test/inputs/trees/tree9/tree9.json");
+    let processStructure9_string = fs.readFileSync("./test/inputs/processStructures/processStructure9/processStructure9.json");
 
     it('1.1 Creating users and roles tree', function (done)
     {
@@ -42,8 +40,8 @@ describe('1. addUsersAndRole', function ()
         {
             usersAndRolesController.setUsersAndRolesTree("creator@email.com", tree9_string,
                 {
-                    "יו\"ר": ["YOR@outlook.com"],
-                    "סיו\"ר": ["SAYOR@outlook.com"],
+                    "יו\"ר": ["yor@outlook.com"],
+                    "סיו\"ר": ["sayor@outlook.com"],
                     "רמ\"ד כספים": ["cesef@outlook.com"],
                     "רמ\"ד אקדמיה": ["academy@outlook.com"],
                     "רמ\"ד הסברה": ["hasbara@outlook.com"],
@@ -55,8 +53,8 @@ describe('1. addUsersAndRole', function ()
                     "מנהל/ת מיזמים אקדמים": ["meizamim@outlook.com"]
                 },
                 {
-                    "YOR@outlook.com": "אלף בית",
-                    "SAYOR@outlook.com": "בית גימל",
+                    "yor@outlook.com": "אלף בית",
+                    "sayor@outlook.com": "בית גימל",
                     "cesef@outlook.com": "גימל דלת",
                     "academy@outlook.com": "דלת היי",
                     "hasbara@outlook.com": "היי וו",
@@ -123,10 +121,18 @@ describe('1. addUsersAndRole', function ()
                                                                 done(err)
                                                             }
                                                             else {
-                                                                assert.deepEqual(Object.keys(roleToDereg).length,11);
-                                                                assert.deepEqual(roleToDereg["יו\"ר"],"5");
-                                                                assert.deepEqual(roleToDereg["מנהל/ת רווחה"],"2");
-                                                                done();
+                                                                assert.deepEqual(Object.keys(roleToDereg).length, 11);
+                                                                assert.deepEqual(roleToDereg["יו\"ר"], "5");
+                                                                assert.deepEqual(roleToDereg["מנהל/ת רווחה"], "2");
+                                                                UsersPermissionsController.setUserPermissions(new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) =>
+                                                                {
+                                                                    if (err) {
+                                                                        done(err);
+                                                                    }
+                                                                    else {
+                                                                        done();
+                                                                    }
+                                                                });
                                                             }
                                                         });
                                                     }
@@ -143,19 +149,49 @@ describe('1. addUsersAndRole', function ()
         });
     }).timeout(30000);
 
-    it('1.2 Creating process structures', function (done)
+    it('1.2 Creating process structure', function (done)
     {
-        // Approve method and regular
-        done();
-    });
+        processStructureController.addProcessStructure("sayor@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string,
+            [], "24", (err, needApprove) =>
+            {
+                assert.deepEqual(needApprove, "approval");
+                waitingProcessStructuresController.getAllWaitingProcessStructuresWithoutSankey((err, waitingStructures) =>
+                {
+                    if (err) {
+                        done(err);
+                    }
+                    else {
+                        assert.deepEqual(waitingStructures[0].userEmail, "sayor@outlook.com");
+                        waitingProcessStructuresController.approveProcessStructure("yor@outlook.com", waitingStructures[0].id, (err) =>
+                        {
+                            if (err) {
+                                done(err);
+                            }
+                            else {
+                                processStructureController.getAllProcessStructures((err,processStructures)=>{
+                                    if(err){
+                                        done(err);
+                                    }
+                                    else{
+                                        assert.deepEqual(processStructures[0].structureName,"מעורבות באתר אקדמיה");
+                                        assert.deepEqual(processStructures[0].stages.length,10);
+                                        done();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+    }).timeout(30000);
 
     it('1.3 Starting and advancing', function (done)
     {
         done();
-    });
+    }).timeout(30000);
 
     it('1.3 Canceling and reports', function (done)
     {
         done();
-    });
+    }).timeout(30000);
 });
