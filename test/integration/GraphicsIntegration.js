@@ -10,6 +10,7 @@ let rolesToDereg = require('../inputs/trees/GraphicsTree/rolesToDereg');
 let rolesToEmails = require('../inputs/trees/GraphicsTree/rolesToEmails');
 let modelUsersAndRoles = require('../../models/schemas/usersSchemas/UsersAndRolesSchema');
 let usersAndRolesTreeSankey = require('../../models/schemas/usersSchemas/UsersAndRolesTreeSankeySchema');
+let userAccessor = require('../../models/accessors/usersAccessor');
 
 
 let globalBefore = async function () {
@@ -17,9 +18,18 @@ let globalBefore = async function () {
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
 };
 
-let globalBeforeEach = function () {
-    modelUsersAndRoles.createIndexes();
-    usersAndRolesTreeSankey.createIndexes();
+let globalBeforeEach = function (done) {
+    userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) =>
+    {
+        if (err) {
+            done(err);
+        }
+        else {
+            done();
+        }
+    });
+    //modelUsersAndRoles.createIndexes();
+    //usersAndRolesTreeSankey.createIndexes();
 };
 
 let globalAfter = function () {
@@ -31,13 +41,12 @@ let globalAfterEach = function () {
 };
 
 describe('1. graphics test', function () {
-
     before(globalBefore);
     beforeEach(globalBeforeEach);
     afterEach(globalAfterEach);
     after(globalAfter);
     it('1.1 graphics test', function (done) {
-        UsersAndRolesTreeSankey.setUsersAndRolesTree('a@outlook.co.il', sankeyContent,
+        UsersAndRolesTreeSankey.setUsersAndRolesTree('a@outlook.co.il', JSON.stringify(sankeyContent),
             rolesToEmails,emailsToFullName,
             rolesToDereg, (err) => {
                 if (err) {
