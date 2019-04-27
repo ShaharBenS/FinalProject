@@ -2,6 +2,8 @@ let usersAndRolesController = require('../../controllers/usersControllers/usersA
 let UsersPermissionsController = require('../../controllers/usersControllers/UsersPermissionsController');
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let waitingProcessStructuresController = require('../../controllers/processesControllers/waitingProcessStructuresController');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
+let processReportController = require('../../controllers/processesControllers/processReportController');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let mongoose = require('mongoose');
 let mocha = require('mocha');
@@ -14,6 +16,7 @@ let globalBefore = async function ()
 {
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
+    mongoose.connection.db.dropDatabase();
 };
 
 let globalAfter = function ()
@@ -21,10 +24,6 @@ let globalAfter = function ()
     mongoose.connection.close();
 };
 
-let globalAfterEach = function ()
-{
-    mongoose.connection.db.dropDatabase();
-};
 
 describe('1. addUsersAndRole', function ()
 {
@@ -168,14 +167,49 @@ describe('1. addUsersAndRole', function ()
                                 done(err);
                             }
                             else {
-                                processStructureController.getAllProcessStructures((err,processStructures)=>{
-                                    if(err){
+                                processStructureController.getAllProcessStructures((err, processStructures) =>
+                                {
+                                    if (err) {
                                         done(err);
                                     }
-                                    else{
-                                        assert.deepEqual(processStructures[0].structureName,"מעורבות באתר אקדמיה");
-                                        assert.deepEqual(processStructures[0].stages.length,10);
-                                        done();
+                                    else {
+                                        assert.deepEqual(processStructures[0].structureName, "מעורבות באתר אקדמיה");
+                                        assert.deepEqual(processStructures[0].stages.length, 10);
+                                        processStructureController.editProcessStructure("new_media3@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string, [], 48, (err, needApprove) =>
+                                        {
+                                            if (err) {
+                                                done(err);
+                                            }
+                                            else {
+                                                assert.deepEqual(needApprove, "approval");
+                                                waitingProcessStructuresController.getAllWaitingProcessStructuresWithoutSankey((err, waitingStructures) =>
+                                                {
+                                                    if (err) {
+                                                        done(err);
+                                                    }
+                                                    else {
+                                                        waitingProcessStructuresController.disapproveProcessStructure("creator@email.com", waitingStructures[0].id, (err) =>
+                                                        {
+                                                            if (err) {
+                                                                done(err);
+                                                            }
+                                                            else {
+                                                                processStructureController.getProcessStructure("מעורבות באתר אקדמיה", (err, ps) =>
+                                                                {
+                                                                    if (err) {
+                                                                        done(err);
+                                                                    }
+                                                                    else {
+                                                                        assert.deepEqual(ps.automaticAdvanceTime, 24);
+                                                                        done();
+                                                                    }
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                });
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -185,13 +219,205 @@ describe('1. addUsersAndRole', function ()
             });
     }).timeout(30000);
 
-    it('1.3 Starting and advancing', function (done)
+    it('1.3 Starting, advancing, cancelling', function (done)
     {
-        done();
+        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 1",
+            new Date(2022, 4, 26, 16), 2, 12, (err) =>
+            {
+                if (err) {
+                    done(err);
+                }
+                else {
+                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
+                        {
+                            processName: "תהליך 1",
+                            1: "on",
+                            comments: "הערה 1"
+                        }, [], (err) =>
+                        {
+                            if (err) {
+                                done(err);
+                            }
+                            else {
+                                activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
+                                    processName: "תהליך 1",
+                                    2: "on",
+                                    comments: "הערה 2"
+                                }, [], (err) =>
+                                {
+                                    if (err) {
+                                        done(err);
+                                    }
+                                    else {
+                                        activeProcessController.takePartInActiveProcess("תהליך 1", "new_media@outlook.com", (err) =>
+                                        {
+                                            if (err) {
+                                                done(err);
+                                            }
+                                            else {
+                                                activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
+                                                    processName: "תהליך 1",
+                                                    3: "on",
+                                                    comments: "הערה 3"
+                                                }, [], (err) =>
+                                                {
+                                                    if (err) {
+                                                        done(err);
+                                                    }
+                                                    else {
+                                                        activeProcessController.uploadFilesAndHandleProcess("meizamim@outlook.com", {
+                                                            processName: "תהליך 1",
+                                                            4: "on",
+                                                            comments: "הערה 4"
+                                                        }, [], (err) =>
+                                                        {
+                                                            if (err) {
+                                                                done(err);
+                                                            }
+                                                            else {
+                                                                activeProcessController.uploadFilesAndHandleProcess("academy@outlook.com", {
+                                                                    processName: "תהליך 1",
+                                                                    5: "on",
+                                                                    6: "on",
+                                                                    comments: "הערה 56"
+                                                                }, [], (err) =>
+                                                                {
+                                                                    if (err) {
+                                                                        done(err);
+                                                                    }
+                                                                    else {
+                                                                        activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
+                                                                            processName: "תהליך 1",
+                                                                            9: "on",
+                                                                            comments: "הערה 7.1"
+                                                                        }, [], (err) =>
+                                                                        {
+                                                                            if (err) {
+                                                                                done(err);
+                                                                            }
+                                                                            else {
+                                                                                activeProcessController.uploadFilesAndHandleProcess("revaha@outlook.com", {
+                                                                                    processName: "תהליך 1",
+                                                                                    9: "on",
+                                                                                    comments: "הערה 7.2"
+                                                                                }, [], (err) =>
+                                                                                {
+                                                                                    if (err) {
+                                                                                        done(err);
+                                                                                    }
+                                                                                    else {
+                                                                                        activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
+                                                                                            processName: "תהליך 1",
+                                                                                            7: "on",
+                                                                                            comments: "הערה 7"
+                                                                                        }, [], (err) =>
+                                                                                        {
+                                                                                            if (err) {
+                                                                                                done(err);
+                                                                                            }
+                                                                                            else {
+                                                                                                activeProcessController.uploadFilesAndHandleProcess("sayor@outlook.com", {
+                                                                                                    processName: "תהליך 1",
+                                                                                                    8: "on",
+                                                                                                    comments: "הערה 8"
+                                                                                                }, [], (err) =>
+                                                                                                {
+                                                                                                    if (err) {
+                                                                                                        done(err);
+                                                                                                    }
+                                                                                                    else {
+                                                                                                        activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
+                                                                                                            processName: "תהליך 1",
+                                                                                                            comments: "הערה 10"
+                                                                                                        }, [], (err) =>
+                                                                                                        {
+                                                                                                            if (err) {
+                                                                                                                done(err);
+                                                                                                            }
+                                                                                                            else {
+                                                                                                                activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
+                                                                                                                {
+                                                                                                                    if (err) {
+                                                                                                                        done(err);
+                                                                                                                    }
+                                                                                                                    else {
+                                                                                                                        assert.deepEqual(activeProcesses.length, 0);
+                                                                                                                        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 1",
+                                                                                                                            new Date(2022, 4, 26, 16), 2, 12, (err) =>
+                                                                                                                            {
+                                                                                                                                if (err) {
+                                                                                                                                    done(err);
+                                                                                                                                }
+                                                                                                                                else {
+                                                                                                                                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
+                                                                                                                                        {
+                                                                                                                                            processName: "תהליך 1",
+                                                                                                                                            1: "on",
+                                                                                                                                            comments: "הערה 1"
+                                                                                                                                        }, [], (err) =>
+                                                                                                                                        {
+                                                                                                                                            if (err) {
+                                                                                                                                                done(err);
+                                                                                                                                            }
+                                                                                                                                            else {
+                                                                                                                                                activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
+                                                                                                                                                    processName: "תהליך 1",
+                                                                                                                                                    2: "on",
+                                                                                                                                                    comments: "הערה 2"
+                                                                                                                                                }, [], (err) =>
+                                                                                                                                                {
+                                                                                                                                                    if (err) {
+                                                                                                                                                        done(err);
+                                                                                                                                                    }
+                                                                                                                                                    else {
+                                                                                                                                                        activeProcessController.cancelProcess("new_media@outlook.com", "תהליך 1", "בדיקת בוטל", (err) =>
+                                                                                                                                                        {
+                                                                                                                                                            if(err){
+                                                                                                                                                                done(err);
+                                                                                                                                                            }
+                                                                                                                                                            done();
+                                                                                                                                                        });
+                                                                                                                                                    }
+                                                                                                                                                });
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            }
+                                                                                                        });
+                                                                                                    }
+                                                                                                });
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                }
+            });
     }).timeout(30000);
 
-    it('1.3 Canceling and reports', function (done)
+    it('1.3 Checking reports and notifications', function (done)
     {
-        done();
+        processReportController.getAllProcessesReportsByUser("yor@outlook.com",(err,processReports)=>{
+            if(err){
+                done(err);
+            }
+            done();
+        });
     }).timeout(30000);
 });

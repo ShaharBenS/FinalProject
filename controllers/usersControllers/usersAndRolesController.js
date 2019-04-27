@@ -264,7 +264,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                     }, (err) =>
                                                                                     {
                                                                                         if (err) {
-                                                                                            callback(err);
+                                                                                            acc(err);
 
                                                                                         }
                                                                                         else {

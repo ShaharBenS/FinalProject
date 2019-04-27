@@ -90,7 +90,7 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
             callback(err);
         } else {
             if (permission.structureManagementPermission) {
-                waitingProcessStructuresAccessor.findWaitingProcessStructures({_id: id}, (err, waitingStructures) => {
+                waitingProcessStructuresAccessor.findWaitingProcessStructures({_id: _id}, (err, waitingStructures) => {
                     if (err) {
                         callback(err);
                     } else if (waitingStructures.length === 0) {
@@ -100,7 +100,14 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
                             if (err) {
                                 callback(err);
                             } else {
-                                notificationController.addNotificationToUser(waitingStructures[0].userEmail, new Notification("מבנה התהליך " + waitingStructures[0].structureName + " אושר בהצלחה", "מבנה תהליך לא אושר"))
+                                notificationController.addNotificationToUser(waitingStructures[0].userEmail, new Notification("מבנה התהליך " + waitingStructures[0].structureName + " אושר בהצלחה", "מבנה תהליך לא אושר"),()=>{
+                                    if(err){
+                                        callback(err);
+                                    }
+                                    else{
+                                        callback(null);
+                                    }
+                                })
                             }
                         });
                     }
