@@ -1,26 +1,36 @@
 {
   "יושב ראש אגודה": [
-    "a@outlook.co.il"
+    "chairman@outlook.co.il"
   ],
   "סגן יושב ראש אגודה": [
-    "b@outlook.co.il"
+    "vicechairman@outlook.co.il"
+  ],
+  "מנהל גרפיקה": [
+    "graphicsmanager@outlook.co.il"
+  ],
+  "גרפיקאי": [
+    "graphicartist@outlook.co.il",
+    "graphicartist2@outlook.co.il"
+  ],
+  "תליין": [
+    "hangman@outlook.co.il"
   ],
   "ראש מדור הסברה": [
-    "c@outlook.co.il"
+    "publicitydepartmenthead@outlook.co.il"
   ],
   "דובר": [
-    "d@outlook.co.il"
+    "spokesperson@outlook.co.il"
   ],
   "אחראי מיתוג קמפיינים": [
-    "e@outlook.co.il"
+    "campaignbrandingsupervisor@outlook.co.il"
   ],
   "רכז ניו מדיה": [
-    "f@outlook.co.il"
-  ],
-  "מנהל נגטיב": [
-    "g@outlook.co.il"
+    "newmediasupervisor@outlook.co.il"
   ],
   "סגן מנהל נגטיב": [
-    "h@outlook.co.il"
+    "negativevicemanager@outlook.co.il"
+  ],
+  "מנהל נגטיב": [
+    "negativemanager@outlook.co.il"
   ]
 }

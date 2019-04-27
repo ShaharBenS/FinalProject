@@ -11,6 +11,9 @@ let rolesToEmails = require('../inputs/trees/GraphicsTree/rolesToEmails');
 let modelUsersAndRoles = require('../../models/schemas/usersSchemas/UsersAndRolesSchema');
 let usersAndRolesTreeSankey = require('../../models/schemas/usersSchemas/UsersAndRolesTreeSankeySchema');
 let userAccessor = require('../../models/accessors/usersAccessor');
+let processStructureController = require('../../controllers/processesControllers/processStructureController');
+let processStructureSankeyJSON = require('../inputs/processStructures/GraphicsProcessStructure/graphicsSankey');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 
 
 let globalBefore = async function () {
@@ -25,6 +28,7 @@ let globalBeforeEach = function (done) {
 };
 
 let globalAfter = function () {
+    mongoose.connection.db.dropDatabase();
     mongoose.connection.close();
 };
 
@@ -35,13 +39,13 @@ let globalAfterEach = function () {
 describe('1. graphics test', function () {
     before(globalBefore);
     after(globalAfter);
-    it('1.1 graphics test', function (done) {
+    it('1.1 create users tree', function (done) {
         userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) => {
             if (err) {
                 done(err);
             }
             else {
-                UsersAndRolesTreeSankey.setUsersAndRolesTree('a@outlook.co.il', JSON.stringify(sankeyContent),
+                UsersAndRolesTreeSankey.setUsersAndRolesTree('chairman@outlook.co.il', JSON.stringify(sankeyContent),
                     rolesToEmails, emailsToFullName,
                     rolesToDereg, (err) => {
                         if (err) {
@@ -53,6 +57,53 @@ describe('1. graphics test', function () {
                     });
             }
         });
+    }).timeout(30000);
 
-    });
+    it('1.2 create process structure', function (done) {
+        processStructureController.addProcessStructure('chairman@outlook.co.il', 'תהליך גרפיקה', JSON.stringify(processStructureSankeyJSON), [], 0, (err, needApproval) => {
+            if (err) {
+                done(err);
+            }
+            else {
+                done();
+            }
+        });
+    }).timeout(30000);
+
+    /*it('1.3 start process with wrong process structure name', function (done) {
+        activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il','תהליך גרפיקה1','גרפיקה ליום הסטודנט', new Date(2018, 11, 24, 10, 33, 30, 0), 3, 24, (err, result)=>{
+            if(err) done(err);
+            else
+            {
+                done();
+            }
+        });
+    }).timeout(30000);*/
+
+    it('1.3 start process', function (done) {
+        activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il','תהליך גרפיקה','גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, 24, (err, result)=>{
+            if(err) done(err);
+            else
+            {
+                done();
+            }
+        });
+    }).timeout(30000);
+
+    it('1.4 start process with same name', function (done) {
+        activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il','תהליך גרפיקה','גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, 24, (err, result)=>{
+            assert.deepEqual(true, err !== null);
+            done();
+        });
+    }).timeout(30000);
+
+    it('1.4 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il',{comments: '', 1: 'on', processName: 'גרפיקה להקרנת בכורה'},[], (err, result)=>{
+            if(err) done(err);
+            else
+            {
+                done();
+            }
+        });
+    }).timeout(30000);
 });
