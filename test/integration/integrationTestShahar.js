@@ -4,6 +4,7 @@ let processStructureController = require('../../controllers/processesControllers
 let waitingProcessStructuresController = require('../../controllers/processesControllers/waitingProcessStructuresController');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processReportController = require('../../controllers/processesControllers/processReportController');
+let notificationController = require('../../controllers/notificationsControllers/notificationController');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let mongoose = require('mongoose');
 let mocha = require('mocha');
@@ -342,7 +343,7 @@ describe('1. addUsersAndRole', function ()
                                                                                                                     }
                                                                                                                     else {
                                                                                                                         assert.deepEqual(activeProcesses.length, 0);
-                                                                                                                        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 1",
+                                                                                                                        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 2",
                                                                                                                             new Date(2022, 4, 26, 16), 2, 12, (err) =>
                                                                                                                             {
                                                                                                                                 if (err) {
@@ -351,7 +352,7 @@ describe('1. addUsersAndRole', function ()
                                                                                                                                 else {
                                                                                                                                     activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
                                                                                                                                         {
-                                                                                                                                            processName: "תהליך 1",
+                                                                                                                                            processName: "תהליך 2",
                                                                                                                                             1: "on",
                                                                                                                                             comments: "הערה 1"
                                                                                                                                         }, [], (err) =>
@@ -361,7 +362,7 @@ describe('1. addUsersAndRole', function ()
                                                                                                                                             }
                                                                                                                                             else {
                                                                                                                                                 activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
-                                                                                                                                                    processName: "תהליך 1",
+                                                                                                                                                    processName: "תהליך 2",
                                                                                                                                                     2: "on",
                                                                                                                                                     comments: "הערה 2"
                                                                                                                                                 }, [], (err) =>
@@ -370,7 +371,7 @@ describe('1. addUsersAndRole', function ()
                                                                                                                                                         done(err);
                                                                                                                                                     }
                                                                                                                                                     else {
-                                                                                                                                                        activeProcessController.cancelProcess("new_media@outlook.com", "תהליך 1", "בדיקת בוטל", (err) =>
+                                                                                                                                                        activeProcessController.cancelProcess("new_media@outlook.com", "תהליך 2", "בדיקת בוטל", (err) =>
                                                                                                                                                         {
                                                                                                                                                             if(err){
                                                                                                                                                                 done(err);
@@ -417,7 +418,38 @@ describe('1. addUsersAndRole', function ()
             if(err){
                 done(err);
             }
-            done();
+            else{
+                notificationController.getUserNotifications("website@outlook.com",(err,websiteNotifications)=>{
+                    if(err){
+                        done(err);
+                    }
+                    else{
+                        notificationController.getUserNotifications("sayor@outlook.com",(err,sayorNotifications)=>{
+                            if(err){
+                                done(err);
+                            }
+                            else{
+                                assert.deepEqual(true,sayorNotifications.some(notification=>{
+                                    return notification.notificationType === "תהליך נגמר בהצלחה";
+                                }));
+                                assert.deepEqual(true,websiteNotifications.some(notification=>{
+                                    return notification.notificationType === "תהליך נגמר בהצלחה";
+                                }));
+                                assert.deepEqual(true,websiteNotifications.some(notification=>{
+                                    return notification.notificationType === "תהליך בוטל";
+                                }));
+                                assert.deepEqual(true,websiteNotifications.some(notification=>{
+                                    return notification.notificationType === "תהליך בהמתנה";
+                                }));
+                                assert.deepEqual(true,processReports.some(processReport=>{
+                                    return processReport.processName === "תהליך 1";
+                                }));
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
         });
     }).timeout(30000);
 });
