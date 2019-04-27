@@ -78,7 +78,7 @@ let processStructure4 = JSON.parse(fs.readFileSync("./test/inputs/processStructu
 let processStructure5 = JSON.parse(fs.readFileSync("./test/inputs/processStructures/processStructure5/processStructure5.json"));
 let processStructure6 = JSON.parse(fs.readFileSync("./test/inputs/processStructures/processStructure6/processStructure6.json"));
 let processStructure7 = JSON.parse(fs.readFileSync("./test/inputs/processStructures/processStructure7/processStructure7.json"));
-let processStructure8 = JSON.parse(fs.readFileSync("./test/inputs/processStructures/processStructure8/processStructure9.json"));
+let processStructure8 = JSON.parse(fs.readFileSync("./test/inputs/processStructures/processStructure8/processStructure8.json"));
 
 
 describe('1.0 check for duplicate stage numbers', function () {
