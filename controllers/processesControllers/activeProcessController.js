@@ -697,6 +697,38 @@ module.exports.addFilledOnlineFormToProcess = function(processName, formID, call
     });
 };
 
+function replaceRoleIDWithRoleNameAndUserEmailWithUserName(activeProcesses, callback) {
+    userAccessor.findRole({}, (err, roles) => {
+        if (err) {
+            callback(err);
+        } else {
+            userAccessor.findUsername({}, (err2, userNames) => {
+                if (err2) {
+                    callback(err2);
+
+                }
+                else {
+                    let roleIDToRoleName = {};
+                    roles.forEach(role => {
+                        roleIDToRoleName[role._id.toString()] = role.roleName
+                    });
+                    let userEmailToUserName = {};
+                    userNames.forEach(userName => {
+                        userEmailToUserName[userName.userEmail] = userName.userName;
+                    });
+                    callback(null, activeProcesses.map(activeProcess => {
+                        activeProcess.stages.forEach(stage => {
+                            stage.roleName = roleIDToRoleName[stage.roleID];
+                            stage.userName = userEmailToUserName[stage.userEmail];
+                        });
+                        return activeProcess;
+                    }));
+                }
+            });
+        }
+    })
+}
+
 /////Helper Functions
 function convertDate(array, isArrayOfDates) {
     for (let i = 0; i < array.length; i++) {
@@ -731,12 +763,6 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback)=>{
     })
 };
 
-
-
-
-
-
-
 module.exports.checkUpdateResult = (result)=>{
     let keys = Array.from(Object.keys(result));
     if(keys.includes("n") && keys.includes("nModified") && keys.includes("ok") && keys.length === 3)
@@ -750,6 +776,7 @@ module.exports.checkUpdateResult = (result)=>{
 };
 
 /////////
+module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;

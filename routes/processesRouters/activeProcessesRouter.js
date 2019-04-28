@@ -8,7 +8,6 @@ let formidable = require('formidable');
 let moment = require('moment');
 let userAccessor = require('../../models/accessors/usersAccessor');
 
-
 /*
   _____   ____   _____ _______
  |  __ \ / __ \ / ____|__   __|
@@ -114,45 +113,13 @@ router.post('/cancelProcess', function (req, res) {
   \_____|______|  |_|
 
  */
-function replaceRoleIDWithRoleNameAndUserEmailWithUserName(activeProcesses, callback) {
-    userAccessor.findRole({}, (err, roles) => {
-        if (err) {
-            callback(err);
-        } else {
-            userAccessor.findUsername({}, (err2, userNames) => {
-                if (err2) {
-                    callback(err2);
-
-                }
-                else {
-                    let roleIDToRoleName = {};
-                    roles.forEach(role => {
-                        roleIDToRoleName[role._id.toString()] = role.roleName
-                    });
-                    let userEmailToUserName = {};
-                    userNames.forEach(userName => {
-                        userEmailToUserName[userName.userEmail] = userName.userName;
-                    });
-                    callback(null, activeProcesses.map(activeProcess => {
-                        activeProcess.stages.forEach(stage => {
-                            stage.roleName = roleIDToRoleName[stage.roleID];
-                            stage.userName = userEmailToUserName[stage.userEmail];
-                        });
-                        return activeProcess;
-                    }));
-                }
-            });
-        }
-    })
-}
-
 
 router.get('/getAllActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getAllActiveProcessesByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
         else {
-            replaceRoleIDWithRoleNameAndUserEmailWithUserName(array, ((err, result) => {
+            activeProcessController.replaceRoleIDWithRoleNameAndUserEmailWithUserName(array, ((err, result) => {
                 activeProcessController.convertDate(result);
                 for (let i = 0; i < result.length; i++) {
                     result[i].processDate = moment(result[i].processDate).format("DD/MM/YYYY HH:mm:ss");
@@ -170,7 +137,6 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
     });
 });
 
-/////Tomer's Work
 router.get('/getAllProcessesReportsByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
@@ -185,13 +151,12 @@ router.get('/getAllProcessesReportsByUser', function (req, res) {
     });
 });
 
-/////////////////
 router.get('/getWaitingActiveProcessesByUser', function (req, res) {
     let userName = req.user.emails[0].value;
     activeProcessController.getWaitingActiveProcessesByUser(userName, (err, array) => {
         if (err) res.render('errorViews/error');
         else {
-            replaceRoleIDWithRoleNameAndUserEmailWithUserName(array, ((err, result) => {
+            activeProcessController.replaceRoleIDWithRoleNameAndUserEmailWithUserName(array, ((err, result) => {
                 activeProcessController.convertDate(result);
                 result.forEach((activeProcess) => {
                     let currStages = [];
@@ -256,6 +221,5 @@ router.get('/processStartPage', function (req, res) {
 router.get('/myWaitingProcessesPage', function (req, res) {
     res.render('activeProcessesViews/myWaitingProcessesPage');
 });
-
 
 module.exports = router;
