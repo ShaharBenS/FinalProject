@@ -104,7 +104,6 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
             callback(null, activeProcessToReturn);
         }
     });
-
 }
 
 /**
