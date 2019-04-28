@@ -458,10 +458,9 @@ const returnStagesWithRoleName = (index, stages, newStages, callback) => {
             roleName: stage.roleName,
             userEmail: stage.userEmail,
             userName: stage.userName,
-            stageNum: stage.stageNum,
             approvalTime: stage.approvalTime,
             comments: stage.comments,
-            files: stage.attachedFilesNames
+            attachedFilesNames: stage.attachedFilesNames
         });
         returnStagesWithRoleName(index + 1, stages, newStages, callback);
     }

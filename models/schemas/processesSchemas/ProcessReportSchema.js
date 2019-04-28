@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const processReportSchema = new Schema({
-    processName: {type: String, unique: true},
+    processName: {type: String},
     status: String,
     processDate: Date,
     processUrgency: { type: Number, min: 1, max: 3},
@@ -13,10 +13,8 @@ const processReportSchema = new Schema({
         roleName: String,
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
         userName: String,
-        stageNum: Number,
         approvalTime: Date,
         comments: String,
-        action: {type: String, enum: ['cancel', 'continue', 'return']},
         attachedFilesNames: [String]
     }]
 });

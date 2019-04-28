@@ -115,7 +115,7 @@
                         <td><%=step.approvalTime%></td>
                         <td><%=step.comments%></td>
                         <td>
-                            <%step.files.forEach(function(file){%>
+                            <%step.attachedFilesNames.forEach(function(file){%>
                             <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
                                   style="display: none">
                                 <input id="<%=file%>" name="filetodownload"
