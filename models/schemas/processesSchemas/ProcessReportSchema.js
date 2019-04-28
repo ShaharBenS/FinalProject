@@ -13,8 +13,10 @@ const processReportSchema = new Schema({
         roleName: String,
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
         userName: String,
+        stageNum: Number,
         approvalTime: Date,
         comments: String,
+        action: {type: String, enum: ['cancel', 'continue', 'return']},
         attachedFilesNames: [String]
     }]
 });
