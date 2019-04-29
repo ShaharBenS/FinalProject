@@ -70,8 +70,6 @@ passport.deserializeUser(function (user, done) {
 
 onlineFormsController.createAllOnlineForms();
 
-
-
 // Thread for updating notifications
 let updateTimeInMinutes = 10;
 setInterval(()=>{
