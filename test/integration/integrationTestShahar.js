@@ -5,6 +5,7 @@ let waitingProcessStructuresController = require('../../controllers/processesCon
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processReportController = require('../../controllers/processesControllers/processReportController');
 let notificationController = require('../../controllers/notificationsControllers/notificationController');
+let filledOnlineFormController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let mongoose = require('mongoose');
 let mocha = require('mocha');
