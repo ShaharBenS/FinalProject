@@ -113,7 +113,7 @@ module.exports.notifyFinishedProcess = (process, callback) => {
     })(null);
 };
 
-module.exports.notifyNotFinishedProcess = (process, callback) => {
+module.exports.notifyNotFinishedProcess = (process, newStages, callback) => {
     //TODO Kuti Notify Only the stages that are promoted not all current
     process.currentStages.reduce((acc, curr) => {
         return (err) => {
