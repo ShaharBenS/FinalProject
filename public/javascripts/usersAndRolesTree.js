@@ -248,6 +248,28 @@ function emailValidator(email)
     return regularExpression.test(String(email).toLowerCase());
 }
 
+function loadDefaultTree(){
+    $.ajax({
+            url: '/usersAndRoles/loadDefaultTree/',
+            method: "POST",
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {},
+        }
+    ).done(function (responseText, status) {
+        if (status === "success") {
+            if (responseText === "success") {
+                alertify.alert("העץ נשמר בהצלחה!",()=>{
+                    window.location.href = '/usersAndRoles/editTree/';
+                });
+            } else {
+                alertify.alert(responseText);
+            }
+        }
+    });
+}
+
 function confirm() {
     app.fileSave()
 }

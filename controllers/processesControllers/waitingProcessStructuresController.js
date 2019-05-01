@@ -70,10 +70,10 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                         } else {
                             if (waitingStructure.addOrEdit) {
                                 processStructureController.addProcessStructure(userEmail, waitingStructure.structureName,
-                                    waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, commonCallback);
+                                    waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, waitingStructure.notificationTime, commonCallback);
                             } else {
                                 processStructureController.editProcessStructure(userEmail, waitingStructure.structureName,
-                                    waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, commonCallback);
+                                    waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, waitingStructure.notificationTime, commonCallback);
                             }
                         }
                     }

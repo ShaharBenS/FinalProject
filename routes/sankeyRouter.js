@@ -11,7 +11,7 @@ router.post('/file/save', function (req, res) {
         onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=>{
             if(err) callback(err);
             else {
-                processStructure.addProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime,req.body.notificationTime, (err, needApprove) => {
+                processStructure.addProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime, req.body.notificationTime, (err, needApprove) => {
                     if (err) {
                         res.send(err);
                     }

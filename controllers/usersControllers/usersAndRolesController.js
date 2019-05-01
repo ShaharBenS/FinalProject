@@ -6,6 +6,7 @@ let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSank
 let userPermissionsController = require('../usersControllers/UsersPermissionsController');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let notificationsAccessor = require('../../models/accessors/notificationsAccessor');
+let fs = require("fs");
 
 module.exports.getRoleToEmails = (callback) =>
 {
@@ -568,6 +569,14 @@ module.exports.getAllUsers = (callback) =>
             });
         }
     });
+};
+
+module.exports.loadDefaultTree = (userEmail, callback) => {
+    let demoTreeString = fs.readFileSync("./defaultTree/defaultTree.json");
+    let emailsToFullName = JSON.parse(fs.readFileSync("./defaultTree/emailsToFullName.json"));
+    let rolesToDereg = JSON.parse(fs.readFileSync("./defaultTree/rolesToDereg.json"));
+    let rolesToEmails = JSON.parse(fs.readFileSync("./defaultTree/rolesToEmails.json"));
+    this.setUsersAndRolesTree(userEmail, demoTreeString, rolesToEmails, emailsToFullName, rolesToDereg, callback);
 };
 
 function getAllChildren(userEmail, callback)
