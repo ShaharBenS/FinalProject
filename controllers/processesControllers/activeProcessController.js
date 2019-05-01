@@ -89,7 +89,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
             let activeProcessToReturn = new ActiveProcess({
                 processName: processName, creatorUserEmail: userEmail,
                 processDate: processDate, processUrgency: processUrgency, creationTime: today,
-                notificationTime: parseInt(notificationTime), automaticAdvanceTime: processStructure.automaticAdvanceTime, currentStages: [initialStage], onlineForms: processStructure.onlineForms,
+                notificationTime: notificationTime, automaticAdvanceTime: processStructure.automaticAdvanceTime, currentStages: [initialStage], onlineForms: processStructure.onlineForms,
                 filledOnlineForms: [], lastApproached: today, stageToReturnTo: initialStage
             }, activeProcessStages);
             for(let i=0;i<activeProcessToReturn.stages.length;i++)
@@ -114,13 +114,12 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
  * @param processName | The requested name for the active process
  * @param processDate | The requested date for the active process
  * @param processUrgency | The requested urgency for the active process
- * @param notificationTime | The pre-defined time which notifications will repeat themselves for.
  * @param callback
  */
 
 
 
-module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, notificationTime, callback) => {
+module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, callback) => {
     usersAndRolesController.getRoleByUsername(userEmail, (err, role) => {
         if (err) {
             callback(err);
@@ -143,7 +142,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
                                     return;
                                 }
-                                getNewActiveProcess(processStructure, role, initialStage, userEmail, processName, processDate, processUrgency, notificationTime, (err,activeProcess)=>{
+                                getNewActiveProcess(processStructure, role, initialStage, userEmail, processName, processDate, processUrgency, processStructure.notificationTime, (err,activeProcess)=>{
                                     if(err) callback(err);
                                     else {
                                         processAccessor.createActiveProcess(activeProcess, (err) => {

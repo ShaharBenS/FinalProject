@@ -74827,7 +74827,7 @@ draw2d.ui.LabelInplaceEditor = draw2d.ui.LabelEditor.extend({
             success = Object.keys(idToRole).every(id => {
                 if (idToRole[id] === label) {
                     if (label !== this.label.text) {
-                        alert("A role with that name already exists");
+                        alertify.alert('שם תפקיד זה כבר קיים');
                     }
                     return false;
                 }
@@ -74840,6 +74840,9 @@ draw2d.ui.LabelInplaceEditor = draw2d.ui.LabelEditor.extend({
                         let emails = roleToEmails[this.label.text];
                         delete roleToEmails[this.label.text];
                         roleToEmails[label] = emails;
+                        let dereg = roleToDereg[this.label.text];
+                        delete roleToDereg[this.label.text];
+                        roleToDereg[label] = dereg;
                         success = true;
                     }
                 });

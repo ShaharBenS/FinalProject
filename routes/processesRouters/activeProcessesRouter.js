@@ -80,8 +80,7 @@ router.post('/startProcess', function (req, res) {
     let processDate = req.body.processDate;
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
-    let notificationTime = req.body.notificationTime;
-    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, notificationTime, (err) => {
+    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err) => {
         if (err) res.render('errorViews/error');
         else {
             res.send("success");

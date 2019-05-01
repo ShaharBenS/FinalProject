@@ -45,6 +45,7 @@ $(document).ready(function () {
 
     let modal3 = document.getElementById('select-dereg-modal');
     let modal4 = document.getElementById('define-auto-time-modal');
+    let modal5 = document.getElementById('define-notification-time-modal');
 
     window.onclick = function (event) {
         if (event.target === modal) {
@@ -62,10 +63,14 @@ $(document).ready(function () {
         else if(event.target === modal4){
             modal4.style.display = "none";
         }
+        else if(event.target === modal5){
+            modal5.style.display = "none";
+        }
     };
 
     if(diagramContext !== "editProcessStructure"){
         document.getElementById("deleteButton").style.display = "none";
+        document.getElementById("deleteButton_padding").style.display = "none";
     }
 
     if(diagramContext !== "addProcessStructure")
@@ -79,6 +84,16 @@ $(document).ready(function () {
         };
         xmlHttp.open("GET", '/processStructures/getAutomaticAdvanceTime/'+"?processStructureName=" +processStructureName+ '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false'), true);
         xmlHttp.send(null);
+
+        var xmlHttp1 = new XMLHttpRequest();
+        xmlHttp1.onreadystatechange = function() {
+            if (xmlHttp1.readyState === 4 && xmlHttp1.status === 200)
+            {
+                document.getElementById("notificationTimeSelect").value = xmlHttp1.responseText;
+            }
+        };
+        xmlHttp1.open("GET", '/processStructures/getNotificationTime/'+"?processStructureName=" +processStructureName+ '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false'), true);
+        xmlHttp1.send(null);
     }
 });
 

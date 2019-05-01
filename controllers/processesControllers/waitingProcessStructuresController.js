@@ -22,7 +22,8 @@ module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
                 deleteRequest: waitingProcessStructure.deleteRequest,
                 date: dates[index],
                 onlineForms: waitingProcessStructure.onlineForms,
-                automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime
+                automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime,
+                notificationTime: waitingProcessStructure.notificationTime,
             };
         });
         callback(null, waitingProcessStructuresWithFixedDates);
@@ -119,7 +120,7 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
     });
 };
 
-module.exports.updateStructure = (userEmail, id, sankey, onlineFormsIDs, automaticAdvanceTime, callback) => {
+module.exports.updateStructure = (userEmail, id, sankey, onlineFormsIDs, automaticAdvanceTime, notificationTime, callback) => {
     usersPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
            callback(err);
@@ -130,7 +131,8 @@ module.exports.updateStructure = (userEmail, id, sankey, onlineFormsIDs, automat
                     $set: {
                         sankey: sankey,
                         onlineForms: onlineFormsIDs,
-                        automaticAdvanceTime: parseInt(automaticAdvanceTime)
+                        automaticAdvanceTime: parseInt(automaticAdvanceTime),
+                        notificationTime: parseInt(notificationTime),
                     }
                 }, (err)=>{
                     if(err){
