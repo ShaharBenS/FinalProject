@@ -206,16 +206,79 @@ describe('1. graphics test', function () {
             1: 'on',
             processName: 'גרפיקה להקרנת בכורה'
         }, [], (err) => {
+            assert.deepEqual(true, err !== null);
+            done();
+        });
+    }).timeout(30000);
+
+    it('1.7 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+            comments: 'הערות של מנהל נגטיב',
+            6: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                     if(err) done(err);
                     else
                     {
-                        assert.deepEqual(process.currentStages, [1]);
-                        let doneStage = process.getStageByStageNum(process.getCurrentStageNumberForUser('negativevicemanager@outlook.co.il'));
-                        assert.deepEqual(doneStage.comments, 'הערות למנהל נגטיב');
-                        done();
+                        assert.deepEqual(process.currentStages, [6]);
+                        let doneStage = process.getStageByStageNum(1);
+                        assert.deepEqual(doneStage.comments, 'הערות של מנהל נגטיב');
+                        let currentStage = process.getStageByStageNum(6);
+                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 2);
+                                assert.deepEqual(report[1][1].userEmail, 'negativemanager@outlook.co.il');
+                                assert.deepEqual(report[1][1].userName, 'גארת בייל');
+                                assert.deepEqual(report[1][1].roleName, 'מנהל נגטיב');
+                                assert.deepEqual(report[1][1].comments, 'הערות של מנהל נגטיב');
+                                assert.deepEqual(report[1][1].action, 'continue');
+                                assert.deepEqual(report[1][1].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.8 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
+            comments: 'הערות של אחראי מיתוג קמפיינים',
+            7: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [7]);
+                        let doneStage = process.getStageByStageNum(6);
+                        assert.deepEqual(doneStage.comments, 'הערות של אחראי מיתוג קמפיינים');
+                        let currentStage = process.getStageByStageNum(7);
+                        assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 3);
+                                assert.deepEqual(report[1][2].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                                assert.deepEqual(report[1][2].userName, 'לוקה מודריץ');
+                                assert.deepEqual(report[1][2].roleName, 'אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][2].comments, 'הערות של אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][2].action, 'continue');
+                                assert.deepEqual(report[1][2].attachedFilesNames, []);
+                                done();
+                            }
+                        });
                     }
                 });
             }

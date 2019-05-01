@@ -367,7 +367,18 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                 }
             }
             if(foundStage === null)
+            {
                 callback(new Error('HandleProcess: user not found in current stages'));
+                return;
+            }
+            for(let i=0;i<stageDetails.nextStageRoles.length;i++)
+            {
+                if(!foundStage.nextStages.includes(stageDetails.nextStageRoles[i]))
+                {
+                    callback(new Error('HandleProcess: next stages are wrong'));
+                    return;
+                }
+            }
             let today = new Date();
             stageDetails.stageNum = foundStage.stageNum;
             stageDetails.action = "continue";
