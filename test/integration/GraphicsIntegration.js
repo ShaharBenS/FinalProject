@@ -108,7 +108,7 @@ describe('1. graphics test', function () {
     }).timeout(30000);
 
     it('1.2 create process structure', function (done) {
-        processStructureController.addProcessStructure('chairman@outlook.co.il', 'תהליך גרפיקה', JSON.stringify(processStructureSankeyJSON), [], 0, (err, needApproval) => {
+        processStructureController.addProcessStructure('chairman@outlook.co.il', 'תהליך גרפיקה', JSON.stringify(processStructureSankeyJSON), [], 0, "12", (err, needApproval) => {
             if (err) {
                 done(err);
             }
