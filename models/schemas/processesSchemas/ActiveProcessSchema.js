@@ -24,8 +24,6 @@ const activeProcessSchema = new Schema({
         assignmentTime: Date,
         approvalTime: Date,
         notificationsCycle: Number,
-        attachedFilesNames: [String],
-        comments: String
     }],
     lastApproached: Date,
     stageToReturnTo: Number

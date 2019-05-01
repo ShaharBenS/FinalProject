@@ -248,7 +248,70 @@ describe('1. graphics test', function () {
         });
     }).timeout(30000);
 
-    it('1.8 handle process', function (done) {
+    it('1.8 return process to creator', function (done) {
+        activeProcessController.returnToCreator('campaignbrandingsupervisor@outlook.co.il','גרפיקה להקרנת בכורה','הערות חזרה של אחראי מיתוג קמפינים', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [0]);
+                        let currentStage = process.getStageByStageNum(0);
+                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 3);
+                                assert.deepEqual(report[1][2].userEmail, 'negativemanager@outlook.co.il');
+                                assert.deepEqual(report[1][2].userName, 'קרלוס קאסמירו');
+                                assert.deepEqual(report[1][2].roleName, 'סגן מנהל נגטיב');
+                                assert.deepEqual(report[1][2].comments, 'הערות חזרה של אחראי מיתוג קמפינים');
+                                assert.deepEqual(report[1][2].action, 'return');
+                                assert.deepEqual(report[1][2].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.8 return process to creator', function (done) {
+        activeProcessController.returnToCreator('campaignbrandingsupervisor@outlook.co.il','גרפיקה להקרנת בכורה','הערות חזרה של אחראי מיתוג קמפינים', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [0]);
+                        let doneStage = process.getStageByStageNum(6);
+                        assert.deepEqual(doneStage.comments, 'הערות של מנהל נגטיב');
+                        let currentStage = process.getStageByStageNum(6);
+                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 2);
+                                assert.deepEqual(report[1][1].userEmail, 'negativemanager@outlook.co.il');
+                                assert.deepEqual(report[1][1].userName, 'גארת בייל');
+                                assert.deepEqual(report[1][1].roleName, 'מנהל נגטיב');
+                                assert.deepEqual(report[1][1].comments, 'הערות של מנהל נגטיב');
+                                assert.deepEqual(report[1][1].action, 'continue');
+                                assert.deepEqual(report[1][1].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+    /*it('1.8 handle process', function (done) {
         activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
             comments: 'הערות של אחראי מיתוג קמפיינים',
             7: 'on',
@@ -283,5 +346,5 @@ describe('1. graphics test', function () {
                 });
             }
         });
-    }).timeout(30000);
+    }).timeout(30000);*/
 });
