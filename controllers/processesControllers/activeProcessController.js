@@ -382,7 +382,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
             let today = new Date();
             stageDetails.stageNum = foundStage.stageNum;
             stageDetails.action = "continue";
-            process.handleStage(stageDetails;
+            process.handleStage(stageDetails);
             advanceProcess(process, foundStage.stageNum, stageDetails.nextStageRoles, (err, newlyAddedStages) => {
                 if (err) callback(err);
                 else {
