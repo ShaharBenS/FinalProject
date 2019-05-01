@@ -176,8 +176,6 @@ describe('1. graphics test', function () {
                     else
                     {
                         assert.deepEqual(process.currentStages, [1]);
-                        let doneStage = process.getStageByStageNum(0);
-                        assert.deepEqual(doneStage.comments, 'הערות של סגן מנהל נגטיב');
                         let currentStage = process.getStageByStageNum(1);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
                         activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
@@ -206,6 +204,83 @@ describe('1. graphics test', function () {
             1: 'on',
             processName: 'גרפיקה להקרנת בכורה'
         }, [], (err) => {
+            assert.deepEqual(true, err !== null);
+            done();
+        });
+    }).timeout(30000);
+
+    it('1.7 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+            comments: 'הערות של מנהל נגטיב',
+            6: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [6]);
+                        let currentStage = process.getStageByStageNum(6);
+                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 2);
+                                assert.deepEqual(report[1][1].userEmail, 'negativemanager@outlook.co.il');
+                                assert.deepEqual(report[1][1].userName, 'גארת בייל');
+                                assert.deepEqual(report[1][1].roleName, 'מנהל נגטיב');
+                                assert.deepEqual(report[1][1].comments, 'הערות של מנהל נגטיב');
+                                assert.deepEqual(report[1][1].action, 'continue');
+                                assert.deepEqual(report[1][1].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.8 return process to creator', function (done) {
+        activeProcessController.returnToCreator('campaignbrandingsupervisor@outlook.co.il','גרפיקה להקרנת בכורה','הערות חזרה של אחראי מיתוג קמפינים', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [0]);
+                        let currentStage = process.getStageByStageNum(0);
+                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 3);
+                                assert.deepEqual(report[1][2].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                                assert.deepEqual(report[1][2].userName, 'לוקה מודריץ');
+                                assert.deepEqual(report[1][2].roleName, 'אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][2].comments, 'הערות חזרה של אחראי מיתוג קמפינים');
+                                assert.deepEqual(report[1][2].action, 'return');
+                                assert.deepEqual(report[1][2].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.9 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+            comments: 'הערות של סגן מנהל נגטיב',
+            1: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -213,12 +288,291 @@ describe('1. graphics test', function () {
                     else
                     {
                         assert.deepEqual(process.currentStages, [1]);
-                        let doneStage = process.getStageByStageNum(process.getCurrentStageNumberForUser('negativevicemanager@outlook.co.il'));
-                        assert.deepEqual(doneStage.comments, 'הערות למנהל נגטיב');
+                        let currentStage = process.getStageByStageNum(1);
+                        assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 4);
+                                assert.deepEqual(report[1][3].userEmail, 'negativevicemanager@outlook.co.il');
+                                assert.deepEqual(report[1][3].userName, 'קרלוס קאסמירו');
+                                assert.deepEqual(report[1][3].roleName, 'סגן מנהל נגטיב');
+                                assert.deepEqual(report[1][3].comments, 'הערות של סגן מנהל נגטיב');
+                                assert.deepEqual(report[1][3].action, 'continue');
+                                assert.deepEqual(report[1][3].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.10 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+            comments: 'הערות של מנהל נגטיב',
+            6: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [6]);
+                        let currentStage = process.getStageByStageNum(6);
+                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 5);
+                                assert.deepEqual(report[1][4].userEmail, 'negativemanager@outlook.co.il');
+                                assert.deepEqual(report[1][4].userName, 'גארת בייל');
+                                assert.deepEqual(report[1][4].roleName, 'מנהל נגטיב');
+                                assert.deepEqual(report[1][4].comments, 'הערות של מנהל נגטיב');
+                                assert.deepEqual(report[1][4].action, 'continue');
+                                assert.deepEqual(report[1][4].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.11 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
+            comments: 'הערות של אחראי מיתוג קמפיינים',
+            7: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [7]);
+                        let currentStage = process.getStageByStageNum(7);
+                        assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 6);
+                                assert.deepEqual(report[1][5].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                                assert.deepEqual(report[1][5].userName, 'לוקה מודריץ');
+                                assert.deepEqual(report[1][5].roleName, 'אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][5].comments, 'הערות של אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][5].action, 'continue');
+                                assert.deepEqual(report[1][5].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.12 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('spokesperson@outlook.co.il', {
+            comments: 'הערות של דובר',
+            5: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [5]);
+                        let currentStage = process.getStageByStageNum(5);
+                        assert.deepEqual(currentStage.userEmail, null);
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 7);
+                                assert.deepEqual(report[1][6].userEmail, 'spokesperson@outlook.co.il');
+                                assert.deepEqual(report[1][6].userName, 'פדריקו וולוורדה');
+                                assert.deepEqual(report[1][6].roleName, 'דובר');
+                                assert.deepEqual(report[1][6].comments, 'הערות של דובר');
+                                assert.deepEqual(report[1][6].action, 'continue');
+                                assert.deepEqual(report[1][6].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.13 take part in process', function (done) {
+        activeProcessController.takePartInActiveProcess('גרפיקה להקרנת בכורה', 'graphicartist@outlook.co.il', (err)=>{
+            if(err) done(err);
+            else
+            {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [5]);
+                        let currentStage = process.getStageByStageNum(5);
+                        assert.deepEqual(currentStage.userEmail, 'graphicartist@outlook.co.il');
                         done();
                     }
                 });
             }
         });
     }).timeout(30000);
+
+    it('1.14 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('graphicartist@outlook.co.il', {
+            comments: 'הערות של גרפיקאי',
+            3: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [3]);
+                        let currentStage = process.getStageByStageNum(3);
+                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 8);
+                                assert.deepEqual(report[1][7].userEmail, 'graphicartist@outlook.co.il');
+                                assert.deepEqual(report[1][7].userName, 'ברהים דיאז');
+                                assert.deepEqual(report[1][7].roleName, 'גרפיקאי');
+                                assert.deepEqual(report[1][7].comments, 'הערות של גרפיקאי');
+                                assert.deepEqual(report[1][7].action, 'continue');
+                                assert.deepEqual(report[1][7].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.15 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
+            comments: 'הערות של אחראי מיתוג קמפיינים',
+            4: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [4]);
+                        let currentStage = process.getStageByStageNum(4);
+                        assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 9);
+                                assert.deepEqual(report[1][8].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                                assert.deepEqual(report[1][8].userName, 'לוקה מודריץ');
+                                assert.deepEqual(report[1][8].roleName, 'אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][8].comments, 'הערות של אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][8].action, 'continue');
+                                assert.deepEqual(report[1][8].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.16 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('spokesperson@outlook.co.il', {
+            comments: 'הערות של דובר',
+            8: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [8]);
+                        let currentStage = process.getStageByStageNum(8);
+                        assert.deepEqual(currentStage.userEmail, 'publicitydepartmenthead@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 10);
+                                assert.deepEqual(report[1][9].userEmail, 'spokesperson@outlook.co.il');
+                                assert.deepEqual(report[1][9].userName, 'פדריקו וולוורדה');
+                                assert.deepEqual(report[1][9].roleName, 'דובר');
+                                assert.deepEqual(report[1][9].comments, 'הערות של דובר');
+                                assert.deepEqual(report[1][9].action, 'continue');
+                                assert.deepEqual(report[1][9].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    /*it('1.8 handle process', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
+            comments: 'הערות של אחראי מיתוג קמפיינים',
+            7: 'on',
+            processName: 'גרפיקה להקרנת בכורה'
+        }, [], (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if(err) done(err);
+                    else
+                    {
+                        assert.deepEqual(process.currentStages, [7]);
+                        let doneStage = process.getStageByStageNum(6);
+                        assert.deepEqual(doneStage.comments, 'הערות של אחראי מיתוג קמפיינים');
+                        let currentStage = process.getStageByStageNum(7);
+                        assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
+                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                            if(err) done(err);
+                            else
+                            {
+                                assert.deepEqual(report[1].length, 3);
+                                assert.deepEqual(report[1][2].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
+                                assert.deepEqual(report[1][2].userName, 'לוקה מודריץ');
+                                assert.deepEqual(report[1][2].roleName, 'אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][2].comments, 'הערות של אחראי מיתוג קמפיינים');
+                                assert.deepEqual(report[1][2].action, 'continue');
+                                assert.deepEqual(report[1][2].attachedFilesNames, []);
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);*/
 });

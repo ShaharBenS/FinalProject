@@ -79,9 +79,9 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let activeProcessStage = new ActiveProcessStage({
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
-                    stagesToWaitFor: stage.stagesToWaitFor, attachedFilesNames: [],
+                    stagesToWaitFor: stage.stagesToWaitFor,
                     userEmail: stageUserEmail,
-                    approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1, comments: ''
+                    approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1
                 });
                 activeProcessStages.push(activeProcessStage);
 
@@ -366,7 +366,18 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                 }
             }
             if(foundStage === null)
+            {
                 callback(new Error('HandleProcess: user not found in current stages'));
+                return;
+            }
+            for(let i=0;i<stageDetails.nextStageRoles.length;i++)
+            {
+                if(!foundStage.nextStages.includes(stageDetails.nextStageRoles[i]))
+                {
+                    callback(new Error('HandleProcess: next stages are wrong'));
+                    return;
+                }
+            }
             let today = new Date();
             stageDetails.stageNum = foundStage.stageNum;
             stageDetails.action = "continue";
@@ -560,30 +571,39 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
-        let creatorEmail = process.returnProcessToCreator();
-        let today = new Date();
-        let stage = {
-            comments: comments,
-            fileNames: [],
-            action: "return",
-            stageNum: process.getCurrentStageNumberForUser(userEmail)
-        };
-        processAccessor.updateActiveProcess({processName: processName}, {
-            currentStages: process.currentStages,
-            stages: process.stages,
-            lastApproached: today
-        }, (err) => {
-            if (err) callback(err);
-            else {
-                processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + processName + " חזר אליך", "תהליך חזר ליוצר"), callback);
-                    }
-                });
+        if(err) callback(err);
+        else
+        {
+            if(process.getCurrentStageNumberForUser(userEmail) === -1)
+            {
+                callback(new Error('Return To Creator: wrong userEmail '));
+                return;
             }
-        });
+            let creatorEmail = process.returnProcessToCreator();
+            let today = new Date();
+            let stage = {
+                comments: comments,
+                fileNames: [],
+                action: "return",
+                stageNum: process.getCurrentStageNumberForUser(userEmail)
+            };
+            processAccessor.updateActiveProcess({processName: processName}, {
+                currentStages: process.currentStages,
+                stages: process.stages,
+                lastApproached: today
+            }, (err) => {
+                if (err) callback(err);
+                else {
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + processName + " חזר אליך", "תהליך חזר ליוצר"), callback);
+                        }
+                    });
+                }
+            });
+        }
     });
 };
 

@@ -127,7 +127,7 @@ class activeProcess {
         if(stage.kind === 'Creator') {
             this.stageToReturnTo = stageDetails.stageNum;
         }
-        stage.handleStage(stageDetails.fileNames, stageDetails.comments);
+        stage.handleStage();
         for(let i=0;i<stage.nextStages.length;i++)
         {
             let currentStage = this.getStageByStageNum((stage.nextStages[i]));
@@ -208,8 +208,6 @@ class activeProcess {
             {
                 firstStage.approvalTime = null;
                 firstStage.stagesToWaitFor = this.stageToReturnTo === firstStage.stageNum?[]:firstStage.originStagesToWaitFor;
-                firstStage.attachedFilesNames = [];
-                firstStage.comments = '';
                 for(let i=0;i<firstStage.nextStages.length;i++)
                 {
                     stagesToRevert.push(this.getStageByStageNum(firstStage.nextStages[i]));

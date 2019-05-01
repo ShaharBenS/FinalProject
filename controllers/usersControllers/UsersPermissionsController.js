@@ -41,7 +41,7 @@ module.exports.setUserPermissions = function (userPermissions, callback)
             });
         }
         else{
-            callback(new Error("Can\'t change the permissions of an admin"))
+            callback(new Error("Can't change the permissions of an admin"))
         }
     });
 };

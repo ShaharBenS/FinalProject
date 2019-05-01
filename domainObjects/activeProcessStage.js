@@ -8,13 +8,11 @@ class activeProcessStage {
         this.stageNum = pureObject.stageNum;
         this.nextStages = pureObject.nextStages;
         this.stagesToWaitFor = pureObject.stagesToWaitFor;
-        this.attachedFilesNames = pureObject.attachedFilesNames;
         this.userEmail = pureObject.userEmail;
         this.originStagesToWaitFor = pureObject.stagesToWaitFor;
         this.assignmentTime = pureObject.assignmentTime;
         this.approvalTime = pureObject.approvalTime;
         this.notificationsCycle = pureObject.notificationsCycle;
-        this.comments = pureObject.comments;
     }
 
     removeStagesToWaitFor(stages) {
@@ -67,12 +65,10 @@ class activeProcessStage {
         }
     }
 
-    handleStage(fileNames, comments)
+    handleStage()
     {
         if (this.approvalTime === null && this.stagesToWaitFor.length === 0) {
             this.approvalTime = new Date();
-            this.attachedFilesNames = this.attachedFilesNames.concat(fileNames);
-            this.comments = comments;
         } else throw new Error();
     }
 
