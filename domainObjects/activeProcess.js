@@ -37,8 +37,8 @@ class activeProcess {
             for(let j=0;j<stage.nextStages.length;j++)
             {
                 let nextStage = this.getStageByStageNum(stage.nextStages[j]);
-                nextStage.removeStagesToWaitFor([stage.stageNum]);
-                nextStage.addStagesToWaitFor(stage.stagesToWaitFor);
+                nextStage.removeStagesToWaitForIncludingOrigin([stage.stageNum]);
+                nextStage.addStagesToWaitForIncludingOrigin(stage.stagesToWaitFor);
             }
             this.stages.splice(i,1);
         }

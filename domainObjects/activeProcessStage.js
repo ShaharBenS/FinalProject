@@ -9,10 +9,37 @@ class activeProcessStage {
         this.nextStages = pureObject.nextStages;
         this.stagesToWaitFor = pureObject.stagesToWaitFor;
         this.userEmail = pureObject.userEmail;
-        this.originStagesToWaitFor = pureObject.stagesToWaitFor;
+        this.originStagesToWaitFor = pureObject.originStagesToWaitFor;
         this.assignmentTime = pureObject.assignmentTime;
         this.approvalTime = pureObject.approvalTime;
         this.notificationsCycle = pureObject.notificationsCycle;
+    }
+
+    removeStagesToWaitForIncludingOrigin(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            this.stagesToWaitFor = this.stagesToWaitFor.filter((stage)=>!stages.includes(stage));
+            this.originStagesToWaitFor = this.stagesToWaitFor.slice();
+        }
+        else
+        {
+            throw new Error();
+        }
+    }
+
+    addStagesToWaitForIncludingOrigin(stages) {
+        if(Array.isArray(stages) && !stages.some(isNaN))
+        {
+            stages.forEach(stage=>{
+                if(!this.stagesToWaitFor.includes(stage))
+                    this.stagesToWaitFor.push(stage);
+            });
+            this.originStagesToWaitFor = this.stagesToWaitFor.slice();
+        }
+        else
+        {
+            throw new Error();
+        }
     }
 
     removeStagesToWaitFor(stages) {

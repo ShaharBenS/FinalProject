@@ -80,6 +80,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
                     stagesToWaitFor: stage.stagesToWaitFor,
+                    originStagesToWaitFor: stage.stagesToWaitFor,
                     userEmail: stageUserEmail,
                     approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1
                 });
@@ -378,6 +379,11 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                     return;
                 }
             }
+            if(stageDetails.nextStageRoles === [] && foundStage.nextStages !== [])
+            {
+                callback(new Error('HandleProcess: next stages are empty and process cannot be finished'));
+                return;
+            }
             let today = new Date();
             stageDetails.stageNum = foundStage.stageNum;
             stageDetails.action = "continue";
@@ -512,7 +518,7 @@ function getActiveProcessByProcessName(processName, callback) {
     processAccessor.findActiveProcesses({processName: processName}, (err, processArray) => {
         if (err) callback(err);
         else {
-            if (processArray.length === 0) callback(null, null);
+            if (processArray === null || processArray.length === 0) callback(null, null);
             else callback(null, processArray[0]);
         }
     });
