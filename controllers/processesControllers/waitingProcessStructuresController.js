@@ -25,7 +25,7 @@ module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
                 automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime
             };
         });
-        callback(null,);
+        callback(null, waitingProcessStructuresWithFixedDates);
     })
 };
 
