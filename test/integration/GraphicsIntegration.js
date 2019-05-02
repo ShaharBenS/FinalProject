@@ -8,8 +8,6 @@ let sankeyContent = require('../inputs/trees/GraphicsTree/sankeyTree');
 let emailsToFullName = require('../inputs/trees/GraphicsTree/emailsToFullName');
 let rolesToDereg = require('../inputs/trees/GraphicsTree/rolesToDereg');
 let rolesToEmails = require('../inputs/trees/GraphicsTree/rolesToEmails');
-let modelUsersAndRoles = require('../../models/schemas/usersSchemas/UsersAndRolesSchema');
-let usersAndRolesTreeSankey = require('../../models/schemas/usersSchemas/UsersAndRolesTreeSankeySchema');
 let userAccessor = require('../../models/accessors/usersAccessor');
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let processStructureSankeyJSON = require('../inputs/processStructures/GraphicsProcessStructure/graphicsSankey');
@@ -23,20 +21,11 @@ let globalBefore = async function () {
     mongoose.connection.db.dropDatabase();
 };
 
-let globalBeforeEach = function (done) {
-
-    //modelUsersAndRoles.createIndexes();
-    //usersAndRolesTreeSankey.createIndexes();
-};
-
 let globalAfter = function () {
     mongoose.connection.db.dropDatabase();
     mongoose.connection.close();
 };
 
-let globalAfterEach = function () {
-    mongoose.connection.db.dropDatabase();
-};
 
 describe('1. graphics test', function () {
     before(globalBefore);

@@ -129,7 +129,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                 if (err) {
                     callback(err);
                 } else {
-                    if (!processStructure.available) {
+                    if (processStructure === null || !processStructure.available) {
                         callback(new Error('This process structure is currently unavailable duo to changes in roles'));
                         return;
                     }
@@ -284,7 +284,6 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
     let processName = fields.processName;
     let dirOfFiles = 'files';
     let dirOfProcess = dirOfFiles + '/' + processName;
-    let dirToUpload = dirOfProcess + '/' + userEmail;
     let fileNames = [];
     let flag = true;
     for (let file in files) {
@@ -296,14 +295,11 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
                 if (!fs.existsSync(dirOfProcess)) {
                     fs.mkdirSync(dirOfProcess);
                 }
-                if (!fs.existsSync(dirToUpload)) {
-                    fs.mkdirSync(dirToUpload);
-                }
                 flag = false;
             }
             fileNames.push(files[file].name);
             let oldpath = files[file].path;
-            let newpath = dirToUpload + '/' + files[file].name;
+            let newpath = dirOfProcess + '/' + files[file].name;
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;
             });
@@ -807,3 +803,4 @@ module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
 module.exports.getFilledOnlineForms = getFilledOnlineForms;
+module.exports.assignSingleUsersToStages = assignSingleUsersToStages;

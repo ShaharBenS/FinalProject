@@ -7,6 +7,7 @@ class activeProcess {
         this.processUrgency = processObject.processUrgency;
         this.creationTime = processObject.creationTime;
         this.notificationTime = processObject.notificationTime;
+        this.automaticAdvanceTime = processObject.automaticAdvanceTime;
         this.currentStages = processObject.currentStages;
         this.onlineForms = processObject.onlineForms;
         this.filledOnlineForms = processObject.filledOnlineForms;
