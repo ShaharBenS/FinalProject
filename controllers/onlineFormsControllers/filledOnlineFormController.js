@@ -45,7 +45,7 @@ module.exports.displayFilledForm = function (filledFormID, callback) {
                         fields.push({fieldName: field.fieldName, value: field.value})
                     });
                     let fieldsStr = JSON.stringify(fields);
-                    let locals = {formName: form.formName, isForShow: false, fields: fieldsStr};
+                    let locals = {formName: form.formName, isForShow: true, fields: fieldsStr};
                     callback(null, locals, onlineForm.HTMLSource);
                 }
             })
