@@ -15,8 +15,8 @@ const today = new Date();
 
 let stage0, stage1;
 let initStages = function () {
-    stage0 = new ActiveProcessStage({roleID: {id : Buffer.from('1')}, kind: 'ByDereg', dereg: '2', stageNum: 1, nextStages: [2], stagesToWaitFor: [0], attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', assignmentTime: today, approvalTime: null, notificationsCycle:1, comments:comments});
-    stage1 = new ActiveProcessStage({roleID: {id : Buffer.from('5')}, kind: 'ByDereg', dereg: '2', stageNum: 1, nextStages: [1], stagesToWaitFor: [], attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', assignmentTime: today, approvalTime: null, notificationsCycle:1, comments:comments});
+    stage0 = new ActiveProcessStage({roleID: {id : Buffer.from('1')}, kind: 'ByDereg', dereg: '2', stageNum: 1, nextStages: [2], stagesToWaitFor: [0], originStagesToWaitFor: [0], attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', assignmentTime: today, approvalTime: null, notificationsCycle:1, comments:comments});
+    stage1 = new ActiveProcessStage({roleID: {id : Buffer.from('5')}, kind: 'ByDereg', dereg: '2', stageNum: 1, nextStages: [1], stagesToWaitFor: [], originStagesToWaitFor: [], attachedFilesNames: attachedFilesNames, userEmail: 'a@bgu.ac.il', assignmentTime: today, approvalTime: null, notificationsCycle:1, comments:comments});
 };
 
 

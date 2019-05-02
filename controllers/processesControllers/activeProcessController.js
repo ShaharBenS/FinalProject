@@ -80,6 +80,7 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
                     stagesToWaitFor: stage.stagesToWaitFor,
+                    originStagesToWaitFor: stage.stagesToWaitFor,
                     userEmail: stageUserEmail,
                     approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1
                 });
@@ -128,7 +129,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                 if (err) {
                     callback(err);
                 } else {
-                    if (!processStructure.available) {
+                    if (processStructure === null || !processStructure.available) {
                         callback(new Error('This process structure is currently unavailable duo to changes in roles'));
                         return;
                     }
@@ -283,7 +284,6 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
     let processName = fields.processName;
     let dirOfFiles = 'files';
     let dirOfProcess = dirOfFiles + '/' + processName;
-    let dirToUpload = dirOfProcess + '/' + userEmail;
     let fileNames = [];
     let flag = true;
     for (let file in files) {
@@ -295,14 +295,11 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
                 if (!fs.existsSync(dirOfProcess)) {
                     fs.mkdirSync(dirOfProcess);
                 }
-                if (!fs.existsSync(dirToUpload)) {
-                    fs.mkdirSync(dirToUpload);
-                }
                 flag = false;
             }
             fileNames.push(files[file].name);
             let oldpath = files[file].path;
-            let newpath = dirToUpload + '/' + files[file].name;
+            let newpath = dirOfProcess + '/' + files[file].name;
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;
             });
@@ -377,6 +374,11 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                     callback(new Error('HandleProcess: next stages are wrong'));
                     return;
                 }
+            }
+            if(stageDetails.nextStageRoles === [] && foundStage.nextStages !== [])
+            {
+                callback(new Error('HandleProcess: next stages are empty and process cannot be finished'));
+                return;
             }
             let today = new Date();
             stageDetails.stageNum = foundStage.stageNum;
@@ -512,7 +514,7 @@ function getActiveProcessByProcessName(processName, callback) {
     processAccessor.findActiveProcesses({processName: processName}, (err, processArray) => {
         if (err) callback(err);
         else {
-            if (processArray.length === 0) callback(null, null);
+            if (processArray === null || processArray.length === 0) callback(null, null);
             else callback(null, processArray[0]);
         }
     });
@@ -801,3 +803,4 @@ module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
 module.exports.getFilledOnlineForms = getFilledOnlineForms;
+module.exports.assignSingleUsersToStages = assignSingleUsersToStages;

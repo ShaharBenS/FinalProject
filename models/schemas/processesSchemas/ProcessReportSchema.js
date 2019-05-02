@@ -9,6 +9,7 @@ const processReportSchema = new Schema({
     processCreatorEmail : String,
     creationTime: Date,
     filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
+    attachedFilesNames: [String],
     stages: [{
         roleName: String,
         userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
@@ -17,7 +18,6 @@ const processReportSchema = new Schema({
         approvalTime: Date,
         comments: String,
         action: {type: String, enum: ['cancel', 'continue', 'return']},
-        attachedFilesNames: [String]
     }]
 });
 

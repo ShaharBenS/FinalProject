@@ -20,7 +20,7 @@ function addProcessReport(processName, creationTime,processDate,processUrgency,p
 }
 
 function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, approvalTime, callback){
-    processAccessor.findProcessReport({processName: processName}, (err) => {
+    processAccessor.findProcessReport({processName: processName}, (err, report) => {
         if (err) callback(err);
         else {
             usersAndRolesController.getRoleNameByUsername(userEmail, (err, roleName) => {
@@ -38,7 +38,15 @@ function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, ap
                                 comments: stageDetails.comments, action: stageDetails.action,
                                 attachedFilesNames: stageDetails.fileNames
                             };
-                            processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage}}, (err) => {
+                            let newAttachedFiles = [];
+                            for(let i=0;i<stageDetails.fileNames.length;i++)
+                            {
+                                if(!report.attachedFilesNames.includes(stageDetails.fileNames[i]))
+                                {
+                                    newAttachedFiles.push(stageDetails.fileNames[i]);
+                                }
+                            }
+                            processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage, attachedFilesNames: {$each: newAttachedFiles}}}, (err) => {
                                 if (err) callback(err);
                                 else callback(null);
                             });

@@ -7,6 +7,7 @@ class activeProcess {
         this.processUrgency = processObject.processUrgency;
         this.creationTime = processObject.creationTime;
         this.notificationTime = processObject.notificationTime;
+        this.automaticAdvanceTime = processObject.automaticAdvanceTime;
         this.currentStages = processObject.currentStages;
         this.onlineForms = processObject.onlineForms;
         this.filledOnlineForms = processObject.filledOnlineForms;
@@ -37,8 +38,8 @@ class activeProcess {
             for(let j=0;j<stage.nextStages.length;j++)
             {
                 let nextStage = this.getStageByStageNum(stage.nextStages[j]);
-                nextStage.removeStagesToWaitFor([stage.stageNum]);
-                nextStage.addStagesToWaitFor(stage.stagesToWaitFor);
+                nextStage.removeStagesToWaitForIncludingOrigin([stage.stageNum]);
+                nextStage.addStagesToWaitForIncludingOrigin(stage.stagesToWaitFor);
             }
             this.stages.splice(i,1);
         }
