@@ -71,44 +71,6 @@ module.exports.getIdToRole = (callback) =>
     });
 };
 
-module.exports.addChildrenToRole = (roleObjectID, childrenObjectID, callback) =>
-{
-    userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
-};
-
-module.exports.addUsersAndRole = (_id, roleName, usersEmail,dereg, callback) =>
-{
-    let countsArray = {};
-    usersEmail.forEach((email) =>
-    {
-        if (countsArray[email] === undefined)
-            countsArray[email] = 1;
-        else countsArray[email] = countsArray[email] + 1
-    });
-    let dupEmails = false;
-    usersEmail.every((email) =>
-    {
-        if (countsArray[email] > 1) dupEmails = true;
-        return !dupEmails;
-    });
-
-    if (dupEmails)
-        callback(new Error("should not allow duplicated emails"));
-    else {
-        let params = {roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
-        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
-        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
-        {
-            if (err) {
-                callback(err);
-            }
-            else {
-                callback(null, usersAndRole)
-            }
-        });
-    }
-};
-
 module.exports.getAllRoles = (callback) =>
 {
     return userAccessor.findRole({}, callback).select(['roleName']);
@@ -242,7 +204,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                             if (existingRoleIndex > -1) {
                                                                                 _id = oldUsersAndRoles.getIdByRoleName(roleName);
                                                                             }
-                                                                            this.addUsersAndRole(_id, roleName, roleToEmails[roleName],roleToDereg[roleName], (_err, usersAndRole) =>
+                                                                            addUsersAndRole(_id, roleName, roleToEmails[roleName],roleToDereg[roleName], (_err, usersAndRole) =>
                                                                             {
                                                                                 if (err) {
                                                                                     acc(err);
@@ -309,7 +271,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                     let fromNodeID = usersAndRoleDocuments[fromNodeRoleIndex]._id;
                                                                                     let toNodeID = usersAndRoleDocuments[toNodeRoleIndex]._id;
 
-                                                                                    this.addChildrenToRole(fromNodeID, toNodeID, (err) =>
+                                                                                    addChildrenToRole(fromNodeID, toNodeID, (err) =>
                                                                                     {
                                                                                         if (err) {
                                                                                             acc(err);
@@ -391,7 +353,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                             }
                                                                                             else{
                                                                                                 if(firstTime){
-                                                                                                    this.addAdmin(userEmail,callback);
+                                                                                                    addAdmin(userEmail,callback);
                                                                                                 }
                                                                                                 else{
                                                                                                     callback(null);
@@ -432,25 +394,6 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
     });
 };
 
-module.exports.addAdmin = function (userEmail,callback){
-    userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
-    {
-        if (err) {
-            callback(err);
-        }
-        else {
-            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
-                if(err){
-                    callback(err);
-                }
-                else{
-                    callback(null);
-                }
-            });
-        }
-    })
-};
-
 module.exports.getRoleIdByUsername = function (username, callback)
 {
     userAccessor.findRole({userEmail: username}, (err, user) =>
@@ -487,7 +430,8 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
     });
 };
 
-module.exports.findAdmins = function (callback){
+module.exports.findAdmins = function (callback)
+{
     userAccessor.findAdmins({},(err,admins)=>{
         if(err){
             callback(err);
@@ -514,7 +458,8 @@ module.exports.getRoleNameByUsername = function (username, callback)
     });
 };
 
-module.exports.getEmailsByRoleId = (roleId,callback)=>{
+module.exports.getEmailsByRoleId = (roleId,callback)=>
+{
     userAccessor.findRole({_id:roleId},(err,role)=>{
         if(err){
             callback(err);
@@ -541,7 +486,8 @@ module.exports.getFullNameByEmail = (email, callback) =>
     });
 };
 
-module.exports.findRolesByArray = (roleIDs, callback) =>{
+module.exports.findRolesByArray = (roleIDs, callback) =>
+{
     userAccessor.findRolesByArray(roleIDs,callback);
 };
 
@@ -571,7 +517,8 @@ module.exports.getAllUsers = (callback) =>
     });
 };
 
-module.exports.loadDefaultTree = (userEmail, callback) => {
+module.exports.loadDefaultTree = (userEmail, callback) =>
+{
     let demoTreeString = fs.readFileSync("./defaultTree/defaultTree.json");
     let emailsToFullName = JSON.parse(fs.readFileSync("./defaultTree/emailsToFullName.json"));
     let rolesToDereg = JSON.parse(fs.readFileSync("./defaultTree/rolesToDereg.json"));
@@ -579,7 +526,7 @@ module.exports.loadDefaultTree = (userEmail, callback) => {
     this.setUsersAndRolesTree(userEmail, demoTreeString, rolesToEmails, emailsToFullName, rolesToDereg, callback);
 };
 
-function getAllChildren(userEmail, callback)
+module.exports.getAllChildren = (userEmail, callback)=>
 {
     userAccessor.findUser({}, (err, res) =>
     {
@@ -602,9 +549,9 @@ function getAllChildren(userEmail, callback)
             callback(null, children);
         }
     });
-}
+};
 
-function getFatherOfDeregByArrayOfRoleIDs(roleID,deregs, callback)
+module.exports.getFatherOfDeregByArrayOfRoleIDs = (roleID,deregs, callback)=>
 {
     userAccessor.findRole({}, (err, res) =>
     {
@@ -618,6 +565,64 @@ function getFatherOfDeregByArrayOfRoleIDs(roleID,deregs, callback)
             callback(null, toReturn);
         }
     });
+};
+
+function addChildrenToRole(roleObjectID, childrenObjectID, callback)
+{
+    userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
+}
+
+function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
+{
+    let countsArray = {};
+    usersEmail.forEach((email) =>
+    {
+        if (countsArray[email] === undefined)
+            countsArray[email] = 1;
+        else countsArray[email] = countsArray[email] + 1
+    });
+    let dupEmails = false;
+    usersEmail.every((email) =>
+    {
+        if (countsArray[email] > 1) dupEmails = true;
+        return !dupEmails;
+    });
+
+    if (dupEmails)
+        callback(new Error("should not allow duplicated emails"));
+    else {
+        let params = {roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
+        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
+        userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
+        {
+            if (err) {
+                callback(err);
+            }
+            else {
+                callback(null, usersAndRole)
+            }
+        });
+    }
+}
+
+function addAdmin(userEmail,callback)
+{
+    userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else {
+            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
+                if(err){
+                    callback(err);
+                }
+                else{
+                    callback(null);
+                }
+            });
+        }
+    })
 }
 
 function includesRoleID(arr,roleID)
@@ -662,18 +667,9 @@ function getChildrenRecursive(role, roleMapping)
     return toReturn;
 }
 
-/*
-    This function decides what emails can be used.
-    //TODO: check that the email domain belongs to aguda. (@aguda)
- */
 function emailValidator(email)
 {
     let regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return regularExpression.test(String(email).toLowerCase());
 }
-
-
-module.exports.getAllChildren = getAllChildren;
-module.exports.getFatherOfDeregByArrayOfRoleIDs = getFatherOfDeregByArrayOfRoleIDs;
-
 
