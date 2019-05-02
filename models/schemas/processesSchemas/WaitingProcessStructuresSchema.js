@@ -10,7 +10,8 @@ const waitingProcessStructuresSchema = new Schema({
     date: Date,
     sankey: String,
     onlineForms: [{type: Schema.Types.ObjectId, ref: 'OnlineForm'}],
-    automaticAdvanceTime: {type:Number} // possible values: ["0","24","48","72","96","120","144"] // 0 means there's no automaticAdvanceTime
+    automaticAdvanceTime: {type:Number}, // possible values: ["0","24","48","72","96","120","144"] // 0 means there's no automaticAdvanceTime
+    notificationTime: Number,
 });
 
 module.exports = mongoose.model('waitingProcessStructuresSchema', waitingProcessStructuresSchema);

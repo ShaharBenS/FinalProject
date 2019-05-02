@@ -68,17 +68,19 @@
             <h6 style="color:#000">יוצר התהליך</h6>
             <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.State.Creator"
                  class="palette_node_element draw2d_droppable">
-            <div style="height: 10%;"></div>
-            <button class="btn btn-primary" onclick="document.getElementById('define-auto-time-modal').style.display = 'block'">מעבר<br>אוטומטי</button>
-            <div style="height: 5%"></div>
+            <div style="height: 3%;"></div>
             <button class="btn btn-primary" onclick="getHelp();">עזרה</button>
-            <div style="height: 5%"></div>
+            <div style="height: 3%"></div>
+            <button class="btn btn-primary" onclick="document.getElementById('define-auto-time-modal').style.display = 'block'">מעבר<br>אוטומטי</button>
+            <div style="height: 3%"></div>
+            <button class="btn btn-primary" onclick="document.getElementById('define-notification-time-modal').style.display = 'block'">זמן<br>התראה</button>
+            <div style="height: 3%"></div>
             <button id="deleteButton" class="btn btn-primary" onclick="deleteStructureClicked();">מחק</button>
-            <div style="height: 5%"></div>
+            <div id="deleteButton_padding" style="height: 3%"></div>
             <button class="btn btn-primary" onclick="seeFormsOpened();">טפסים</button>
-            <div style="height: 5%"></div>
+            <div style="height: 3%"></div>
             <button class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
-            <div style="height: 5%"></div>
+            <div style="height: 3%"></div>
             <button id="saveButton" onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
             </button>
         </div>
@@ -341,6 +343,40 @@
             <div class="modal-footer">
                 <button class="btn btn-primary okButton"
                         onclick="document.getElementById('define-auto-time-modal').style.display = 'none'"><span>אישור</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div dir="ltr" id="define-notification-time-modal" class="modal">
+    <div class="modal-content">
+        <div dir="rtl">
+            <div class="modal-header">
+                <h4 class="media-heading">הגדר את זמן ההתראה החוזרת</h4>
+            </div>
+            <div class="modal-body">
+                <div class="media">
+                    <div class="media-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <select id="notificationTimeSelect">
+                                    <option value="12">12 שעות</option>
+                                    <option value="24">24 שעות</option>
+                                    <option value="48">36 שעות</option>
+                                    <option value="72">48 שעות</option>
+                                    <option value="96">72 שעות</option>
+                                    <option value="120">96 שעות</option>
+                                </select>
+                            </div>
+                        </fieldset>
+                        <div class="row"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary okButton"
+                        onclick="document.getElementById('define-notification-time-modal').style.display = 'none'"><span>אישור</span>
                 </button>
             </div>
         </div>

@@ -160,8 +160,7 @@ function confirmStartProcess() {
     let processName = document.getElementById("start-processes-name").value;
     let processDate = document.getElementById("start-processes-date").value;
     let urgency = document.getElementById("start-processes-urgency").value;
-    let notificationTime = parseInt(document.getElementById("start-processes-notification-time").value);
-    let data = {processName: processName, structureName: structureName, processDate: processDate, processUrgency: urgency, notificationTime: notificationTime};
+    let data = {processName: processName, structureName: structureName, processDate: processDate, processUrgency: urgency};
     if (processName === "") {
         alertify.alert("שם לא יכול להיות ריק");
         return;

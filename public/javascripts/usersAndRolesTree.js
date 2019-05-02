@@ -174,6 +174,10 @@ function rolesToHTML(roleName)
     {
         alertify.prompt("הכנס אימייל:","",(evt,email)=>{
             if (email != null) {
+                if(!emailValidator(email)){
+                    alertify.alert("כתובת מייל לא תקינה");
+                    return;
+                }
                 let found = false;
                 Object.keys(roleToEmails).forEach(roleName=>{
                     roleToEmails[roleName].forEach(userEmail=>{
@@ -206,15 +210,26 @@ function updateUsersMaps(roleName){
     let names = document.getElementsByClassName("name");
     let emailsArray = [];
     for(let i = 0; i < emails.length; i++){
+        if(!emailValidator(emails[i].value)){
+            return emails[i].value;
+        }
         emailsArray.push(emails[i].value);
-        emailToFullName[emails[i].value] = names[i].value
+    }
+    for(let i = 0; i < emailsArray.length; i++){
+        emailToFullName[emailsArray[i]] = names[i].value;
     }
     roleToEmails[roleName] = emailsArray;
+    return undefined;
 }
 
 function updateUsername(){
-    updateUsersMaps(currentRoleNameClicked);
-    document.getElementById('select_users_modal').style.display = 'none';
+    let result = updateUsersMaps(currentRoleNameClicked);
+    if(result === undefined){
+        document.getElementById('select_users_modal').style.display = 'none';
+    }
+    else{
+        alertify.alert("הכתובת "+result+" אינה תקינה.");
+    }
 }
 
 function deleteRoleById(id){
@@ -223,7 +238,36 @@ function deleteRoleById(id){
        delete emailToFullName[email];
     });
     delete roleToEmails[idToRole[id]];
+    delete roleToDereg[idToRole[id]];
     delete idToRole[id];
+}
+
+function emailValidator(email)
+{
+    let regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regularExpression.test(String(email).toLowerCase());
+}
+
+function loadDefaultTree(){
+    $.ajax({
+            url: '/usersAndRoles/loadDefaultTree/',
+            method: "POST",
+            xhrFields: {
+                withCredentials: true
+            },
+            data: {},
+        }
+    ).done(function (responseText, status) {
+        if (status === "success") {
+            if (responseText === "success") {
+                alertify.alert("העץ נשמר בהצלחה!",()=>{
+                    window.location.href = '/usersAndRoles/editTree/';
+                });
+            } else {
+                alertify.alert(responseText);
+            }
+        }
+    });
 }
 
 function confirm() {

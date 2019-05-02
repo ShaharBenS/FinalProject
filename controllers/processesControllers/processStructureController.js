@@ -7,7 +7,7 @@ let userPermissionsController = require('../usersControllers/UsersPermissionsCon
 let waitingProcessStructuresAccessor = require('../../models/accessors/waitingProcessStructuresAccessor');
 
 
-module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, callback) =>
+module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, notificationTime, callback) =>
 {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) =>
     {
@@ -20,7 +20,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                 callback(err);
             }
             else {
-                let newProcessStructure = new ProcessStructure(structureName, structure.stages, sankeyContent, false, onlineFormsIDs, automaticAdvanceTime);
+                let newProcessStructure = new ProcessStructure(structureName, structure.stages, sankeyContent, false, onlineFormsIDs, automaticAdvanceTime, notificationTime);
                 if (newProcessStructure.checkNotDupStagesInStructure()) {
                     if (newProcessStructure.checkPrevNextSymmetric()) {
                         if (newProcessStructure.checkNextPrevSymmetric()) {
@@ -43,6 +43,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                                     sankey: sankeyContent,
                                     onlineForms: onlineFormsIDs,
                                     automaticAdvanceTime:parseInt(automaticAdvanceTime),
+                                    notificationTime: parseInt(notificationTime),
                                 },(err)=>{
                                     if(err){
                                         callback(err);
@@ -68,7 +69,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
 };
 
 
-module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, callback) => {
+module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, notificationTime, callback) => {
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
             callback(err);
@@ -89,7 +90,8 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                         stages: structure.stages,
                                         sankey: sankeyContent,
                                         onlineForms: onlineFormsIDs,
-                                        automaticAdvanceTime: parseInt(automaticAdvanceTime)
+                                        automaticAdvanceTime: parseInt(automaticAdvanceTime),
+                                        notificationTime: parseInt(notificationTime),
                                     }
                                 }, (err) => {
                                     if (err) {
@@ -108,7 +110,8 @@ module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, 
                                     date: new Date(),
                                     sankey: sankeyContent,
                                     onlineForms: onlineFormsIDs,
-                                    automaticAdvanceTime: automaticAdvanceTime
+                                    automaticAdvanceTime: automaticAdvanceTime,
+                                    notificationTime: notificationTime,
                                 }, (err) => {
                                     if (err) {
                                         callback(err);
@@ -230,7 +233,8 @@ module.exports.getProcessStructureForDB = function (originProcessStructure)
         onlineForms: originProcessStructure.onlineForms,
         stages: this.getProcessStructureStagesForDB(originProcessStructure.stages),
         sankey: originProcessStructure.sankey,
-        automaticAdvanceTime: originProcessStructure.automaticAdvanceTime
+        automaticAdvanceTime: originProcessStructure.automaticAdvanceTime,
+        notificationTime: originProcessStructure.notificationTime,
     };
 };
 

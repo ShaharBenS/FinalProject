@@ -1,12 +1,13 @@
 class processStructure {
 
-    constructor(structureName, stages, sankey,available,onlineForms,automaticAdvanceTime) {
+    constructor(structureName, stages, sankey,available,onlineForms,automaticAdvanceTime, notificationTime) {
         this.structureName = structureName;
         this.stages = stages;
         this.sankey = sankey;
         this.available = available;
         this.onlineForms = onlineForms;
         this.automaticAdvanceTime = automaticAdvanceTime;
+        this.notificationTime = notificationTime;
     }
 
     getInitialStageByRoleID(roleID, dereg) {

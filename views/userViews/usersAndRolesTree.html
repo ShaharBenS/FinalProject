@@ -110,17 +110,19 @@
             <div style="height: 2%;"></div>
             <img src="/draw_sankey/server/html/editor/assets/img/person-add.png" data-shape="sankey.shape.State"
                  class="palette_node_element draw2d_droppable">
-            <div style="height: 50%"></div>
+            <div style="height: 40%"></div>
             <button onclick="getHelp()" title="Save Report" class="btn btn-primary">עזרה</button>
-            <div style="height: 10%"></div>
+            <div style="height: 6%"></div>
+            <button onclick="loadDefaultTree()" title="Save Report" class="btn btn-primary">טען עץ<br>דיפולטיבי</button>
+            <div style="height: 6%"></div>
             <button class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
-            <div style="height: 10%"></div>
+            <div style="height: 6%"></div>
             <button onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
             </button>
         </div>
         <div id="view">
             <div id="draw2dCanvasWrapper">
-                <div id="canvas" style="width:3000px; height:1000px;-webkit-tap-highlight-color: rgba(0,0,0,0);"></div>
+                <div id="canvas" style="width:10000px; height:8000px;-webkit-tap-highlight-color: rgba(0,0,0,0);"></div>
             </div>
             <!--<div id="property"></div>-->
         </div>

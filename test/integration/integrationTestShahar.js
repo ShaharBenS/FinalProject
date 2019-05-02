@@ -153,7 +153,7 @@ describe('1. addUsersAndRole', function ()
     it('1.2 Creating process structure', function (done)
     {
         processStructureController.addProcessStructure("sayor@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string,
-            [], "24", (err, needApprove) =>
+            [], "24","12", (err, needApprove) =>
             {
                 assert.deepEqual(needApprove, "approval");
                 waitingProcessStructuresController.getAllWaitingProcessStructuresWithoutSankey((err, waitingStructures) =>
@@ -177,7 +177,7 @@ describe('1. addUsersAndRole', function ()
                                     else {
                                         assert.deepEqual(processStructures[0].structureName, "מעורבות באתר אקדמיה");
                                         assert.deepEqual(processStructures[0].stages.length, 10);
-                                        processStructureController.editProcessStructure("new_media3@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string, [], 48, (err, needApprove) =>
+                                        processStructureController.editProcessStructure("new_media3@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string, [], 48, 12,(err, needApprove) =>
                                         {
                                             if (err) {
                                                 done(err);
@@ -203,6 +203,7 @@ describe('1. addUsersAndRole', function ()
                                                                     }
                                                                     else {
                                                                         assert.deepEqual(ps.automaticAdvanceTime, 24);
+                                                                        assert.deepEqual(ps.notificationTime, 12);
                                                                         done();
                                                                     }
                                                                 })
@@ -224,7 +225,7 @@ describe('1. addUsersAndRole', function ()
     it('1.3 Starting, advancing, cancelling', function (done)
     {
         activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 1",
-            new Date(2022, 4, 26, 16), 2, 12, (err) =>
+            new Date(2022, 4, 26, 16), 2, (err) =>
             {
                 if (err) {
                     done(err);
@@ -345,7 +346,7 @@ describe('1. addUsersAndRole', function ()
                                                                                                                     else {
                                                                                                                         assert.deepEqual(activeProcesses.length, 0);
                                                                                                                         activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 2",
-                                                                                                                            new Date(2022, 4, 26, 16), 2, 12, (err) =>
+                                                                                                                            new Date(2022, 4, 26, 16), 2, (err) =>
                                                                                                                             {
                                                                                                                                 if (err) {
                                                                                                                                     done(err);

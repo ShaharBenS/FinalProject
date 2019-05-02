@@ -12,6 +12,16 @@ let router = express.Router();
 
  */
 
+router.post("/loadDefaultTree", (req, res) => {
+    UsersAndRolesController.loadDefaultTree(req.user.emails[0].value, (err) => {
+        if (err) {
+           res.send(err);
+        }
+        else{
+            res.send("success");
+        }
+    });
+});
 
 /*
    _____ ______ _______
@@ -23,75 +33,60 @@ let router = express.Router();
 
  */
 
-router.get('/getAllRoles', (req, res) =>
-{
-    UsersAndRolesController.getAllRoles((err, result) =>
-    {
+router.get('/getAllRoles', (req, res) => {
+    UsersAndRolesController.getAllRoles((err, result) => {
         if (err) {
             res.send(err);
-        }
-        else {
+        } else {
             res.send(result);
         }
     })
 });
 
-router.get('/getRoleToEmails', (req, res) =>
-{
-    UsersAndRolesController.getRoleToEmails((err, roleToEmails) =>
-    {
+router.get('/getRoleToEmails', (req, res) => {
+    UsersAndRolesController.getRoleToEmails((err, roleToEmails) => {
         if (err) {
             res.send(err);
-        }
-        else {
+        } else {
             res.send(roleToEmails);
         }
     });
 });
 
 
-router.get('/getRoleToDereg', (req, res) =>
-{
-    UsersAndRolesController.getRoleToDereg((err, roleToDereg) =>
-    {
+router.get('/getRoleToDereg', (req, res) => {
+    UsersAndRolesController.getRoleToDereg((err, roleToDereg) => {
         if (err) {
             res.send(err);
-        }
-        else {
+        } else {
             res.send(roleToDereg);
         }
     });
 });
 
 
-router.get('/getEmailToFullName', (req, res) =>
-{
-    UsersAndRolesController.getEmailToFullName((err,emailToFullName)=>{
-        if(err){
+router.get('/getEmailToFullName', (req, res) => {
+    UsersAndRolesController.getEmailToFullName((err, emailToFullName) => {
+        if (err) {
             res.send(err);
-        }
-        else{
+        } else {
             res.send(emailToFullName);
         }
     });
 });
 
-router.get('/getIdToRole', (req, res) =>
-{
-    UsersAndRolesController.getIdToRole((err, idToRole) =>
-    {
+router.get('/getIdToRole', (req, res) => {
+    UsersAndRolesController.getIdToRole((err, idToRole) => {
         if (err) {
             res.send(err);
-        }
-        else {
+        } else {
             res.send(idToRole);
         }
     });
 });
 
 
-router.get('/editTree', (req, res) =>
-{
+router.get('/editTree', (req, res) => {
     res.render('userViews/usersAndRolesTree');
 });
 

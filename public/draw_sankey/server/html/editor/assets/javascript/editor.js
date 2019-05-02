@@ -661,9 +661,13 @@ sankey.dialog.FileSave = Class.extend({
         new draw2d.io.png.Writer().marshal(app.view, function (imageDataUrl)
         {
             let automaticAdvanceTime = undefined;
+            let notificationTime = undefined;
             if((diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')){
                 let selector = document.getElementById("automaticTimeSelect");
                 automaticAdvanceTime = selector.options[selector.selectedIndex].value;
+
+                let selector2 = document.getElementById("notificationTimeSelect");
+                notificationTime = selector2.options[selector2.selectedIndex].value;
             }
             var data = {
                 base64Image: imageDataUrl,
@@ -676,6 +680,7 @@ sankey.dialog.FileSave = Class.extend({
                 onlineFormsOfProcess: (diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')
                     ? JSON.stringify(formsOfProcess) : undefined,
                 automaticAdvanceTime: automaticAdvanceTime,
+                notificationTime: notificationTime,
                 processStructureName: processStructureName,
                 mongoId:mongoId,
             };
