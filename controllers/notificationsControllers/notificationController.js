@@ -59,6 +59,7 @@ module.exports.updateNotifications = () =>
     activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
     {
         if (err) {
+            console.log(err);
         }
         else {
             activeProcesses.forEach(activeProcess =>

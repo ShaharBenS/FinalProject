@@ -477,6 +477,36 @@ describe('1. usersAndRolesController', function () {
     });
 
     it('1.22 getFatherOfDeregByArrayOfRoleIDs', function (done) {
-        done();
+        usersAndRolesController.getRoleIdByUsername("new_media2@outlook.com",(err,roleID)=>{
+            if(err){
+                done(err);
+            }
+            else{
+                usersAndRolesController.getFatherOfDeregByArrayOfRoleIDs(roleID, ["3","4"], (err,deregs)=>{
+                    if(err){
+                        done(err);
+                    }
+                    else{
+                        usersAndRolesController.getRoleNameByRoleID(deregs["3"],(err,roleName)=>{
+                            if(err){
+                                done(err);
+                            }
+                            else{
+                                assert.deepEqual("רמ\"ד הסברה",roleName);
+                                usersAndRolesController.getRoleNameByRoleID(deregs["4"],(err,roleName)=>{
+                                    if(err){
+                                        done(err);
+                                    }
+                                    else{
+                                        assert.deepEqual("סיו\"ר",roleName);
+                                        done();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     });
 });

@@ -551,7 +551,10 @@ module.exports.getAllChildren = (userEmail, callback)=>
     });
 };
 
-module.exports.getFatherOfDeregByArrayOfRoleIDs = (roleID,deregs, callback)=>
+/*
+    returns the fathers of roleID that are of a dereg that in deregs array
+ */
+module.exports.getFatherOfDeregByArrayOfRoleIDs = (roleID, deregs, callback)=>
 {
     userAccessor.findRole({}, (err, res) =>
     {
