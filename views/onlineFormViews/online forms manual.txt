@@ -1,0 +1,19 @@
+roles for forms:
+dont include 'table_input' as part of an id
+dont use class 'table_cell'
+dont use class 'no_table_cell'
+use className 'no_table' when you are not using an extendable table (if you use it the table can extend and decend rows).
+you have to include fieldset tag after each form tag!
+the submit button have to be used with id: 'submitButton'
+dont use the specific id: 'every_table'
+inside 'no_table' tables, use always (and only!!) textareas!
+inside 'no_table' tables dont use 2 textareas in the same row.
+inside 'no_table' wrap textareas only with 'td'.
+
+text inside table:
+	for row name (1st column) wrap it with label.
+	for second column wrap with div with class of 'padding'
+if you wont do that ull just make the table ugly.
+
+
+

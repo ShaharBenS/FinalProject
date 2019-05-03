@@ -434,12 +434,17 @@ describe('6. createAllOnlineForms', function () {
         this.timeout(10000);
         let fs = require('fs');
         let files = fs.readdirSync(__dirname + "\\..\\..\\views\\onlineFormViews\\");
-        let length = files.length;
-
+        let length = 0;
+        for (let i in files) {
+            let fileName = files[i];
+            if (fileName !== 'example.html' && fileName.substring(fileName.length - 5) === '.html') {
+                length++;
+            }
+        }
         onlineFormController.createAllOnlineForms(() => {
             onlineFormController.getAllOnlineForms((err, res) => {
                 if (err) done(err);
-                assert.equal(res.length, length - 1);
+                assert.equal(res.length, length);
                 done();
             });
         });

@@ -12,19 +12,23 @@ let whileReplace = function (str, replace, by) {
 module.exports.createAllOnlineForms = (callback) => {
     let files = fs.readdirSync(__dirname + "\\..\\..\\views\\onlineFormViews\\");
     let length = files.length;
-    let current = 0;
+    let success = 0;
+    let remove = 0;
     for (let i in files) {
         let fileName = files[i];
-        if (fileName !== 'example.html') {
+        if (fileName !== 'example.html' && fileName.substring(fileName.length - 5) === '.html') {
             let fileNameNoHTML = fileName.replace('.html', '');
             let formName = whileReplace(fileNameNoHTML, '_', ' ');
             this.createOnlineFrom(formName, fileNameNoHTML, (err) => {
                 if (err)
                     console.log(err.message);
-                current++;
-                if (current === length - 1)
+                success++;
+                if (success === length - remove)
                     callback();
             });
+        } else {
+            remove++;
+            console.log("Online Forms: file \"" + fileName + "\" wasn\'t added");
         }
     }
 };
