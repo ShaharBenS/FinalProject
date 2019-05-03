@@ -8,35 +8,36 @@ let it = mocha.it;
 let assert = require('chai').assert;
 let fs = require("fs");
 
-let globalBefore = async function () {
+let globalBefore = async function ()
+{
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
     mongoose.connection.db.dropDatabase();
 };
 
-let globalAfter = function () {
+let globalAfter = function ()
+{
     mongoose.connection.close();
 };
 
 
-describe('1. usersAndRolesController', function () {
+describe('1. processStructureController', function ()
+{
     before(globalBefore);
     after(globalAfter);
 
     let tree9 = fs.readFileSync("./test/inputs/trees/tree9/tree9.json");
 
     let processStructure1 = fs.readFileSync("./test/inputs/processStructures/processStructure1/processStructure1.json");
-    let processStructure2 = fs.readFileSync("./test/inputs/processStructures/processStructure2/processStructure2.json");
-    let processStructure3 = fs.readFileSync("./test/inputs/processStructures/processStructure3/processStructure3.json");
-    let processStructure4 = fs.readFileSync("./test/inputs/processStructures/processStructure4/processStructure4.json");
     let processStructure5 = fs.readFileSync("./test/inputs/processStructures/processStructure5/processStructure5.json");
     let processStructure6 = fs.readFileSync("./test/inputs/processStructures/processStructure6/processStructure6.json");
-    let processStructure7 = fs.readFileSync("./test/inputs/processStructures/processStructure7/processStructure7.json");
     let processStructure8 = fs.readFileSync("./test/inputs/processStructures/processStructure8/processStructure8.json");
     let processStructure9 = fs.readFileSync("./test/inputs/processStructures/processStructure9/processStructure9.json");
 
-    it('1.0 setting up tree', function (done) {
-        usersAndRolesController.getUsersAndRolesTree(() => {
+    it('1.0 setting up tree', function (done)
+    {
+        usersAndRolesController.getUsersAndRolesTree(() =>
+        {
             usersAndRolesController.setUsersAndRolesTree("creator@gmail.com", tree9, {
                     "יו\"ר": ["yor@outlook.com"],
                     "סיו\"ר": ["sayor@outlook.com"],
@@ -77,43 +78,58 @@ describe('1. usersAndRolesController', function () {
                     "רכז ניו מדיה": "1",
                     "מנהל/ת אתר אינטרנט": "2",
                     "מנהל/ת מיזמים אקדמים": "2"
-                }, (err) => {
+                }, (err) =>
+                {
                     if (err) {
                         done(err);
-                    } else {
+                    }
+                    else {
                         done();
                     }
                 })
         });
-    }).timeout(30000);
+    }).timeout(10000);
 
-    it('1.1 addProcessStructure', function (done) {
-        processStructureController.addProcessStructure("creator@gmail.com", "PS 1", processStructure1, [], "24", "12", (err, needApprove) => {
+    it('1.1 addProcessStructure', function (done)
+    {
+        processStructureController.addProcessStructure("creator@gmail.com", "PS 1", processStructure1, [], "24", "12", (err, needApprove) =>
+        {
             assert.deepEqual(err, 'שגיאה: אין שלבים (צריך לפחות אחד)');
-            processStructureController.addProcessStructure("creator@gmail.com", "PS 5", processStructure5, [], "24", "12", (err, needApprove) => {
+            processStructureController.addProcessStructure("creator@gmail.com", "PS 5", processStructure5, [], "24", "12", (err, needApprove) =>
+            {
                 assert.deepEqual(err, 'שגיאה: יש יותר מזרימה אחת בגרף');
-                processStructureController.addProcessStructure("creator@gmail.com", "PS 8", processStructure8, [], "24", "12", (err, needApprove) => {
+                processStructureController.addProcessStructure("creator@gmail.com", "PS 8", processStructure8, [], "24", "12", (err, needApprove) =>
+                {
                     assert.deepEqual(err, 'שגיאה: יש יותר מחיבור אחד בין 2 שלבים');
-                    processStructureController.addProcessStructure("creator@gmail.com", "PS 6", processStructure6, [], "24", "12", (err, needApprove) => {
+                    processStructureController.addProcessStructure("creator@gmail.com", "PS 6", processStructure6, [], "24", "12", (err, needApprove) =>
+                    {
                         assert.deepEqual(err, 'שגיאה: המבנה מכיל מעגלים');
-                        processStructureController.addProcessStructure("creator@gmail.com", "PS 9", processStructure9, [], "24", "12", (err, needApprove) => {
+                        processStructureController.addProcessStructure("creator@gmail.com", "PS 9", processStructure9, [], "24", "12", (err, needApprove) =>
+                        {
                             if (err) {
                                 done(err);
-                            } else {
-                                processStructureAccessor.findProcessStructure({structureName: "PS 9"}, (err, structure) => {
+                            }
+                            else {
+                                processStructureAccessor.findProcessStructure({structureName: "PS 9"}, (err, structure) =>
+                                {
                                     if (err) {
                                         done(err);
-                                    } else {
+                                    }
+                                    else {
                                         assert.deepEqual(structure.stages.length, 10);
                                         assert.deepEqual(structure.notificationTime, 12);
-                                        processStructureController.addProcessStructure("creator@gmail.com", "PS 9.1", processStructure9, [], "48", "24", (err, needApprove) => {
+                                        processStructureController.addProcessStructure("creator@gmail.com", "PS 9.1", processStructure9, [], "48", "24", (err, needApprove) =>
+                                        {
                                             if (err) {
                                                 done(err);
-                                            } else {
-                                                processStructureAccessor.findProcessStructure({structureName: "PS 9.1"}, (err, structure) => {
+                                            }
+                                            else {
+                                                processStructureAccessor.findProcessStructure({structureName: "PS 9.1"}, (err, structure) =>
+                                                {
                                                     if (err) {
                                                         done(err);
-                                                    } else {
+                                                    }
+                                                    else {
                                                         assert.deepEqual(structure.stages.length, 10);
                                                         assert.deepEqual(structure.notificationTime, 24);
                                                         done();
@@ -131,15 +147,20 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.2 editProcessStructure', function (done) {
-        processStructureController.editProcessStructure("creator@gmail.com", "PS 9", processStructure9, [], "48", "24", (err) => {
+    it('1.2 editProcessStructure', function (done)
+    {
+        processStructureController.editProcessStructure("creator@gmail.com", "PS 9", processStructure9, [], "48", "24", (err) =>
+        {
             if (err) {
                 done(err);
-            } else {
-                processStructureAccessor.findProcessStructure({structureName: "PS 9"}, (err, structure) => {
+            }
+            else {
+                processStructureAccessor.findProcessStructure({structureName: "PS 9"}, (err, structure) =>
+                {
                     if (err) {
                         done(err);
-                    } else {
+                    }
+                    else {
                         assert.deepEqual(structure.stages.length, 10);
                         assert.deepEqual(structure.notificationTime, 24);
                         done();
@@ -149,11 +170,14 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.3 getProcessStructure', function (done) {
-        processStructureController.getProcessStructure("PS 9", (err, structure) => {
+    it('1.3 getProcessStructure', function (done)
+    {
+        processStructureController.getProcessStructure("PS 9", (err, structure) =>
+        {
             if (err) {
                 done(err);
-            } else {
+            }
+            else {
                 assert.deepEqual(structure.stages.length, 10);
                 assert.deepEqual(structure.notificationTime, 24);
                 done();
@@ -161,13 +185,17 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.4 getAllProcessStructures', function (done) {
-        processStructureController.getAllProcessStructures((err,structures) => {
+    it('1.4 getAllProcessStructures', function (done)
+    {
+        processStructureController.getAllProcessStructures((err, structures) =>
+        {
             if (err) {
                 done(err);
-            } else {
-                assert.deepEqual(structures.length,2);
-                assert.deepEqual(true,structures.some(structure=>{
+            }
+            else {
+                assert.deepEqual(structures.length, 2);
+                assert.deepEqual(true, structures.some(structure =>
+                {
                     return structure.structureName === "PS 9.1";
                 }));
                 done();
@@ -175,15 +203,19 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.5 removeProcessStructure', function (done) {
-        processStructureController.removeProcessStructure("creator@gmail.com", "PS 9", (err) => {
+    it('1.5 removeProcessStructure', function (done)
+    {
+        processStructureController.removeProcessStructure("creator@gmail.com", "PS 9", (err) =>
+        {
             if (err) {
                 done(err);
             }
-            processStructureAccessor.findProcessStructure({structureName: "PS 9"}, (err, structure) => {
+            processStructureAccessor.findProcessStructure({structureName: "PS 9"}, (err, structure) =>
+            {
                 if (err) {
                     done(err);
-                } else {
+                }
+                else {
                     assert.deepEqual(structure, null);
                     done();
                 }
@@ -191,17 +223,20 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-
-    it('1.6 getAllProcessStructuresTakenNames', function (done) {
-        processStructureController.addProcessStructure("yor@outlook.com","PS APPROVE",processStructure9,[],"24","12",(err,needApprove)=>{
-            assert.deepEqual(needApprove,"approval");
-            processStructureController.getAllProcessStructuresTakenNames((err,structures)=>{
-                if(err){
+    it('1.6 getAllProcessStructuresTakenNames', function (done)
+    {
+        processStructureController.addProcessStructure("yor@outlook.com", "PS APPROVE", processStructure9, [], "24", "12", (err, needApprove) =>
+        {
+            assert.deepEqual(needApprove, "approval");
+            processStructureController.getAllProcessStructuresTakenNames((err, structures) =>
+            {
+                if (err) {
                     done(err);
                 }
-                else{
-                    assert.deepEqual(structures.length,2);
-                    assert.deepEqual(true,structures.some(structure=>{
+                else {
+                    assert.deepEqual(structures.length, 2);
+                    assert.deepEqual(true, structures.some(structure =>
+                    {
                         return structure === "PS APPROVE";
                     }));
                     done();
@@ -210,8 +245,39 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.7 setProcessStructuresUnavailable', function (done) {
-        processStructureController.setProcessStructuresUnavailable()
-        done();
+    it('1.7 setProcessStructuresUnavailable', function (done)
+    {
+        usersAndRolesController.getRoleIdByUsername("meizamim@outlook.com", (err, roleID) =>
+        {
+            processStructureController.setProcessStructuresUnavailable([roleID], ["מנהל/ת מיזמים אקדמים"], [], (err) =>
+            {
+                if (err) {
+                    done(err);
+                }
+                else {
+                    processStructureController.getProcessStructure("PS 9.1", (err, processStructure) =>
+                    {
+                        if (err) {
+                            done(err);
+                        }
+                        else {
+                            processStructureController.editProcessStructure("creator@gmail.com", "PS 9.1", processStructure.sankey, [], processStructure.automaticAdvanceTime, processStructure.notificationTime, (err) =>
+                            {
+                                let sankeyArray = JSON.parse(processStructure.sankey).content.diagram;
+                                sankeyArray.forEach(element =>
+                                {
+                                    if (element.type === "sankey.shape.State") {
+                                        if (element.labels[0].text === "מנהל/ת מיזמים אקדמים") {
+                                            assert.deepEqual(element.bgColor.toLowerCase(), "#ff1100");
+                                        }
+                                    }
+                                });
+                                done();
+                            });
+                        }
+                    });
+                }
+            });
+        });
     });
 });

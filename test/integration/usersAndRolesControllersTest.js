@@ -194,7 +194,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.7 getAllRoles', function (done) {
+    it('1.5 getAllRoles', function (done) {
         usersAndRolesController.getAllRoles((err, roles) => {
             if (err) {
                 done(err);
@@ -213,7 +213,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.8 getUsersAndRolesTree', function (done) {
+    it('1.6 getUsersAndRolesTree', function (done) {
         usersAndRolesController.getUsersAndRolesTree((err, sankey) => {
             if (err) {
                 done(err);
@@ -224,7 +224,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.9 setUsersAndRolesTree', function (done) {
+    it('1.7 setUsersAndRolesTree', function (done) {
         usersAndRolesController.setUsersAndRolesTree("A@GMAIL.com", tree9, {}, {}, {}, (err) => {
             assert.deepEqual('שגיאה: אין לך את ההרשאות המתאימות לעריכת עץ המשתמשים.', err);
             usersAndRolesController.setUsersAndRolesTree("creator@gmail.com", tree9, {
@@ -275,7 +275,7 @@ describe('1. usersAndRolesController', function () {
         })
     });
 
-    it('1.11 getRoleIdByUsername', function (done) {
+    it('1.8 getRoleIdByUsername', function (done) {
         usersAccessor.findRole({}, (err, roles) => {
             if (err) {
                 done(err);
@@ -299,7 +299,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.12 getRoleByUsername', function (done) {
+    it('1.9 getRoleByUsername', function (done) {
         usersAccessor.findRole({}, (err, roles) => {
             if (err) {
                 done(err);
@@ -321,7 +321,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.13 getRoleNameByRoleID', function (done) {
+    it('1.10 getRoleNameByRoleID', function (done) {
         usersAccessor.findRole({}, (err, roles) => {
             if (err) {
                 done(err);
@@ -353,14 +353,14 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.14 findAdmins', function (done) {
+    it('1.11 findAdmins', function (done) {
         usersAndRolesController.findAdmins((err,admins)=>{
              assert.deepEqual(admins,["creator@gmail.com"]);
              done();
         });
     });
 
-    it('1.15 getRoleNameByUsername', function (done) {
+    it('1.12 getRoleNameByUsername', function (done) {
         usersAndRolesController.getRoleNameByUsername("meoravut@outlook.com",(err,roleName)=>{
             assert.deepEqual(roleName,"רמ\"ד מעורבות");
             usersAndRolesController.getRoleNameByUsername("meizamim@outlook.com",(err,roleName)=>{
@@ -370,7 +370,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.16 getEmailsByRoleId', function (done) {
+    it('1.13 getEmailsByRoleId', function (done) {
         usersAccessor.findRole({}, (err, roles) => {
             if (err) {
                 done(err);
@@ -402,7 +402,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.17 getFullNameByEmail', function (done) {
+    it('1.14 getFullNameByEmail', function (done) {
         usersAndRolesController.getFullNameByEmail("new_media3@outlook.com",(err,fullName)=>{
             assert.deepEqual(fullName,"כף למד מם");
             usersAndRolesController.getFullNameByEmail("sayor@outlook.com",(err,fullName)=>{
@@ -412,7 +412,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.18 findRolesByArray', function (done) {
+    it('1.15 findRolesByArray', function (done) {
         usersAccessor.findRole({}, (err, roles) => {
             if (err) {
                 done(err);
@@ -430,7 +430,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.19 getAllUsers', function (done) {
+    it('1.16 getAllUsers', function (done) {
         usersAndRolesController.getAllUsers((err,users)=>{
             assert.deepEqual(users,[
                 "meizamim@outlook.com",
@@ -451,7 +451,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.21 getAllChildren', function (done) {
+    it('1.17 getAllChildren', function (done) {
         usersAndRolesController.getAllChildren("hasbara@outlook.com",(err,children)=>{
             if(err){
                 done(err);
@@ -476,7 +476,7 @@ describe('1. usersAndRolesController', function () {
         });
     });
 
-    it('1.22 getFatherOfDeregByArrayOfRoleIDs', function (done) {
+    it('1.18 getFatherOfDeregByArrayOfRoleIDs', function (done) {
         usersAndRolesController.getRoleIdByUsername("new_media2@outlook.com",(err,roleID)=>{
             if(err){
                 done(err);
