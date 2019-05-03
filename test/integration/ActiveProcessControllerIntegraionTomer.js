@@ -51,44 +51,6 @@ let beforeEachTest = function (done) {
     });
 };
 
-let startProcess = function (done) {
-    activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-        if (err) done(err);
-        else {
-            done();
-        }
-    });
-};
-
-let startProcessAndHandleTwice = function (done) {
-    activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-        if (err) done(err);
-        else {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-                        comments: 'הערות של מנהל נגטיב',
-                        0: 'on',
-                        1: 'on',
-                        4: 'on',
-                        processName: 'גרפיקה להקרנת בכורה'
-                    }, [], (err) => {
-                        if (err) done(err);
-                        else {
-                            done();
-                        }
-                    });
-                }
-            });
-        }
-    });
-};
-
 let afterGlobal = function () {
     mongoose.connection.close();
 };
@@ -159,9 +121,9 @@ describe('1. Active Process Controller', function () {
                                                                 else {
                                                                     assert.deepEqual(availableProcesses3.length, 1);
                                                                     let availableProcess = availableProcesses3[0];
-                                                                    assert(availableProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
-                                                                    assert(availableProcess.processName, 'גרפיקה להקרנת בכורה 2');
-                                                                    assert(availableProcess.processUrgency, 3);
+                                                                    assert.deepEqual(availableProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                    assert.deepEqual(availableProcess.processName, 'גרפיקה להקרנת בכורה 2');
+                                                                    assert.deepEqual(availableProcess.processUrgency, 3);
                                                                     done();
                                                                 }
                                                             });
@@ -199,9 +161,9 @@ describe('1. Active Process Controller', function () {
                                         else {
                                             assert.deepEqual(waitingProcesses2.length, 1);
                                             let waitingProcess = waitingProcesses2[0];
-                                            assert(waitingProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
-                                            assert(waitingProcess.processName, 'גרפיקה ליום הסטודנט 1');
-                                            assert(waitingProcess.processUrgency, 2);
+                                            assert.deepEqual(waitingProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                            assert.deepEqual(waitingProcess.processName, 'גרפיקה ליום הסטודנט 1');
+                                            assert.deepEqual(waitingProcess.processUrgency, 2);
                                             activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה ליום הסטודנט 2', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
                                                 if (err) done(err);
                                                 else {
@@ -212,13 +174,13 @@ describe('1. Active Process Controller', function () {
                                                         else {
                                                             assert.deepEqual(waitingProcesses3.length, 2);
                                                             let waitingProcess1 = waitingProcesses3[0];
-                                                            assert(waitingProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
-                                                            assert(waitingProcess1.processName, 'גרפיקה ליום הסטודנט 1');
-                                                            assert(waitingProcess1.processUrgency, 2);
+                                                            assert.deepEqual(waitingProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                            assert.deepEqual(waitingProcess1.processName, 'גרפיקה ליום הסטודנט 1');
+                                                            assert.deepEqual(waitingProcess1.processUrgency, 2);
                                                             let waitingProcess2 = waitingProcesses3[1];
-                                                            assert(waitingProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
-                                                            assert(waitingProcess2.processName, 'גרפיקה ליום הסטודנט 2');
-                                                            assert(waitingProcess2.processUrgency, 1);
+                                                            assert.deepEqual(waitingProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                            assert.deepEqual(waitingProcess2.processName, 'גרפיקה ליום הסטודנט 2');
+                                                            assert.deepEqual(waitingProcess2.processUrgency, 3);
                                                             activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
                                                                 comments: 'הערות של סגן מנהל נגטיב',
                                                                 2: 'on',
@@ -235,9 +197,9 @@ describe('1. Active Process Controller', function () {
                                                                         else {
                                                                             assert.deepEqual(waitingProcesses4.length, 1);
                                                                             let waitingProcess = waitingProcesses2[0];
-                                                                            assert(waitingProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
-                                                                            assert(waitingProcess.processName, 'גרפיקה ליום הסטודנט 2');
-                                                                            assert(waitingProcess.processUrgency, 1);
+                                                                            assert.deepEqual(waitingProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                            assert.deepEqual(waitingProcess.processName, 'גרפיקה ליום הסטודנט 1');
+                                                                            assert.deepEqual(waitingProcess.processUrgency, 2);
                                                                             activeProcessController.getWaitingActiveProcessesByUser('negativevicemanager@outlook.co.il', (err7, waitingProcesses5) => {
                                                                                 if (err7) {
                                                                                     done(err7);
@@ -245,27 +207,27 @@ describe('1. Active Process Controller', function () {
                                                                                 else {
                                                                                     assert.deepEqual(waitingProcesses5.length, 1);
                                                                                     let waitingProcess = waitingProcesses2[0];
-                                                                                    assert(waitingProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
-                                                                                    assert(waitingProcess.processName, 'גרפיקה ליום הסטודנט 2');
-                                                                                    assert(waitingProcess.processUrgency, 1);
-                                                                                }
-                                                                            });
-                                                                            activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-                                                                                comments: 'הערות של מנהל נגטיב',
-                                                                                1: 'on',
-                                                                                processName: 'גרפיקה ליום הסטודנט 1'
-                                                                            }, [], (err8) => {
-                                                                                if (err8) {
-                                                                                    done(err8);
-                                                                                }
-                                                                                else {
-                                                                                    activeProcessController.getWaitingActiveProcessesByUser('negativemanager@outlook.co.il', (err9, waitingProcesses6) => {
-                                                                                        if (err9) {
-                                                                                            done(err9);
+                                                                                    assert.deepEqual(waitingProcess.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                    assert.deepEqual(waitingProcess.processName, 'גרפיקה ליום הסטודנט 1');
+                                                                                    assert.deepEqual(waitingProcess.processUrgency, 2);
+                                                                                    activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+                                                                                        comments: 'הערות של מנהל נגטיב',
+                                                                                        1: 'on',
+                                                                                        processName: 'גרפיקה ליום הסטודנט 1'
+                                                                                    }, [], (err8) => {
+                                                                                        if (err8) {
+                                                                                            done(err8);
                                                                                         }
                                                                                         else {
-                                                                                            assert.deepEqual(waitingProcesses6.length, 0);
-                                                                                            done();
+                                                                                            activeProcessController.getWaitingActiveProcessesByUser('negativemanager@outlook.co.il', (err9, waitingProcesses6) => {
+                                                                                                if (err9) {
+                                                                                                    done(err9);
+                                                                                                }
+                                                                                                else {
+                                                                                                    assert.deepEqual(waitingProcesses6.length, 0);
+                                                                                                    done();
+                                                                                                }
+                                                                                            });
                                                                                         }
                                                                                     });
                                                                                 }
@@ -289,8 +251,280 @@ describe('1. Active Process Controller', function () {
         }).timeout(30000);
     });
     describe('1.3 getAllActiveProcesses', function () {
+        it('1.3.1 Active processes of everyone.', function (done) {
+            activeProcessController.getAllActiveProcesses((err, activeProcesses1) => {
+                if (err) {
+                    done(err);
+                }
+                else {
+                    assert.deepEqual(activeProcesses1.length, 0);
+                    activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה ליום פרוייקטים 1', new Date(2018, 11, 24, 10, 33, 30, 0), 1, (err1, result1) => {
+                        if (err1) {
+                            done(err1);
+                        }
+                        else {
+                            activeProcessController.getAllActiveProcesses((err2, activeProcesses2) => {
+                                    if (err2) {
+                                        done(err2);
+                                    }
+                                    else {
+                                        assert.deepEqual(activeProcesses2.length, 1);
+                                        let activeProcess1 = activeProcesses2[0];
+                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה ליום פרוייקטים 1');
+                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                        assert.deepEqual(activeProcess1.currentStages, [3]);
+                                        activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה ליום פרוייקטים 2', new Date(2018, 11, 24, 10, 33, 30, 0), 2, (err3, result3) => {
+                                            if (err3) done(err3);
+                                            else {
+                                                activeProcessController.getAllActiveProcesses((err4, activeProcesses3) => {
+                                                    if (err4) {
+                                                        done(err4);
+                                                    }
+                                                    else {
+                                                        assert.deepEqual(activeProcesses3.length, 2);
+                                                        let activeProcess1 = activeProcesses3[0];
+                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה ליום פרוייקטים 1');
+                                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                                        assert.deepEqual(activeProcess1.currentStages, [3]);
+                                                        let activeProcess2 = activeProcesses3[1];
+                                                        assert.deepEqual(activeProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                        assert.deepEqual(activeProcess2.processName, 'גרפיקה ליום פרוייקטים 2');
+                                                        assert.deepEqual(activeProcess2.processUrgency, 2);
+                                                        assert.deepEqual(activeProcess2.currentStages, [3]);
+                                                        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                                                            comments: 'הערות של סגן מנהל נגטיב',
+                                                            2: 'on',
+                                                            processName: 'גרפיקה ליום פרוייקטים 1'
+                                                        }, [], (err5) => {
+                                                            if (err5) {
+                                                                done(err5);
+                                                            }
+                                                            else {
+                                                                activeProcessController.getAllActiveProcesses((err6, activeProcesses4) => {
+                                                                    if (err6) {
+                                                                        done(err6);
+                                                                    }
+                                                                    else {
+                                                                        assert.deepEqual(activeProcesses4.length, 2);
+                                                                        let activeProcess1 = activeProcesses4[0];
+                                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה ליום פרוייקטים 1');
+                                                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                                                        assert.deepEqual(activeProcess1.currentStages, [2]);
+                                                                        let activeProcess2 = activeProcesses4[1];
+                                                                        assert.deepEqual(activeProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                        assert.deepEqual(activeProcess2.processName, 'גרפיקה ליום פרוייקטים 2');
+                                                                        assert.deepEqual(activeProcess2.processUrgency, 2);
+                                                                        assert.deepEqual(activeProcess2.currentStages, [3]);
+                                                                        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+                                                                            comments: 'הערות של מנהל נגטיב',
+                                                                            4: 'on',
+                                                                            processName: 'גרפיקה ליום פרוייקטים 1'
+                                                                        }, [], (err7) => {
+                                                                            if (err7) {
+                                                                                done(err7);
+                                                                            }
+                                                                            else {
+                                                                                activeProcessController.getAllActiveProcesses((err8, activeProcesses5) => {
+                                                                                    if (err8) {
+                                                                                        done(err8);
+                                                                                    }
+                                                                                    else {
+                                                                                        assert.deepEqual(activeProcesses5.length, 2);
+                                                                                        let activeProcess1 = activeProcesses5[0];
+                                                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה ליום פרוייקטים 1');
+                                                                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                                                                        assert.deepEqual(activeProcess1.currentStages, [4]);
+                                                                                        let activeProcess2 = activeProcesses5[1];
+                                                                                        assert.deepEqual(activeProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                        assert.deepEqual(activeProcess2.processName, 'גרפיקה ליום פרוייקטים 2');
+                                                                                        assert.deepEqual(activeProcess2.processUrgency, 2);
+                                                                                        assert.deepEqual(activeProcess2.currentStages, [3]);
+                                                                                        activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
+                                                                                            comments: 'הערות של רמד הסברה',
+                                                                                            processName: 'גרפיקה ליום פרוייקטים 1'
+                                                                                        }, [], (err9) => {
+                                                                                            if (err9) {
+                                                                                                done(err9);
+                                                                                            }
+                                                                                            else {
+                                                                                                activeProcessController.getAllActiveProcesses((err10, activeProcesses6) => {
+                                                                                                    if (err10) {
+                                                                                                        done(err10);
+                                                                                                    }
+                                                                                                    else {
+                                                                                                        assert.deepEqual(activeProcesses6.length, 1);
+                                                                                                        let activeProcess1 = activeProcesses6[0];
+                                                                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה ליום פרוייקטים 2');
+                                                                                                        assert.deepEqual(activeProcess1.processUrgency, 2);
+                                                                                                        assert.deepEqual(activeProcess1.currentStages, [3]);
+                                                                                                        done();
+                                                                                                    }
+                                                                                                });
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    }
+                                }
+                            )
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
     });
     describe('1.4 getAllActiveProcessesByUser', function () {
+        it('1.4.1 Active processes of specific users.', function (done) {
+            activeProcessController.getAllActiveProcessesByUser('negativevicemanager@outlook.co.il', (err, activeProcesses1) => {
+                if (err) {
+                    done(err);
+                }
+                else {
+                    assert.deepEqual(activeProcesses1.length, 0);
+                    activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה לכבוד סיום התואר 1', new Date(2018, 11, 24, 10, 33, 30, 0), 1, (err1, result1) => {
+                        if (err1) {
+                            done(err1);
+                        }
+                        else {
+                            activeProcessController.getAllActiveProcessesByUser('negativevicemanager@outlook.co.il', (err2, activeProcesses2) => {
+                                    if (err2) {
+                                        done(err2);
+                                    }
+                                    else {
+                                        assert.deepEqual(activeProcesses2.length, 1);
+                                        let activeProcess1 = activeProcesses2[0];
+                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה לכבוד סיום התואר 1');
+                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                        assert.deepEqual(activeProcess1.currentStages, [3]);
+                                        activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה לכבוד סיום התואר 2', new Date(2018, 11, 24, 10, 33, 30, 0), 2, (err3, result3) => {
+                                            if (err3) done(err3);
+                                            else {
+                                                activeProcessController.getAllActiveProcessesByUser('negativevicemanager@outlook.co.il', (err4, activeProcesses3) => {
+                                                    if (err4) {
+                                                        done(err4);
+                                                    }
+                                                    else {
+                                                        assert.deepEqual(activeProcesses3.length, 2);
+                                                        let activeProcess1 = activeProcesses3[0];
+                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה לכבוד סיום התואר 1');
+                                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                                        assert.deepEqual(activeProcess1.currentStages, [3]);
+                                                        let activeProcess2 = activeProcesses3[1];
+                                                        assert.deepEqual(activeProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                        assert.deepEqual(activeProcess2.processName, 'גרפיקה לכבוד סיום התואר 2');
+                                                        assert.deepEqual(activeProcess2.processUrgency, 2);
+                                                        assert.deepEqual(activeProcess2.currentStages, [3]);
+                                                        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                                                            comments: 'הערות של סגן מנהל נגטיב',
+                                                            2: 'on',
+                                                            processName: 'גרפיקה לכבוד סיום התואר 1'
+                                                        }, [], (err5) => {
+                                                            if (err5) {
+                                                                done(err5);
+                                                            }
+                                                            else {
+                                                                activeProcessController.getAllActiveProcessesByUser('negativevicemanager@outlook.co.il', (err6, activeProcesses4) => {
+                                                                    if (err6) {
+                                                                        done(err6);
+                                                                    }
+                                                                    else {
+                                                                        assert.deepEqual(activeProcesses4.length, 2);
+                                                                        let activeProcess1 = activeProcesses4[0];
+                                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה לכבוד סיום התואר 1');
+                                                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                                                        assert.deepEqual(activeProcess1.currentStages, [2]);
+                                                                        let activeProcess2 = activeProcesses4[1];
+                                                                        assert.deepEqual(activeProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                        assert.deepEqual(activeProcess2.processName, 'גרפיקה לכבוד סיום התואר 2');
+                                                                        assert.deepEqual(activeProcess2.processUrgency, 2);
+                                                                        assert.deepEqual(activeProcess2.currentStages, [3]);
+                                                                        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+                                                                            comments: 'הערות של מנהל נגטיב',
+                                                                            4: 'on',
+                                                                            processName: 'גרפיקה לכבוד סיום התואר 1'
+                                                                        }, [], (err7) => {
+                                                                            if (err7) {
+                                                                                done(err7);
+                                                                            }
+                                                                            else {
+                                                                                activeProcessController.getAllActiveProcessesByUser('negativevicemanager@outlook.co.il', (err8, activeProcesses5) => {
+                                                                                    if (err8) {
+                                                                                        done(err8);
+                                                                                    }
+                                                                                    else {
+                                                                                        assert.deepEqual(activeProcesses5.length, 2);
+                                                                                        let activeProcess1 = activeProcesses5[0];
+                                                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה לכבוד סיום התואר 1');
+                                                                                        assert.deepEqual(activeProcess1.processUrgency, 1);
+                                                                                        assert.deepEqual(activeProcess1.currentStages, [4]);
+                                                                                        let activeProcess2 = activeProcesses5[1];
+                                                                                        assert.deepEqual(activeProcess2.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                        assert.deepEqual(activeProcess2.processName, 'גרפיקה לכבוד סיום התואר 2');
+                                                                                        assert.deepEqual(activeProcess2.processUrgency, 2);
+                                                                                        assert.deepEqual(activeProcess2.currentStages, [3]);
+                                                                                        activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
+                                                                                            comments: 'הערות של רמד הסברה',
+                                                                                            processName: 'גרפיקה לכבוד סיום התואר 1'
+                                                                                        }, [], (err9) => {
+                                                                                            if (err9) {
+                                                                                                done(err9);
+                                                                                            }
+                                                                                            else {
+                                                                                                activeProcessController.getAllActiveProcessesByUser('negativevicemanager@outlook.co.il', (err10, activeProcesses6) => {
+                                                                                                    if (err10) {
+                                                                                                        done(err10);
+                                                                                                    }
+                                                                                                    else {
+                                                                                                        assert.deepEqual(activeProcesses6.length, 1);
+                                                                                                        let activeProcess1 = activeProcesses6[0];
+                                                                                                        assert.deepEqual(activeProcess1.creatorUserEmail, 'negativevicemanager@outlook.co.il');
+                                                                                                        assert.deepEqual(activeProcess1.processName, 'גרפיקה לכבוד סיום התואר 2');
+                                                                                                        assert.deepEqual(activeProcess1.processUrgency, 2);
+                                                                                                        assert.deepEqual(activeProcess1.currentStages, [3]);
+                                                                                                        done();
+                                                                                                    }
+                                                                                                });
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    }
+                                }
+                            )
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
     });
     describe('1.5 getActiveProcessByProcessName', function () {
     });
