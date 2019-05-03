@@ -20,7 +20,7 @@ let usersAndRolesContoller = require('../../controllers/usersControllers/usersAn
 let globalBefore = function (done) {
     this.enableTimeouts(false);
     mongoose.set('useCreateIndex', true);
-    mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true}).then(()=>{
+    mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true}).then(() => {
         mongoose.connection.db.dropDatabase();
         userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) => {
             if (err) {
@@ -33,8 +33,7 @@ let globalBefore = function (done) {
                         if (err) {
                             done(err);
                         }
-                        else
-                        {
+                        else {
                             processStructureController.addProcessStructure('chairman@outlook.co.il', 'תהליך גרפיקה', JSON.stringify(processStructureSankeyJSON), [], 0, "12", (err, needApproval) => {
                                 if (err) {
                                     done(err);
@@ -59,99 +58,93 @@ let globalAfter = function () {
 describe('1. Active Process Controller', function () {
     before(globalBefore);
     after(globalAfter);
-    describe('1.1 start process', function (){
-        it('1.1.1 start process userEmail not in tree', function (done) {
-            activeProcessController.startProcessByUsername('chairman@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-                assert.deepEqual(true, err !== null);
-                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(true, process === null);
-                        done();
-                    }
-                });
-            });
-        }).timeout(30000);
-        it('1.1.2 start process process structure doesn\'t exist', function (done) {
-            activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גלפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-                assert.deepEqual(true, err !== null);
-                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(true, process === null);
-                        done();
-                    }
-                });
-            });
-        }).timeout(30000);
-        it('1.1.3 start process correct', function (done) {
-            activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-                if (err) done(err);
+    describe('1.1 getAvailableActiveProcessesByUser', function () {
+        it('1.1.1 The process is not available for anyone.', function (done) {
+            activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה 1', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err1, result) => {
+                if (err1) {
+                    done(err1);
+                }
                 else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                        if(err) done(err);
-                        else
-                        {
-                            assert.deepEqual(true, process !== null);
+                    activeProcessController.getAvailableActiveProcessesByUser('negativevicemanager@outlook.co.il', (err2, availableProcesses) => {
+                        if (err2) {
+                            done(err2);
+                        }
+                        else {
+                            assert.deepEqual(availableProcesses.length, 0);
                             done();
                         }
                     });
                 }
             });
         }).timeout(30000);
-
-        it('1.1.4 start process same name', function (done) {
-            activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-                assert.deepEqual(true, err !== null);
-                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(true, process !== null);
-                        done();
+        it('1.1.2 The process is available for several people.', function (done) {
+            activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה 2', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err1, result) => {
+                    if (err1) {
+                        done(err1);
                     }
-                });
-            });
-        }).timeout(30000);
-    });
-
-    describe('1.2 assign single users', function (){
-        it('1.2.1 assign single users', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il',{comments: 'הערות של סגן מנהל נגטיב', 2: 'on', processName: 'גרפיקה להקרנת בכורה'}, [],(err)=>{
-                if(err) done(err);
-                else
-                {
-                    activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il',{comments: 'הערות של מנהל נגטיב', 0: 'on',1: 'on',4: 'on', processName: 'גרפיקה להקרנת בכורה'}, [],(err)=>{
-                        if(err) done(err);
-                        else
-                        {
-                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                                if(err) done(err);
-                                else
-                                {
-                                    activeProcessController.assignSingleUsersToStages(process, [0,1,4], (err, result) => {
-                                        if(err) done(err);
-                                        else
-                                        {
-                                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                                                if(err) done(err);
-                                                else
-                                                {
-                                                    assert.deepEqual(null, process.getStageByStageNum(0).userEmail);
-                                                    assert.deepEqual(null, process.getStageByStageNum(1).userEmail);
-                                                    assert.deepEqual('publicitydepartmenthead@outlook.co.il', process.getStageByStageNum(4).userEmail);
-                                                    done();
+                    else {
+                        activeProcessController.getAvailableActiveProcessesByUser('graphicartist@outlook.co.il', (err2, availableProcesses1) => {
+                                if (err2) {
+                                    done(err2);
+                                }
+                                else {
+                                    assert.deepEqual(availableProcesses1.length, 0);
+                                    activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                                        comments: 'הערות של סגן מנהל נגטיב',
+                                        2: 'on',
+                                        processName: 'גרפיקה להקרנת בכורה 2'
+                                    }, [], (err3) => {
+                                        if (err3) {
+                                            done(err3);
+                                        }
+                                        else {
+                                            activeProcessController.getAvailableActiveProcessesByUser('negativemanager@outlook.co.il', (err4, availableProcesses2) => {
+                                                if (err2) {
+                                                    done(err2);
+                                                }
+                                                else {
+                                                    assert.deepEqual(availableProcesses2.length, 0);
+                                                    activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                                                        comments: 'הערות של מנהל נגטיב',
+                                                        4: 'on',
+                                                        processName: 'גרפיקה להקרנת בכורה 2'
+                                                    }, [], (err5) => {
+                                                        if (err5) {
+                                                            done(err5);
+                                                        }
+                                                        else {
+                                                            activeProcessController.getAvailableActiveProcessesByUser('graphicartist@outlook.co.il', (err6, availableProcesses3) => {
+                                                                if (err6) {
+                                                                    done(err6);
+                                                                }
+                                                                else {
+                                                                    assert.deepEqual(availableProcesses3.length, 1);
+                                                                }
+                                                            });
+                                                        }
+                                                    });
                                                 }
                                             });
                                         }
                                     });
                                 }
-                            });
-                        }});
+                            }
+                        )
+                    }
                 }
-            });
+            )
         }).timeout(30000);
     });
-});
+        describe('1.2 getWaitingActiveProcessesByUser', function () {
+        });
+        describe('1.3 getAllActiveProcesses', function () {
+        });
+        describe('1.4 getAllActiveProcessesByUser', function () {
+        });
+        describe('1.5 getActiveProcessByProcessName', function () {
+        });
+        describe('1.6 replaceRoleIDWithRoleNameAndUserEmailWithUserName', function () {
+        });
+        describe('1.7 convertDate', function () {
+        });
+    });
