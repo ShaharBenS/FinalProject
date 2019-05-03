@@ -104,7 +104,7 @@ describe('1. Active Process Controller', function () {
                                                 }
                                                 else {
                                                     assert.deepEqual(availableProcesses2.length, 0);
-                                                    activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                                                    activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
                                                         comments: 'הערות של מנהל נגטיב',
                                                         4: 'on',
                                                         processName: 'גרפיקה להקרנת בכורה 2'
@@ -119,6 +119,7 @@ describe('1. Active Process Controller', function () {
                                                                 }
                                                                 else {
                                                                     assert.deepEqual(availableProcesses3.length, 1);
+                                                                    done();
                                                                 }
                                                             });
                                                         }
@@ -133,6 +134,9 @@ describe('1. Active Process Controller', function () {
                     }
                 }
             )
+        }).timeout(30000);
+        it('1.1.3 Just for infinite loop..', function (done) {
+            assert.deepEqual(true,true);
         }).timeout(30000);
     });
         describe('1.2 getWaitingActiveProcessesByUser', function () {
