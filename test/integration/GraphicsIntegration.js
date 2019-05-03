@@ -12,6 +12,7 @@ let userAccessor = require('../../models/accessors/usersAccessor');
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let processStructureSankeyJSON = require('../inputs/processStructures/GraphicsProcessStructure/graphicsSankey');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
+let processReportController = require('../../controllers/processesControllers/processReportController');
 let usersAndRolesContoller = require('../../controllers/usersControllers/usersAndRolesController');
 
 
@@ -117,7 +118,7 @@ describe('1. graphics test', function () {
                     else
                     {
                         assert.deepEqual(true, process !== null);
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה',(err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה',(err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -151,7 +152,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [1]);
                         let currentStage = process.getStageByStageNum(1);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -186,7 +187,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [6]);
                         let currentStage = process.getStageByStageNum(6);
                         assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -217,7 +218,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [0]);
                         let currentStage = process.getStageByStageNum(0);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -252,7 +253,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [1]);
                         let currentStage = process.getStageByStageNum(1);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -287,7 +288,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [6]);
                         let currentStage = process.getStageByStageNum(6);
                         assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -322,7 +323,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [7]);
                         let currentStage = process.getStageByStageNum(7);
                         assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -357,7 +358,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [5]);
                         let currentStage = process.getStageByStageNum(5);
                         assert.deepEqual(currentStage.userEmail, null);
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -411,7 +412,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [3]);
                         let currentStage = process.getStageByStageNum(3);
                         assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -446,7 +447,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [4]);
                         let currentStage = process.getStageByStageNum(4);
                         assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -481,7 +482,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [8]);
                         let currentStage = process.getStageByStageNum(8);
                         assert.deepEqual(currentStage.userEmail, 'publicitydepartmenthead@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -516,7 +517,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [9]);
                         let currentStage = process.getStageByStageNum(9);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -547,7 +548,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [0]);
                         let currentStage = process.getStageByStageNum(0);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -582,7 +583,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [1]);
                         let currentStage = process.getStageByStageNum(1);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -617,7 +618,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [6]);
                         let currentStage = process.getStageByStageNum(6);
                         assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -652,7 +653,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [7]);
                         let currentStage = process.getStageByStageNum(7);
                         assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -687,7 +688,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [5]);
                         let currentStage = process.getStageByStageNum(5);
                         assert.deepEqual(currentStage.userEmail, 'graphicartist@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -760,7 +761,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [3]);
                         let currentStage = process.getStageByStageNum(3);
                         assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -795,7 +796,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [4]);
                         let currentStage = process.getStageByStageNum(4);
                         assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -830,7 +831,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [8]);
                         let currentStage = process.getStageByStageNum(8);
                         assert.deepEqual(currentStage.userEmail, 'publicitydepartmenthead@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -865,7 +866,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [9]);
                         let currentStage = process.getStageByStageNum(9);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -900,7 +901,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [10]);
                         let currentStage = process.getStageByStageNum(10);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -931,7 +932,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [9]);
                         let currentStage = process.getStageByStageNum(9);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -966,7 +967,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [10]);
                         let currentStage = process.getStageByStageNum(10);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1001,7 +1002,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [13]);
                         let currentStage = process.getStageByStageNum(13);
                         assert.deepEqual(currentStage.userEmail, 'hangman@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1036,7 +1037,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [14]);
                         let currentStage = process.getStageByStageNum(14);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1067,7 +1068,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [9]);
                         let currentStage = process.getStageByStageNum(9);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1102,7 +1103,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [10]);
                         let currentStage = process.getStageByStageNum(10);
                         assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1140,7 +1141,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(currentStage1.userEmail, 'newmediasupervisor@outlook.co.il');
                         let currentStage2 = process.getStageByStageNum(13);
                         assert.deepEqual(currentStage2.userEmail, 'hangman@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1175,7 +1176,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [12]);
                         let currentStage = process.getStageByStageNum(12);
                         assert.deepEqual(currentStage.userEmail, 'newmediasupervisor@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1210,7 +1211,7 @@ describe('1. graphics test', function () {
                         assert.deepEqual(process.currentStages, [14]);
                         let currentStage = process.getStageByStageNum(14);
                         assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
@@ -1242,7 +1243,7 @@ describe('1. graphics test', function () {
                     else
                     {
                         assert.deepEqual(process, null);
-                        activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
+                        processReportController.processReport('גרפיקה להקרנת בכורה', (err, report)=>{
                             if(err) done(err);
                             else
                             {
