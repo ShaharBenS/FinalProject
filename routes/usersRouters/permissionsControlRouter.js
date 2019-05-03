@@ -37,7 +37,7 @@ router.post('/setUserPermissions', (req, res) =>
 {
     let userPermissions = new UserPermissions(req.body.userEmail,[req.body.userManagementPermission === "true",
         req.body.structureManagementPermission === "true" ,req.body.observerPermission === "true",req.body.permissionManagementPermission === "true"]);
-    usersPermissionsController.setUserPermissions(userPermissions,(err)=>{
+    usersPermissionsController.setUserPermissions(req.user.emails[0].value, userPermissions,(err)=>{
         if(err)
         {
             res.send(err);

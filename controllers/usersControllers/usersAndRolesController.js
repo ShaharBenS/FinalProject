@@ -433,7 +433,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
 };
 
 module.exports.addAdmin = function (userEmail,callback){
-    userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
+    userPermissionsController.setAdminPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
     {
         if (err) {
             callback(err);

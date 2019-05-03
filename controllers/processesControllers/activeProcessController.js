@@ -130,7 +130,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                     callback(err);
                 } else {
                     if (processStructure === null || !processStructure.available) {
-                        callback(new Error('This process structure is currently unavailable duo to changes in roles'));
+                        callback(new Error('This process structure is currently unavailable due to changes in roles'));
                         return;
                     }
                     processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
@@ -544,16 +544,22 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
             if (!process) {
                 callback(new Error("Couldn't find process"));
             } else {
-                let i, currentStage;
-                for (i = 0; i < process.currentStages.length; i++) {
-                    currentStage = process.getStageByStageNum(process.currentStages[i]);
+                let foundStage = null;
+                for (let i = 0; i < process.currentStages.length; i++) {
+                    let currentStage = process.getStageByStageNum(process.currentStages[i]);
                     if (currentStage.userEmail === userEmail) {
+                        foundStage = currentStage;
                         break;
                     }
                 }
+                if(foundStage === null)
+                {
+                    callback(new Error('GetNextStagesRolesAndOnlineForms: user not found in current stages'));
+                    return;
+                }
                 let nextStagesArr = [];
-                for (let j = 0; j < currentStage.nextStages.length; j++) {
-                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
+                for (let j = 0; j < foundStage.nextStages.length; j++) {
+                    nextStagesArr.push(process.getStageByStageNum(foundStage.nextStages[j]));
                 }
                 getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
@@ -578,7 +584,7 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
         {
             if(process.getCurrentStageNumberForUser(userEmail) === -1)
             {
-                callback(new Error('Return To Creator: wrong userEmail '));
+                callback(new Error('Return To Creator: wrong userEmail'));
                 return;
             }
             let creatorEmail = process.returnProcessToCreator();
@@ -804,3 +810,5 @@ module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
 module.exports.getFilledOnlineForms = getFilledOnlineForms;
 module.exports.assignSingleUsersToStages = assignSingleUsersToStages;
+module.exports.handleProcess = handleProcess;
+module.exports.advanceProcess = advanceProcess;
