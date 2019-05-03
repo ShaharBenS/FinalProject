@@ -433,22 +433,14 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
 };
 
 module.exports.addAdmin = function (userEmail,callback){
-    userPermissionsController.setAdminPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
-    {
-        if (err) {
+    userAccessor.addAdmin({userEmail:userEmail},(err)=>{
+        if(err){
             callback(err);
         }
-        else {
-            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
-                if(err){
-                    callback(err);
-                }
-                else{
-                    callback(null);
-                }
-            });
+        else{
+            callback(null);
         }
-    })
+    });
 };
 
 module.exports.getRoleIdByUsername = function (username, callback)

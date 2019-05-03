@@ -86,13 +86,45 @@ describe('1. Users Permissions Controller', function () {
         }).timeout(30000);
 
         it('1.1.3 set users permissions user no authorized to grant permissions to admin', function (done) {
-            usersPermissionsController.setUserPermissions('chairman@outlook.co.il', new UserPermissions("graphicartist@outlook.com", [false, true, false, true]), (err) => {
+            usersPermissionsController.setUserPermissions('chairman@outlook.co.il', new UserPermissions("graphicartist@outlook.co.il", [false, true, false, true]), (err) => {
                 if (err) done(err);
                 else {
-                    usersPermissionsController.setUserPermissions('graphicartist@outlook.co.il', new UserPermissions("chairman@outlook.com", [false, true, false, true]), (err) => {
+                    usersPermissionsController.setUserPermissions('graphicartist@outlook.co.il', new UserPermissions("chairman@outlook.co.il", [false, true, false, true]), (err) => {
                         assert.deepEqual(true, err !== null);
-                        assert.deepEqual(err.message, 'user isnt authorized to grant permissions');
+                        assert.deepEqual(err.message, 'Can\'t change the permissions of an admin');
                         done();
+                    });
+                }
+            });
+
+        }).timeout(30000);
+    });
+    describe('1.2 get users permissions', function () {
+        it('1.2.1 get users permissions', function (done) {
+            usersPermissionsController.getUserPermissions('graphicartist@outlook.com', (err, permissions) => {
+                if(err) done(err);
+                else
+                {
+                    assert.deepEqual(permissions.userEmail, 'graphicartist@outlook.com');
+                    assert.deepEqual(permissions.usersManagementPermission, false);
+                    assert.deepEqual(permissions.structureManagementPermission, false);
+                    assert.deepEqual(permissions.observerPermission, false);
+                    assert.deepEqual(permissions.permissionsManagementPermission, false);
+                    usersPermissionsController.setUserPermissions('chairman@outlook.co.il', new UserPermissions("graphicartist@outlook.com", [false, true, false, true]), (err) => {
+                        if (err) done(err);
+                        else {
+                            usersPermissionsController.getUserPermissions('graphicartist@outlook.com', (err, permissions) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(permissions.userEmail, 'graphicartist@outlook.com');
+                                    assert.deepEqual(permissions.usersManagementPermission, false);
+                                    assert.deepEqual(permissions.structureManagementPermission, true);
+                                    assert.deepEqual(permissions.observerPermission, false);
+                                    assert.deepEqual(permissions.permissionsManagementPermission, true);
+                                    done();
+                                }
+                            });
+                        }
                     });
                 }
             });
