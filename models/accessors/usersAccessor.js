@@ -16,6 +16,10 @@ module.exports.findRole = (roleToFind, callback) => {
     return usersAndRoles.find(roleToFind, callback);
 };
 
+module.exports.findRoleIDByRoleName = (roleName, callback) => {
+    return usersAndRoles.find({roleName : roleName}, callback);
+};
+
 module.exports.deleteAllRoles = (callback) => {
     return usersAndRoles.deleteMany({}, callback);
 };
