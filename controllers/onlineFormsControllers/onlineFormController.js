@@ -22,7 +22,7 @@ module.exports.createAllOnlineForms = (callback) => {
                 if (err)
                     console.log(err.message);
                 current++;
-                if (current === length)
+                if (current === length - 1)
                     callback();
             });
         }
@@ -40,10 +40,6 @@ module.exports.createOnlineFrom = (formName, srcHTML, callback) => {
 
 module.exports.getAllOnlineForms = (callback) => {
     onlineFormAccessor.findAllOnlineForms(callback);
-};
-
-module.exports.getOnlineFormByID = (formID, callback) => {
-    onlineFormAccessor.findOnlineFormByID(formID, callback);
 };
 
 module.exports.findOnlineFormsIDsByFormsNames = (formsNames, callback) => {
