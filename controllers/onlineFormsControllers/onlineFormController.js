@@ -9,8 +9,10 @@ let whileReplace = function (str, replace, by) {
     return str;
 };
 
-module.exports.createAllOnlineForms = () => {
+module.exports.createAllOnlineForms = (callback) => {
     let files = fs.readdirSync(__dirname + "\\..\\..\\views\\onlineFormViews\\");
+    let length = files.length;
+    let current = 0;
     for (let i in files) {
         let fileName = files[i];
         if (fileName !== 'example.html') {
@@ -19,6 +21,9 @@ module.exports.createAllOnlineForms = () => {
             this.createOnlineFrom(formName, fileNameNoHTML, (err) => {
                 if (err)
                     console.log(err.message);
+                current++;
+                if (current === length)
+                    callback();
             });
         }
     }
