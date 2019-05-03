@@ -16,4 +16,4 @@ text inside table:
 if you wont do that ull just make the table ugly.
 
 
-
+* the file 'form_template' is not a form, but an example of one!

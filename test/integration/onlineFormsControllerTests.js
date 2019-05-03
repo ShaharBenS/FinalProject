@@ -437,7 +437,7 @@ describe('6. createAllOnlineForms', function () {
         let length = 0;
         for (let i in files) {
             let fileName = files[i];
-            if (fileName !== 'example.html' && fileName.substring(fileName.length - 5) === '.html') {
+            if (fileName !== 'form_template.html' && fileName.substring(fileName.length - 5) === '.html') {
                 length++;
             }
         }

@@ -16,7 +16,7 @@ module.exports.createAllOnlineForms = (callback) => {
     let remove = 0;
     for (let i in files) {
         let fileName = files[i];
-        if (fileName !== 'example.html' && fileName.substring(fileName.length - 5) === '.html') {
+        if (fileName !== 'form_template.html' && fileName.substring(fileName.length - 5) === '.html') {
             let fileNameNoHTML = fileName.replace('.html', '');
             let formName = whileReplace(fileNameNoHTML, '_', ' ');
             this.createOnlineFrom(formName, fileNameNoHTML, (err) => {
@@ -28,7 +28,7 @@ module.exports.createAllOnlineForms = (callback) => {
             });
         } else {
             remove++;
-            console.log("Online Forms: file \"" + fileName + "\" wasn\'t added");
+            console.log("Online Forms: file \"" + fileName + "\" wasn\'t added as online form");
         }
     }
 };
