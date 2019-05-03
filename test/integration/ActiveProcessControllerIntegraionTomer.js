@@ -531,38 +531,52 @@ describe('1. Active Process Controller', function () {
     describe('1.5 getActiveProcessByProcessName', function () {
     });
     describe('1.6 replaceRoleIDWithRoleNameAndUserEmailWithUserName', function () {
-        let processStages = [];
-        let activeProcessStage1 = new activeProcessStage({
-            roleID: '5ccc403ff73ca359c88cea85', kind: '', dereg: '',
-            stageNum: 1, nextStages: [2],
-            stagesToWaitFor: [],
-            originStagesToWaitFor: [],
-            userEmail: 'spokesperson@outlook.co.il',
-            approvalTime: null, assignmentTime: null, notificationsCycle: 12
-        });
-        let activeProcessStage2 = new activeProcessStage({
-            roleID: '5ccc403ff73ca359c88cea8a', kind: '', dereg: '',
-            stageNum: 1, nextStages: [2],
-            stagesToWaitFor: [],
-            originStagesToWaitFor: [],
-            userEmail: 'negativemanager@outlook.co.il',
-            approvalTime: null, assignmentTime: null, notificationsCycle: 12
-        });
-        processStages.push(activeProcessStage1);
-        processStages.push(activeProcessStage2);
-        let activeProcess1 = new activeProcess({
-            processName: 'ערב פוקר שבועי', creatorUserEmail: 'tomerlev1000@gmail.com',
-            processDate: new Date(), processUrgency: 3, creationTime: new Date(),
-            notificationTime: 12, automaticAdvanceTime: 12, currentStages: [3], onlineForms: [],
-            filledOnlineForms: [], lastApproached: new Date(), stageToReturnTo: [1]
-        }, processStages);
-        activeProcessController.replaceRoleIDWithRoleNameAndUserEmailWithUserName([activeProcess1], (err, activeProcesses) => {
-            if (err) {
-                done(err);
+        userAccessor.findRole('דובר', (err1, roleID1) => {
+            if (err1) {
+                done(err1);
             }
             else {
-                assert.deepEqual(activeProcesses.length, 1);
-                done();
+                userAccessor.findRole('מנהל נגטיב', (err2, roleID2) => {
+                    if (err2) {
+                        done(err2);
+                    }
+                    else {
+                        let processStages = [];
+                        let activeProcessStage1 = new activeProcessStage({
+                            roleID: roleID1, kind: undefined, dereg: undefined,
+                            stageNum: undefined, nextStages: undefined,
+                            stagesToWaitFor: undefined,
+                            originStagesToWaitFor: undefined,
+                            userEmail: 'spokesperson@outlook.co.il',
+                            approvalTime: undefined, assignmentTime: undefined, notificationsCycle: undefined
+                        });
+                        let activeProcessStage2 = new activeProcessStage({
+                            roleID: roleID2, kind: undefined, dereg: undefined,
+                            stageNum: undefined, nextStages: undefined,
+                            stagesToWaitFor: undefined,
+                            originStagesToWaitFor: undefined,
+                            userEmail: 'negativemanager@outlook.co.il',
+                            approvalTime: undefined, assignmentTime: undefined, notificationsCycle: undefined
+                        });
+                        processStages.push(activeProcessStage1);
+                        processStages.push(activeProcessStage2);
+                        let activeProcess1 = new activeProcess({
+                            processName: 'ערב פוקר שבועי', creatorUserEmail: 'tomerlev1000@gmail.com',
+                            processDate: new Date(), processUrgency: 3, creationTime: new Date(),
+                            notificationTime: 12, automaticAdvanceTime: 12, currentStages: [3], onlineForms: [],
+                            filledOnlineForms: [], lastApproached: new Date(), stageToReturnTo: [1]
+                        }, processStages);
+                        activeProcessController.replaceRoleIDWithRoleNameAndUserEmailWithUserName([activeProcess1], (err, activeProcesses) => {
+                            if (err) {
+                                done(err);
+                            }
+                            else {
+                                assert.deepEqual(activeProcesses.length, 1);
+                                done();
+                            }
+                        });
+                    }
+                });
             }
         });
     });
