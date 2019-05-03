@@ -1,9 +1,10 @@
 let processAccessor = require('../../models/accessors/processReportAccessor');
 let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let moment = require('moment');
 
-function addProcessReport(processName, creationTime,processDate,processUrgency,processCreatorEmail,callback){
+module.exports.addProcessReport = (processName, creationTime,processDate,processUrgency,processCreatorEmail,callback) => {
     processAccessor.createProcessReport({
         processName: processName,
         status: 'פעיל',
@@ -17,9 +18,9 @@ function addProcessReport(processName, creationTime,processDate,processUrgency,p
         if (err) callback(err);
         else callback(null);
     });
-}
+};
 
-function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, approvalTime, callback){
+module.exports.addActiveProcessDetailsToReport = (processName, userEmail,stageDetails, approvalTime, callback) => {
     processAccessor.findProcessReport({processName: processName}, (err, report) => {
         if (err) callback(err);
         else {
@@ -56,7 +57,7 @@ function addActiveProcessDetailsToReport(processName, userEmail,stageDetails, ap
             });
         }
     });
-}
+};
 
 module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
@@ -116,6 +117,81 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
     });
 };
 
+module.exports.processReport = function (process_name, callback) {
+    this.getAllActiveProcessDetails(process_name, (err, result) => {
+        if (err) callback(err);
+        else {
+            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
+            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
+            for (let i = 0; i < result[1].length; i++) {
+                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
+            }
+            activeProcessController.getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
+                for (let i = 0; i < formsArr.length; i++) {
+                    result[0].filledOnlineForms[i] = formsArr[i];
+                }
+                callback(null, result);
+            });
+        }
+    });
+};
+
+module.exports.getAllActiveProcessDetails = (processName, callback) => {
+    processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
+        if (err) callback(err);
+        else {
+            processReport = processReport._doc;
+            let returnProcessDetails = {
+                processName: processReport.processName,
+                creationTime: processReport.creationTime,
+                status: processReport.status,
+                urgency: processReport.processUrgency,
+                processDate: processReport.processDate,
+                filledOnlineForms: processReport.filledOnlineForms
+            };
+            returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
+                callback(null, [returnProcessDetails, newStages]);
+            });
+        }
+    });
+};
+
+module.exports.getRoleNamesForArray = (stages, index, roleNamesArray, callback)=> {
+    if (index === stages.length) {
+        callback(null, roleNamesArray);
+        return;
+    }
+    let roleID = stages[index].roleID;
+    (function (array, stageNum) {
+        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
+            if (err) callback(err);
+            else {
+                array.push([roleName, stageNum]);
+                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
+            }
+        });
+    })(roleNamesArray, stages[index].stageNum);
+};
+
+const returnStagesWithRoleName = (index, stages, newStages, callback) => {
+    if (index === stages.length) {
+        callback(null, newStages);
+    } else {
+        let stage = stages[index];
+        newStages.push({
+            roleName: stage.roleName,
+            userEmail: stage.userEmail,
+            userName: stage.userName,
+            stageNum: stage.stageNum,
+            approvalTime: stage.approvalTime,
+            comments: stage.comments,
+            action: stage.action,
+            attachedFilesNames: stage.attachedFilesNames
+        });
+        returnStagesWithRoleName(index + 1, stages, newStages, callback);
+    }
+};
+
 function isExistInReport(report,userEmail)
 {
     for(let i=0;i<report._doc.stages.length;i++)
@@ -129,12 +205,8 @@ function isExistInReport(report,userEmail)
 }
 
 
-function convertDate(array) {
+module.exports.convertDate = (array) => {
     for (let i = 0; i < array.length; i++) {
         array[i]._doc.processDate =  moment(array[i]._doc.processDate).format("DD/MM/YYYY HH:mm:ss");
     }
-}
-
-module.exports.convertDate = convertDate;
-module.exports.addProcessReport = addProcessReport;
-module.exports.addActiveProcessDetailsToReport = addActiveProcessDetailsToReport;
+};

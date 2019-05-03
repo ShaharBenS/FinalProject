@@ -203,7 +203,7 @@ router.get('/handleProcessView', function (req, res) {
 
 router.get('/reportProcess', function (req, res) {
     let process_name = req.query.process_name;
-    activeProcessController.processReport(process_name, (err, result) => {
+    processReportController.processReport(process_name, (err, result) => {
         if (err) res.render('errorViews/error');
         else
             res.render('reportsViews/processReport', {

@@ -441,45 +441,6 @@ function advanceProcess(process, stageNum, nextStages, callback) {
     });
 }
 
-module.exports.getAllActiveProcessDetails = (processName, callback) => {
-    processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
-        if (err) callback(err);
-        else {
-            processReport = processReport._doc;
-            let returnProcessDetails = {
-                processName: processReport.processName,
-                creationTime: processReport.creationTime,
-                status: processReport.status,
-                urgency: processReport.processUrgency,
-                processDate: processReport.processDate,
-                filledOnlineForms: processReport.filledOnlineForms
-            };
-            returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
-                callback(null, [returnProcessDetails, newStages]);
-            });
-        }
-    });
-};
-
-const returnStagesWithRoleName = (index, stages, newStages, callback) => {
-    if (index === stages.length) {
-        callback(null, newStages);
-    } else {
-        let stage = stages[index];
-        newStages.push({
-            roleName: stage.roleName,
-            userEmail: stage.userEmail,
-            userName: stage.userName,
-            stageNum: stage.stageNum,
-            approvalTime: stage.approvalTime,
-            comments: stage.comments,
-            action: stage.action,
-            attachedFilesNames: stage.attachedFilesNames
-        });
-        returnStagesWithRoleName(index + 1, stages, newStages, callback);
-    }
-};
-
 module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -520,23 +481,6 @@ function getActiveProcessByProcessName(processName, callback) {
     });
 }
 
-function getRoleNamesForArray(stages, index, roleNamesArray, callback) {
-    if (index === stages.length) {
-        callback(null, roleNamesArray);
-        return;
-    }
-    let roleID = stages[index].roleID;
-    (function (array, stageNum) {
-        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                array.push([roleName, stageNum]);
-                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
-            }
-        });
-    })(roleNamesArray, stages[index].stageNum);
-}
-
 module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEmail, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
@@ -555,7 +499,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 for (let j = 0; j < currentStage.nextStages.length; j++) {
                     nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
                 }
-                getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
+                processReportController.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
                         onlineFormController.findOnlineFormsNamesByFormsIDs(process.onlineForms, (err, onlineFormsNames) => {
@@ -690,25 +634,6 @@ module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTre
     });
 };
 
-module.exports.processReport = function (process_name, callback) {
-    this.getAllActiveProcessDetails(process_name, (err, result) => {
-        if (err) callback(err);
-        else {
-            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
-            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
-            for (let i = 0; i < result[1].length; i++) {
-                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
-            }
-            getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
-                for (let i = 0; i < formsArr.length; i++) {
-                    result[0].filledOnlineForms[i] = formsArr[i];
-                }
-                callback(null, result);
-            });
-        }
-    });
-};
-
 module.exports.addFilledOnlineFormToProcess = function(processName, formID, callback){
     processAccessor.updateActiveProcess({processName: processName}, {$push : {filledOnlineForms: formID}}, (err)=>{
         if(err) callback(err);
@@ -796,7 +721,6 @@ module.exports.checkUpdateResult = (result)=>{
     }
     return false;
 };
-
 /////////
 module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
