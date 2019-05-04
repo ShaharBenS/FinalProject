@@ -48,8 +48,7 @@ describe('1. Big Integration Test', function () {
                             usersAndRolesContoller.getEmailToFullName((err, emailToFullNameFromDB) => {
                                 assert.deepEqual(Object.keys(emailToFullNameFromDB).length, Object.keys(emailsToFullName).length);
                                 for (let email in emailToFullNameFromDB) {
-                                    if(emailToFullNameFromDB.hasOwnProperty(email))
-                                    {
+                                    if (emailToFullNameFromDB.hasOwnProperty(email)) {
                                         assert.deepEqual(true, Object.keys(emailsToFullName).includes(email));
                                         assert.deepEqual(true, emailToFullNameFromDB[email] === emailsToFullName[email]);
                                     }
@@ -66,12 +65,10 @@ describe('1. Big Integration Test', function () {
         usersAndRolesContoller.getRoleToEmails((err, roleToEmailsFromDB) => {
             assert.deepEqual(Object.keys(roleToEmailsFromDB).length, Object.keys(rolesToEmails).length);
             for (let role in roleToEmailsFromDB) {
-                if(roleToEmailsFromDB.hasOwnProperty(role))
-                {
+                if (roleToEmailsFromDB.hasOwnProperty(role)) {
                     assert.deepEqual(true, Object.keys(rolesToEmails).includes(role));
                     assert.deepEqual(roleToEmailsFromDB[role].length, rolesToEmails[role].length);
-                    for(let i=0;i<roleToEmailsFromDB[role].length;i++)
-                    {
+                    for (let i = 0; i < roleToEmailsFromDB[role].length; i++) {
                         assert.deepEqual(true, roleToEmailsFromDB[role][i] === rolesToEmails[role][i]);
                     }
                 }
@@ -84,12 +81,10 @@ describe('1. Big Integration Test', function () {
         usersAndRolesContoller.getRoleToDereg((err, roleToDeregsFromDB) => {
             assert.deepEqual(Object.keys(roleToDeregsFromDB).length, Object.keys(rolesToDereg).length);
             for (let role in roleToDeregsFromDB) {
-                if(roleToDeregsFromDB.hasOwnProperty(role))
-                {
+                if (roleToDeregsFromDB.hasOwnProperty(role)) {
                     assert.deepEqual(true, Object.keys(rolesToDereg).includes(role));
                     assert.deepEqual(roleToDeregsFromDB[role].length, rolesToDereg[role].length);
-                    for(let i=0;i<roleToDeregsFromDB[role].length;i++)
-                    {
+                    for (let i = 0; i < roleToDeregsFromDB[role].length; i++) {
                         assert.deepEqual(true, roleToDeregsFromDB[role][i] === rolesToDereg[role][i]);
                     }
                 }
@@ -115,14 +110,12 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(true, process !== null);
-                        processReportController.processReport('קמפיין בחירות',(err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 0);
                                 assert.deepEqual(report[0].processName, 'קמפיין בחירות');
                                 assert.deepEqual(report[0].status, 'פעיל');
@@ -146,16 +139,14 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [1]);
                         let currentStage = process.getStageByStageNum(1);
                         assert.deepEqual(currentStage.userEmail, 'midaEnglish1@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 1);
                                 assert.deepEqual(report[1][0].userEmail, 'orehMishne@outlook.com');
                                 assert.deepEqual(report[1][0].userName, 'ר ר');
@@ -181,16 +172,14 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [2]);
                         let currentStage = process.getStageByStageNum(2);
                         assert.deepEqual(currentStage.userEmail, 'midaArabic@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 2);
                                 assert.deepEqual(report[1][1].userEmail, 'midaEnglish1@outlook.com');
                                 assert.deepEqual(report[1][1].userName, 'ת ת');
@@ -208,20 +197,18 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.8 Return Process To Its Creator.', function (done) {
-        activeProcessController.returnToCreator('midaArabic@outlook.com','קמפיין בחירות','הערות ותיקונים של מידענ/ית ערבית', (err) => {
+        activeProcessController.returnToCreator('midaArabic@outlook.com', 'קמפיין בחירות', 'הערות ותיקונים של מידענ/ית ערבית', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [0]);
                         let currentStage = process.getStageByStageNum(0);
                         assert.deepEqual(currentStage.userEmail, 'orehMishne@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 3);
                                 assert.deepEqual(report[1][2].userEmail, 'midaArabic@outlook.com');
                                 assert.deepEqual(report[1][2].userName, 'ש ש');
@@ -247,16 +234,14 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [1]);
                         let currentStage = process.getStageByStageNum(1);
                         assert.deepEqual(currentStage.userEmail, 'midaEnglish1@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 4);
                                 assert.deepEqual(report[1][3].userEmail, 'orehMishne@outlook.com');
                                 assert.deepEqual(report[1][3].userName, 'ר ר');
@@ -282,16 +267,14 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [2]);
                         let currentStage = process.getStageByStageNum(2);
                         assert.deepEqual(currentStage.userEmail, 'midaArabic@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 5);
                                 assert.deepEqual(report[1][4].userEmail, 'midaEnglish1@outlook.com');
                                 assert.deepEqual(report[1][4].userName, 'ת ת');
@@ -317,15 +300,13 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [3]);
                         let currentStage = process.getStageByStageNum(3);
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 6);
                                 assert.deepEqual(report[1][5].userEmail, 'midaArabic@outlook.com');
                                 assert.deepEqual(report[1][5].userName, 'ש ש');
@@ -343,34 +324,32 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.12 Check Available Processes.', function (done) {
-        activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar1@outlook.com',(err1,result1) =>{
-            if(err1){
+        activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar1@outlook.com', (err1, result1) => {
+            if (err1) {
                 done(err1);
             }
-            else
-            {
-                activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar2@outlook.com',(err2,result2) =>{
-                    if(err2){
+            else {
+                activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar2@outlook.com', (err2, result2) => {
+                    if (err2) {
                         done(err2);
                     }
-                    else
-                    {
-                        assert.deepEqual(result1.length,1);
+                    else {
+                        assert.deepEqual(result1.length, 1);
                         let availableProcess1 = result1[0];
-                        assert.deepEqual(availableProcess1.creatorUserEmail,'orehMishne@outlook.com');
-                        assert.deepEqual(availableProcess1.notificationTime,36);
-                        assert.deepEqual(availableProcess1.processUrgency,1);
-                        assert.deepEqual(availableProcess1.stageToReturnTo,0);
-                        assert.deepEqual(availableProcess1.onlineForms,[]);
-                        assert.deepEqual(availableProcess1.filledOnlineForms,[]);
-                        assert.deepEqual(result2.length,1);
+                        assert.deepEqual(availableProcess1.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess1.notificationTime, 36);
+                        assert.deepEqual(availableProcess1.processUrgency, 1);
+                        assert.deepEqual(availableProcess1.stageToReturnTo, 0);
+                        assert.deepEqual(availableProcess1.onlineForms, []);
+                        assert.deepEqual(availableProcess1.filledOnlineForms, []);
+                        assert.deepEqual(result2.length, 1);
                         let availableProcess2 = result2[0];
-                        assert.deepEqual(availableProcess2.creatorUserEmail,'orehMishne@outlook.com');
-                        assert.deepEqual(availableProcess2.notificationTime,36);
-                        assert.deepEqual(availableProcess2.processUrgency,1);
-                        assert.deepEqual(availableProcess2.stageToReturnTo,0);
-                        assert.deepEqual(availableProcess2.onlineForms,[]);
-                        assert.deepEqual(availableProcess2.filledOnlineForms,[]);
+                        assert.deepEqual(availableProcess2.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess2.notificationTime, 36);
+                        assert.deepEqual(availableProcess2.processUrgency, 1);
+                        assert.deepEqual(availableProcess2.stageToReturnTo, 0);
+                        assert.deepEqual(availableProcess2.onlineForms, []);
+                        assert.deepEqual(availableProcess2.filledOnlineForms, []);
                         done();
                     }
                 })
@@ -379,14 +358,12 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.13 Take Part In Process', function (done) {
-        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err)=>{
-            if(err) done(err);
-            else
-            {
+        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err) => {
+            if (err) done(err);
+            else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [3]);
                         let currentStage = process.getStageByStageNum(3);
                         assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
@@ -406,16 +383,14 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [4]);
                         let currentStage = process.getStageByStageNum(4);
                         assert.deepEqual(currentStage.userEmail, 'ramadHasbara@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 7);
                                 assert.deepEqual(report[1][6].userEmail, 'MenaelAtar1@outlook.com');
                                 assert.deepEqual(report[1][6].userName, 'ס ס');
@@ -441,14 +416,12 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [5]);
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 8);
                                 assert.deepEqual(report[1][7].userEmail, 'ramadHasbara@outlook.com');
                                 assert.deepEqual(report[1][7].userName, 'ו ו');
@@ -474,14 +447,12 @@ describe('1. Big Integration Test', function () {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [6]);
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 9);
                                 assert.deepEqual(report[1][8].userEmail, 'orehMishne@outlook.com');
                                 assert.deepEqual(report[1][8].userName, 'ר ר');
@@ -499,27 +470,25 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.17 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('orehVideo@outlook.com', {
-            comments: 'הערות של עורכ/ת וידאו',
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך/ת משנה',
             7: 'on',
             processName: 'קמפיין בחירות'
         }, [], (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process.currentStages, [7]);
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
                                 assert.deepEqual(report[1].length, 10);
-                                assert.deepEqual(report[1][9].userEmail, 'orehVideo@outlook.com');
-                                assert.deepEqual(report[1][9].userName, 'ק ק');
-                                assert.deepEqual(report[1][9].roleName, 'עורכ/ת וידאו');
-                                assert.deepEqual(report[1][9].comments, 'הערות של עורכ/ת וידאו');
+                                assert.deepEqual(report[1][9].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][9].userName, 'ר ר');
+                                assert.deepEqual(report[1][9].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][9].comments, 'הערות של עורך/ת משנה');
                                 assert.deepEqual(report[1][9].action, 'continue');
                                 assert.deepEqual(report[1][9].attachedFilesNames, undefined);
                                 done();
@@ -531,66 +500,52 @@ describe('1. Big Integration Test', function () {
         });
     }).timeout(30000);
 
-    it('1.18 return process to creator', function (done) {
-        activeProcessController.returnToCreator('negativevicemanager@outlook.co.il','קמפיין בחירות','הערות ותיקונים של סגן מנהל נגטיב', (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [0]);
-                        let currentStage = process.getStageByStageNum(0);
-                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 12);
-                                assert.deepEqual(report[1][11].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][11].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][11].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][11].comments, 'הערות ותיקונים של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][11].action, 'return');
-                                assert.deepEqual(report[1][11].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
+
+    it('1.18 Check Available Processes.', function (done) {
+        activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar1@outlook.com', (err1, result1) => {
+            if (err1) {
+                done(err1);
             }
-        });
+            else {
+                activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar2@outlook.com', (err2, result2) => {
+                    if (err2) {
+                        done(err2);
+                    }
+                    else {
+                        assert.deepEqual(result1.length, 1);
+                        let availableProcess1 = result1[0];
+                        assert.deepEqual(availableProcess1.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess1.notificationTime, 36);
+                        assert.deepEqual(availableProcess1.processUrgency, 1);
+                        assert.deepEqual(availableProcess1.stageToReturnTo, 5);
+                        assert.deepEqual(availableProcess1.onlineForms, []);
+                        assert.deepEqual(availableProcess1.filledOnlineForms, []);
+                        assert.deepEqual(result2.length, 1);
+                        let availableProcess2 = result2[0];
+                        assert.deepEqual(availableProcess2.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess2.notificationTime, 36);
+                        assert.deepEqual(availableProcess2.processUrgency, 1);
+                        assert.deepEqual(availableProcess2.stageToReturnTo, 5);
+                        assert.deepEqual(availableProcess2.onlineForms, []);
+                        assert.deepEqual(availableProcess2.filledOnlineForms, []);
+                        done();
+                    }
+                })
+            }
+        })
     }).timeout(30000);
 
-    it('1.19 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-            comments: 'הערות של סגן מנהל נגטיב',
-            1: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
+    it('1.19 Take Part In Process', function (done) {
+        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [1]);
-                        let currentStage = process.getStageByStageNum(1);
-                        assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 13);
-                                assert.deepEqual(report[1][12].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][12].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][12].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][12].comments, 'הערות של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][12].action, 'continue');
-                                assert.deepEqual(report[1][12].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [7]);
+                        let currentStage = process.getStageByStageNum(7);
+                        assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
+                        done();
                     }
                 });
             }
@@ -598,31 +553,29 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.20 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-            comments: 'הערות של מנהל נגטיב',
-            6: 'on',
+        activeProcessController.uploadFilesAndHandleProcess('MenaelAtar1@outlook.com', {
+            comments: 'הערות של מנהל/ת אתר אינטרנט',
+            8: 'on',
             processName: 'קמפיין בחירות'
         }, [], (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [6]);
-                        let currentStage = process.getStageByStageNum(6);
-                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 14);
-                                assert.deepEqual(report[1][13].userEmail, 'negativemanager@outlook.co.il');
-                                assert.deepEqual(report[1][13].userName, 'גארת בייל');
-                                assert.deepEqual(report[1][13].roleName, 'מנהל נגטיב');
-                                assert.deepEqual(report[1][13].comments, 'הערות של מנהל נגטיב');
-                                assert.deepEqual(report[1][13].action, 'continue');
-                                assert.deepEqual(report[1][13].attachedFilesNames, undefined);
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [8]);
+                        let currentStage = process.getStageByStageNum(8);
+                        assert.deepEqual(currentStage.userEmail, 'ramadHasbara@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 11);
+                                assert.deepEqual(report[1][10].userEmail, 'MenaelAtar1@outlook.com');
+                                assert.deepEqual(report[1][10].userName, 'ס ס');
+                                assert.deepEqual(report[1][10].roleName, 'מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][10].comments, 'הערות של מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][10].action, 'continue');
+                                assert.deepEqual(report[1][10].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -633,31 +586,27 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.21 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
-            comments: 'הערות של אחראי מיתוג קמפיינים',
-            7: 'on',
+        activeProcessController.uploadFilesAndHandleProcess('ramadHasbara@outlook.com', {
+            comments: 'הערות של רמ"ד הסברה',
+            9: 'on',
             processName: 'קמפיין בחירות'
         }, [], (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [7]);
-                        let currentStage = process.getStageByStageNum(7);
-                        assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 15);
-                                assert.deepEqual(report[1][14].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                                assert.deepEqual(report[1][14].userName, 'לוקה מודריץ');
-                                assert.deepEqual(report[1][14].roleName, 'אחראי מיתוג קמפיינים');
-                                assert.deepEqual(report[1][14].comments, 'הערות של אחראי מיתוג קמפיינים');
-                                assert.deepEqual(report[1][14].action, 'continue');
-                                assert.deepEqual(report[1][14].attachedFilesNames, undefined);
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [9]);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 12);
+                                assert.deepEqual(report[1][11].userEmail, 'ramadHasbara@outlook.com');
+                                assert.deepEqual(report[1][11].userName, 'ו ו');
+                                assert.deepEqual(report[1][11].roleName, 'רמ"ד הסברה');
+                                assert.deepEqual(report[1][11].comments, 'הערות של רמ"ד הסברה');
+                                assert.deepEqual(report[1][11].action, 'continue');
+                                assert.deepEqual(report[1][11].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -668,586 +617,26 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.22 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('spokesperson@outlook.co.il', {
-            comments: 'הערות של דובר',
-            5: 'on',
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך/ת משנה',
             processName: 'קמפיין בחירות'
         }, [], (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [5]);
-                        let currentStage = process.getStageByStageNum(5);
-                        assert.deepEqual(currentStage.userEmail, 'graphicartist@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 16);
-                                assert.deepEqual(report[1][15].userEmail, 'spokesperson@outlook.co.il');
-                                assert.deepEqual(report[1][15].userName, 'פדריקו וולוורדה');
-                                assert.deepEqual(report[1][15].roleName, 'דובר');
-                                assert.deepEqual(report[1][15].comments, 'הערות של דובר');
-                                assert.deepEqual(report[1][15].action, 'continue');
-                                assert.deepEqual(report[1][15].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.23 untake part in process', function (done) {
-        activeProcessController.unTakePartInActiveProcess('קמפיין בחירות', 'graphicartist@outlook.co.il', (err)=>{
-            if(err) done(err);
-            else
-            {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [5]);
-                        let currentStage = process.getStageByStageNum(5);
-                        assert.deepEqual(currentStage.userEmail, null);
-                        done();
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.24 take part in process', function (done) {
-        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'graphicartist2@outlook.co.il', (err)=>{
-            if(err) done(err);
-            else
-            {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [5]);
-                        let currentStage = process.getStageByStageNum(5);
-                        assert.deepEqual(currentStage.userEmail, 'graphicartist2@outlook.co.il');
-                        done();
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.25 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('graphicartist2@outlook.co.il', {
-            comments: 'הערות של גרפיקאי',
-            3: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [3]);
-                        let currentStage = process.getStageByStageNum(3);
-                        assert.deepEqual(currentStage.userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 17);
-                                assert.deepEqual(report[1][16].userEmail, 'graphicartist2@outlook.co.il');
-                                assert.deepEqual(report[1][16].userName, 'בורחה מיוראל');
-                                assert.deepEqual(report[1][16].roleName, 'גרפיקאי');
-                                assert.deepEqual(report[1][16].comments, 'הערות של גרפיקאי');
-                                assert.deepEqual(report[1][16].action, 'continue');
-                                assert.deepEqual(report[1][16].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.26 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('campaignbrandingsupervisor@outlook.co.il', {
-            comments: 'הערות של אחראי מיתוג קמפיינים',
-            4: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [4]);
-                        let currentStage = process.getStageByStageNum(4);
-                        assert.deepEqual(currentStage.userEmail, 'spokesperson@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 18);
-                                assert.deepEqual(report[1][17].userEmail, 'campaignbrandingsupervisor@outlook.co.il');
-                                assert.deepEqual(report[1][17].userName, 'לוקה מודריץ');
-                                assert.deepEqual(report[1][17].roleName, 'אחראי מיתוג קמפיינים');
-                                assert.deepEqual(report[1][17].comments, 'הערות של אחראי מיתוג קמפיינים');
-                                assert.deepEqual(report[1][17].action, 'continue');
-                                assert.deepEqual(report[1][17].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.27 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('spokesperson@outlook.co.il', {
-            comments: 'הערות של דובר',
-            8: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [8]);
-                        let currentStage = process.getStageByStageNum(8);
-                        assert.deepEqual(currentStage.userEmail, 'publicitydepartmenthead@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 19);
-                                assert.deepEqual(report[1][18].userEmail, 'spokesperson@outlook.co.il');
-                                assert.deepEqual(report[1][18].userName, 'פדריקו וולוורדה');
-                                assert.deepEqual(report[1][18].roleName, 'דובר');
-                                assert.deepEqual(report[1][18].comments, 'הערות של דובר');
-                                assert.deepEqual(report[1][18].action, 'continue');
-                                assert.deepEqual(report[1][18].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.28 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
-            comments: 'הערות של רמ"ד הסברה',
-            9: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [9]);
-                        let currentStage = process.getStageByStageNum(9);
-                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 20);
-                                assert.deepEqual(report[1][19].userEmail, 'publicitydepartmenthead@outlook.co.il');
-                                assert.deepEqual(report[1][19].userName, 'סרחיו רגילון');
-                                assert.deepEqual(report[1][19].roleName, 'ראש מדור הסברה');
-                                assert.deepEqual(report[1][19].comments, 'הערות של רמ"ד הסברה');
-                                assert.deepEqual(report[1][19].action, 'continue');
-                                assert.deepEqual(report[1][19].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.29 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-            comments: 'הערות של סגן מנהל נגטיב',
-            10: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [10]);
-                        let currentStage = process.getStageByStageNum(10);
-                        assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 21);
-                                assert.deepEqual(report[1][20].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][20].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][20].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][20].comments, 'הערות של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][20].action, 'continue');
-                                assert.deepEqual(report[1][20].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.30 return process to creator', function (done) {
-        activeProcessController.returnToCreator('negativemanager@outlook.co.il','קמפיין בחירות','הערות ותיקונים של מנהל נגטיב', (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [9]);
-                        let currentStage = process.getStageByStageNum(9);
-                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 22);
-                                assert.deepEqual(report[1][21].userEmail, 'negativemanager@outlook.co.il');
-                                assert.deepEqual(report[1][21].userName, 'גארת בייל');
-                                assert.deepEqual(report[1][21].roleName, 'מנהל נגטיב');
-                                assert.deepEqual(report[1][21].comments, 'הערות ותיקונים של מנהל נגטיב');
-                                assert.deepEqual(report[1][21].action, 'return');
-                                assert.deepEqual(report[1][21].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.31 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-            comments: 'הערות של סגן מנהל נגטיב',
-            10: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [10]);
-                        let currentStage = process.getStageByStageNum(10);
-                        assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 23);
-                                assert.deepEqual(report[1][22].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][22].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][22].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][22].comments, 'הערות של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][22].action, 'continue');
-                                assert.deepEqual(report[1][22].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.32 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-            comments: 'הערות של מנהל נגטיב',
-            13: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [13]);
-                        let currentStage = process.getStageByStageNum(13);
-                        assert.deepEqual(currentStage.userEmail, 'hangman@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 24);
-                                assert.deepEqual(report[1][23].userEmail, 'negativemanager@outlook.co.il');
-                                assert.deepEqual(report[1][23].userName, 'גארת בייל');
-                                assert.deepEqual(report[1][23].roleName, 'מנהל נגטיב');
-                                assert.deepEqual(report[1][23].comments, 'הערות של מנהל נגטיב');
-                                assert.deepEqual(report[1][23].action, 'continue');
-                                assert.deepEqual(report[1][23].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.33 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('hangman@outlook.co.il', {
-            comments: 'הערות של תליין',
-            14: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [14]);
-                        let currentStage = process.getStageByStageNum(14);
-                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 25);
-                                assert.deepEqual(report[1][24].userEmail, 'hangman@outlook.co.il');
-                                assert.deepEqual(report[1][24].userName, 'רפאל וראן');
-                                assert.deepEqual(report[1][24].roleName, 'תליין');
-                                assert.deepEqual(report[1][24].comments, 'הערות של תליין');
-                                assert.deepEqual(report[1][24].action, 'continue');
-                                assert.deepEqual(report[1][24].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.34 return process to creator', function (done) {
-        activeProcessController.returnToCreator('negativevicemanager@outlook.co.il','קמפיין בחירות','הערות ותיקונים של סגן מנהל נגטיב', (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [9]);
-                        let currentStage = process.getStageByStageNum(9);
-                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 26);
-                                assert.deepEqual(report[1][25].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][25].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][25].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][25].comments, 'הערות ותיקונים של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][25].action, 'return');
-                                assert.deepEqual(report[1][25].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.35 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-            comments: 'הערות של סגן מנהל נגטיב',
-            10: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [10]);
-                        let currentStage = process.getStageByStageNum(10);
-                        assert.deepEqual(currentStage.userEmail, 'negativemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 27);
-                                assert.deepEqual(report[1][26].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][26].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][26].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][26].comments, 'הערות של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][26].action, 'continue');
-                                assert.deepEqual(report[1][26].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.36 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-            comments: 'הערות של מנהל נגטיב',
-            12: 'on',
-            13: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages.sort(), [12, 13]);
-                        let currentStage1 = process.getStageByStageNum(12);
-                        assert.deepEqual(currentStage1.userEmail, 'newmediasupervisor@outlook.co.il');
-                        let currentStage2 = process.getStageByStageNum(13);
-                        assert.deepEqual(currentStage2.userEmail, 'hangman@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 28);
-                                assert.deepEqual(report[1][27].userEmail, 'negativemanager@outlook.co.il');
-                                assert.deepEqual(report[1][27].userName, 'גארת בייל');
-                                assert.deepEqual(report[1][27].roleName, 'מנהל נגטיב');
-                                assert.deepEqual(report[1][27].comments, 'הערות של מנהל נגטיב');
-                                assert.deepEqual(report[1][27].action, 'continue');
-                                assert.deepEqual(report[1][27].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.37 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('hangman@outlook.co.il', {
-            comments: 'הערות של תליין',
-            14: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [12]);
-                        let currentStage = process.getStageByStageNum(12);
-                        assert.deepEqual(currentStage.userEmail, 'newmediasupervisor@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 29);
-                                assert.deepEqual(report[1][28].userEmail, 'hangman@outlook.co.il');
-                                assert.deepEqual(report[1][28].userName, 'רפאל וראן');
-                                assert.deepEqual(report[1][28].roleName, 'תליין');
-                                assert.deepEqual(report[1][28].comments, 'הערות של תליין');
-                                assert.deepEqual(report[1][28].action, 'continue');
-                                assert.deepEqual(report[1][28].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.38 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('newmediasupervisor@outlook.co.il', {
-            comments: 'הערות של רכז ניו מדיה',
-            14: 'on',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
-                        assert.deepEqual(process.currentStages, [14]);
-                        let currentStage = process.getStageByStageNum(14);
-                        assert.deepEqual(currentStage.userEmail, 'negativevicemanager@outlook.co.il');
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 30);
-                                assert.deepEqual(report[1][29].userEmail, 'newmediasupervisor@outlook.co.il');
-                                assert.deepEqual(report[1][29].userName, 'טיבו קורטואה');
-                                assert.deepEqual(report[1][29].roleName, 'רכז ניו מדיה');
-                                assert.deepEqual(report[1][29].comments, 'הערות של רכז ניו מדיה');
-                                assert.deepEqual(report[1][29].action, 'continue');
-                                assert.deepEqual(report[1][29].attachedFilesNames, undefined);
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
-    it('1.39 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-            comments: 'הערות של סגן מנהל נגטיב',
-            processName: 'קמפיין בחירות'
-        }, [], (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if(err) done(err);
-                    else
-                    {
+                    if (err) done(err);
+                    else {
                         assert.deepEqual(process, null);
-                        processReportController.processReport('קמפיין בחירות', (err, report)=>{
-                            if(err) done(err);
-                            else
-                            {
-                                assert.deepEqual(report[1].length, 31);
-                                assert.deepEqual(report[1][30].userEmail, 'negativevicemanager@outlook.co.il');
-                                assert.deepEqual(report[1][30].userName, 'קרלוס קאסמירו');
-                                assert.deepEqual(report[1][30].roleName, 'סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][30].comments, 'הערות של סגן מנהל נגטיב');
-                                assert.deepEqual(report[1][30].action, 'continue');
-                                assert.deepEqual(report[1][30].attachedFilesNames, undefined);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 13);
+                                assert.deepEqual(report[1][12].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][12].userName, 'ר ר');
+                                assert.deepEqual(report[1][12].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][12].comments, 'הערות של עורך/ת משנה');
+                                assert.deepEqual(report[1][12].action, 'continue');
+                                assert.deepEqual(report[1][12].attachedFilesNames, undefined);
                                 done();
                             }
                         });
