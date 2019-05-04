@@ -5,6 +5,7 @@ let activeProcessAccessor = require('../../models/accessors/activeProcessesAcces
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 let userPermissionsController = require('../usersControllers/UsersPermissionsController');
+let userPermissionsAccessor = require('../../models/accessors/usersPermissionsAccessor');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let notificationsAccessor = require('../../models/accessors/notificationsAccessor');
 let fs = require("fs");
@@ -611,12 +612,19 @@ function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
 
 function addAdmin(userEmail,callback)
 {
-    userAccessor.addAdmin({userEmail:userEmail},(err)=>{
+    userPermissionsAccessor.addUserPermissions(userEmail,[true, true, true, true],(err)=>{
         if(err){
             callback(err);
         }
         else{
-            callback(null);
+            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
+                if(err){
+                    callback(err);
+                }
+                else{
+                    callback(null);
+                }
+            });
         }
     });
 }
