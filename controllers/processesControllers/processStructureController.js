@@ -25,7 +25,7 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
                     if (newProcessStructure.checkPrevNextSymmetric()) {
                         if (newProcessStructure.checkNextPrevSymmetric()) {
                             if (permissions.structureManagementPermission) {
-                                processStructureAccessor.createProcessStructure(this.getProcessStructureForDB(newProcessStructure), (err)=>{
+                                processStructureAccessor.createProcessStructure(getProcessStructureForDB(newProcessStructure), (err)=>{
                                     if(err){
                                         callback(err);
                                     }
@@ -68,8 +68,8 @@ module.exports.addProcessStructure = (userEmail, structureName, sankeyContent, o
     });
 };
 
-
-module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, notificationTime, callback) => {
+module.exports.editProcessStructure = (userEmail, structureName, sankeyContent, onlineFormsIDs,automaticAdvanceTime, notificationTime, callback) =>
+{
     userPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
             callback(err);
@@ -185,7 +185,6 @@ module.exports.getAllProcessStructures = (callback) =>
     processStructureAccessor.findProcessStructures(callback);
 };
 
-
 //TODO: need to redesign this function
 module.exports.getAllProcessStructuresAvailableForUser = (userEmail, callback) =>
 {
@@ -206,7 +205,8 @@ module.exports.getAllProcessStructuresAvailableForUser = (userEmail, callback) =
     });
 };
 
-module.exports.getAllProcessStructuresTakenNames = (callback)=>{
+module.exports.getAllProcessStructuresTakenNames = (callback)=>
+{
     processStructureAccessor.findProcessStructures((err,strucures)=>{
         if(err){
             callback(err);
@@ -225,97 +225,6 @@ module.exports.getAllProcessStructuresTakenNames = (callback)=>{
         }
     });
 };
-
-module.exports.getProcessStructureForDB = function (originProcessStructure)
-{
-    return {
-        structureName: originProcessStructure.structureName,
-        onlineForms: originProcessStructure.onlineForms,
-        stages: this.getProcessStructureStagesForDB(originProcessStructure.stages),
-        sankey: originProcessStructure.sankey,
-        automaticAdvanceTime: originProcessStructure.automaticAdvanceTime,
-        notificationTime: originProcessStructure.notificationTime,
-    };
-};
-
-module.exports.getProcessStructureStagesForDB = function (originStages)
-{
-    let returnStages = [];
-    for (let i = 0; i < originStages.length; i++) {
-        returnStages.push({
-            kind: originStages[i].kind,
-            roleID: originStages[i].roleID,
-            dereg: originStages[i].dereg,
-            aboveCreatorNumber: originStages[i].aboveCreatorNumber,
-            stageNum: originStages[i].stageNum,
-            nextStages: originStages[i].nextStages,
-            stagesToWaitFor: originStages[i].stagesToWaitFor,
-            attachedFilesNames: originStages[i].attachedFilesNames
-        });
-    }
-    return returnStages;
-};
-
-
-/*********************/
-/* Private Functions */
-/*********************/
-
-let sankeyToStructure = function (sankeyContent, callback)
-{
-    let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
-
-    if (processStructureSankeyObject.hasNoStages()) {
-        callback('שגיאה: אין שלבים (צריך לפחות אחד)');
-    }
-    else if (processStructureSankeyObject.hasMoreThanOneFlow()) {
-        callback('שגיאה: יש יותר מזרימה אחת בגרף');
-    }
-    else if (processStructureSankeyObject.hasMultipleConnections()) {
-        callback('שגיאה: יש יותר מחיבור אחד בין 2 שלבים')
-    }
-    else if (processStructureSankeyObject.hasCycles()) {
-        callback('שגיאה: המבנה מכיל מעגלים');
-    }
-    else {
-        usersAndRolesController.getAllRoles((err, roles) =>
-        {
-            if (err) {
-                callback(err);
-                return;
-            }
-            let rolesMap = {};
-            roles.forEach((role) =>
-            {
-                rolesMap[role.roleName] = role._id;
-            });
-
-            // Check if there are stages with no role.
-            let rolesName = roles.map(role =>
-            {
-                return role.roleName
-            });
-            if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().filter(sankeyStage =>
-            {
-                return sankeyStage.bgColor.toLowerCase() === "#f6a500" || sankeyStage.bgColor.toLowerCase() === "#ff1100";
-
-            }).map(stage=>stage.labels[0].text))).every(roleName =>
-            {
-                return rolesName.includes(roleName);
-            })) {
-                callback('שגיאה: יש שלב עם תפקיד שלא בעץ המשתמשים');
-                return;
-            }
-
-            let stages = processStructureSankeyObject.getStages((roleName) =>
-            {
-                return rolesMap[roleName]
-            });
-            callback(null, { stages: stages});
-        })
-    }
-};
-
 
 module.exports.setProcessStructuresUnavailable = function (deletedRolesIds, deletedRolesNames, renamedRoles, callback)
 {
@@ -381,4 +290,93 @@ module.exports.setProcessStructuresUnavailable = function (deletedRolesIds, dele
             });
         }
     });
+};
+
+/*********************/
+/* Private Functions */
+/*********************/
+
+function getProcessStructureForDB(originProcessStructure)
+{
+    return {
+        structureName: originProcessStructure.structureName,
+        onlineForms: originProcessStructure.onlineForms,
+        stages: getProcessStructureStagesForDB(originProcessStructure.stages),
+        sankey: originProcessStructure.sankey,
+        automaticAdvanceTime: originProcessStructure.automaticAdvanceTime,
+        notificationTime: originProcessStructure.notificationTime,
+    };
+}
+
+function getProcessStructureStagesForDB(originStages)
+{
+    let returnStages = [];
+    for (let i = 0; i < originStages.length; i++) {
+        returnStages.push({
+            kind: originStages[i].kind,
+            roleID: originStages[i].roleID,
+            dereg: originStages[i].dereg,
+            aboveCreatorNumber: originStages[i].aboveCreatorNumber,
+            stageNum: originStages[i].stageNum,
+            nextStages: originStages[i].nextStages,
+            stagesToWaitFor: originStages[i].stagesToWaitFor,
+            attachedFilesNames: originStages[i].attachedFilesNames
+        });
+    }
+    return returnStages;
+}
+
+let sankeyToStructure = function (sankeyContent, callback)
+{
+    let processStructureSankeyObject = new processStructureSankey(JSON.parse(sankeyContent));
+
+    if (processStructureSankeyObject.hasNoStages()) {
+        callback('שגיאה: אין שלבים (צריך לפחות אחד)');
+    }
+    else if (processStructureSankeyObject.hasMoreThanOneFlow()) {
+        callback('שגיאה: יש יותר מזרימה אחת בגרף');
+    }
+    else if (processStructureSankeyObject.hasMultipleConnections()) {
+        callback('שגיאה: יש יותר מחיבור אחד בין 2 שלבים')
+    }
+    else if (processStructureSankeyObject.hasCycles()) {
+        callback('שגיאה: המבנה מכיל מעגלים');
+    }
+    else {
+        usersAndRolesController.getAllRoles((err, roles) =>
+        {
+            if (err) {
+                callback(err);
+                return;
+            }
+            let rolesMap = {};
+            roles.forEach((role) =>
+            {
+                rolesMap[role.roleName] = role._id;
+            });
+
+            // Check if there are stages with no role.
+            let rolesName = roles.map(role =>
+            {
+                return role.roleName
+            });
+            if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().filter(sankeyStage =>
+            {
+                return sankeyStage.bgColor.toLowerCase() === "#f6a500" || sankeyStage.bgColor.toLowerCase() === "#ff1100";
+
+            }).map(stage=>stage.labels[0].text))).every(roleName =>
+            {
+                return rolesName.includes(roleName);
+            })) {
+                callback('שגיאה: יש שלב עם תפקיד שלא בעץ המשתמשים');
+                return;
+            }
+
+            let stages = processStructureSankeyObject.getStages((roleName) =>
+            {
+                return rolesMap[roleName]
+            });
+            callback(null, { stages: stages});
+        })
+    }
 };

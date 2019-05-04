@@ -48,7 +48,7 @@ router.post('/deleteNotification', function (req, res)
 
 router.post('/deleteAllNotification', function (req, res)
 {
-    notificationsController.deleteAllNotification((err) =>
+    notificationsController.deleteAllNotification(req.user.emails[0].value,(err) =>
     {
         if (err) {
             res.send(err);
