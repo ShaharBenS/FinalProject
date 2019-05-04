@@ -145,7 +145,7 @@ describe('1. processStructureController', function ()
                 });
             });
         });
-    });
+    }).timeout(10000);
 
     it('1.2 editProcessStructure', function (done)
     {
@@ -168,7 +168,7 @@ describe('1. processStructureController', function ()
                 });
             }
         });
-    });
+    }).timeout(10000);
 
     it('1.3 getProcessStructure', function (done)
     {
@@ -183,7 +183,7 @@ describe('1. processStructureController', function ()
                 done();
             }
         });
-    });
+    }).timeout(10000);
 
     it('1.4 getAllProcessStructures', function (done)
     {
@@ -201,7 +201,7 @@ describe('1. processStructureController', function ()
                 done();
             }
         });
-    });
+    }).timeout(10000);
 
     it('1.5 removeProcessStructure', function (done)
     {
