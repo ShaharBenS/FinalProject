@@ -1,6 +1,7 @@
 let userAccessor = require('../../models/accessors/usersAccessor');
 let processStructureController = require('../processesControllers/processStructureController');
 let activeProcessController = require('../processesControllers/activeProcessController');
+let activeProcessAccessor = require('../../models/accessors/activeProcessesAccessor');
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
 let usersAndRolesTreeSankey = require('../../domainObjects/usersAndRolesTreeSankey');
 let userPermissionsController = require('../usersControllers/UsersPermissionsController');
@@ -347,7 +348,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                                 return true;
                                                                                             }
                                                                                         })._id;
-                                                                                        activeProcessController.updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, (err)=>{
+                                                                                        updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, (err)=>{
                                                                                             if(err){
                                                                                                 callback(err);
                                                                                             }
@@ -669,6 +670,46 @@ function getChildrenRecursive(role, roleMapping)
     }
     return toReturn;
 }
+
+function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID, callback){
+    activeProcessAccessor.getActiveProcesses((err, processes) => {
+        if (err) {
+            callback(err);
+        } else {
+            processes.forEach(process => {
+                process.stages.filter(stage=>stage.roleID !== undefined).forEach(stage => {
+                    if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
+                        if (stage.userEmail === null) {
+                            let findReplacement = (roleId) => {
+                                let replacement = oldTree.getFatherOf(roleId);
+                                if (replacement === undefined) {
+                                    return rootID;
+                                }
+                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
+                                    return findReplacement(replacement);
+                                } else {
+                                    return replacement;
+                                }
+                            };
+                            stage.roleID = findReplacement(stage.roleID);
+                        }
+                    }
+                });
+            });
+
+            processes.reduce((prev, process) => {
+                return (err) => {
+                    if (err) {
+                        prev(err)
+                    } else {
+                        activeProcessAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev);
+                    }
+                }
+            }, callback)(null);
+        }
+    });
+}
+
 
 function emailValidator(email)
 {

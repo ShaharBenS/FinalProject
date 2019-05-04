@@ -382,7 +382,126 @@ describe('1. addUsersAndRole', function () {
         });
     }).timeout(30000);
 
-    it('1.5 modifications on tree', function (done) {
-        assert.deepEqual(true, true);
+    it('1.5 modification on tree', function (done) {
+        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 3",
+            new Date(2022, 4, 26, 16), 2, (err) => {
+                if (err) {
+                    done(err);
+                } else {
+                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
+                        {
+                            processName: "תהליך 3",
+                            1: "on",
+                            comments: "הערה 1"
+                        }, [], (err) => {
+                            if (err) {
+                                done(err);
+                            } else {
+                                let diagram = JSON.parse(tree9_string).content.diagram;
+                                let nodeToDelete = diagram.find((node) => {
+                                    if (node.type === "sankey.shape.State") {
+                                        if (node.labels[0].text === "מנהל/ת מיזמים אקדמים") {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                });
+                                let tree9_deleted = {
+                                    content: {
+                                        diagram: diagram.filter(node => {
+                                            if (node.id === nodeToDelete.id) {
+                                                return false;
+                                            }
+                                            if (node.type === "sankey.shape.Connection") {
+                                                if (nodeToDelete.id === node.target.node) {
+                                                    return false;
+                                                }
+                                            }
+                                            return true;
+                                        })
+                                    }
+                                };
+                                activeProcessController.getActiveProcessByProcessName("תהליך 3", (err, oldActiveProcess) => {
+                                    usersAndRolesController.getRoleIdByUsername("meizamim@outlook.com",(err,oldRoleID)=>{
+                                        usersAndRolesController.setUsersAndRolesTree("creator@email.com", JSON.stringify(tree9_deleted),
+                                            {
+                                                "יו\"ר": ["yor@outlook.com"],
+                                                "סיו\"ר": ["sayor@outlook.com"],
+                                                "רמ\"ד כספים": ["cesef@outlook.com"],
+                                                "רמ\"ד אקדמיה": ["academy@outlook.com"],
+                                                "רמ\"ד הסברה": ["hasbara@outlook.com"],
+                                                "רמ\"ד מעורבות": ["meoravut@outlook.com"],
+                                                "מנהל/ת רווחה": ["revaha@outlook.com"],
+                                                "מנהלת גרפיקה": ["graphics@outlook.com"],
+                                                "רכז ניו מדיה": ["new_media@outlook.com", "new_media2@outlook.com", "new_media3@outlook.com"],
+                                                "מנהל/ת אתר אינטרנט": ["website@outlook.com"],
+                                            },
+                                            {
+                                                "yor@outlook.com": "אלף בית",
+                                                "sayor@outlook.com": "בית גימל",
+                                                "cesef@outlook.com": "גימל דלת",
+                                                "academy@outlook.com": "דלת היי",
+                                                "hasbara@outlook.com": "היי וו",
+                                                "meoravut@outlook.com": "וו זין",
+                                                "revaha@outlook.com": "זין חית",
+                                                "graphics@outlook.com": "חית טת",
+                                                "new_media@outlook.com": "יוד כף",
+                                                "new_media2@outlook.com": "יוד כף למד",
+                                                "new_media3@outlook.com": "כף למד מם",
+                                                "website@outlook.com": "כף למד"
+                                            },
+                                            {
+                                                "יו\"ר": "5",
+                                                "סיו\"ר": "4",
+                                                "רמ\"ד כספים": "3",
+                                                "רמ\"ד אקדמיה": "3",
+                                                "רמ\"ד הסברה": "3",
+                                                "רמ\"ד מעורבות": "3",
+                                                "מנהל/ת רווחה": "2",
+                                                "מנהלת גרפיקה": "2",
+                                                "רכז ניו מדיה": "1",
+                                                "מנהל/ת אתר אינטרנט": "2",
+                                            }, (err) => {
+                                                if (err) {
+                                                    done(err);
+                                                } else {
+                                                    processStructureController.getProcessStructure("מעורבות באתר אקדמיה", (err, processStructure) => {
+                                                        if (err) {
+                                                            done(err);
+                                                        } else {
+                                                            let sankeyArray = JSON.parse(processStructure.sankey).content.diagram;
+                                                            sankeyArray.forEach(element => {
+                                                                if (element.type === "sankey.shape.State") {
+                                                                    if (element.labels[0].text === "מנהל/ת מיזמים אקדמים") {
+                                                                        assert.deepEqual(element.bgColor.toLowerCase(), "#ff1100");
+                                                                    } else {
+                                                                        assert.notDeepEqual(element.bgColor.toLowerCase(), "#ff1100");
+                                                                    }
+                                                                }
+                                                            });
+                                                            usersAndRolesController.getRoleIdByUsername("academy@outlook.com", (err, roleID) => {
+                                                                activeProcessController.getActiveProcessByProcessName("תהליך 3", (err, activeProcess) => {
+                                                                    oldActiveProcess.stages.forEach((stage) => {
+                                                                        if(stage.roleID.toString() === oldRoleID.toString()){
+                                                                            activeProcess.stages.forEach(_stage => {
+                                                                                if (JSON.stringify(stage.stagesToWaitFor) === JSON.stringify(_stage.stagesToWaitFor)) {
+                                                                                    assert.deepEqual(roleID.toString(), _stage.roleID.toString());
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                    });
+                                                                    done();
+                                                                });
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                    })
+                                });
+                            }
+                        });
+                }
+            })
     }).timeout(30000);
 });

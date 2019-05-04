@@ -41,9 +41,9 @@ module.exports.deleteNotification = (_id, callback) =>
     notificationAccessor.deleteAllNotifications({_id: _id}, callback);
 };
 
-module.exports.deleteAllNotification = (callback) =>
+module.exports.deleteAllNotification = (userEmail, callback) =>
 {
-    notificationAccessor.deleteAllNotifications({}, callback);
+    notificationAccessor.deleteAllNotifications({userEmail: userEmail}, callback);
 };
 
 module.exports.countNotifications = (email, callback) =>

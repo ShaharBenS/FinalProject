@@ -649,45 +649,6 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
     });
 }
 
-module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTree, rootID, callback) => {
-    processAccessor.getActiveProcesses((err, processes) => {
-        if (err) {
-            callback(err);
-        } else {
-            processes.forEach(process => {
-                process.stages.filter(stage=>stage.roleID !== undefined).forEach(stage => {
-                    if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
-                        if (stage.userEmail === null) {
-                            let findReplacement = (roleId) => {
-                                let replacement = oldTree.getFatherOf(roleId);
-                                if (replacement === undefined) {
-                                    return rootID;
-                                }
-                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
-                                    return findReplacement(replacement);
-                                } else {
-                                    return replacement;
-                                }
-                            };
-                            stage.roleID = findReplacement(stage.roleID);
-                        }
-                    }
-                });
-            });
-
-            processes.reduce((prev, process) => {
-                return (err) => {
-                    if (err) {
-                        prev(err)
-                    } else {
-                        processAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev)
-                    }
-                }
-            }, callback)(null);
-        }
-    });
-};
-
 module.exports.processReport = function (process_name, callback) {
     this.getAllActiveProcessDetails(process_name, (err, result) => {
         if (err) callback(err);
