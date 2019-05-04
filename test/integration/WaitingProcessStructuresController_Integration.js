@@ -3,6 +3,7 @@ let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
 let assert = require('chai').assert;
+let ObjectId = require('mongodb').ObjectID;
 let UsersAndRolesTreeSankey = require('../../controllers/usersControllers/usersAndRolesController');
 let sankeyContent = require('../inputs/trees/treesForActiveProcessTest/usersTree1sankey');
 let emailsToFullName = require('../inputs/trees/treesForActiveProcessTest/usersTree1EmailsToFullNames');
@@ -200,6 +201,35 @@ describe('1. Waiting Process Structure Controller', function () {
                         }
                     });
                 }
+            });
+        }).timeout(30000);
+    });
+
+    describe('1.4 getWaitingStructureById', function () {
+        it('1.4.1 getWaitingStructureById found', function (done) {
+            waitingProcessStructureAccessor.findWaitingProcessStructures({structureName: 'תהליך גרפיקה'}, (err, structure) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(structure.length, 1);
+                    waitingProcessStructureController.getWaitingStructureById(structure[0]._id, (err, structure) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(structure.sankey, JSON.stringify(processStructureSankeyJSON));
+                            assert.deepEqual(structure.onlineForms, []);
+                            assert.deepEqual(structure.automaticAdvanceTime, 0);
+                            assert.deepEqual(structure.notificationTime, 12);
+                            done();
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+
+        it('1.4.2 getWaitingStructureById not found', function (done) {
+            waitingProcessStructureController.getWaitingStructureById(ObjectId(), (err, structure) => {
+                assert.deepEqual(true, err !== null);
+                assert.deepEqual(err, 'Error: no such structure found');
+                done();
             });
         }).timeout(30000);
     });
