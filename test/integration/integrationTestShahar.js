@@ -108,7 +108,7 @@ describe('1. addUsersAndRole', function () {
                                                                 assert.deepEqual(Object.keys(roleToDereg).length, 11);
                                                                 assert.deepEqual(roleToDereg["יו\"ר"], "5");
                                                                 assert.deepEqual(roleToDereg["מנהל/ת רווחה"], "2");
-                                                                UsersPermissionsController.setUserPermissions(new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
+                                                                UsersPermissionsController.setUserPermissions("creator@email.com",new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
                                                                     if (err) {
                                                                         done(err);
                                                                     } else {
@@ -198,7 +198,7 @@ describe('1. addUsersAndRole', function () {
                             processName: "תהליך 1",
                             1: "on",
                             comments: "הערה 1"
-                        }, [], (err) => {
+                        }, [], [],(err) => {
                             if (err) {
                                 done(err);
                             } else {
@@ -206,7 +206,7 @@ describe('1. addUsersAndRole', function () {
                                     processName: "תהליך 1",
                                     2: "on",
                                     comments: "הערה 2"
-                                }, [], (err) => {
+                                }, [], [],(err) => {
                                     if (err) {
                                         done(err);
                                     } else {
@@ -218,7 +218,7 @@ describe('1. addUsersAndRole', function () {
                                                     processName: "תהליך 1",
                                                     3: "on",
                                                     comments: "הערה 3"
-                                                }, [], (err) => {
+                                                }, [], [],(err) => {
                                                     if (err) {
                                                         done(err);
                                                     } else {
@@ -226,7 +226,7 @@ describe('1. addUsersAndRole', function () {
                                                             processName: "תהליך 1",
                                                             4: "on",
                                                             comments: "הערה 4"
-                                                        }, [], (err) => {
+                                                        }, [], [],(err) => {
                                                             if (err) {
                                                                 done(err);
                                                             } else {
@@ -235,7 +235,7 @@ describe('1. addUsersAndRole', function () {
                                                                     5: "on",
                                                                     6: "on",
                                                                     comments: "הערה 56"
-                                                                }, [], (err) => {
+                                                                }, [], [],(err) => {
                                                                     if (err) {
                                                                         done(err);
                                                                     } else {
@@ -243,7 +243,7 @@ describe('1. addUsersAndRole', function () {
                                                                             processName: "תהליך 1",
                                                                             9: "on",
                                                                             comments: "הערה 7.1"
-                                                                        }, [], (err) => {
+                                                                        }, [], [],(err) => {
                                                                             if (err) {
                                                                                 done(err);
                                                                             } else {
@@ -251,7 +251,7 @@ describe('1. addUsersAndRole', function () {
                                                                                     processName: "תהליך 1",
                                                                                     9: "on",
                                                                                     comments: "הערה 7.2"
-                                                                                }, [], (err) => {
+                                                                                }, [], [],(err) => {
                                                                                     if (err) {
                                                                                         done(err);
                                                                                     } else {
@@ -259,7 +259,7 @@ describe('1. addUsersAndRole', function () {
                                                                                             processName: "תהליך 1",
                                                                                             7: "on",
                                                                                             comments: "הערה 7"
-                                                                                        }, [], (err) => {
+                                                                                        }, [], [],(err) => {
                                                                                             if (err) {
                                                                                                 done(err);
                                                                                             } else {
@@ -267,14 +267,14 @@ describe('1. addUsersAndRole', function () {
                                                                                                     processName: "תהליך 1",
                                                                                                     8: "on",
                                                                                                     comments: "הערה 8"
-                                                                                                }, [], (err) => {
+                                                                                                }, [], [],(err) => {
                                                                                                     if (err) {
                                                                                                         done(err);
                                                                                                     } else {
                                                                                                         activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
                                                                                                             processName: "תהליך 1",
                                                                                                             comments: "הערה 10"
-                                                                                                        }, [], (err) => {
+                                                                                                        }, [], [],(err) => {
                                                                                                             if (err) {
                                                                                                                 done(err);
                                                                                                             } else {
@@ -293,7 +293,7 @@ describe('1. addUsersAndRole', function () {
                                                                                                                                             processName: "תהליך 2",
                                                                                                                                             1: "on",
                                                                                                                                             comments: "הערה 1"
-                                                                                                                                        }, [], (err) => {
+                                                                                                                                        }, [], [],(err) => {
                                                                                                                                             if (err) {
                                                                                                                                                 done(err);
                                                                                                                                             } else {
@@ -301,7 +301,7 @@ describe('1. addUsersAndRole', function () {
                                                                                                                                                     processName: "תהליך 2",
                                                                                                                                                     2: "on",
                                                                                                                                                     comments: "הערה 2"
-                                                                                                                                                }, [], (err) => {
+                                                                                                                                                }, [], [],(err) => {
                                                                                                                                                     if (err) {
                                                                                                                                                         done(err);
                                                                                                                                                     } else {
@@ -393,7 +393,7 @@ describe('1. addUsersAndRole', function () {
                             processName: "תהליך 3",
                             1: "on",
                             comments: "הערה 1"
-                        }, [], (err) => {
+                        }, [],[], (err) => {
                             if (err) {
                                 done(err);
                             } else {
