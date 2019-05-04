@@ -9,17 +9,26 @@ let whileReplace = function (str, replace, by) {
     return str;
 };
 
-module.exports.createAllOnlineForms = () => {
+module.exports.createAllOnlineForms = (callback) => {
     let files = fs.readdirSync(__dirname + "\\..\\..\\views\\onlineFormViews\\");
+    let length = files.length;
+    let success = 0;
+    let remove = 0;
     for (let i in files) {
         let fileName = files[i];
-        if (fileName !== 'example.html') {
+        if (fileName !== 'form_template.html' && fileName.substring(fileName.length - 5) === '.html') {
             let fileNameNoHTML = fileName.replace('.html', '');
             let formName = whileReplace(fileNameNoHTML, '_', ' ');
             this.createOnlineFrom(formName, fileNameNoHTML, (err) => {
                 if (err)
                     console.log(err.message);
+                success++;
+                if (success === length - remove)
+                    callback();
             });
+        } else {
+            remove++;
+            console.log("Online Forms: file \"" + fileName + "\" wasn\'t added as online form");
         }
     }
 };
@@ -35,10 +44,6 @@ module.exports.createOnlineFrom = (formName, srcHTML, callback) => {
 
 module.exports.getAllOnlineForms = (callback) => {
     onlineFormAccessor.findAllOnlineForms(callback);
-};
-
-module.exports.getOnlineFormByID = (formID, callback) => {
-    onlineFormAccessor.findOnlineFormByID(formID, callback);
 };
 
 module.exports.findOnlineFormsIDsByFormsNames = (formsNames, callback) => {

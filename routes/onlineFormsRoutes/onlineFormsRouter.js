@@ -52,38 +52,11 @@ router.get('/display', function (req, res) {
 });
 
 router.get('/fill', function (req, res) {
-    filledOnlineFormsController.getFormReady(req.query.processName, req.query.formName, (err, form) => {
+    filledOnlineFormsController.getFormReadyToFill(req.query.processName, req.query.formName, (err, HTMLSource, locals) => {
         if (err) res.send(err);
         else {
-            if (form === undefined) {
-                onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
-                    if (err) res.send(err);
-                    else {
-                        res.render('onlineFormViews/' + form.HTMLSource, {
-                            formName: form.formName,
-                            isForShow: false,
-                            fields: false
-                        });
-                    }
-                });
-            } else {
-                form = form.formObject;
-                let fields = [];
-                form.fields.forEach((field) => {
-                    fields.push({fieldName: field.fieldName, value: field.value})
-                });
-                let fieldsStr = JSON.stringify(fields);
-                onlineFormsController.getOnlineFormByName(req.query.formName, (err, form) => {
-                    if (err) res.send(err);
-                    else {
-                        res.render('onlineFormViews/' + form.HTMLSource, {
-                            formName: form.formName,
-                            isForShow: false,
-                            fields: fieldsStr
-                        });
-                    }
-                });
-            }
+            res.render('onlineFormViews/' + HTMLSource, locals);
+
         }
     });
 
