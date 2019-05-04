@@ -118,7 +118,7 @@ module.exports.updateOrAddFilledForm = function (processName, formName, formFiel
                 });
                 filledOnlineFormAccessor.updateFilledOnlineForm({_id: formID}, {fields: newField}, (err, res) => {
                     if (err) callback(err);
-                    else callback(null);
+                    else callback(null, res);
                 });
             }
         }
