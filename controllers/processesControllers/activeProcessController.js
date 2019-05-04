@@ -709,3 +709,5 @@ module.exports.assignSingleUsersToStages = assignSingleUsersToStages;
 module.exports.handleProcess = handleProcess;
 module.exports.advanceProcess = advanceProcess;
 module.exports.getRoleNamesForArray = getRoleNamesForArray;
+module.exports.getRoleIDsOfDeregStages = getRoleIDsOfDeregStages;
+module.exports.getNewActiveProcess = getNewActiveProcess;
