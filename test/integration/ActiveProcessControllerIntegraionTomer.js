@@ -8,13 +8,10 @@ let sankeyContent = require('../inputs/trees/treesForActiveProcessTest/usersTree
 let emailsToFullName = require('../inputs/trees/treesForActiveProcessTest/usersTree1EmailsToFullNames');
 let rolesToDereg = require('../inputs/trees/treesForActiveProcessTest/usersTree1RolesToDeregs');
 let rolesToEmails = require('../inputs/trees/treesForActiveProcessTest/usersTree1RolesToEmails');
-let modelUsersAndRoles = require('../../models/schemas/usersSchemas/UsersAndRolesSchema');
-let usersAndRolesTreeSankey = require('../../models/schemas/usersSchemas/UsersAndRolesTreeSankeySchema');
 let userAccessor = require('../../models/accessors/usersAccessor');
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
 let processStructureSankeyJSON = require('../inputs/processStructures/processStructuresForActiveProcessTest/processStructure1');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
-let usersAndRolesContoller = require('../../controllers/usersControllers/usersAndRolesController');
 let activeProcess = require('../../domainObjects/activeProcess');
 let activeProcessStage = require('../../domainObjects/activeProcessStage');
 
@@ -535,7 +532,7 @@ describe('1. Active Process Controller', function () {
                     done(err);
                 }
                 else {
-                    assert.deepEqual(activeProcesses1,null);
+                    assert.deepEqual(activeProcesses1, null);
                     activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה לכבוד סיום התואר הראשון 1', new Date(2018, 11, 24, 10, 33, 30, 0), 1, (err1, result1) => {
                         if (err1) {
                             done(err1);
@@ -747,12 +744,12 @@ describe('1. Active Process Controller', function () {
             let array = [activeProcess1, activeProcess2, activeProcess3];
             activeProcessController.convertDate(array);
             assert.deepEqual(array.length, 3);
-            assert.deepEqual(array[0].creationTime,'20/11/2017 10:30:30');
-            assert.deepEqual(array[0].lastApproached,'20/11/2017 10:30:30');
-            assert.deepEqual(array[1].creationTime,'21/12/2018 11:40:30');
-            assert.deepEqual(array[1].lastApproached,'21/12/2018 11:40:30');
-            assert.deepEqual(array[2].creationTime,'22/01/2020 12:50:30');
-            assert.deepEqual(array[2].lastApproached,'22/01/2020 12:50:30');
+            assert.deepEqual(array[0].creationTime, '20/11/2017 10:30:30');
+            assert.deepEqual(array[0].lastApproached, '20/11/2017 10:30:30');
+            assert.deepEqual(array[1].creationTime, '21/12/2018 11:40:30');
+            assert.deepEqual(array[1].lastApproached, '21/12/2018 11:40:30');
+            assert.deepEqual(array[2].creationTime, '22/01/2020 12:50:30');
+            assert.deepEqual(array[2].lastApproached, '22/01/2020 12:50:30');
             done();
         });
     }).timeout(30000);

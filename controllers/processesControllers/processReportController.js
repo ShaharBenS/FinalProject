@@ -4,7 +4,7 @@ let usersAndRolesController = require('../usersControllers/usersAndRolesControll
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let moment = require('moment');
 
-module.exports.addProcessReport = (processName, creationTime,processDate,processUrgency,processCreatorEmail,callback) => {
+module.exports.addProcessReport = (processName, creationTime, processDate, processUrgency, processCreatorEmail, callback) => {
     processAccessor.createProcessReport({
         processName: processName,
         status: 'פעיל',
@@ -20,34 +20,40 @@ module.exports.addProcessReport = (processName, creationTime,processDate,process
     });
 };
 
-module.exports.addActiveProcessDetailsToReport = (processName, userEmail,stageDetails, approvalTime, callback) => {
+module.exports.addActiveProcessDetailsToReport = (processName, userEmail, stageDetails, approvalTime, callback) => {
     processAccessor.findProcessReport({processName: processName}, (err, report) => {
         if (err) callback(err);
         else {
             usersAndRolesController.getRoleNameByUsername(userEmail, (err, roleName) => {
                 if (err) callback(err);
                 else {
-                    usersAndRolesController.getFullNameByEmail(userEmail, (err2,userName) =>
-                    {
-                        if(err2) {
+                    usersAndRolesController.getFullNameByEmail(userEmail, (err2, userName) => {
+                        if (err2) {
                             callback(err2);
                         }
-                        else
-                        {
+                        else {
                             let newStage = {
-                                roleName: roleName, userEmail: userEmail, userName: userName, stageNum: stageDetails.stageNum, approvalTime: approvalTime,
-                                comments: stageDetails.comments, action: stageDetails.action,
+                                roleName: roleName,
+                                userEmail: userEmail,
+                                userName: userName,
+                                stageNum: stageDetails.stageNum,
+                                approvalTime: approvalTime,
+                                comments: stageDetails.comments,
+                                action: stageDetails.action,
                                 attachedFilesNames: stageDetails.fileNames
                             };
                             let newAttachedFiles = [];
-                            for(let i=0;i<stageDetails.fileNames.length;i++)
-                            {
-                                if(!report.attachedFilesNames.includes(stageDetails.fileNames[i]))
-                                {
+                            for (let i = 0; i < stageDetails.fileNames.length; i++) {
+                                if (!report.attachedFilesNames.includes(stageDetails.fileNames[i])) {
                                     newAttachedFiles.push(stageDetails.fileNames[i]);
                                 }
                             }
-                            processAccessor.updateProcessReport({processName: processName}, {$push:{stages: newStage, attachedFilesNames: {$each: newAttachedFiles}}}, (err) => {
+                            processAccessor.updateProcessReport({processName: processName}, {
+                                $push: {
+                                    stages: newStage,
+                                    attachedFilesNames: {$each: newAttachedFiles}
+                                }
+                            }, (err) => {
                                 if (err) callback(err);
                                 else callback(null);
                             });
@@ -67,8 +73,8 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
             processReportAccessor.findProcessesReports({}, (err, processReports) => {
                 if (err) callback(err);
                 else {
-                    usersAndRolesController.getAllChildren(userEmail,(err,children)=>{
-                        if(err) {
+                    usersAndRolesController.getAllChildren(userEmail, (err, children) => {
+                        if (err) {
                             callback(err);
                             return;
                         }
@@ -80,29 +86,24 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
                             processReports.forEach((process) => {
                                 let flag = true;
                                 let currUserEmails = [];
-                                if (isExistInReport(process,userEmail))
-                                {
+                                if (isExistInReport(process, userEmail)) {
                                     flag = false;
                                     toReturnProcessReports.push(process);
                                     currUserEmails = [userEmail];
                                 }
-                                children.forEach((child)=>{
-                                    if (isExistInReport(process,child))
-                                    {
-                                        if(flag === false)
-                                        {
+                                children.forEach((child) => {
+                                    if (isExistInReport(process, child)) {
+                                        if (flag === false) {
                                             currUserEmails = currUserEmails.concat(child);
                                         }
-                                        else
-                                        {
+                                        else {
                                             toReturnProcessReports.push(process);
                                             currUserEmails = [child];
                                             flag = false;
                                         }
                                     }
                                 });
-                                if(flag === false)
-                                {
+                                if (flag === false) {
                                     userEmailsArrays.push(currUserEmails);
                                 }
                             });
@@ -149,64 +150,24 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
                 processDate: processReport.processDate,
                 filledOnlineForms: processReport.filledOnlineForms
             };
-            returnStagesWithRoleName(0, processReport.stages, [], (err, newStages) => {
-                callback(null, [returnProcessDetails, newStages]);
-            });
+            callback(null, [returnProcessDetails, processReport.stages]);
         }
     });
 };
 
-module.exports.getRoleNamesForArray = (stages, index, roleNamesArray, callback)=> {
-    if (index === stages.length) {
-        callback(null, roleNamesArray);
-        return;
-    }
-    let roleID = stages[index].roleID;
-    (function (array, stageNum) {
-        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                array.push([roleName, stageNum]);
-                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
-            }
-        });
-    })(roleNamesArray, stages[index].stageNum);
-};
-
-const returnStagesWithRoleName = (index, stages, newStages, callback) => {
-    if (index === stages.length) {
-        callback(null, newStages);
-    } else {
-        let stage = stages[index];
-        newStages.push({
-            roleName: stage.roleName,
-            userEmail: stage.userEmail,
-            userName: stage.userName,
-            stageNum: stage.stageNum,
-            approvalTime: stage.approvalTime,
-            comments: stage.comments,
-            action: stage.action,
-            attachedFilesNames: stage.attachedFilesNames
-        });
-        returnStagesWithRoleName(index + 1, stages, newStages, callback);
-    }
-};
-
-function isExistInReport(report,userEmail)
-{
-    for(let i=0;i<report._doc.stages.length;i++)
-    {
-        if(report._doc.stages[i].userEmail === userEmail)
-        {
+function isExistInReport(report, userEmail) {
+    for (let i = 0; i < report._doc.stages.length; i++) {
+        if (report._doc.stages[i].userEmail === userEmail) {
             return true;
         }
     }
     return report.processCreatorEmail === userEmail;
 }
 
-
 module.exports.convertDate = (array) => {
     for (let i = 0; i < array.length; i++) {
-        array[i]._doc.processDate =  moment(array[i]._doc.processDate).format("DD/MM/YYYY HH:mm:ss");
+        array[i]._doc.processDate = moment(array[i]._doc.processDate).format("DD/MM/YYYY HH:mm:ss");
     }
 };
+
+module.exports.isExistInReport = isExistInReport;
