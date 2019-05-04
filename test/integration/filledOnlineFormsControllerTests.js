@@ -7,9 +7,7 @@ let assert = require('chai').assert;
 let expect = require('chai').expect;
 let fs = require("fs");
 
-let OnlineForm = require('../../domainObjects/onlineForm');
 let UserPermissions = require('../../domainObjects/UserPermissions');
-
 let onlineFormsController = require('../../controllers/onlineFormsControllers/onlineFormController');
 let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let usersAndRolesController = require('../../controllers/usersControllers/usersAndRolesController');
@@ -34,7 +32,6 @@ let clearDatabase = function () {
 };
 
 
-let mainActingUser = "website@outlook.com";
 let processName = "תהליך 1";
 let formName = "טופס דרישה פנימית והזמנת רכש לספק";
 let formSRC = "טופס_דרישה_פנימית_והזמנת_רכש_לספק";
@@ -433,40 +430,44 @@ describe('1. createFilledOnlineFrom', function () {
 
     it('1.1 creates filled online form and checks its in the db', function (done) {
         this.timeout(10000);
-        filledOnlineFormsController.createFilledOnlineFrom(formName, formFields1, (err, res) => {
-            if (err) done(err);
-            else {
-                let formID = res._id;
-                filledOnlineFormsController.getFilledOnlineFormByID(formID, (err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res.formObject.formName, formName);
-                        for (let i = 0; i < res.formObject.fields.length; i++) {
-                            assert.equal(res.formObject.fields[i].fieldName, formFields1[i].field);
-                            assert.equal(res.formObject.fields[i].value, formFields1[i].value);
+        onlineFormsController.createAllOnlineForms(() => {
+            filledOnlineFormsController.createFilledOnlineFrom(formName, formFields1, (err, res) => {
+                if (err) done(err);
+                else {
+                    let formID = res._id;
+                    filledOnlineFormsController.getFilledOnlineFormByID(formID, (err, res) => {
+                        if (err) done(err);
+                        else {
+                            assert.equal(res.formObject.formName, formName);
+                            for (let i = 0; i < res.formObject.fields.length; i++) {
+                                assert.equal(res.formObject.fields[i].fieldName, formFields1[i].field);
+                                assert.equal(res.formObject.fields[i].value, formFields1[i].value);
+                            }
+                            done();
                         }
-                        done();
-                    }
-                })
-            }
-        })
+                    })
+                }
+            })
+        });
     });
 
     it('1.2 creates filled online form with empty fields and checks its in the db', function (done) {
         this.timeout(10000);
-        filledOnlineFormsController.createFilledOnlineFrom(formName, [], (err, res) => {
-            if (err) done(err);
-            else {
-                let formID = res._id;
-                filledOnlineFormsController.getFilledOnlineFormByID(formID, (err, res) => {
-                    if (err) done(err);
-                    else {
-                        assert.equal(res.formObject.fields.length, 0);
-                        done();
-                    }
-                })
-            }
-        })
+        onlineFormsController.createAllOnlineForms(() => {
+            filledOnlineFormsController.createFilledOnlineFrom(formName, [], (err, res) => {
+                if (err) done(err);
+                else {
+                    let formID = res._id;
+                    filledOnlineFormsController.getFilledOnlineFormByID(formID, (err, res) => {
+                        if (err) done(err);
+                        else {
+                            assert.equal(res.formObject.fields.length, 0);
+                            done();
+                        }
+                    })
+                }
+            })
+        });
     });
 
     it('1.3 creates filled form with invalid form name', function (done) {
