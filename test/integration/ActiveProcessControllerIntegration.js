@@ -406,26 +406,40 @@ describe('1. Active Process Controller', function () {
     describe('1.5 handleProcess', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcess);
-        it('1.5.1 handleProcess without finishing correct', function (done) {
+        it('1.5.1 handleProcess without finishing next stages is empty', function (done) {
             activeProcessController.handleProcess('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', {
                 comments: 'הערות של סגן מנהל נגטיב',
                 fileNames: ['קובץ 2', 'קובץ1'],
                 nextStageRoles: []
             }, (err) => {
-                if (err) done(err);
-                else {
+                assert.deepEqual(true, err !== null);
+                assert.deepEqual(err.message, 'HandleProcess: next stages are empty and process cannot be finished');
+                done();
+            });
+        }).timeout(30000);
+
+        it('1.5.2 handleProcess without finishing correct', function (done) {
+            activeProcessController.handleProcess('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                fileNames: ['קובץ 2', 'קובץ1'],
+                nextStageRoles: [2]
+            }, (err) => {
+                if(err) done(err);
+                else
+                {
                     activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                         if (err) done(err);
                         else {
-                            assert.deepEqual(true, process === null);
-                            done()
+                            assert.deepEqual(true, process !== null);
+                            assert.deepEqual(process.currentStages, [2]);
+                            done();
                         }
                     });
                 }
             });
         }).timeout(30000);
 
-        it('1.5.2 handleProcess with finishing correct', function (done) {
+        it('1.5.3 handleProcess with finishing correct', function (done) {
             activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
@@ -461,7 +475,7 @@ describe('1. Active Process Controller', function () {
                 }
             });
         }).timeout(30000);
-        it('1.5.3 handleProcess without finishing wrong user', function (done) {
+        it('1.5.4 handleProcess without finishing wrong user', function (done) {
             activeProcessController.handleProcess('negativemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', {
                 comments: 'הערות של סגן מנהל נגטיב',
                 fileNames: ['קובץ 2', 'קובץ1'],
@@ -473,7 +487,7 @@ describe('1. Active Process Controller', function () {
             });
         }).timeout(30000);
 
-        it('1.5.3 handleProcess without finishing wrong next stages', function (done) {
+        it('1.5.5 handleProcess without finishing wrong next stages', function (done) {
             activeProcessController.handleProcess('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', {
                 comments: 'הערות של סגן מנהל נגטיב',
                 fileNames: ['קובץ 2', 'קובץ1'],
@@ -485,7 +499,7 @@ describe('1. Active Process Controller', function () {
             });
         }).timeout(30000);
 
-        it('1.5.4 handleProcess with finishing wrong next stages', function (done) {
+        it('1.5.6 handleProcess with finishing wrong next stages', function (done) {
             activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',

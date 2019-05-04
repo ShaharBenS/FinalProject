@@ -364,7 +364,7 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                     return;
                 }
             }
-            if (stageDetails.nextStageRoles === [] && foundStage.nextStages !== []) {
+            if (stageDetails.nextStageRoles.length === 0 && foundStage.nextStages.length !== 0) {
                 callback(new Error('HandleProcess: next stages are empty and process cannot be finished'));
                 return;
             }
