@@ -235,7 +235,7 @@ let createUsersAndRolesTree = function (callback) {
     });
 };
 
-describe('online form in processes test', function () {
+describe.skip('online form in processes test', function () {
 
     before(globalBefore);
     after(globalAfter);

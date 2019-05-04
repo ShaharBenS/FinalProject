@@ -371,7 +371,7 @@ let createUserAndRolesTree = function (callback) {
                 if (err) {
                     done(err);
                 }
-                usersPermissionsController.setUserPermissions(new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
+                usersPermissionsController.setUserPermissions("creator@email.com", new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
                     if (err) {
                         callback(err);
                     } else {

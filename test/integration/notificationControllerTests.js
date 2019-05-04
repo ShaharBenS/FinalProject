@@ -58,7 +58,7 @@ let createUserAndRolesTree = function (callback) {
                 if (err) {
                     callback(err);
                 }
-                usersPermissionsController.setUserPermissions(new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
+                usersPermissionsController.setUserPermissions("creator@email.com", new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -375,12 +375,12 @@ describe('5. notifyFinishedProcess', function () {
                             processName: processName,
                             1: "on",
                             comments: "הערה 1"
-                        }, [], () => {
+                        }, [], "files", () => {
                             activeProcessController.uploadFilesAndHandleProcess(userBB,
                                 {
                                     processName: processName,
                                     comments: "הערה 2"
-                                }, [], () => {
+                                }, [], "files", () => {
                                     processReportsController.getAllProcessesReportsByUser(userAA, (err, process) => {
                                         if (err) done(err);
                                         notificationController.getUserNotifications(userAA, (err, notifications) => {
@@ -468,7 +468,7 @@ describe('7. notifyCancelledProcess', function () {
                             processName: processName,
                             1: "on",
                             comments: "הערה 1"
-                        }, [], () => {
+                        }, [], "files", () => {
                             activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
                                 if (err) done(err);
                                 notificationController.notifyCancelledProcess(process, (err) => {
