@@ -611,22 +611,14 @@ function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
 
 function addAdmin(userEmail,callback)
 {
-    userPermissionsController.setUserPermissions(new UserPermissions(userEmail, [true, true, true, true]), (err) =>
-    {
-        if (err) {
+    userAccessor.addAdmin({userEmail:userEmail},(err)=>{
+        if(err){
             callback(err);
         }
-        else {
-            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
-                if(err){
-                    callback(err);
-                }
-                else{
-                    callback(null);
-                }
-            });
+        else{
+            callback(null);
         }
-    })
+    });
 }
 
 function includesRoleID(arr,roleID)
