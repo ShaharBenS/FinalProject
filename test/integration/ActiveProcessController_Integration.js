@@ -23,7 +23,7 @@ let usersAndRolesController = require('../../controllers/usersControllers/usersA
 let usersAndRolesAccessor = require('../../models/accessors/usersAccessor');
 let notificationsController = require('../../controllers/notificationsControllers/notificationController');
 let usersAndRolesTree = require('../../domainObjects/usersAndRolesTree');
-
+let processReportController = require('../../controllers/processesControllers/processReportController');
 
 //Graphics Inputs
 let sankeyContentOfGraphics = require('../inputs/trees/GraphicsTree/sankeyTree');
@@ -112,7 +112,7 @@ let startProcessAndHandleTwice = function (done) {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
                 processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
+            }, [], 'files', (err) => {
                 if (err) done(err);
                 else {
                     activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
@@ -121,7 +121,7 @@ let startProcessAndHandleTwice = function (done) {
                         1: 'on',
                         4: 'on',
                         processName: 'גרפיקה להקרנת בכורה'
-                    }, [], (err) => {
+                    }, [], 'files', (err) => {
                         if (err) done(err);
                         else {
                             done();
@@ -141,7 +141,7 @@ let startProcessAndHandleTwiceWithGraphicsAndPublicity = function (done) {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
                 processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
+            }, [], 'files', (err) => {
                 if (err) done(err);
                 else {
                     activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
@@ -149,7 +149,7 @@ let startProcessAndHandleTwiceWithGraphicsAndPublicity = function (done) {
                         1: 'on',
                         4: 'on',
                         processName: 'גרפיקה להקרנת בכורה'
-                    }, [], (err) => {
+                    }, [],'files', (err) => {
                         if (err) done(err);
                         else {
                             done();
@@ -207,7 +207,7 @@ describe('1. Active Process Controller', function () {
                         if (err) done(err);
                         else {
                             assert.deepEqual(true, process !== null);
-                            activeProcessController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                            processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
                                 if (err) done(err);
                                 else {
                                     assert.deepEqual(report[1].length, 0);
@@ -433,14 +433,14 @@ describe('1. Active Process Controller', function () {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
                 processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
+            }, [],'files', (err) => {
                 if (err) done(err);
                 else {
                     activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
                         comments: 'הערות של מנהל נגטיב',
                         4: 'on',
                         processName: 'גרפיקה להקרנת בכורה'
-                    }, [], (err) => {
+                    }, [],'files', (err) => {
                         if (err) done(err);
                         else {
                             activeProcessController.handleProcess('publicitydepartmenthead@outlook.co.il', 'גרפיקה להקרנת בכורה', {
@@ -493,14 +493,14 @@ describe('1. Active Process Controller', function () {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
                 processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
+            }, [],'files', (err) => {
                 if (err) done(err);
                 else {
                     activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
                         comments: 'הערות של מנהל נגטיב',
                         4: 'on',
                         processName: 'גרפיקה להקרנת בכורה'
-                    }, [], (err) => {
+                    }, [],'files', (err) => {
                         if (err) done(err);
                         else {
                             activeProcessController.handleProcess('publicitydepartmenthead@outlook.co.il', 'גרפיקה להקרנת בכורה', {
@@ -641,7 +641,7 @@ describe('1. Active Process Controller', function () {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
                 processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
+            }, [],'files', (err) => {
                 if (err) done(err);
                 else {
                     activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativemanager@outlook.co.il', (err, result) => {
@@ -668,7 +668,7 @@ describe('1. Active Process Controller', function () {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
                 processName: 'גרפיקה להקרנת בכורה'
-            }, [], (err) => {
+            }, [],'files', (err) => {
                 if (err) done(err);
                 else {
                     activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativevicemanager1@outlook.co.il', (err, result) => {
