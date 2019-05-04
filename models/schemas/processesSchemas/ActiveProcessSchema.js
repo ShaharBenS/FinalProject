@@ -5,7 +5,7 @@ const activeProcessSchema = new Schema({
     processName: {type: String, unique: true},
     creatorUserEmail : String,
     processDate: Date,
-    processUrgency: { type: Number, min: 1, max: 10},
+    processUrgency: { type: Number, min: 1, max: 3},
     creationTime: Date,
     notificationTime: Number,
     automaticAdvanceTime: Number,
