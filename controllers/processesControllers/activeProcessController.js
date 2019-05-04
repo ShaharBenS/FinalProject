@@ -492,7 +492,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 for (let j = 0; j < foundStage.nextStages.length; j++) {
                     nextStagesArr.push(process.getStageByStageNum(foundStage.nextStages[j]));
                 }
-                getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
+                this.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
                         onlineFormController.findOnlineFormsNamesByFormsIDs(process.onlineForms, (err, onlineFormsNames) => {
@@ -508,7 +508,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
     });
 };
 
-module.exports.getRoleNamesForArray = (stages, index, roleNamesArray, callback) => {
+function getRoleNamesForArray(stages, index, roleNamesArray, callback){
     if (index === stages.length) {
         callback(null, roleNamesArray);
         return;
@@ -523,7 +523,7 @@ module.exports.getRoleNamesForArray = (stages, index, roleNamesArray, callback) 
             }
         });
     })(roleNamesArray, stages[index].stageNum);
-};
+}
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
@@ -708,3 +708,4 @@ module.exports.getFilledOnlineForms = getFilledOnlineForms;
 module.exports.assignSingleUsersToStages = assignSingleUsersToStages;
 module.exports.handleProcess = handleProcess;
 module.exports.advanceProcess = advanceProcess;
+module.exports.getRoleNamesForArray = getRoleNamesForArray;

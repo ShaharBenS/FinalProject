@@ -142,7 +142,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של סגן מנהל נגטיב',
             1: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [], 'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -162,7 +162,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][0].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][0].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][0].action, 'continue');
-                                assert.deepEqual(report[1][0].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -177,7 +176,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של מנהל נגטיב',
             6: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [], 'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -197,7 +196,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][1].roleName, 'מנהל נגטיב');
                                 assert.deepEqual(report[1][1].comments, 'הערות של מנהל נגטיב');
                                 assert.deepEqual(report[1][1].action, 'continue');
-                                assert.deepEqual(report[1][1].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -228,7 +226,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][2].roleName, 'אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][2].comments, 'הערות חזרה של אחראי מיתוג קמפינים');
                                 assert.deepEqual(report[1][2].action, 'return');
-                                assert.deepEqual(report[1][2].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -243,7 +240,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של סגן מנהל נגטיב',
             1: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [], 'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -263,7 +260,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][3].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][3].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][3].action, 'continue');
-                                assert.deepEqual(report[1][3].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -278,7 +274,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של מנהל נגטיב',
             6: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -298,7 +294,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][4].roleName, 'מנהל נגטיב');
                                 assert.deepEqual(report[1][4].comments, 'הערות של מנהל נגטיב');
                                 assert.deepEqual(report[1][4].action, 'continue');
-                                assert.deepEqual(report[1][4].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -313,7 +308,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של אחראי מיתוג קמפיינים',
             7: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -333,7 +328,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][5].roleName, 'אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][5].comments, 'הערות של אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][5].action, 'continue');
-                                assert.deepEqual(report[1][5].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -348,7 +342,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של דובר',
             5: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -368,7 +362,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][6].roleName, 'דובר');
                                 assert.deepEqual(report[1][6].comments, 'הערות של דובר');
                                 assert.deepEqual(report[1][6].action, 'continue');
-                                assert.deepEqual(report[1][6].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -402,7 +395,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של גרפיקאי',
             3: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -422,7 +415,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][7].roleName, 'גרפיקאי');
                                 assert.deepEqual(report[1][7].comments, 'הערות של גרפיקאי');
                                 assert.deepEqual(report[1][7].action, 'continue');
-                                assert.deepEqual(report[1][7].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -437,7 +429,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של אחראי מיתוג קמפיינים',
             4: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -457,7 +449,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][8].roleName, 'אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][8].comments, 'הערות של אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][8].action, 'continue');
-                                assert.deepEqual(report[1][8].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -472,7 +463,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של דובר',
             8: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -492,7 +483,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][9].roleName, 'דובר');
                                 assert.deepEqual(report[1][9].comments, 'הערות של דובר');
                                 assert.deepEqual(report[1][9].action, 'continue');
-                                assert.deepEqual(report[1][9].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -507,7 +497,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של רמ"ד הסברה',
             9: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -527,7 +517,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][10].roleName, 'ראש מדור הסברה');
                                 assert.deepEqual(report[1][10].comments, 'הערות של רמ"ד הסברה');
                                 assert.deepEqual(report[1][10].action, 'continue');
-                                assert.deepEqual(report[1][10].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -558,7 +547,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][11].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][11].comments, 'הערות חזרה של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][11].action, 'return');
-                                assert.deepEqual(report[1][11].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -573,7 +561,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של סגן מנהל נגטיב',
             1: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -593,7 +581,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][12].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][12].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][12].action, 'continue');
-                                assert.deepEqual(report[1][12].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -608,7 +595,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של מנהל נגטיב',
             6: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -628,7 +615,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][13].roleName, 'מנהל נגטיב');
                                 assert.deepEqual(report[1][13].comments, 'הערות של מנהל נגטיב');
                                 assert.deepEqual(report[1][13].action, 'continue');
-                                assert.deepEqual(report[1][13].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -643,7 +629,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של אחראי מיתוג קמפיינים',
             7: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -663,7 +649,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][14].roleName, 'אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][14].comments, 'הערות של אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][14].action, 'continue');
-                                assert.deepEqual(report[1][14].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -678,7 +663,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של דובר',
             5: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -698,7 +683,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][15].roleName, 'דובר');
                                 assert.deepEqual(report[1][15].comments, 'הערות של דובר');
                                 assert.deepEqual(report[1][15].action, 'continue');
-                                assert.deepEqual(report[1][15].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -751,7 +735,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של גרפיקאי',
             3: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -771,7 +755,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][16].roleName, 'גרפיקאי');
                                 assert.deepEqual(report[1][16].comments, 'הערות של גרפיקאי');
                                 assert.deepEqual(report[1][16].action, 'continue');
-                                assert.deepEqual(report[1][16].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -786,7 +769,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של אחראי מיתוג קמפיינים',
             4: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -806,7 +789,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][17].roleName, 'אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][17].comments, 'הערות של אחראי מיתוג קמפיינים');
                                 assert.deepEqual(report[1][17].action, 'continue');
-                                assert.deepEqual(report[1][17].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -821,7 +803,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של דובר',
             8: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -841,7 +823,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][18].roleName, 'דובר');
                                 assert.deepEqual(report[1][18].comments, 'הערות של דובר');
                                 assert.deepEqual(report[1][18].action, 'continue');
-                                assert.deepEqual(report[1][18].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -856,7 +837,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של רמ"ד הסברה',
             9: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -876,7 +857,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][19].roleName, 'ראש מדור הסברה');
                                 assert.deepEqual(report[1][19].comments, 'הערות של רמ"ד הסברה');
                                 assert.deepEqual(report[1][19].action, 'continue');
-                                assert.deepEqual(report[1][19].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -891,7 +871,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של סגן מנהל נגטיב',
             10: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -911,7 +891,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][20].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][20].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][20].action, 'continue');
-                                assert.deepEqual(report[1][20].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -942,7 +921,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][21].roleName, 'מנהל נגטיב');
                                 assert.deepEqual(report[1][21].comments, 'הערות חזרה של מנהל נגטיב');
                                 assert.deepEqual(report[1][21].action, 'return');
-                                assert.deepEqual(report[1][21].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -957,7 +935,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של סגן מנהל נגטיב',
             10: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -977,7 +955,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][22].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][22].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][22].action, 'continue');
-                                assert.deepEqual(report[1][22].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -992,7 +969,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של מנהל נגטיב',
             13: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1012,7 +989,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][23].roleName, 'מנהל נגטיב');
                                 assert.deepEqual(report[1][23].comments, 'הערות של מנהל נגטיב');
                                 assert.deepEqual(report[1][23].action, 'continue');
-                                assert.deepEqual(report[1][23].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1027,7 +1003,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של תליין',
             14: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1047,7 +1023,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][24].roleName, 'תליין');
                                 assert.deepEqual(report[1][24].comments, 'הערות של תליין');
                                 assert.deepEqual(report[1][24].action, 'continue');
-                                assert.deepEqual(report[1][24].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1078,7 +1053,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][25].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][25].comments, 'הערות חזרה של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][25].action, 'return');
-                                assert.deepEqual(report[1][25].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1093,7 +1067,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של סגן מנהל נגטיב',
             10: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1113,7 +1087,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][26].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][26].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][26].action, 'continue');
-                                assert.deepEqual(report[1][26].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1129,7 +1102,7 @@ describe('1. graphics test', function () {
             12: 'on',
             13: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1151,7 +1124,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][27].roleName, 'מנהל נגטיב');
                                 assert.deepEqual(report[1][27].comments, 'הערות של מנהל נגטיב');
                                 assert.deepEqual(report[1][27].action, 'continue');
-                                assert.deepEqual(report[1][27].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1166,7 +1138,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של תליין',
             14: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1186,7 +1158,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][28].roleName, 'תליין');
                                 assert.deepEqual(report[1][28].comments, 'הערות של תליין');
                                 assert.deepEqual(report[1][28].action, 'continue');
-                                assert.deepEqual(report[1][28].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1201,7 +1172,7 @@ describe('1. graphics test', function () {
             comments: 'הערות של רכז ניו מדיה',
             14: 'on',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1221,7 +1192,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][29].roleName, 'רכז ניו מדיה');
                                 assert.deepEqual(report[1][29].comments, 'הערות של רכז ניו מדיה');
                                 assert.deepEqual(report[1][29].action, 'continue');
-                                assert.deepEqual(report[1][29].attachedFilesNames, []);
                                 done();
                             }
                         });
@@ -1235,7 +1205,7 @@ describe('1. graphics test', function () {
         activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
             comments: 'הערות של סגן מנהל נגטיב',
             processName: 'גרפיקה להקרנת בכורה'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1253,7 +1223,6 @@ describe('1. graphics test', function () {
                                 assert.deepEqual(report[1][30].roleName, 'סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][30].comments, 'הערות של סגן מנהל נגטיב');
                                 assert.deepEqual(report[1][30].action, 'continue');
-                                assert.deepEqual(report[1][30].attachedFilesNames, []);
                                 done();
                             }
                         });
