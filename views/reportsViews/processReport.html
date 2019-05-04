@@ -5,12 +5,10 @@
     <title>דו"ח תהליך</title>
     <script src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></script>
     <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
-
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
     <script src="/javascripts/topbar.js"></script>
     <script src="/javascripts/reports.js"></script>
     <script>
-
         let download_file = function (file_id) {
             document.getElementById(file_id).click();
             return false;
@@ -29,7 +27,6 @@
 
     </script>
     <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
-
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/draw_sankey/server/html/common/lib/DataTables/datatables.min.css"/>
     <link href="/stylesheets/style.css" rel="stylesheet">
@@ -74,6 +71,8 @@
             </tr>
         </table>
         <table>
+            <col width="250">
+            <col width="250">
             <tr>
                 <td id="filledOnlineForms">
                     <% if(processDetails.filledOnlineForms.length !== 0){ %>
@@ -83,6 +82,21 @@
                     <%})%>
                     <% } else{ %>
                     <label>אין טפסים המשוייכים לתהליך זה</label>
+                    <% } %>
+                </td>
+                <td>
+                    <% if(processDetails.attachedFilesNames.length !== 0){ %>
+                    <%processDetails.attachedFilesNames.forEach(function(file){%>
+                    <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
+                          style="display: none">
+                        <input id="<%=file%>" name="filetodownload"
+                               type="submit"
+                               value="files/<%=processDetails.processName%>/<%=file%>">
+                    </form>
+                    <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u>
+                    <%})%>
+                    <% } else{ %>
+                    <label>אין קבצים המשוייכים לתהליך זה</label>
                     <% } %>
                 </td>
             </tr>
@@ -96,7 +110,6 @@
                         <th>שם התפקיד וממלאו</th>
                         <th>תאריך ושעה</th>
                         <th>הערות</th>
-                        <th>קבצים</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -113,17 +126,6 @@
                         </td>
                         <td><%=step.approvalTime%></td>
                         <td><%=step.comments%></td>
-                        <td>
-                            <%step.attachedFilesNames.forEach(function(file){%>
-                            <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
-                                  style="display: none">
-                                <input id="<%=file%>" name="filetodownload"
-                                       type="submit"
-                                       value="files/<%=processDetails.processName%>/<%=step.userEmail%>/<%=file%>">
-                            </form>
-                            <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u>
-                            <%})%>
-                        </td>
                     </tr>
                     <%})%>
                     </tbody>

@@ -125,7 +125,7 @@ module.exports.processReport = function (process_name, callback) {
             result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
             result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
             for (let i = 0; i < result[1].length; i++) {
-                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
+                result[1][i]._doc.approvalTime = moment(result[1][i]._doc.approvalTime).format("DD/MM/YYYY HH:mm:ss");
             }
             activeProcessController.getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
                 for (let i = 0; i < formsArr.length; i++) {
@@ -148,7 +148,8 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
                 status: processReport.status,
                 urgency: processReport.processUrgency,
                 processDate: processReport.processDate,
-                filledOnlineForms: processReport.filledOnlineForms
+                filledOnlineForms: processReport.filledOnlineForms,
+                attachedFilesNames: processReport.attachedFilesNames
             };
             callback(null, [returnProcessDetails, processReport.stages]);
         }
