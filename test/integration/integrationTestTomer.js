@@ -135,7 +135,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך משנה',
             1: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -168,7 +168,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מידענ/ית אנגלית',
             2: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -230,7 +230,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך משנה',
             1: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -263,7 +263,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מידענ/ית אנגלית',
             2: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -296,7 +296,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מידענ/ית ערבית',
             3: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -379,7 +379,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מנהל/ת אתר אינטרנט',
             4: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -412,7 +412,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של רמ"ד הסברה',
             5: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -443,7 +443,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך/ת משנה',
             6: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -474,7 +474,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך/ת משנה',
             7: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -557,7 +557,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מנהל/ת אתר אינטרנט',
             8: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -590,7 +590,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של רמ"ד הסברה',
             9: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -620,7 +620,7 @@ describe('1. Big Integration Test', function () {
         activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
             comments: 'הערות של עורך/ת משנה',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {

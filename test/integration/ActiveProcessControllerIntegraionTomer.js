@@ -93,7 +93,7 @@ describe('1. Active Process Controller', function () {
                                         comments: 'הערות של סגן מנהל נגטיב',
                                         2: 'on',
                                         processName: 'גרפיקה להקרנת בכורה 2'
-                                    }, [], (err3) => {
+                                    }, [],'files', (err3) => {
                                         if (err3) {
                                             done(err3);
                                         }
@@ -108,7 +108,7 @@ describe('1. Active Process Controller', function () {
                                                         comments: 'הערות של מנהל נגטיב',
                                                         1: 'on',
                                                         processName: 'גרפיקה להקרנת בכורה 2'
-                                                    }, [], (err5) => {
+                                                    }, [],'files', (err5) => {
                                                         if (err5) {
                                                             done(err5);
                                                         }
@@ -184,7 +184,7 @@ describe('1. Active Process Controller', function () {
                                                                 comments: 'הערות של סגן מנהל נגטיב',
                                                                 2: 'on',
                                                                 processName: 'גרפיקה ליום הסטודנט 1'
-                                                            }, [], (err5) => {
+                                                            }, [],'files', (err5) => {
                                                                 if (err5) {
                                                                     done(err5);
                                                                 }
@@ -213,7 +213,7 @@ describe('1. Active Process Controller', function () {
                                                                                         comments: 'הערות של מנהל נגטיב',
                                                                                         1: 'on',
                                                                                         processName: 'גרפיקה ליום הסטודנט 1'
-                                                                                    }, [], (err8) => {
+                                                                                    }, [],'files', (err8) => {
                                                                                         if (err8) {
                                                                                             done(err8);
                                                                                         }
@@ -296,7 +296,7 @@ describe('1. Active Process Controller', function () {
                                                             comments: 'הערות של סגן מנהל נגטיב',
                                                             2: 'on',
                                                             processName: 'גרפיקה ליום פרוייקטים 1'
-                                                        }, [], (err5) => {
+                                                        }, [],'files', (err5) => {
                                                             if (err5) {
                                                                 done(err5);
                                                             }
@@ -321,7 +321,7 @@ describe('1. Active Process Controller', function () {
                                                                             comments: 'הערות של מנהל נגטיב',
                                                                             4: 'on',
                                                                             processName: 'גרפיקה ליום פרוייקטים 1'
-                                                                        }, [], (err7) => {
+                                                                        }, [],'files', (err7) => {
                                                                             if (err7) {
                                                                                 done(err7);
                                                                             }
@@ -345,7 +345,7 @@ describe('1. Active Process Controller', function () {
                                                                                         activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
                                                                                             comments: 'הערות של רמד הסברה',
                                                                                             processName: 'גרפיקה ליום פרוייקטים 1'
-                                                                                        }, [], (err9) => {
+                                                                                        }, [],'files', (err9) => {
                                                                                             if (err9) {
                                                                                                 done(err9);
                                                                                             }
@@ -434,7 +434,7 @@ describe('1. Active Process Controller', function () {
                                                             comments: 'הערות של סגן מנהל נגטיב',
                                                             2: 'on',
                                                             processName: 'גרפיקה לכבוד סיום התואר 1'
-                                                        }, [], (err5) => {
+                                                        }, [],'files', (err5) => {
                                                             if (err5) {
                                                                 done(err5);
                                                             }
@@ -459,7 +459,7 @@ describe('1. Active Process Controller', function () {
                                                                             comments: 'הערות של מנהל נגטיב',
                                                                             4: 'on',
                                                                             processName: 'גרפיקה לכבוד סיום התואר 1'
-                                                                        }, [], (err7) => {
+                                                                        }, [],'files', (err7) => {
                                                                             if (err7) {
                                                                                 done(err7);
                                                                             }
@@ -483,7 +483,7 @@ describe('1. Active Process Controller', function () {
                                                                                         activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
                                                                                             comments: 'הערות של רמד הסברה',
                                                                                             processName: 'גרפיקה לכבוד סיום התואר 1'
-                                                                                        }, [], (err9) => {
+                                                                                        }, [],'files', (err9) => {
                                                                                             if (err9) {
                                                                                                 done(err9);
                                                                                             }
@@ -563,7 +563,7 @@ describe('1. Active Process Controller', function () {
                                                             comments: 'הערות של סגן מנהל נגטיב',
                                                             2: 'on',
                                                             processName: 'גרפיקה לכבוד סיום התואר הראשון 1'
-                                                        }, [], (err5) => {
+                                                        }, [],'files', (err5) => {
                                                             if (err5) {
                                                                 done(err5);
                                                             }
@@ -581,7 +581,7 @@ describe('1. Active Process Controller', function () {
                                                                             comments: 'הערות של מנהל נגטיב',
                                                                             4: 'on',
                                                                             processName: 'גרפיקה לכבוד סיום התואר הראשון 1'
-                                                                        }, [], (err7) => {
+                                                                        }, [],'files', (err7) => {
                                                                             if (err7) {
                                                                                 done(err7);
                                                                             }
@@ -598,7 +598,7 @@ describe('1. Active Process Controller', function () {
                                                                                         activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
                                                                                             comments: 'הערות של רמד הסברה',
                                                                                             processName: 'גרפיקה לכבוד סיום התואר הראשון 1'
-                                                                                        }, [], (err9) => {
+                                                                                        }, [],'files', (err9) => {
                                                                                             if (err9) {
                                                                                                 done(err9);
                                                                                             }
