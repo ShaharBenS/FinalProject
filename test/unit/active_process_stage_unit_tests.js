@@ -118,20 +118,18 @@ describe('5.0 handle stage', function () {
 
     it('5.1 handles unhandled stage', () => {
         assert.equal(stage1.approvalTime, undefined);
-        stage1.handleStage(["file1.txt"], "this is a comment");
+        stage1.handleStage();
         assert.notEqual(stage1.approvalTime, null);
-        assert.deepEqual(stage1.attachedFilesNames, ["file1.txt"]);
-        assert.deepEqual(stage1.comments, "this is a comment");
     });
 
     it('5.2 handles and than handles again', () => {
         assert.equal(stage1.approvalTime, undefined);
-        stage1.handleStage(["file1.txt"], "this is a comment");
+        stage1.handleStage();
         expect(() => stage0.handleStage(["file1.txt"], "this is a comment")).to.throw();
     });
 
     it('5.3 handles stage that cannot be handled', () => {
-        expect(() => stage0.handleStage(["file1.txt"], "this is a comment")).to.throw();
+        expect(() => stage0.handleStage().to.throw());
     });
 });
 
