@@ -605,50 +605,31 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
     });
 }
 
-module.exports.updateDeletedRolesInEveryActiveProcess = (deletedRolesIds, oldTree, rootID, callback) => {
-    processAccessor.getActiveProcesses((err, processes) => {
-        if (err) {
-            callback(err);
-        } else {
-            processes.forEach(process => {
-                process.stages.filter(stage => stage.roleID !== undefined).forEach(stage => {
-                    if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
-                        if (stage.userEmail === null) {
-                            let findReplacement = (roleId) => {
-                                let replacement = oldTree.getFatherOf(roleId);
-                                if (replacement === undefined) {
-                                    return rootID;
-                                }
-                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
-                                    return findReplacement(replacement);
-                                } else {
-                                    return replacement;
-                                }
-                            };
-                            stage.roleID = findReplacement(stage.roleID);
-                        }
-                    }
-                });
-            });
-
-            processes.reduce((prev, process) => {
-                return (err) => {
-                    if (err) {
-                        prev(err)
-                    } else {
-                        processAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev)
-                    }
+module.exports.processReport = function (process_name, callback) {
+    this.getAllActiveProcessDetails(process_name, (err, result) => {
+        if (err) callback(err);
+        else {
+            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
+            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
+            for (let i = 0; i < result[1].length; i++) {
+                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
+            }
+            getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
+                for (let i = 0; i < formsArr.length; i++) {
+                    result[0].filledOnlineForms[i] = formsArr[i];
                 }
-            }, callback)(null);
+                callback(null, result);
+            });
         }
     });
 };
 
-module.exports.addFilledOnlineFormToProcess = function (processName, formID, callback) {
-    processAccessor.updateActiveProcess({processName: processName}, {$push: {filledOnlineForms: formID}}, (err) => {
-        if (err) callback(err);
-        else {
-            processReportAccessor.updateProcessReport({processName: processName}, {$push: {filledOnlineForms: formID}}, callback);
+module.exports.addFilledOnlineFormToProcess = function(processName, formID, callback){
+    processAccessor.updateActiveProcess({processName: processName}, {$push : {filledOnlineForms: formID}}, (err)=>{
+        if(err) callback(err);
+        else
+        {
+            processReportAccessor.updateProcessReport({processName: processName},{$push: {filledOnlineForms: formID}},callback);
         }
     });
 };

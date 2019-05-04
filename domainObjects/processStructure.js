@@ -10,7 +10,8 @@ class processStructure {
         this.notificationTime = notificationTime;
     }
 
-    getInitialStageByRoleID(roleID, dereg) {
+    getInitialStageByRoleID(roleID, dereg)
+    {
         let initialStages = this.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
         while(initialStages.length !== 0)
         {
@@ -48,7 +49,6 @@ class processStructure {
         }
         return true;
     };
-
 
     checkPrevNextSymmetric()
     {
@@ -92,7 +92,8 @@ class processStructure {
         return true;
     };
 
-    getStageByStageNum(stageNum) {
+    getStageByStageNum(stageNum)
+    {
         if(Number.isInteger(stageNum))
         {
             let foundStage = null;

@@ -135,7 +135,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך משנה',
             1: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -153,7 +153,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][0].roleName, 'עורך/ת משנה');
                                 assert.deepEqual(report[1][0].comments, 'הערות של עורך משנה');
                                 assert.deepEqual(report[1][0].action, 'continue');
-                                assert.deepEqual(report[1][0].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -168,7 +167,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מידענ/ית אנגלית',
             2: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -186,7 +185,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][1].roleName, 'מידענ/ית אנגלית');
                                 assert.deepEqual(report[1][1].comments, 'הערות של מידענ/ית אנגלית');
                                 assert.deepEqual(report[1][1].action, 'continue');
-                                assert.deepEqual(report[1][1].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -215,7 +213,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][2].roleName, 'מידענ/ית ערבית');
                                 assert.deepEqual(report[1][2].comments, 'הערות ותיקונים של מידענ/ית ערבית');
                                 assert.deepEqual(report[1][2].action, 'return');
-                                assert.deepEqual(report[1][2].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -230,7 +227,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך משנה',
             1: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -248,7 +245,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][3].roleName, 'עורך/ת משנה');
                                 assert.deepEqual(report[1][3].comments, 'הערות של עורך משנה');
                                 assert.deepEqual(report[1][3].action, 'continue');
-                                assert.deepEqual(report[1][3].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -263,7 +259,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מידענ/ית אנגלית',
             2: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -281,7 +277,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][4].roleName, 'מידענ/ית אנגלית');
                                 assert.deepEqual(report[1][4].comments, 'הערות של מידענ/ית אנגלית');
                                 assert.deepEqual(report[1][4].action, 'continue');
-                                assert.deepEqual(report[1][4].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -296,7 +291,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מידענ/ית ערבית',
             3: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -313,7 +308,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][5].roleName, 'מידענ/ית ערבית');
                                 assert.deepEqual(report[1][5].comments, 'הערות של מידענ/ית ערבית');
                                 assert.deepEqual(report[1][5].action, 'continue');
-                                assert.deepEqual(report[1][5].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -379,7 +373,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מנהל/ת אתר אינטרנט',
             4: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -397,7 +391,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][6].roleName, 'מנהל/ת אתר אינטרנט');
                                 assert.deepEqual(report[1][6].comments, 'הערות של מנהל/ת אתר אינטרנט');
                                 assert.deepEqual(report[1][6].action, 'continue');
-                                assert.deepEqual(report[1][6].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -412,7 +405,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של רמ"ד הסברה',
             5: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -428,7 +421,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][7].roleName, 'רמ"ד הסברה');
                                 assert.deepEqual(report[1][7].comments, 'הערות של רמ"ד הסברה');
                                 assert.deepEqual(report[1][7].action, 'continue');
-                                assert.deepEqual(report[1][7].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -443,7 +435,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך/ת משנה',
             6: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -459,7 +451,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][8].roleName, 'עורך/ת משנה');
                                 assert.deepEqual(report[1][8].comments, 'הערות של עורך/ת משנה');
                                 assert.deepEqual(report[1][8].action, 'continue');
-                                assert.deepEqual(report[1][8].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -474,7 +465,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של עורך/ת משנה',
             7: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -490,7 +481,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][9].roleName, 'עורך/ת משנה');
                                 assert.deepEqual(report[1][9].comments, 'הערות של עורך/ת משנה');
                                 assert.deepEqual(report[1][9].action, 'continue');
-                                assert.deepEqual(report[1][9].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -557,7 +547,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של מנהל/ת אתר אינטרנט',
             8: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -575,7 +565,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][10].roleName, 'מנהל/ת אתר אינטרנט');
                                 assert.deepEqual(report[1][10].comments, 'הערות של מנהל/ת אתר אינטרנט');
                                 assert.deepEqual(report[1][10].action, 'continue');
-                                assert.deepEqual(report[1][10].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -590,7 +579,7 @@ describe('1. Big Integration Test', function () {
             comments: 'הערות של רמ"ד הסברה',
             9: 'on',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -606,7 +595,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][11].roleName, 'רמ"ד הסברה');
                                 assert.deepEqual(report[1][11].comments, 'הערות של רמ"ד הסברה');
                                 assert.deepEqual(report[1][11].action, 'continue');
-                                assert.deepEqual(report[1][11].attachedFilesNames, undefined);
                                 done();
                             }
                         });
@@ -620,7 +608,7 @@ describe('1. Big Integration Test', function () {
         activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
             comments: 'הערות של עורך/ת משנה',
             processName: 'קמפיין בחירות'
-        }, [], (err) => {
+        }, [],'files', (err) => {
             if (err) done(err);
             else {
                 activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
@@ -636,7 +624,6 @@ describe('1. Big Integration Test', function () {
                                 assert.deepEqual(report[1][12].roleName, 'עורך/ת משנה');
                                 assert.deepEqual(report[1][12].comments, 'הערות של עורך/ת משנה');
                                 assert.deepEqual(report[1][12].action, 'continue');
-                                assert.deepEqual(report[1][12].attachedFilesNames, undefined);
                                 done();
                             }
                         });
