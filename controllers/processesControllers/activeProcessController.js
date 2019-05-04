@@ -124,7 +124,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                     callback(err);
                 } else {
                     if (processStructure === null || !processStructure.available) {
-                        callback(new Error('This process structure is currently unavailable duo to changes in roles'));
+                        callback(new Error('This process structure is currently unavailable due to changes in roles'));
                         return;
                     }
                     processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
@@ -273,34 +273,36 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     });
 };
 
-function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
+function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callback) {
     let processName = fields.processName;
-    let dirOfFiles = 'files';
     let dirOfProcess = dirOfFiles + '/' + processName;
     let fileNames = [];
     let flag = true;
     for (let file in files) {
-        if (files[file].name !== "") {
-            if (flag) {
-                if (!fs.existsSync(dirOfFiles)) {
-                    fs.mkdirSync(dirOfFiles);
+        if(files.hasOwnProperty(file))
+        {
+            if (files[file].name !== "") {
+                if (flag) {
+                    if (!fs.existsSync(dirOfFiles)) {
+                        fs.mkdirSync(dirOfFiles);
+                    }
+                    if (!fs.existsSync(dirOfProcess)) {
+                        fs.mkdirSync(dirOfProcess);
+                    }
+                    flag = false;
                 }
-                if (!fs.existsSync(dirOfProcess)) {
-                    fs.mkdirSync(dirOfProcess);
-                }
-                flag = false;
+                fileNames.push(files[file].name);
+                let oldpath = files[file].path;
+                let newpath = dirOfProcess + '/' + files[file].name;
+                fs.rename(oldpath, newpath, function (err) {
+                    if (err) throw err;
+                });
             }
-            fileNames.push(files[file].name);
-            let oldpath = files[file].path;
-            let newpath = dirOfProcess + '/' + files[file].name;
-            fs.rename(oldpath, newpath, function (err) {
-                if (err) throw err;
-            });
         }
     }
     let nextStageRoles = [];
     for (let attr in fields) {
-        if (!isNaN(attr)) {
+        if (fields.hasOwnProperty(attr) && !isNaN(attr)) {
             nextStageRoles.push(parseInt(attr));
         }
     }
@@ -473,16 +475,22 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
             if (!process) {
                 callback(new Error("Couldn't find process"));
             } else {
-                let i, currentStage;
-                for (i = 0; i < process.currentStages.length; i++) {
-                    currentStage = process.getStageByStageNum(process.currentStages[i]);
+                let foundStage = null;
+                for (let i = 0; i < process.currentStages.length; i++) {
+                    let currentStage = process.getStageByStageNum(process.currentStages[i]);
                     if (currentStage.userEmail === userEmail) {
+                        foundStage = currentStage;
                         break;
                     }
                 }
+                if(foundStage === null)
+                {
+                    callback(new Error('GetNextStagesRolesAndOnlineForms: user not found in current stages'));
+                    return;
+                }
                 let nextStagesArr = [];
-                for (let j = 0; j < currentStage.nextStages.length; j++) {
-                    nextStagesArr.push(process.getStageByStageNum(currentStage.nextStages[j]));
+                for (let j = 0; j < foundStage.nextStages.length; j++) {
+                    nextStagesArr.push(process.getStageByStageNum(foundStage.nextStages[j]));
                 }
                 getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
@@ -519,10 +527,12 @@ module.exports.getRoleNamesForArray = (stages, index, roleNamesArray, callback) 
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
-        if (err) callback(err);
-        else {
-            if (process.getCurrentStageNumberForUser(userEmail) === -1) {
-                callback(new Error('Return To Creator: wrong userEmail '));
+        if(err) callback(err);
+        else
+        {
+            if(process.getCurrentStageNumberForUser(userEmail) === -1)
+            {
+                callback(new Error('Return To Creator: wrong userEmail'));
                 return;
             }
             let creatorEmail = process.returnProcessToCreator();
@@ -708,15 +718,6 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
     })
 };
 
-module.exports.checkUpdateResult = (result) => {
-    let keys = Array.from(Object.keys(result));
-    if (keys.includes("n") && keys.includes("nModified") && keys.includes("ok") && keys.length === 3) {
-        if (result["n"] === 1 && result["nModified"] === 1 && result["ok"] === 1) {
-            return true;
-        }
-    }
-    return false;
-};
 /////////
 module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
@@ -724,3 +725,5 @@ module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
 module.exports.getFilledOnlineForms = getFilledOnlineForms;
 module.exports.assignSingleUsersToStages = assignSingleUsersToStages;
+module.exports.handleProcess = handleProcess;
+module.exports.advanceProcess = advanceProcess;

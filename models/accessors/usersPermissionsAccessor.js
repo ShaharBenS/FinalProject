@@ -1,5 +1,4 @@
 let usersPermissionsSchema = require('../schemas/usersSchemas/usersPermissionsSchema.js');
-let UserPermissions = require('../../domainObjects/UserPermissions');
 
 module.exports.addUserPermissions = (userEmail, userPermissions, callback) =>
 {
@@ -8,23 +7,7 @@ module.exports.addUserPermissions = (userEmail, userPermissions, callback) =>
 
 module.exports.findUserPermissions = (userEmail, callback) =>
 {
-    usersPermissionsSchema.findOne({userEmail: userEmail}, (err,result)=>{
-        if(err)
-        {
-            callback(err);
-        }
-        else
-        {
-            if (result)
-            {
-                callback(null,new UserPermissions(userEmail,result.permissions));
-            }
-            else
-            {
-                callback(null,new UserPermissions(userEmail));
-            }
-        }
-    });
+    usersPermissionsSchema.findOne({userEmail: userEmail}, callback);
 };
 
 module.exports.updateUserPermission = (userEmail, userPermissions, callback) =>

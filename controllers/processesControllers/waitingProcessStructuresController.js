@@ -79,7 +79,7 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                     }
                 })
             } else {
-                callback("ERROR: You don't have the required permissions to perform this operation")
+                callback(new Error("ERROR: You don't have the required permissions to perform this operation"));
             }
         }
     });
@@ -114,7 +114,7 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
                     }
                 });
             } else {
-                callback("ERROR: You don't have the required permissions to perform this operation")
+                callback(new Error("ERROR: You don't have the required permissions to perform this operation"));
             }
         }
     });
