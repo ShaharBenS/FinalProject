@@ -612,19 +612,12 @@ function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
 
 function addAdmin(userEmail,callback)
 {
-    userPermissionsAccessor.addUserPermissions(userEmail,[true, true, true, true],(err)=>{
+    userAccessor.addAdmin({userEmail:userEmail},(err)=>{
         if(err){
             callback(err);
         }
         else{
-            userAccessor.addAdmin({userEmail:userEmail},(err)=>{
-                if(err){
-                    callback(err);
-                }
-                else{
-                    callback(null);
-                }
-            });
+            callback(null);
         }
     });
 }
