@@ -1,18 +1,22 @@
-let usersAndRolesController = require('../../controllers/usersControllers/usersAndRolesController');
-let UsersPermissionsController = require('../../controllers/usersControllers/UsersPermissionsController');
-let processStructureController = require('../../controllers/processesControllers/processStructureController');
-let waitingProcessStructuresController = require('../../controllers/processesControllers/waitingProcessStructuresController');
-let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
-let processReportController = require('../../controllers/processesControllers/processReportController');
-let notificationController = require('../../controllers/notificationsControllers/notificationController');
-let filledOnlineFormController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
-let UserPermissions = require('../../domainObjects/UserPermissions');
 let mongoose = require('mongoose');
 let mocha = require('mocha');
 let describe = mocha.describe;
 let it = mocha.it;
 let assert = require('chai').assert;
-let fs = require("fs");
+let UsersAndRolesTreeSankey = require('../../controllers/usersControllers/usersAndRolesController');
+let userAccessor = require('../../models/accessors/usersAccessor');
+let processStructureController = require('../../controllers/processesControllers/processStructureController');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
+let usersAndRolesContoller = require('../../controllers/usersControllers/usersAndRolesController');
+let processReportController = require('../../controllers/processesControllers/processReportController');
+//User And Roles Tree Files
+let sankeyContent = require('../inputs/trees/tree10/tree10');
+let emailsToFullName = require('../inputs/trees/tree10/tree10EmailsToFullNames');
+let rolesToDereg = require('../inputs/trees/tree10/tree10RolesToDeregs');
+let rolesToEmails = require('../inputs/trees/tree10/tree10RolesToEmails');
+//
+//Process Structure File
+let processStructureSankeyJSON = require('../inputs/processStructures/processStructure10/processStructure10');
 
 let globalBefore = async function () {
     mongoose.set('useCreateIndex', true);
@@ -21,358 +25,102 @@ let globalBefore = async function () {
 };
 
 let globalAfter = function () {
+    mongoose.connection.db.dropDatabase();
     mongoose.connection.close();
 };
 
-
-describe('1. addUsersAndRole', function () {
-
+describe('1. Big Integration Test', function () {
     before(globalBefore);
     after(globalAfter);
-    let tree9_string = fs.readFileSync("./test/inputs/trees/tree9/tree9.json");
-    let processStructure9_string = fs.readFileSync("./test/inputs/processStructures/processStructure9/processStructure9.json");
-
-    it('1.1 Creating users and roles tree', function (done) {
-        usersAndRolesController.getUsersAndRolesTree(() => {
-            usersAndRolesController.setUsersAndRolesTree("creator@email.com", tree9_string,
-                {
-                    "יו\"ר": ["yor@outlook.com"],
-                    "סיו\"ר": ["sayor@outlook.com"],
-                    "רמ\"ד כספים": ["cesef@outlook.com"],
-                    "רמ\"ד אקדמיה": ["academy@outlook.com"],
-                    "רמ\"ד הסברה": ["hasbara@outlook.com"],
-                    "רמ\"ד מעורבות": ["meoravut@outlook.com"],
-                    "מנהל/ת רווחה": ["revaha@outlook.com"],
-                    "מנהלת גרפיקה": ["graphics@outlook.com"],
-                    "רכז ניו מדיה": ["new_media@outlook.com", "new_media2@outlook.com", "new_media3@outlook.com"],
-                    "מנהל/ת אתר אינטרנט": ["website@outlook.com"],
-                    "מנהל/ת מיזמים אקדמים": ["meizamim@outlook.com"]
-                },
-                {
-                    "yor@outlook.com": "אלף בית",
-                    "sayor@outlook.com": "בית גימל",
-                    "cesef@outlook.com": "גימל דלת",
-                    "academy@outlook.com": "דלת היי",
-                    "hasbara@outlook.com": "היי וו",
-                    "meoravut@outlook.com": "וו זין",
-                    "revaha@outlook.com": "זין חית",
-                    "graphics@outlook.com": "חית טת",
-                    "meizamim@outlook.com": "טת יוד",
-                    "new_media@outlook.com": "יוד כף",
-                    "new_media2@outlook.com": "יוד כף למד",
-                    "new_media3@outlook.com": "כף למד מם",
-                    "website@outlook.com": "כף למד"
-                },
-                {
-                    "יו\"ר": "5",
-                    "סיו\"ר": "4",
-                    "רמ\"ד כספים": "3",
-                    "רמ\"ד אקדמיה": "3",
-                    "רמ\"ד הסברה": "3",
-                    "רמ\"ד מעורבות": "3",
-                    "מנהל/ת רווחה": "2",
-                    "מנהלת גרפיקה": "2",
-                    "רכז ניו מדיה": "1",
-                    "מנהל/ת אתר אינטרנט": "2",
-                    "מנהל/ת מיזמים אקדמים": "2"
-                },
-                (err) => {
-                    if (err) {
-                        done(err);
-                    } else {
-                        usersAndRolesController.getRoleIdByUsername("cesef@outlook.com", (err, roleId) => {
-                            if (err) {
-                                done(err)
-                            } else {
-                                usersAndRolesController.getRoleNameByRoleID(roleId, (err, roleName) => {
-                                    if (err) {
-                                        done(err)
-                                    } else {
-                                        assert.deepEqual(roleName, "רמ\"ד כספים");
-                                        usersAndRolesController.findAdmins((err, admins) => {
-                                            if (err) {
-                                                done(err);
-                                            } else {
-                                                assert.deepEqual(admins.length, 1);
-                                                usersAndRolesController.getEmailToFullName((err, emailsToFullName) => {
-                                                    if (err) {
-                                                        done(err);
-                                                    } else {
-                                                        assert.deepEqual(emailsToFullName["graphics@outlook.com"], "חית טת");
-                                                        assert.deepEqual(emailsToFullName["new_media2@outlook.com"], "יוד כף למד");
-
-                                                        usersAndRolesController.getRoleToDereg((err, roleToDereg) => {
-                                                            if (err) {
-                                                                done(err)
-                                                            } else {
-                                                                assert.deepEqual(Object.keys(roleToDereg).length, 11);
-                                                                assert.deepEqual(roleToDereg["יו\"ר"], "5");
-                                                                assert.deepEqual(roleToDereg["מנהל/ת רווחה"], "2");
-                                                                UsersPermissionsController.setUserPermissions("creator@email.com",new UserPermissions("yor@outlook.com", [true, true, true, true]), (err) => {
-                                                                    if (err) {
-                                                                        done(err);
-                                                                    } else {
-                                                                        done();
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
+    it('1.1 Check Usernames.', function (done) {
+        userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) => {
+            if (err) {
+                done(err);
+            }
+            else {
+                UsersAndRolesTreeSankey.setUsersAndRolesTree('yor@outlook.com', JSON.stringify(sankeyContent),
+                    rolesToEmails, emailsToFullName,
+                    rolesToDereg, (err) => {
+                        if (err) {
+                            done(err);
+                        }
+                        else {
+                            usersAndRolesContoller.getEmailToFullName((err, emailToFullNameFromDB) => {
+                                assert.deepEqual(Object.keys(emailToFullNameFromDB).length, Object.keys(emailsToFullName).length);
+                                for (let email in emailToFullNameFromDB) {
+                                    if (emailToFullNameFromDB.hasOwnProperty(email)) {
+                                        assert.deepEqual(true, Object.keys(emailsToFullName).includes(email));
+                                        assert.deepEqual(true, emailToFullNameFromDB[email] === emailsToFullName[email]);
                                     }
-                                });
-                            }
-                        });
-                    }
-                }
-            );
+                                }
+                                done();
+                            });
+                        }
+                    });
+            }
         });
     }).timeout(30000);
 
-    it('1.2 Creating process structure', function (done) {
-        processStructureController.addProcessStructure("sayor@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string,
-            [], "24", "12", (err, needApprove) => {
-                assert.deepEqual(needApprove, "approval");
-                waitingProcessStructuresController.getAllWaitingProcessStructuresWithoutSankey((err, waitingStructures) => {
-                    if (err) {
-                        done(err);
-                    } else {
-                        assert.deepEqual(waitingStructures[0].userEmail, "sayor@outlook.com");
-                        waitingProcessStructuresController.approveProcessStructure("yor@outlook.com", waitingStructures[0].id, (err) => {
-                            if (err) {
-                                done(err);
-                            } else {
-                                processStructureController.getAllProcessStructures((err, processStructures) => {
-                                    if (err) {
-                                        done(err);
-                                    } else {
-                                        assert.deepEqual(processStructures[0].structureName, "מעורבות באתר אקדמיה");
-                                        assert.deepEqual(processStructures[0].stages.length, 10);
-                                        processStructureController.editProcessStructure("new_media3@outlook.com", "מעורבות באתר אקדמיה", processStructure9_string, [], 48, 12, (err, needApprove) => {
-                                            if (err) {
-                                                done(err);
-                                            } else {
-                                                assert.deepEqual(needApprove, "approval");
-                                                waitingProcessStructuresController.getAllWaitingProcessStructuresWithoutSankey((err, waitingStructures) => {
-                                                    if (err) {
-                                                        done(err);
-                                                    } else {
-                                                        waitingProcessStructuresController.disapproveProcessStructure("creator@email.com", waitingStructures[0].id, (err) => {
-                                                            if (err) {
-                                                                done(err);
-                                                            } else {
-                                                                processStructureController.getProcessStructure("מעורבות באתר אקדמיה", (err, ps) => {
-                                                                    if (err) {
-                                                                        done(err);
-                                                                    } else {
-                                                                        assert.deepEqual(ps.automaticAdvanceTime, 24);
-                                                                        assert.deepEqual(ps.notificationTime, 12);
-                                                                        done();
-                                                                    }
-                                                                })
-                                                            }
-                                                        })
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+    it('1.2 Check Users Roles.', function (done) {
+        usersAndRolesContoller.getRoleToEmails((err, roleToEmailsFromDB) => {
+            assert.deepEqual(Object.keys(roleToEmailsFromDB).length, Object.keys(rolesToEmails).length);
+            for (let role in roleToEmailsFromDB) {
+                if (roleToEmailsFromDB.hasOwnProperty(role)) {
+                    assert.deepEqual(true, Object.keys(rolesToEmails).includes(role));
+                    assert.deepEqual(roleToEmailsFromDB[role].length, rolesToEmails[role].length);
+                    for (let i = 0; i < roleToEmailsFromDB[role].length; i++) {
+                        assert.deepEqual(true, roleToEmailsFromDB[role][i] === rolesToEmails[role][i]);
                     }
-                });
-            });
-    }).timeout(30000);
-
-    it('1.3 Starting, advancing, cancelling', function (done) {
-        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 1",
-            new Date(2022, 4, 26, 16), 2, (err) => {
-                if (err) {
-                    done(err);
-                } else {
-                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
-                        {
-                            processName: "תהליך 1",
-                            1: "on",
-                            comments: "הערה 1"
-                        }, [], [],(err) => {
-                            if (err) {
-                                done(err);
-                            } else {
-                                activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
-                                    processName: "תהליך 1",
-                                    2: "on",
-                                    comments: "הערה 2"
-                                }, [], [],(err) => {
-                                    if (err) {
-                                        done(err);
-                                    } else {
-                                        activeProcessController.takePartInActiveProcess("תהליך 1", "new_media@outlook.com", (err) => {
-                                            if (err) {
-                                                done(err);
-                                            } else {
-                                                activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
-                                                    processName: "תהליך 1",
-                                                    3: "on",
-                                                    comments: "הערה 3"
-                                                }, [], [],(err) => {
-                                                    if (err) {
-                                                        done(err);
-                                                    } else {
-                                                        activeProcessController.uploadFilesAndHandleProcess("meizamim@outlook.com", {
-                                                            processName: "תהליך 1",
-                                                            4: "on",
-                                                            comments: "הערה 4"
-                                                        }, [], [],(err) => {
-                                                            if (err) {
-                                                                done(err);
-                                                            } else {
-                                                                activeProcessController.uploadFilesAndHandleProcess("academy@outlook.com", {
-                                                                    processName: "תהליך 1",
-                                                                    5: "on",
-                                                                    6: "on",
-                                                                    comments: "הערה 56"
-                                                                }, [], [],(err) => {
-                                                                    if (err) {
-                                                                        done(err);
-                                                                    } else {
-                                                                        activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
-                                                                            processName: "תהליך 1",
-                                                                            9: "on",
-                                                                            comments: "הערה 7.1"
-                                                                        }, [], [],(err) => {
-                                                                            if (err) {
-                                                                                done(err);
-                                                                            } else {
-                                                                                activeProcessController.uploadFilesAndHandleProcess("revaha@outlook.com", {
-                                                                                    processName: "תהליך 1",
-                                                                                    9: "on",
-                                                                                    comments: "הערה 7.2"
-                                                                                }, [], [],(err) => {
-                                                                                    if (err) {
-                                                                                        done(err);
-                                                                                    } else {
-                                                                                        activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
-                                                                                            processName: "תהליך 1",
-                                                                                            7: "on",
-                                                                                            comments: "הערה 7"
-                                                                                        }, [], [],(err) => {
-                                                                                            if (err) {
-                                                                                                done(err);
-                                                                                            } else {
-                                                                                                activeProcessController.uploadFilesAndHandleProcess("sayor@outlook.com", {
-                                                                                                    processName: "תהליך 1",
-                                                                                                    8: "on",
-                                                                                                    comments: "הערה 8"
-                                                                                                }, [], [],(err) => {
-                                                                                                    if (err) {
-                                                                                                        done(err);
-                                                                                                    } else {
-                                                                                                        activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
-                                                                                                            processName: "תהליך 1",
-                                                                                                            comments: "הערה 10"
-                                                                                                        }, [], [],(err) => {
-                                                                                                            if (err) {
-                                                                                                                done(err);
-                                                                                                            } else {
-                                                                                                                activeProcessController.getAllActiveProcesses((err, activeProcesses) => {
-                                                                                                                    if (err) {
-                                                                                                                        done(err);
-                                                                                                                    } else {
-                                                                                                                        assert.deepEqual(activeProcesses.length, 0);
-                                                                                                                        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 2",
-                                                                                                                            new Date(2022, 4, 26, 16), 2, (err) => {
-                                                                                                                                if (err) {
-                                                                                                                                    done(err);
-                                                                                                                                } else {
-                                                                                                                                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
-                                                                                                                                        {
-                                                                                                                                            processName: "תהליך 2",
-                                                                                                                                            1: "on",
-                                                                                                                                            comments: "הערה 1"
-                                                                                                                                        }, [], [],(err) => {
-                                                                                                                                            if (err) {
-                                                                                                                                                done(err);
-                                                                                                                                            } else {
-                                                                                                                                                activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
-                                                                                                                                                    processName: "תהליך 2",
-                                                                                                                                                    2: "on",
-                                                                                                                                                    comments: "הערה 2"
-                                                                                                                                                }, [], [],(err) => {
-                                                                                                                                                    if (err) {
-                                                                                                                                                        done(err);
-                                                                                                                                                    } else {
-                                                                                                                                                        activeProcessController.cancelProcess("new_media@outlook.com", "תהליך 2", "בדיקת בוטל", (err) => {
-                                                                                                                                                            if (err) {
-                                                                                                                                                                done(err);
-                                                                                                                                                            }
-                                                                                                                                                            done();
-                                                                                                                                                        });
-                                                                                                                                                    }
-                                                                                                                                                });
-                                                                                                                                            }
-                                                                                                                                        });
-                                                                                                                                }
-                                                                                                                            });
-                                                                                                                    }
-                                                                                                                });
-                                                                                                            }
-                                                                                                        });
-                                                                                                    }
-                                                                                                });
-                                                                                            }
-                                                                                        });
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
                 }
-            });
+            }
+            done();
+        });
     }).timeout(30000);
 
-    it('1.4 Checking reports and notifications', function (done) {
-        processReportController.getAllProcessesReportsByUser("yor@outlook.com", (err, processReports) => {
+    it('1.3 Check Roles Rank.', function (done) {
+        usersAndRolesContoller.getRoleToDereg((err, roleToDeregsFromDB) => {
+            assert.deepEqual(Object.keys(roleToDeregsFromDB).length, Object.keys(rolesToDereg).length);
+            for (let role in roleToDeregsFromDB) {
+                if (roleToDeregsFromDB.hasOwnProperty(role)) {
+                    assert.deepEqual(true, Object.keys(rolesToDereg).includes(role));
+                    assert.deepEqual(roleToDeregsFromDB[role].length, rolesToDereg[role].length);
+                    for (let i = 0; i < roleToDeregsFromDB[role].length; i++) {
+                        assert.deepEqual(true, roleToDeregsFromDB[role][i] === rolesToDereg[role][i]);
+                    }
+                }
+            }
+            done();
+        });
+    }).timeout(30000);
+
+    it('1.4 Create Process Structure.', function (done) {
+        processStructureController.addProcessStructure('yor@outlook.com', 'תהליך העלאת קמפיין', JSON.stringify(processStructureSankeyJSON), [], 0, "36", (err, needApproval) => {
             if (err) {
                 done(err);
-            } else {
-                notificationController.getUserNotifications("website@outlook.com", (err, websiteNotifications) => {
-                    if (err) {
-                        done(err);
-                    } else {
-                        notificationController.getUserNotifications("sayor@outlook.com", (err, sayorNotifications) => {
-                            if (err) {
-                                done(err);
-                            } else {
-                                assert.deepEqual(true, sayorNotifications.some(notification => {
-                                    return notification.notificationType === "תהליך נגמר בהצלחה";
-                                }));
-                                assert.deepEqual(true, websiteNotifications.some(notification => {
-                                    return notification.notificationType === "תהליך נגמר בהצלחה";
-                                }));
-                                assert.deepEqual(true, websiteNotifications.some(notification => {
-                                    return notification.notificationType === "תהליך בוטל";
-                                }));
-                                assert.deepEqual(true, websiteNotifications.some(notification => {
-                                    return notification.notificationType === "תהליך בהמתנה";
-                                }));
-                                assert.deepEqual(true, processReports.some(processReport => {
-                                    return processReport.processName === "תהליך 1";
-                                }));
+            }
+            else {
+                done();
+            }
+        });
+    }).timeout(30000);
+
+
+    it('1.5 Starting The Process.', function (done) {
+        activeProcessController.startProcessByUsername('orehMishne@outlook.com', 'תהליך העלאת קמפיין', 'קמפיין בחירות', new Date(), 1, (err, result) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(true, process !== null);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 0);
+                                assert.deepEqual(report[0].processName, 'קמפיין בחירות');
+                                assert.deepEqual(report[0].status, 'פעיל');
+                                assert.deepEqual(report[0].urgency, 1);
+                                assert.deepEqual(report[0].filledOnlineForms, []);
                                 done();
                             }
                         });
@@ -382,126 +130,506 @@ describe('1. addUsersAndRole', function () {
         });
     }).timeout(30000);
 
-    it('1.5 modification on tree', function (done) {
-        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 3",
-            new Date(2022, 4, 26, 16), 2, (err) => {
-                if (err) {
-                    done(err);
-                } else {
-                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
-                        {
-                            processName: "תהליך 3",
-                            1: "on",
-                            comments: "הערה 1"
-                        }, [],[], (err) => {
-                            if (err) {
-                                done(err);
-                            } else {
-                                let diagram = JSON.parse(tree9_string).content.diagram;
-                                let nodeToDelete = diagram.find((node) => {
-                                    if (node.type === "sankey.shape.State") {
-                                        if (node.labels[0].text === "מנהל/ת מיזמים אקדמים") {
-                                            return true;
-                                        }
-                                    }
-                                    return false;
-                                });
-                                let tree9_deleted = {
-                                    content: {
-                                        diagram: diagram.filter(node => {
-                                            if (node.id === nodeToDelete.id) {
-                                                return false;
-                                            }
-                                            if (node.type === "sankey.shape.Connection") {
-                                                if (nodeToDelete.id === node.target.node) {
-                                                    return false;
-                                                }
-                                            }
-                                            return true;
-                                        })
-                                    }
-                                };
-                                activeProcessController.getActiveProcessByProcessName("תהליך 3", (err, oldActiveProcess) => {
-                                    usersAndRolesController.getRoleIdByUsername("meizamim@outlook.com",(err,oldRoleID)=>{
-                                        usersAndRolesController.setUsersAndRolesTree("creator@email.com", JSON.stringify(tree9_deleted),
-                                            {
-                                                "יו\"ר": ["yor@outlook.com"],
-                                                "סיו\"ר": ["sayor@outlook.com"],
-                                                "רמ\"ד כספים": ["cesef@outlook.com"],
-                                                "רמ\"ד אקדמיה": ["academy@outlook.com"],
-                                                "רמ\"ד הסברה": ["hasbara@outlook.com"],
-                                                "רמ\"ד מעורבות": ["meoravut@outlook.com"],
-                                                "מנהל/ת רווחה": ["revaha@outlook.com"],
-                                                "מנהלת גרפיקה": ["graphics@outlook.com"],
-                                                "רכז ניו מדיה": ["new_media@outlook.com", "new_media2@outlook.com", "new_media3@outlook.com"],
-                                                "מנהל/ת אתר אינטרנט": ["website@outlook.com"],
-                                            },
-                                            {
-                                                "yor@outlook.com": "אלף בית",
-                                                "sayor@outlook.com": "בית גימל",
-                                                "cesef@outlook.com": "גימל דלת",
-                                                "academy@outlook.com": "דלת היי",
-                                                "hasbara@outlook.com": "היי וו",
-                                                "meoravut@outlook.com": "וו זין",
-                                                "revaha@outlook.com": "זין חית",
-                                                "graphics@outlook.com": "חית טת",
-                                                "new_media@outlook.com": "יוד כף",
-                                                "new_media2@outlook.com": "יוד כף למד",
-                                                "new_media3@outlook.com": "כף למד מם",
-                                                "website@outlook.com": "כף למד"
-                                            },
-                                            {
-                                                "יו\"ר": "5",
-                                                "סיו\"ר": "4",
-                                                "רמ\"ד כספים": "3",
-                                                "רמ\"ד אקדמיה": "3",
-                                                "רמ\"ד הסברה": "3",
-                                                "רמ\"ד מעורבות": "3",
-                                                "מנהל/ת רווחה": "2",
-                                                "מנהלת גרפיקה": "2",
-                                                "רכז ניו מדיה": "1",
-                                                "מנהל/ת אתר אינטרנט": "2",
-                                            }, (err) => {
-                                                if (err) {
-                                                    done(err);
-                                                } else {
-                                                    processStructureController.getProcessStructure("מעורבות באתר אקדמיה", (err, processStructure) => {
-                                                        if (err) {
-                                                            done(err);
-                                                        } else {
-                                                            let sankeyArray = JSON.parse(processStructure.sankey).content.diagram;
-                                                            sankeyArray.forEach(element => {
-                                                                if (element.type === "sankey.shape.State") {
-                                                                    if (element.labels[0].text === "מנהל/ת מיזמים אקדמים") {
-                                                                        assert.deepEqual(element.bgColor.toLowerCase(), "#ff1100");
-                                                                    } else {
-                                                                        assert.notDeepEqual(element.bgColor.toLowerCase(), "#ff1100");
-                                                                    }
-                                                                }
-                                                            });
-                                                            usersAndRolesController.getRoleIdByUsername("academy@outlook.com", (err, roleID) => {
-                                                                activeProcessController.getActiveProcessByProcessName("תהליך 3", (err, activeProcess) => {
-                                                                    oldActiveProcess.stages.forEach((stage) => {
-                                                                        if(stage.roleID.toString() === oldRoleID.toString()){
-                                                                            activeProcess.stages.forEach(_stage => {
-                                                                                if (JSON.stringify(stage.stagesToWaitFor) === JSON.stringify(_stage.stagesToWaitFor)) {
-                                                                                    assert.deepEqual(roleID.toString(), _stage.roleID.toString());
-                                                                                }
-                                                                            })
-                                                                        }
-                                                                    });
-                                                                    done();
-                                                                });
-                                                            });
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                    })
-                                });
+    it('1.6 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך משנה',
+            1: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [1]);
+                        let currentStage = process.getStageByStageNum(1);
+                        assert.deepEqual(currentStage.userEmail, 'midaEnglish1@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 1);
+                                assert.deepEqual(report[1][0].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][0].userName, 'ר ר');
+                                assert.deepEqual(report[1][0].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][0].comments, 'הערות של עורך משנה');
+                                assert.deepEqual(report[1][0].action, 'continue');
+                                done();
                             }
                         });
-                }
-            })
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.7 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('midaEnglish1@outlook.com', {
+            comments: 'הערות של מידענ/ית אנגלית',
+            2: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [2]);
+                        let currentStage = process.getStageByStageNum(2);
+                        assert.deepEqual(currentStage.userEmail, 'midaArabic@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 2);
+                                assert.deepEqual(report[1][1].userEmail, 'midaEnglish1@outlook.com');
+                                assert.deepEqual(report[1][1].userName, 'ת ת');
+                                assert.deepEqual(report[1][1].roleName, 'מידענ/ית אנגלית');
+                                assert.deepEqual(report[1][1].comments, 'הערות של מידענ/ית אנגלית');
+                                assert.deepEqual(report[1][1].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.8 Return Process To Its Creator.', function (done) {
+        activeProcessController.returnToCreator('midaArabic@outlook.com', 'קמפיין בחירות', 'הערות ותיקונים של מידענ/ית ערבית', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [0]);
+                        let currentStage = process.getStageByStageNum(0);
+                        assert.deepEqual(currentStage.userEmail, 'orehMishne@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 3);
+                                assert.deepEqual(report[1][2].userEmail, 'midaArabic@outlook.com');
+                                assert.deepEqual(report[1][2].userName, 'ש ש');
+                                assert.deepEqual(report[1][2].roleName, 'מידענ/ית ערבית');
+                                assert.deepEqual(report[1][2].comments, 'הערות ותיקונים של מידענ/ית ערבית');
+                                assert.deepEqual(report[1][2].action, 'return');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.9 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך משנה',
+            1: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [1]);
+                        let currentStage = process.getStageByStageNum(1);
+                        assert.deepEqual(currentStage.userEmail, 'midaEnglish1@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 4);
+                                assert.deepEqual(report[1][3].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][3].userName, 'ר ר');
+                                assert.deepEqual(report[1][3].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][3].comments, 'הערות של עורך משנה');
+                                assert.deepEqual(report[1][3].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.10 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('midaEnglish1@outlook.com', {
+            comments: 'הערות של מידענ/ית אנגלית',
+            2: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [2]);
+                        let currentStage = process.getStageByStageNum(2);
+                        assert.deepEqual(currentStage.userEmail, 'midaArabic@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 5);
+                                assert.deepEqual(report[1][4].userEmail, 'midaEnglish1@outlook.com');
+                                assert.deepEqual(report[1][4].userName, 'ת ת');
+                                assert.deepEqual(report[1][4].roleName, 'מידענ/ית אנגלית');
+                                assert.deepEqual(report[1][4].comments, 'הערות של מידענ/ית אנגלית');
+                                assert.deepEqual(report[1][4].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.11 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('midaArabic@outlook.com', {
+            comments: 'הערות של מידענ/ית ערבית',
+            3: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [3]);
+                        let currentStage = process.getStageByStageNum(3);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 6);
+                                assert.deepEqual(report[1][5].userEmail, 'midaArabic@outlook.com');
+                                assert.deepEqual(report[1][5].userName, 'ש ש');
+                                assert.deepEqual(report[1][5].roleName, 'מידענ/ית ערבית');
+                                assert.deepEqual(report[1][5].comments, 'הערות של מידענ/ית ערבית');
+                                assert.deepEqual(report[1][5].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.12 Check Available Processes.', function (done) {
+        activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar1@outlook.com', (err1, result1) => {
+            if (err1) {
+                done(err1);
+            }
+            else {
+                activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar2@outlook.com', (err2, result2) => {
+                    if (err2) {
+                        done(err2);
+                    }
+                    else {
+                        assert.deepEqual(result1.length, 1);
+                        let availableProcess1 = result1[0];
+                        assert.deepEqual(availableProcess1.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess1.notificationTime, 36);
+                        assert.deepEqual(availableProcess1.processUrgency, 1);
+                        assert.deepEqual(availableProcess1.stageToReturnTo, 0);
+                        assert.deepEqual(availableProcess1.onlineForms, []);
+                        assert.deepEqual(availableProcess1.filledOnlineForms, []);
+                        assert.deepEqual(result2.length, 1);
+                        let availableProcess2 = result2[0];
+                        assert.deepEqual(availableProcess2.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess2.notificationTime, 36);
+                        assert.deepEqual(availableProcess2.processUrgency, 1);
+                        assert.deepEqual(availableProcess2.stageToReturnTo, 0);
+                        assert.deepEqual(availableProcess2.onlineForms, []);
+                        assert.deepEqual(availableProcess2.filledOnlineForms, []);
+                        done();
+                    }
+                })
+            }
+        })
+    }).timeout(30000);
+
+    it('1.13 Take Part In Process', function (done) {
+        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [3]);
+                        let currentStage = process.getStageByStageNum(3);
+                        assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
+                        done();
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.14 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('MenaelAtar1@outlook.com', {
+            comments: 'הערות של מנהל/ת אתר אינטרנט',
+            4: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [4]);
+                        let currentStage = process.getStageByStageNum(4);
+                        assert.deepEqual(currentStage.userEmail, 'ramadHasbara@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 7);
+                                assert.deepEqual(report[1][6].userEmail, 'MenaelAtar1@outlook.com');
+                                assert.deepEqual(report[1][6].userName, 'ס ס');
+                                assert.deepEqual(report[1][6].roleName, 'מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][6].comments, 'הערות של מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][6].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.15 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('ramadHasbara@outlook.com', {
+            comments: 'הערות של רמ"ד הסברה',
+            5: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [5]);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 8);
+                                assert.deepEqual(report[1][7].userEmail, 'ramadHasbara@outlook.com');
+                                assert.deepEqual(report[1][7].userName, 'ו ו');
+                                assert.deepEqual(report[1][7].roleName, 'רמ"ד הסברה');
+                                assert.deepEqual(report[1][7].comments, 'הערות של רמ"ד הסברה');
+                                assert.deepEqual(report[1][7].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.16 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך/ת משנה',
+            6: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [6]);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 9);
+                                assert.deepEqual(report[1][8].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][8].userName, 'ר ר');
+                                assert.deepEqual(report[1][8].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][8].comments, 'הערות של עורך/ת משנה');
+                                assert.deepEqual(report[1][8].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.17 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך/ת משנה',
+            7: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [7]);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 10);
+                                assert.deepEqual(report[1][9].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][9].userName, 'ר ר');
+                                assert.deepEqual(report[1][9].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][9].comments, 'הערות של עורך/ת משנה');
+                                assert.deepEqual(report[1][9].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+
+    it('1.18 Check Available Processes.', function (done) {
+        activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar1@outlook.com', (err1, result1) => {
+            if (err1) {
+                done(err1);
+            }
+            else {
+                activeProcessController.getAvailableActiveProcessesByUser('MenaelAtar2@outlook.com', (err2, result2) => {
+                    if (err2) {
+                        done(err2);
+                    }
+                    else {
+                        assert.deepEqual(result1.length, 1);
+                        let availableProcess1 = result1[0];
+                        assert.deepEqual(availableProcess1.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess1.notificationTime, 36);
+                        assert.deepEqual(availableProcess1.processUrgency, 1);
+                        assert.deepEqual(availableProcess1.stageToReturnTo, 5);
+                        assert.deepEqual(availableProcess1.onlineForms, []);
+                        assert.deepEqual(availableProcess1.filledOnlineForms, []);
+                        assert.deepEqual(result2.length, 1);
+                        let availableProcess2 = result2[0];
+                        assert.deepEqual(availableProcess2.creatorUserEmail, 'orehMishne@outlook.com');
+                        assert.deepEqual(availableProcess2.notificationTime, 36);
+                        assert.deepEqual(availableProcess2.processUrgency, 1);
+                        assert.deepEqual(availableProcess2.stageToReturnTo, 5);
+                        assert.deepEqual(availableProcess2.onlineForms, []);
+                        assert.deepEqual(availableProcess2.filledOnlineForms, []);
+                        done();
+                    }
+                })
+            }
+        })
+    }).timeout(30000);
+
+    it('1.19 Take Part In Process', function (done) {
+        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [7]);
+                        let currentStage = process.getStageByStageNum(7);
+                        assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
+                        done();
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.20 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('MenaelAtar1@outlook.com', {
+            comments: 'הערות של מנהל/ת אתר אינטרנט',
+            8: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [8]);
+                        let currentStage = process.getStageByStageNum(8);
+                        assert.deepEqual(currentStage.userEmail, 'ramadHasbara@outlook.com');
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 11);
+                                assert.deepEqual(report[1][10].userEmail, 'MenaelAtar1@outlook.com');
+                                assert.deepEqual(report[1][10].userName, 'ס ס');
+                                assert.deepEqual(report[1][10].roleName, 'מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][10].comments, 'הערות של מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][10].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.21 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('ramadHasbara@outlook.com', {
+            comments: 'הערות של רמ"ד הסברה',
+            9: 'on',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process.currentStages, [9]);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 12);
+                                assert.deepEqual(report[1][11].userEmail, 'ramadHasbara@outlook.com');
+                                assert.deepEqual(report[1][11].userName, 'ו ו');
+                                assert.deepEqual(report[1][11].roleName, 'רמ"ד הסברה');
+                                assert.deepEqual(report[1][11].comments, 'הערות של רמ"ד הסברה');
+                                assert.deepEqual(report[1][11].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).timeout(30000);
+
+    it('1.22 Handle Process.', function (done) {
+        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
+            comments: 'הערות של עורך/ת משנה',
+            processName: 'קמפיין בחירות'
+        }, [],'files', (err) => {
+            if (err) done(err);
+            else {
+                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual(process, null);
+                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(report[1].length, 13);
+                                assert.deepEqual(report[1][12].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][12].userName, 'ר ר');
+                                assert.deepEqual(report[1][12].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][12].comments, 'הערות של עורך/ת משנה');
+                                assert.deepEqual(report[1][12].action, 'continue');
+                                done();
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }).timeout(30000);
 });
