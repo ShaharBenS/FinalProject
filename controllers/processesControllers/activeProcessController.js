@@ -280,34 +280,36 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     });
 };
 
-function uploadFilesAndHandleProcess(userEmail, fields, files, callback) {
+function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callback) {
     let processName = fields.processName;
-    let dirOfFiles = 'files';
     let dirOfProcess = dirOfFiles + '/' + processName;
     let fileNames = [];
     let flag = true;
     for (let file in files) {
-        if (files[file].name !== "") {
-            if (flag) {
-                if (!fs.existsSync(dirOfFiles)) {
-                    fs.mkdirSync(dirOfFiles);
+        if(files.hasOwnProperty(file))
+        {
+            if (files[file].name !== "") {
+                if (flag) {
+                    if (!fs.existsSync(dirOfFiles)) {
+                        fs.mkdirSync(dirOfFiles);
+                    }
+                    if (!fs.existsSync(dirOfProcess)) {
+                        fs.mkdirSync(dirOfProcess);
+                    }
+                    flag = false;
                 }
-                if (!fs.existsSync(dirOfProcess)) {
-                    fs.mkdirSync(dirOfProcess);
-                }
-                flag = false;
+                fileNames.push(files[file].name);
+                let oldpath = files[file].path;
+                let newpath = dirOfProcess + '/' + files[file].name;
+                fs.rename(oldpath, newpath, function (err) {
+                    if (err) throw err;
+                });
             }
-            fileNames.push(files[file].name);
-            let oldpath = files[file].path;
-            let newpath = dirOfProcess + '/' + files[file].name;
-            fs.rename(oldpath, newpath, function (err) {
-                if (err) throw err;
-            });
         }
     }
     let nextStageRoles = [];
     for (let attr in fields) {
-        if (!isNaN(attr)) {
+        if (fields.hasOwnProperty(attr) && !isNaN(attr)) {
             nextStageRoles.push(parseInt(attr));
         }
     }
@@ -789,18 +791,6 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback)=>{
             processAccessor.updateActiveProcess({processName: processName},{stages: process.stages},callback);
         }
     })
-};
-
-module.exports.checkUpdateResult = (result)=>{
-    let keys = Array.from(Object.keys(result));
-    if(keys.includes("n") && keys.includes("nModified") && keys.includes("ok") && keys.length === 3)
-    {
-        if(result["n"] === 1 && result["nModified"] === 1 && result["ok"] === 1)
-        {
-            return true;
-        }
-    }
-    return false;
 };
 
 /////////
