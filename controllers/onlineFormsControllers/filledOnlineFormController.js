@@ -4,32 +4,18 @@ let onlineFormsController = require('./onlineFormController');
 let activeProcessController = require('../processesControllers/activeProcessController.js');
 
 module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
-    let newFilledOnlineForm = new FilledOnlineForm(formName, fields);
-    filledOnlineFormAccessor.createFilledOnlineForm(filledOnlineFormAccessor.getSchemaRecordFromFilledOnlineForm(newFilledOnlineForm), callback)
+    onlineFormsController.getOnlineFormByName(formName, (err, form) => {
+        if (err) callback(err);
+        else if (form === null) callback(new Error("form was not found"));
+        else {
+            let newFilledOnlineForm = new FilledOnlineForm(formName, fields);
+            filledOnlineFormAccessor.createFilledOnlineForm(filledOnlineFormAccessor.getSchemaRecordFromFilledOnlineForm(newFilledOnlineForm), callback);
+        }
+    })
 };
 
 module.exports.getFilledOnlineFormByID = (formID, callback) => {
     filledOnlineFormAccessor.findFilledOnlineFormByFormID(formID, callback);
-};
-
-
-module.exports.getFilledOnlineFormsOfArray = (formIDs, callback) => {
-    let forms = [];
-    if (formIDs !== undefined && formIDs.length > 0) {
-        for (let i = 0; i < formIDs.length; i++) {
-            this.getFilledOnlineFormByID(formIDs[i], (err, filledForm) => {
-                if (err) callback(err);
-                else {
-                    forms.push(filledForm);
-                    if (forms.length === formIDs.length) {
-                        callback(null, forms);
-                    }
-                }
-            });
-        }
-    } else {
-        callback(null, []);
-    }
 };
 
 module.exports.displayFilledForm = function (filledFormID, callback) {
@@ -39,6 +25,7 @@ module.exports.displayFilledForm = function (filledFormID, callback) {
             form = form.formObject;
             onlineFormsController.getOnlineFormByName(form.formName, (err, onlineForm) => {
                 if (err) callback(err);
+                else if (onlineForm === null) callback(new Error("online form was not found"));
                 else {
                     let fields = [];
                     form.fields.forEach((field) => {
@@ -53,9 +40,48 @@ module.exports.displayFilledForm = function (filledFormID, callback) {
     });
 };
 
+module.exports.getFormReadyToFill = function (processName, formName, callback) {
+    this.getFormReady(processName, formName, (err, form) => {
+        if (err) callback(err);
+        else if (form === undefined) {
+            onlineFormsController.getOnlineFormByName(formName, (err, form) => {
+                if (err) callback(err);
+                else if (form === null) callback(new Error("form was not found"));
+                else {
+                    let locals = {
+                        formName: form.formName,
+                        isForShow: false,
+                        fields: false
+                    };
+                    callback(null, form.HTMLSource, locals);
+                }
+            });
+        } else {
+            form = form.formObject;
+            let fields = [];
+            form.fields.forEach((field) => {
+                fields.push({fieldName: field.fieldName, value: field.value})
+            });
+            let fieldsStr = JSON.stringify(fields);
+            onlineFormsController.getOnlineFormByName(formName, (err, form) => {
+                if (err) callback(err);
+                else {
+                    let locals = {
+                        formName: form.formName,
+                        isForShow: false,
+                        fields: fieldsStr
+                    };
+                    callback(null, form.HTMLSource, locals);
+                }
+            });
+        }
+    });
+};
+
 module.exports.getFormReady = function (processName, formName, callback) {
     activeProcessController.getActiveProcessByProcessName(processName, (err, activeProcess) => {
         if (err) callback(err);
+        else if (activeProcess === null) callback(new Error("process was not found"));
         else {
             activeProcessController.getFilledOnlineForms(activeProcess.filledOnlineForms, 0, [], (err, filledForms) => {
                 if (err) callback(err);
@@ -87,11 +113,11 @@ module.exports.updateOrAddFilledForm = function (processName, formName, formFiel
             } else {
                 let formID = form.formID;
                 let newField = [];
-                formFields.forEach(field=>{
-                   newField.push({fieldName: field.field, value: field.value});
+                formFields.forEach(field => {
+                    newField.push({fieldName: field.field, value: field.value});
                 });
-                filledOnlineFormAccessor.updateFilledOnlineForm({_id: formID}, {fields: newField}, (err,res)=>{
-                    if(err) callback(err);
+                filledOnlineFormAccessor.updateFilledOnlineForm({_id: formID}, {fields: newField}, (err, res) => {
+                    if (err) callback(err);
                     else callback(null);
                 });
             }
