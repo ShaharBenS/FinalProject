@@ -107,10 +107,22 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
                                     userEmailsArrays.push(currUserEmails);
                                 }
                             });
-                            callback(null, toReturnProcessReports);
-                        } else {
-                            callback(null, toReturnProcessReports);
                         }
+                        activeProcessController.getWaitingActiveProcessesByUser(userEmail, (err2, waitingProcesses) => {
+                            processReports.forEach((process) => {
+                                waitingProcesses.forEach((waitingProc) => {
+                                    if (process.processName === waitingProc.processName) {
+                                        toReturnProcessReports.push(process);
+                                    }
+                                });
+                            });
+                            toReturnProcessReports = toReturnProcessReports.filter((report, index, self) =>
+                                index === self.findIndex((x) => (
+                                    x.processName === report.processName
+                                ))
+                            );
+                            callback(null, toReturnProcessReports);
+                        })
                     });
                 }
             });

@@ -10,6 +10,7 @@
     <script src="http://malsup.github.com/jquery.form.js"></script>
     <script src="/javascripts/upload_js.js"></script>
     <script src="/javascripts/filledOnlineForms.js"></script>
+    <script src="/javascripts/reports.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
     <script src="/javascripts/topbar.js"></script>
     <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
@@ -133,7 +134,11 @@
                     הוסף קובץ
                 </button>
                 <br>
-
+                <hr>
+                <h4>צפייה בדו"ח התהליך</h4>
+                <button class="btn btn-default" id="<%=processName%>"
+                        onclick="generateSummary2(this.id)" style="margin-right: 0; border-radius: 10px">הפק דו"ח
+                </button>
                 <hr>
                 <%if (nextRoles.length > 0) { %>
                 <h4>תפקידים לשלב הבא</h4>
