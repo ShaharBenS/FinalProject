@@ -701,6 +701,35 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
     })
 };
 
+module.exports.advanceProcessesIfTimeHasPassed = ()=>{
+    activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
+    {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            activeProcesses.forEach(activeProcess =>
+            {
+                if(activeProcess.automaticAdvanceTime !== 0)
+                {
+                    activeProcess.currentStages.forEach(curr =>
+                    {
+                        let currStage = activeProcess.getStageByStageNum(curr);
+                        let timePassedInHours = ((new Date()) - currStage.assignmentTime) / 36e5;
+                        if (timePassedInHours > activeProcess.automaticAdvanceTime) {
+                            this.handleProcess(currStage.userEmail, activeProcess.processName, {comments: '',
+                                fileNames: [],
+                                nextStageRoles: currStage.nextStages},(err)=>{
+                                console.log(err);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    })
+};
+
 /////////
 module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
