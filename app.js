@@ -7,6 +7,7 @@ let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 let routes = require('./routes/routes');
 let notificationControllers = require('./controllers/notificationsControllers/notificationController');
+let activeProcessControllers = require('./controllers/processesControllers/activeProcessController');
 let onlineFormsController = require('./controllers/onlineFormsControllers/onlineFormController');
 
 ///
@@ -75,6 +76,11 @@ onlineFormsController.createAllOnlineForms(() => {
 let updateTimeInMinutes = 10;
 setInterval(()=>{
     notificationControllers.updateNotifications();
+},updateTimeInMinutes * 60000);
+
+//Thread for automatic advance
+setInterval(()=>{
+    activeProcessControllers.advanceProcessesIfTimeHasPassed();
 },updateTimeInMinutes * 60000);
 
 module.exports = app;
