@@ -18,6 +18,10 @@ body {
     background-color:var(--main-color)
 }
 
+.btn-primary:hover{
+    background: var(--main-color);
+}
+
 .main-div {
     padding: 0 2% 2%;
     margin: 2%;
