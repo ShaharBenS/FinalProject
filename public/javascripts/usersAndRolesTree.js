@@ -214,8 +214,7 @@ function updateUsername() {
     let result = updateUsersMaps(currentRoleNameClicked);
     if (result === undefined) {
         document.getElementById('select_users_modal').style.display = 'none';
-    }
-    else {
+    } else {
         alertify.alert("הכתובת " + result + " אינה תקינה.");
     }
 }
@@ -236,25 +235,29 @@ function emailValidator(email) {
 }
 
 function loadDefaultTree() {
-    $.ajax({
-            url: '/usersAndRoles/loadDefaultTree/',
-            method: "POST",
-            xhrFields: {
-                withCredentials: true
-            },
-            data: {},
+    alertify.confirm('', 'האם אתה בטוח שאתה רוצה לטעון את עץ ברירת המחדל?', function () {
+            $.ajax({
+                    url: '/usersAndRoles/loadDefaultTree/',
+                    method: "POST",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: {},
+                }
+            ).done(function (responseText, status) {
+                if (status === "success") {
+                    if (responseText === "success") {
+                        alertify.alert("העץ נשמר בהצלחה!", () => {
+                            window.location.href = '/usersAndRoles/editTree/';
+                        });
+                    } else {
+                        alertify.alert(responseText);
+                    }
+                }
+            });
         }
-    ).done(function (responseText, status) {
-        if (status === "success") {
-            if (responseText === "success") {
-                alertify.alert("העץ נשמר בהצלחה!", () => {
-                    window.location.href = '/usersAndRoles/editTree/';
-                });
-            } else {
-                alertify.alert(responseText);
-            }
-        }
-    });
+        , function () {
+        });
 }
 
 function confirm() {

@@ -19,8 +19,15 @@ body {
 }
 
 .btn-primary:hover{
-    background: var(--main-color);
+    background-color: var(--main-color);
 }
+
+.btn-primary:focus {]
+    background: var(--main-color);
+    background-color: var(--main-color);
+}
+
+
 
 .main-div {
     padding: 0 2% 2%;
