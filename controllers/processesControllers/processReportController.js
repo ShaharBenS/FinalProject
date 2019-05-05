@@ -1,4 +1,5 @@
 let processAccessor = require('../../models/accessors/processReportAccessor');
+let usersAccessor = require('../../models/accessors/usersAccessor');
 let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
@@ -154,16 +155,26 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
         if (err) callback(err);
         else {
             processReport = processReport._doc;
-            let returnProcessDetails = {
-                processName: processReport.processName,
-                creationTime: processReport.creationTime,
-                status: processReport.status,
-                urgency: processReport.processUrgency,
-                processDate: processReport.processDate,
-                filledOnlineForms: processReport.filledOnlineForms,
-                attachedFilesNames: processReport.attachedFilesNames
-            };
-            callback(null, [returnProcessDetails, processReport.stages]);
+            let processCreatorEmail = processReport.processCreatorEmail;
+            usersAccessor.findUsername({userEmail: processCreatorEmail}, (err2, result) =>
+            {
+                if (err2) {
+                    callback(err2);
+                }
+                else {
+                    let returnProcessDetails = {
+                        processName: processReport.processName,
+                        creationTime: processReport.creationTime,
+                        status: processReport.status,
+                        urgency: processReport.processUrgency,
+                        processDate: processReport.processDate,
+                        filledOnlineForms: processReport.filledOnlineForms,
+                        attachedFilesNames: processReport.attachedFilesNames,
+                        processCreatorEmail: result[0].userName
+                    };
+                    callback(null, [returnProcessDetails, processReport.stages]);
+                }
+            });
         }
     });
 };
