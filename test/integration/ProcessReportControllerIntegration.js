@@ -59,7 +59,7 @@ describe('1. Process Report Controller', function () {
     after(afterGlobal);
     describe('1.1 addProcessReport', function () {
         it('1.1.1 Create new process report.', function (done) {
-            processReportContoller.addProcessReport('Process Name 1', new Date(), new Date(), 1, 'tomerlev1000@gmail.com', (err1, result) => {
+            processReportContoller.addProcessReport('Process Name 1', new Date(), new Date(), 1, 'negativevicemanager@outlook.co.il', (err1, result) => {
                 if (err1) {
                     done(err1);
                 }
@@ -71,7 +71,7 @@ describe('1. Process Report Controller', function () {
                         else {
                             assert.deepEqual(report.attachedFilesNames, []);
                             assert.deepEqual(report.filledOnlineForms, []);
-                            assert.deepEqual(report.processCreatorEmail, 'tomerlev1000@gmail.com');
+                            assert.deepEqual(report.processCreatorEmail, 'negativevicemanager@outlook.co.il');
                             assert.deepEqual(report.processName, 'Process Name 1');
                             assert.deepEqual(report.processUrgency, 1);
                             assert.deepEqual(report.status, 'פעיל');
