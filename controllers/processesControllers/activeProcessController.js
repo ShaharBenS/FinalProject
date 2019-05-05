@@ -42,10 +42,12 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let stageRoleID = stage.roleID;
                 let stageUserEmail = null;
                 let assignmentTime = null;
+                let stagesToWaitFor = processStructure.stages[i].stagesToWaitFor;
                 if (stage.stageNum === initialStage) {
                     stageUserEmail = userEmail;
                     stageRoleID = role.roleID;
                     assignmentTime = today;
+                    stagesToWaitFor = [];
                 }
                 else {
                     if (stage.kind === 'ByDereg') {
@@ -67,8 +69,8 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let activeProcessStage = new ActiveProcessStage({
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
-                    stagesToWaitFor: stage.stagesToWaitFor,
-                    originStagesToWaitFor: stage.stagesToWaitFor,
+                    stagesToWaitFor: stagesToWaitFor,
+                    originStagesToWaitFor: stagesToWaitFor.slice(),
                     userEmail: stageUserEmail,
                     approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1
                 });
