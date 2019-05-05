@@ -361,6 +361,9 @@ describe('1. addUsersAndRole', function () {
                                 assert.deepEqual(true, sayorNotifications.some(notification => {
                                     return notification.notificationType === "תהליך נגמר בהצלחה";
                                 }));
+                                assert.deepEqual(true, sayorNotifications.some(notification => {
+                                    return notification.notificationType === "מבנה תהליך אושר";
+                                }));
                                 assert.deepEqual(true, websiteNotifications.some(notification => {
                                     return notification.notificationType === "תהליך נגמר בהצלחה";
                                 }));

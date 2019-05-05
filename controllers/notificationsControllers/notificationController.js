@@ -116,6 +116,7 @@ module.exports.updateNotifications = () =>
 module.exports.notifyFinishedProcess = (process, callback) =>
 {
     // notifying participants
+    let emails = [];
     process.stages.reduce((prev, curr) =>
     {
         return (err) =>
@@ -124,8 +125,14 @@ module.exports.notifyFinishedProcess = (process, callback) =>
                 prev(err);
             }
             else {
-                addNotificationToUser(curr.userEmail,
-                    new Notification("התהליך " + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev)
+                if(!emails.includes(curr.userEmail)){
+                    emails.push(curr.userEmail);
+                    addNotificationToUser(curr.userEmail,
+                        new Notification("התהליך " + process.processName + " הושלם בהצלחה", "תהליך נגמר בהצלחה"), prev);
+                }
+                else{
+                    prev(null);
+                }
             }
         }
     }, (err) =>
