@@ -233,4 +233,30 @@ describe('1. Waiting Process Structure Controller', function () {
             });
         }).timeout(30000);
     });
+
+    describe('1.5 getAllWaitingProcessStructuresWithoutSankey', function () {
+        it('1.5.1 getAllWaitingProcessStructuresWithoutSankey', function (done) {
+            waitingProcessStructureController.getAllWaitingProcessStructuresWithoutSankey((err, result)=>{
+                if(err) done(err);
+                else
+                {
+                    assert.deepEqual(result.length, 1);
+                    waitingProcessStructureController.getWaitingStructureById(result[0].id, (err, structure) => {
+                        if(err) done(err);
+                        else
+                        {
+                            assert.deepEqual(structure.addOrEdit, result[0].addOrEdit);
+                            assert.deepEqual(structure.userEmail, result[0].userEmail);
+                            assert.deepEqual(structure.structureName, result[0].structureName);
+                            assert.deepEqual(structure.deleteRequest, result[0].deleteRequest);
+                            assert.deepEqual(structure.onlineForms, result[0].onlineForms);
+                            assert.deepEqual(structure.automaticAdvanceTime, result[0].automaticAdvanceTime);
+                            assert.deepEqual(structure.notificationTime, result[0].notificationTime);
+                            done();
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+    });
 });
