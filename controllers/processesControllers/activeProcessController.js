@@ -102,14 +102,14 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 }
                 for(let i=0;i<stage.nextStages.length;i++)
                 {
-                    let nextStage = this.getStageByStageNum(stage.nextStages[i]);
-                    if(stage.userEmail === nextStage.userEmail)
+                    let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[i]);
+                    if(nextStage.userEmail !== null && stage.userEmail === nextStage.userEmail)
                     {
                         activeProcessToReturn.removeStage(nextStage.stageNum);
                         initialStages = activeProcessToReturn.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
                         break;
                     }
-                    initialStages.push(this.getStageByStageNum(nextStage.stageNum));
+                    initialStages.push(activeProcessToReturn.getStageByStageNum(nextStage.stageNum));
                 }
             }
             /*
