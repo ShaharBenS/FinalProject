@@ -8,7 +8,7 @@ let formsOfProcess = [];
 let onlineForms = [];
 
 let xmlHttpFormsOfProcess = new XMLHttpRequest();
-let params = "?processStructureName=" + processStructureName + '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false');
+let params = "?processStructureName=" + processStructureName + '&fromWaiting=' + (diagramContext === 'viewProcessStructure' ? ('true&mongoId=' + mongoId) : 'false');
 xmlHttpFormsOfProcess.onreadystatechange = function () {
     if (xmlHttpFormsOfProcess.readyState === 4 && xmlHttpFormsOfProcess.status === 200) {
         formsOfProcess = JSON.parse(xmlHttpFormsOfProcess.responseText)
@@ -46,6 +46,7 @@ $(document).ready(function () {
     let modal3 = document.getElementById('select-dereg-modal');
     let modal4 = document.getElementById('define-auto-time-modal');
     let modal5 = document.getElementById('define-notification-time-modal');
+    let modal6 = document.getElementById('getHelpProcessStructure');
 
     window.onclick = function (event) {
         if (event.target === modal) {
@@ -54,50 +55,50 @@ $(document).ready(function () {
         else if (event.target === modal1) {
             modal1.style.display = "none";
         }
-        else if (event.target === modal2){
+        else if (event.target === modal2) {
             modal2.style.display = "none";
         }
-        else if(event.target === modal3){
+        else if (event.target === modal3) {
             modal3.style.display = "none";
         }
-        else if(event.target === modal4){
+        else if (event.target === modal4) {
             modal4.style.display = "none";
         }
-        else if(event.target === modal5){
+        else if (event.target === modal5) {
             modal5.style.display = "none";
+        }
+        else if (event.target === modal6) {
+            modal6.style.display = "none";
         }
     };
 
-    if(diagramContext !== "editProcessStructure"){
+    if (diagramContext !== "editProcessStructure") {
         document.getElementById("deleteButton").style.display = "none";
         document.getElementById("deleteButton_padding").style.display = "none";
     }
 
-    if(diagramContext !== "addProcessStructure")
-    {
+    if (diagramContext !== "addProcessStructure") {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() {
-            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-            {
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                 document.getElementById("automaticTimeSelect").value = xmlHttp.responseText;
             }
         };
-        xmlHttp.open("GET", '/processStructures/getAutomaticAdvanceTime/'+"?processStructureName=" +processStructureName+ '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false'), true);
+        xmlHttp.open("GET", '/processStructures/getAutomaticAdvanceTime/' + "?processStructureName=" + processStructureName + '&fromWaiting=' + (diagramContext === 'viewProcessStructure' ? ('true&mongoId=' + mongoId) : 'false'), true);
         xmlHttp.send(null);
 
         var xmlHttp1 = new XMLHttpRequest();
-        xmlHttp1.onreadystatechange = function() {
-            if (xmlHttp1.readyState === 4 && xmlHttp1.status === 200)
-            {
+        xmlHttp1.onreadystatechange = function () {
+            if (xmlHttp1.readyState === 4 && xmlHttp1.status === 200) {
                 document.getElementById("notificationTimeSelect").value = xmlHttp1.responseText;
             }
         };
-        xmlHttp1.open("GET", '/processStructures/getNotificationTime/'+"?processStructureName=" +processStructureName+ '&fromWaiting='+(diagramContext==='viewProcessStructure'?('true&mongoId='+mongoId) :'false'), true);
+        xmlHttp1.open("GET", '/processStructures/getNotificationTime/' + "?processStructureName=" + processStructureName + '&fromWaiting=' + (diagramContext === 'viewProcessStructure' ? ('true&mongoId=' + mongoId) : 'false'), true);
         xmlHttp1.send(null);
     }
 });
 
-function onDrop_extension(type, command, figure,kind) {
+function onDrop_extension(type, command, figure, kind) {
     if (diagramContext === 'addProcessStructure' || diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure') {
         select_role_clicked = function () {
             let selector = document.getElementById("role_selector");
@@ -118,16 +119,16 @@ function onDrop_extension(type, command, figure,kind) {
                 let aboveCreatorText = document.getElementById("number-selector").value;
                 figure.label = new draw2d.shape.basic.Label({
                     text: kind === 'ByDereg' ? deregSelector.options[deregSelector.selectedIndex].innerText :
-                        (kind === "Creator" ? "יוצר התהליך" :"דרגות מעל יוצר התהליך: " +aboveCreatorText),
+                        (kind === "Creator" ? "יוצר התהליך" : "דרגות מעל יוצר התהליך: " + aboveCreatorText),
                     angle: 0,
                     fontColor: "#FFFFFF",
                     fontSize: 18,
                     stroke: 0,
                 });
-                if(kind === 'ByDereg'){
-                    figure.setBackgroundColor("#d8a2c"+deregSelector.options[deregSelector.selectedIndex].value);
+                if (kind === 'ByDereg') {
+                    figure.setBackgroundColor("#d8a2c" + deregSelector.options[deregSelector.selectedIndex].value);
                 }
-                else{
+                else {
                     figure.setBackgroundColor("#ff9d6d");
                 }
             }
@@ -140,16 +141,16 @@ function onDrop_extension(type, command, figure,kind) {
             document.getElementById("select-dereg-modal").style.display = "none";
         };
 
-        if(kind === 'AboveCreator'){
+        if (kind === 'AboveCreator') {
             document.getElementById("select_number_modal").style.display = "block";
         }
-        else if(kind === "ByDereg"){
+        else if (kind === "ByDereg") {
             document.getElementById("select-dereg-modal").style.display = "block";
         }
-        else if(kind === "Creator"){
+        else if (kind === "Creator") {
             select_role_clicked();
         }
-        else if(kind === 'ByRole'){
+        else if (kind === 'ByRole') {
             if (is_role_list_set) {
                 document.getElementById("select_role_modal").style.display = "block";
             } else {
@@ -181,7 +182,7 @@ function deleteRoleById(id) {
 }
 
 function deleteStructureClicked() {
-    alertify.confirm('', 'האם אתה בטוח שברצונך למחוק את מבנה התהליך ' + processStructureName +"?", function(){
+    alertify.confirm('', 'האם אתה בטוח שברצונך למחוק את מבנה התהליך ' + processStructureName + "?", function () {
         let data = {
             structureName: processStructureName
         };
@@ -194,18 +195,17 @@ function deleteStructureClicked() {
                 },
                 data: data,
             }
-        ).done(function (responseText, status)
-        {
+        ).done(function (responseText, status) {
             if (status === "success") {
-                if (responseText.substring(0,7) === "success") {
-                    let commonCallback = ()=>{
+                if (responseText.substring(0, 7) === "success") {
+                    let commonCallback = () => {
                         window.location.href = '/Home/';
                     };
-                    if(responseText === "success"){
-                        alertify.alert("מבנה התהליך נמחק בהצלחה",commonCallback);
+                    if (responseText === "success") {
+                        alertify.alert("מבנה התהליך נמחק בהצלחה", commonCallback);
                     }
-                    else{
-                        alertify.alert("מחיקת מבנה התהליך עברה לאישור בהצלחה",commonCallback);
+                    else {
+                        alertify.alert("מחיקת מבנה התהליך עברה לאישור בהצלחה", commonCallback);
                     }
                 }
                 else {
@@ -213,7 +213,8 @@ function deleteStructureClicked() {
                 }
             }
         });
-    },()=>{});
+    }, () => {
+    });
 }
 
 function confirm() {
@@ -295,16 +296,5 @@ function seeFormsOpened() {
 
 
 function getHelp() {
-    let head = 'הדרכה :';
-    let stringOfGuide = 'הוספת מבנה תהליך חדש מתבצעת על ידי גרירה של שלבים אל החלק הלבן של המסך, לאחר מכן מתיחת חצים ביניהם ' +
-        '(משמאל לימין) ולבסוף לחיצה על לחצן הטפסים על מנת להוסיף טפסים לאותו התהליך..'
-        + '\n' +
-        'סוגי השלבים האפשריים :'
-        + '\n' +
-        '1. שלב לפי תפקיד - נבחר בסוג זה כאשר את השלב יכולים לבצע רק אנשים בעלי תפקיד מסויים.'
-        + '\n' +
-        '2. שלב לפי דרג - נבחר בסוג זה כאשר את השלב יכולים לבצע כל האנשים השייכים לדרג מסויים.'
-        + '\n' +
-        '3. שלב של יוצר התהליך - נבחר בסוג זה התהליך צריך להגיע בשלב כלשהו אל האדם שיצר אותו.';
-    alertify.alert(head,stringOfGuide);
+    document.getElementById("getHelpProcessStructure").style.display = "block";
 }

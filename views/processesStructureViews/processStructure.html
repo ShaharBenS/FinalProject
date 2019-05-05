@@ -35,8 +35,7 @@
         var app,
             socket;
 
-        $(window).load(function ()
-        {
+        $(window).load(function () {
             socket = io();
             app = new sankey.Application(socket);
             if (diagramContext === 'editProcessStructure' || diagramContext === 'viewProcessStructure') {
@@ -60,20 +59,27 @@
     <div id="editor">
         <div id="palette" align="center">
             <h6 style="color:#000">הוסף שלב לפי תפקיד</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.State.ByRole"
+            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
+                 data-shape="sankey.shape.State.ByRole"
                  class="palette_node_element draw2d_droppable">
             <h6 style="color:#000">הוסף שלב לפי דרג</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.State.ByDereg"
+            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
+                 data-shape="sankey.shape.State.ByDereg"
                  class="palette_node_element draw2d_droppable">
             <h6 style="color:#000">יוצר התהליך</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png" data-shape="sankey.shape.State.Creator"
+            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
+                 data-shape="sankey.shape.State.Creator"
                  class="palette_node_element draw2d_droppable">
             <div style="height: 3%;"></div>
             <button class="btn btn-primary" onclick="getHelp();">עזרה</button>
             <div style="height: 3%"></div>
-            <button class="btn btn-primary" onclick="document.getElementById('define-auto-time-modal').style.display = 'block'">מעבר<br>אוטומטי</button>
+            <button class="btn btn-primary"
+                    onclick="document.getElementById('define-auto-time-modal').style.display = 'block'">מעבר<br>אוטומטי
+            </button>
             <div style="height: 3%"></div>
-            <button class="btn btn-primary" onclick="document.getElementById('define-notification-time-modal').style.display = 'block'">זמן<br>התראה</button>
+            <button class="btn btn-primary"
+                    onclick="document.getElementById('define-notification-time-modal').style.display = 'block'">זמן<br>התראה
+            </button>
             <div style="height: 3%"></div>
             <button id="deleteButton" class="btn btn-primary" onclick="deleteStructureClicked();">מחק</button>
             <div id="deleteButton_padding" style="height: 3%"></div>
@@ -97,7 +103,6 @@
 <!--<div id="toolbar">
     <a class="navbar-brand brand highlight"  href="../index" target="_index"><img src="../../draw_sankey/server/html/common/assets/img/logo.png">Sankey <i>state</i></a>
 </div>-->
-
 
 
 <!--
@@ -236,7 +241,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button onclick="select_role_clicked()" id="select_number_okay_button" class="btn btn-default okButton"><span>הוסף</span>
+            <button onclick="select_role_clicked()" id="select_number_okay_button" class="btn btn-default okButton">
+                <span>הוסף</span>
             </button>
         </div>
     </div>
@@ -313,6 +319,44 @@
     </div>
 </div>
 
+<div dir="ltr" id="getHelpProcessStructure" class="modal">
+    <div class="modal-content">
+        <div dir="rtl">
+            <div class="modal-header">
+                <h4 class="media-heading">הדרכה :</h4>
+            </div>
+            <div class="modal-body">
+                <div class="media">
+                    <div class="media-body">
+                        <p>
+                            הוספת מבנה תהליך חדש מתבצעת על ידי גרירה של שלבים אל החלק הלבן של המסך, לאחר מכן מתיחת חצים
+                            ביניהם
+                            (משמאל לימין) ולבסוף לחיצה על לחצן הטפסים על מנת להוסיף טפסים לאותו התהליך.
+                        </p>
+                        <p>
+                            סוגי השלבים האפשריים :
+                        </p>
+                        <p>
+                            1. שלב לפי תפקיד - נבחר בסוג זה כאשר את השלב יכולים לבצע רק אנשים בעלי תפקיד מסויים.
+                        </p>
+                        <p>
+                            2. שלב לפי דרג - נבחר בסוג זה כאשר את השלב יכולים לבצע כל האנשים השייכים לדרג מסויים.
+                        </p>
+                        <p>
+                            3. שלב של יוצר התהליך - נבחר בסוג זה התהליך צריך להגיע בשלב כלשהו אל האדם שיצר אותו.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary okButton" id="no-id785"
+                        onclick="document.getElementById('getHelpProcessStructure').style.display = 'none'">
+                    <span>אישור</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div dir="ltr" id="define-auto-time-modal" class="modal">
     <div class="modal-content">
@@ -342,7 +386,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary okButton"
-                        onclick="document.getElementById('define-auto-time-modal').style.display = 'none'"><span>אישור</span>
+                        onclick="document.getElementById('define-auto-time-modal').style.display = 'none'">
+                    <span>אישור</span>
                 </button>
             </div>
         </div>
@@ -376,7 +421,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary okButton"
-                        onclick="document.getElementById('define-notification-time-modal').style.display = 'none'"><span>אישור</span>
+                        onclick="document.getElementById('define-notification-time-modal').style.display = 'none'">
+                    <span>אישור</span>
                 </button>
             </div>
         </div>
