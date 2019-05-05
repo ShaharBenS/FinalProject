@@ -731,6 +731,12 @@ module.exports.advanceProcessesIfTimeHasPassed = ()=>{
 };
 
 /////////
+module.exports.replaceSingleQuotes = (st)=>{
+    return st.replace(/([\"\'])/g,'\\'+$1);
+};
+/////////
+
+
 module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
