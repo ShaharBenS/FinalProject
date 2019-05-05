@@ -52,26 +52,31 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                     if (err) {
                         callback(err);
                     } else {
+                        let notification = new Notification("הוספת מבנה התהליך " + waitingStructure.structureName + " אושרה בהצלחה.", "מבנה תהליך אושר");
                         let commonCallback = (err) => {
                             if (err) {
                                 callback(err);
                             }
-                            waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id: waitingStructure._id}, (err) => {
-                                if (err) {
-                                    callback(err);
-                                } else {
-                                    notificationController.addNotificationToUser(waitingStructure.userEmail, new Notification("מבנה התהליך " + waitingStructure.structureName + " אושר בהצלחה", "מבנה תהליך אושר"), callback)
-                                }
-                            })
+                            else{
+                                waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id: waitingStructure._id}, (err) => {
+                                    if (err) {
+                                        callback(err);
+                                    } else {
+                                        notificationController.addNotificationToUser(waitingStructure.userEmail, notification, callback)
+                                    }
+                                })
+                            }
                         };
 
                         if (waitingStructure.deleteRequest) {
+                            notification = new Notification("מחיקת מבנה התהליך "+waitingStructure.structureName+" אושרה בהצלחה.","מבנה תהליך אושר");
                             processStructureController.removeProcessStructure(userEmail, waitingStructure.structureName, commonCallback);
                         } else {
                             if (waitingStructure.addOrEdit) {
                                 processStructureController.addProcessStructure(userEmail, waitingStructure.structureName,
                                     waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, waitingStructure.notificationTime, commonCallback);
                             } else {
+                                notification = new Notification("עריכת מבנה התהליך "+waitingStructure.structureName+" אושרה בהצלחה.","מבנה תהליך אושר");
                                 processStructureController.editProcessStructure(userEmail, waitingStructure.structureName,
                                     waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, waitingStructure.notificationTime, commonCallback);
                             }
@@ -101,7 +106,17 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
                             if (err) {
                                 callback(err);
                             } else {
-                                notificationController.addNotificationToUser(waitingStructures[0].userEmail, new Notification("מבנה התהליך " + waitingStructures[0].structureName + " אושר בהצלחה", "מבנה תהליך לא אושר"),()=>{
+                                let notification = new Notification("הוספת מבנה התהליך " + waitingStructures[0].structureName + " נדחתה", "מבנה תהליך לא אושר");
+                                if (waitingStructures[0].deleteRequest) {
+                                    notification = new Notification("מחיקת מבנה התהליך "+waitingStructures[0].structureName+" נדחתה","מבנה תהליך לא אושר");
+                                } else {
+                                    if (waitingStructures[0].addOrEdit) {
+
+                                    } else {
+                                        notification = new Notification("עריכת מבנה התהליך "+waitingStructures[0].structureName+" נדחתה","מבנה תהליך לא אושר");
+                                    }
+                                }
+                                notificationController.addNotificationToUser(waitingStructures[0].userEmail,notification ,()=>{
                                     if(err){
                                         callback(err);
                                     }
