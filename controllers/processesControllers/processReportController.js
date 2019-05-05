@@ -6,18 +6,28 @@ let activeProcessController = require('../../controllers/processesControllers/ac
 let moment = require('moment');
 
 module.exports.addProcessReport = (processName, creationTime, processDate, processUrgency, processCreatorEmail, callback) => {
-    processAccessor.createProcessReport({
-        processName: processName,
-        status: 'פעיל',
-        processDate: processDate,
-        processUrgency: processUrgency,
-        processCreatorEmail: processCreatorEmail,
-        creationTime: creationTime,
-        stages: [],
-        filledOnlineForms: []
-    }, (err) => {
-        if (err) callback(err);
-        else callback(null);
+
+    usersAccessor.findUsername({userEmail: processCreatorEmail}, (err, result) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else {
+            processAccessor.createProcessReport({
+                processName: processName,
+                status: 'פעיל',
+                processDate: processDate,
+                processUrgency: processUrgency,
+                processCreatorEmail: processCreatorEmail,
+                processCreatorName: result[0].userName,
+                creationTime: creationTime,
+                stages: [],
+                filledOnlineForms: []
+            }, (err) => {
+                if (err) callback(err);
+                else callback(null);
+            });
+        }
     });
 };
 
@@ -155,26 +165,17 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
         if (err) callback(err);
         else {
             processReport = processReport._doc;
-            let processCreatorEmail = processReport.processCreatorEmail;
-            usersAccessor.findUsername({userEmail: processCreatorEmail}, (err2, result) =>
-            {
-                if (err2) {
-                    callback(err2);
-                }
-                else {
-                    let returnProcessDetails = {
-                        processName: processReport.processName,
-                        creationTime: processReport.creationTime,
-                        status: processReport.status,
-                        urgency: processReport.processUrgency,
-                        processDate: processReport.processDate,
-                        filledOnlineForms: processReport.filledOnlineForms,
-                        attachedFilesNames: processReport.attachedFilesNames,
-                        processCreatorEmail: result[0].userName
-                    };
-                    callback(null, [returnProcessDetails, processReport.stages]);
-                }
-            });
+            let returnProcessDetails = {
+                processName: processReport.processName,
+                creationTime: processReport.creationTime,
+                status: processReport.status,
+                urgency: processReport.processUrgency,
+                processDate: processReport.processDate,
+                filledOnlineForms: processReport.filledOnlineForms,
+                attachedFilesNames: processReport.attachedFilesNames,
+                processCreatorName: processReport.processCreatorName
+            };
+            callback(null, [returnProcessDetails, processReport.stages]);
         }
     });
 };
