@@ -3,5 +3,7 @@ function generateSummary(processName) {
 }
 
 function generateSummary2(processName) {
-    window.location.href = '../reportProcess/?process_name=' + processName;
+    let url = '../reportProcess/?process_name=' + processName;
+    let win = window.open(url, '_blank');
+    win.focus();
 }
