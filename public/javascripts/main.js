@@ -76,6 +76,11 @@ function editProcessStructureClicked() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if(JSON.parse(xmlHttp.responseText).length < 1)
+            {
+                alert('לא קיימים מבני תהליכים במערכת');
+                return;
+            }
             let selector = document.getElementById("processes_selector");
 
             selector.innerHTML = "";
@@ -129,10 +134,15 @@ function startActiveProcess() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+
+            if(JSON.parse(xmlHttp.responseText).length < 1)
+            {
+                alert('לא קיימים מבני תהליכים במערכת להתחיל');
+                return;
+            }
             let selector = document.getElementById("start-processes-selector");
 
             selector.innerHTML = "";
-
             JSON.parse(xmlHttp.responseText).forEach((structure) => {
                 let option = document.createElement('option');
                 option.value = structure._id;

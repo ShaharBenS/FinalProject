@@ -17,6 +17,24 @@ module.exports.findProcessStructure = (criteria, callback) => {
     });
 };
 
+module.exports.findProcessStructuresObjects = (criteria, callback) => {
+    processStructureSchema.find(criteria, (err, result) => {
+        if (err) {
+            callback(err);
+        } else {
+            if (result === null) callback(null, null);
+            else
+            {
+                let toReturn = [];
+                result.forEach(structure=>{
+                    toReturn.push(getProcessStructureFromOriginal(structure));
+                });
+                callback(null, toReturn);
+            }
+        }
+    });
+};
+
 module.exports.findProcessStructures = (callback) => {
     processStructureSchema.find({}, (err, result) => {
         if (err) {
