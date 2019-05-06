@@ -76,6 +76,11 @@ function editProcessStructureClicked() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if(JSON.parse(xmlHttp.responseText).length < 1)
+            {
+                alert('לא קיימים מבני תהליכים במערכת');
+                return;
+            }
             let selector = document.getElementById("processes_selector");
 
             selector.innerHTML = "";
@@ -129,27 +134,28 @@ function startActiveProcess() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+
+            if(JSON.parse(xmlHttp.responseText).length < 1)
+            {
+                alert('לא קיימים מבני תהליכים במערכת להתחיל');
+                return;
+            }
             let selector = document.getElementById("start-processes-selector");
 
             selector.innerHTML = "";
-
-            if (xmlHttp.responseText === '{}') {
-                alertify.alert("", "לא קיימים תהליכים שאתה מורשה להתחיל")
-            } else {
-                JSON.parse(xmlHttp.responseText).forEach((structure) => {
-                    let option = document.createElement('option');
-                    option.value = structure._id;
-                    option.innerText = structure.structureName;
-                    selector.appendChild(option);
-                });
-                let urgencySelector = document.getElementById("start-processes-urgency");
-                document.getElementById("start-active-process-modal").style.display = "block";
-                for (let i = 1; i <= 3; i++) {
-                    let option = document.createElement('option');
-                    option.value = i;
-                    option.innerText = i.toString();
-                    urgencySelector.appendChild(option);
-                }
+            JSON.parse(xmlHttp.responseText).forEach((structure) => {
+                let option = document.createElement('option');
+                option.value = structure._id;
+                option.innerText = structure.structureName;
+                selector.appendChild(option);
+            });
+            let urgencySelector = document.getElementById("start-processes-urgency");
+            document.getElementById("start-active-process-modal").style.display = "block";
+            for(let i=1; i<=3; i++){
+                let option = document.createElement('option');
+                option.value = i;
+                option.innerText = i.toString();
+                urgencySelector.appendChild(option);
             }
         }
     };

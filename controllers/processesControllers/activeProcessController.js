@@ -42,10 +42,12 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let stageRoleID = stage.roleID;
                 let stageUserEmail = null;
                 let assignmentTime = null;
+                let stagesToWaitFor = processStructure.stages[i].stagesToWaitFor;
                 if (stage.stageNum === initialStage) {
                     stageUserEmail = userEmail;
                     stageRoleID = role.roleID;
                     assignmentTime = today;
+                    stagesToWaitFor = [];
                 }
                 else {
                     if (stage.kind === 'ByDereg') {
@@ -67,8 +69,8 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 let activeProcessStage = new ActiveProcessStage({
                     roleID: stageRoleID, kind: stage.kind, dereg: stage.dereg,
                     stageNum: stage.stageNum, nextStages: stage.nextStages,
-                    stagesToWaitFor: stage.stagesToWaitFor,
-                    originStagesToWaitFor: stage.stagesToWaitFor,
+                    stagesToWaitFor: stagesToWaitFor,
+                    originStagesToWaitFor: stagesToWaitFor.slice(),
                     userEmail: stageUserEmail,
                     approvalTime: null, assignmentTime: assignmentTime, notificationsCycle: 1
                 });
@@ -699,7 +701,42 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
     })
 };
 
+module.exports.advanceProcessesIfTimeHasPassed = ()=>{
+    activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
+    {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            activeProcesses.forEach(activeProcess =>
+            {
+                if(activeProcess.automaticAdvanceTime !== 0)
+                {
+                    activeProcess.currentStages.forEach(curr =>
+                    {
+                        let currStage = activeProcess.getStageByStageNum(curr);
+                        let timePassedInHours = ((new Date()) - currStage.assignmentTime) / 36e5;
+                        if (timePassedInHours > activeProcess.automaticAdvanceTime) {
+                            this.handleProcess(currStage.userEmail, activeProcess.processName, {comments: '',
+                                fileNames: [],
+                                nextStageRoles: currStage.nextStages},(err)=>{
+                                console.log(err);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    })
+};
+
 /////////
+module.exports.replaceSingleQuotes = (st)=>{
+    return st.replace(/([\"\'])/g,'\\'+$1);
+};
+/////////
+
+
 module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;

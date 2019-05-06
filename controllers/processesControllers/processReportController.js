@@ -1,22 +1,33 @@
 let processAccessor = require('../../models/accessors/processReportAccessor');
+let usersAccessor = require('../../models/accessors/usersAccessor');
 let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let moment = require('moment');
 
 module.exports.addProcessReport = (processName, creationTime, processDate, processUrgency, processCreatorEmail, callback) => {
-    processAccessor.createProcessReport({
-        processName: processName,
-        status: 'פעיל',
-        processDate: processDate,
-        processUrgency: processUrgency,
-        processCreatorEmail: processCreatorEmail,
-        creationTime: creationTime,
-        stages: [],
-        filledOnlineForms: []
-    }, (err) => {
-        if (err) callback(err);
-        else callback(null);
+
+    usersAccessor.findUsername({userEmail: processCreatorEmail}, (err, result) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else {
+            processAccessor.createProcessReport({
+                processName: processName,
+                status: 'פעיל',
+                processDate: processDate,
+                processUrgency: processUrgency,
+                processCreatorEmail: processCreatorEmail,
+                processCreatorName: result[0].userName,
+                creationTime: creationTime,
+                stages: [],
+                filledOnlineForms: []
+            }, (err) => {
+                if (err) callback(err);
+                else callback(null);
+            });
+        }
     });
 };
 
@@ -107,10 +118,22 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
                                     userEmailsArrays.push(currUserEmails);
                                 }
                             });
-                            callback(null, toReturnProcessReports);
-                        } else {
-                            callback(null, toReturnProcessReports);
                         }
+                        activeProcessController.getWaitingActiveProcessesByUser(userEmail, (err2, waitingProcesses) => {
+                            processReports.forEach((process) => {
+                                waitingProcesses.forEach((waitingProc) => {
+                                    if (process.processName === waitingProc.processName) {
+                                        toReturnProcessReports.push(process);
+                                    }
+                                });
+                            });
+                            toReturnProcessReports = toReturnProcessReports.filter((report, index, self) =>
+                                index === self.findIndex((x) => (
+                                    x.processName === report.processName
+                                ))
+                            );
+                            callback(null, toReturnProcessReports);
+                        })
                     });
                 }
             });
@@ -149,7 +172,8 @@ module.exports.getAllActiveProcessDetails = (processName, callback) => {
                 urgency: processReport.processUrgency,
                 processDate: processReport.processDate,
                 filledOnlineForms: processReport.filledOnlineForms,
-                attachedFilesNames: processReport.attachedFilesNames
+                attachedFilesNames: processReport.attachedFilesNames,
+                processCreatorName: processReport.processCreatorName
             };
             callback(null, [returnProcessDetails, processReport.stages]);
         }

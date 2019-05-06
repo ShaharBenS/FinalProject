@@ -7,6 +7,7 @@ const processReportSchema = new Schema({
     processDate: Date,
     processUrgency: { type: Number, min: 1, max: 3},
     processCreatorEmail : String,
+    processCreatorName : String,
     creationTime: Date,
     filledOnlineForms: [{type: Schema.Types.ObjectId, ref: 'FilledOnlineForm'}],
     attachedFilesNames: [String],

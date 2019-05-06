@@ -188,16 +188,16 @@ module.exports.getAllProcessStructures = (callback) =>
 //TODO: need to redesign this function
 module.exports.getAllProcessStructuresAvailableForUser = (userEmail, callback) =>
 {
-    usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
+    usersAndRolesController.getRoleByUsername(userEmail, (err, role) => {
         if(err) callback(err);
         else
         {
-            processStructureAccessor.findProcessStructures((err,structures)=>{
+            processStructureAccessor.findProcessStructuresObjects({},(err,structures)=>{
                 if(err) callback(err);
                 else
                 {
                     callback(null,structures.filter((structure)=> {
-                        return true; // TODO : fix that
+                        return structure.getInitialStageByRoleID(role.roleID,role.dereg) !== -1;
                     }));
                 }
             });

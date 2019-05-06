@@ -37,13 +37,16 @@ xmlHttp2.send(null);
 $(document).ready(() => {
     var modal = document.getElementById('select_users_modal');
     var modal2 = document.getElementById('select-dereg-modal');
-
+    var modal3 = document.getElementById('getHelpUsersAndRoles');
     window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
         if (event.target === modal2) {
             modal2.style.display = "none";
+        }
+        if (event.target === modal3) {
+            modal3.style.display = "none";
         }
     };
 
@@ -58,15 +61,7 @@ $(document).ready(() => {
 });
 
 function getHelp() {
-    let head = 'הדרכה :';
-    let stringOfGuide = '1. הוספת תפקיד חדש מתבצעת על ידי גרירה של סמל האדם שנמצא משמאל אל עבר החלק הלבן ולאחר מכן להכניס את שם התפקיד אותו ברצונכם להוסיף וללחוץ אישור.'
-        + '\n' +
-        '2. הגדרת הדרג של התפקיד מתבצעת על ידי לחיצה ימנית על התפקיד, בחירה באפשרות דרג ולאחר מכן בחירה מתוך רשימת הדרגים האפשריים.'
-        + '\n' +
-        '3. הוספת אנשים לתפקיד מסויים מתבצעת על עדע לחיצה ימנית על התפקיד, בחירה באפשרות ראה משתמשים ולאחר מכן לחיצה על לחצן הפלוס והזנת כתובת המייל של העובד ושמו.'
-        + '\n' +
-        '4. הגדרת הקשר בין התפקידים תתבצע על ידי מתיחת חץ מהתפקיד הבכיר (האב) אל התפקיד הזוטר (הבן). (מתיחת הקשרים הינה משמאל לימין)';
-    alertify.alert(head, stringOfGuide);
+    document.getElementById("getHelpUsersAndRoles").style.display = "block";
 }
 
 function onDrop_extension(type, command, figure) {
@@ -75,7 +70,8 @@ function onDrop_extension(type, command, figure) {
             if (roleToEmails[role_name] === undefined) {
                 if (role_name === "") {
                     alertify.alert('שם תפקיד לא יכול להיות ריק');
-                } else {
+                }
+                else {
                     roleToDereg[role_name] = "1";
                     idToRole[figure.id] = role_name;
                     roleToEmails[role_name] = [];
@@ -97,7 +93,8 @@ function onDrop_extension(type, command, figure) {
                     figure.setWidth(Math.max(figure.getWidth(), figure.label.getWidth()));
                     figure.setHeight(figure.height + 30);
                 }
-            } else {
+            }
+            else {
                 alertify.alert('שם תפקיד זה כבר קיים');
             }
         }
