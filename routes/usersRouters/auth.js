@@ -35,7 +35,8 @@ router.get('/outlook',
             'profile',
             'offline_access',
             'https://outlook.office.com/Mail.Read'
-        ]
+        ],
+        prompt:'login'
     })
 );
 
