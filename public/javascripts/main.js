@@ -207,6 +207,12 @@ function confirmStartProcess() {
                 alertify.alert(responseText);
             }
         }
+        else
+        {
+            alertify.alert("קרתה שגיאה בעת התחלת התהליך", () => {
+                window.location.href = '/Home';
+            });
+        }
     });
 }
 

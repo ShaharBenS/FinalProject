@@ -23,7 +23,7 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error();
+            return new Error('removeStagesToWaitForIncludingOrigin: stages are invalid');
         }
     }
 
@@ -38,7 +38,7 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error();
+            return new Error('addStagesToWaitForIncludingOrigin: stages are invalid');
         }
     }
 
@@ -49,7 +49,7 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error();
+            return new Error('removeStagesToWaitFor: stages are invalid');
         }
     }
 
@@ -63,7 +63,7 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error();
+            return new Error('addStagesToWaitFor: stages are invalid');
         }
     }
 
@@ -74,7 +74,7 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error();
+            return new Error('removeNextStages: stages are invalid');
         }
     }
 
@@ -88,7 +88,7 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error();
+            throw new Error('addNextStages: stages are invalid');
         }
     }
 
@@ -96,7 +96,7 @@ class activeProcessStage {
     {
         if (this.approvalTime === null && this.stagesToWaitFor.length === 0) {
             this.approvalTime = new Date();
-        } else throw new Error();
+        } else return new Error('handleStage: stage already handled or is waiting for stages')
     }
 
     haveNoOneToWaitFor() {

@@ -154,7 +154,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                     callback(err);
                 } else {
                     if (processStructure === null || !processStructure.available) {
-                        callback(new Error('This process structure is currently unavailable due to changes in roles'));
+                        callback(null,'מבנה התהליך שנבחר אינו קיים או אינו זמין עקב שינויים בעץ המשתמשים');
                         return;
                     }
                     processAccessor.getActiveProcessByProcessName(processName, (err, activeProcesses) => {
@@ -164,7 +164,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                             if (activeProcesses === null) {
                                 let initialStage = processStructure.getInitialStageByRoleID(role.roleID, role.dereg);
                                 if (initialStage === -1) {
-                                    callback(new Error(">>> ERROR: username " + userEmail + " don't have the proper role to start the process " + processStructureName));
+                                    callback(null, 'אינך רשאי להתחיל תהליך זה מכיוון שאינך נמצא בשלבי מבנה התהליך');
                                     return;
                                 }
                                 getNewActiveProcess(processStructure, role, initialStage, userEmail, processName, processDate, processUrgency, processStructure.notificationTime, (err, activeProcess) => {
@@ -173,14 +173,16 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                         processAccessor.createActiveProcess(activeProcess, (err) => {
                                             if (err) callback(err);
                                             else {
-                                                //TODO Kuti Send Name and not email of creator
                                                 processReportController.addProcessReport(processName, activeProcess.creationTime, processDate, processUrgency, userEmail, (err) => {
                                                     if (err) {
                                                         callback(err);
                                                     } else {
                                                         // Notify first role
                                                         notificationsController.addNotificationToUser(userEmail, new Notification(
-                                                            processName + " מסוג " + processStructureName + " מחכה לטיפולך.", "תהליך בהמתנה"), callback);
+                                                            processName + " מסוג " + processStructureName + " מחכה לטיפולך.", "תהליך בהמתנה"), (err)=>{
+                                                            if(err) callback(err);
+                                                            else callback(null, 'success');
+                                                        });
                                                     }
                                                 });
                                             }
@@ -188,7 +190,7 @@ module.exports.startProcessByUsername = (userEmail, processStructureName, proces
                                     }
                                 });
                             } else {
-                                callback(new Error(">>> ERROR: there is already process with the name: " + processName));
+                                callback(null, 'קיים תהליך בשם זה.אנא בחר שם אחר להתהליך החדש');
                             }
                         }
                     });
@@ -305,6 +307,28 @@ module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
 
 function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callback) {
     let processName = fields.processName;
+    let nextStageRoles = [];
+    for (let attr in fields) {
+        if (fields.hasOwnProperty(attr) && !isNaN(attr)) {
+            nextStageRoles.push(parseInt(attr));
+        }
+    }
+    let stage = {
+        comments: fields.comments,
+        fileNames: fileNames,
+        nextStageRoles: nextStageRoles
+    };
+    handleProcess(userEmail, processName, stage, (err,result)=>{
+        if(err) callback(err);
+        else
+        {
+            uploadFiles(processName,dirOfFiles,files);
+            callback(null, result);
+        }
+    });
+}
+
+function uploadFiles(processName, dirOfFiles, files){
     let dirOfProcess = dirOfFiles + '/' + processName;
     let fileNames = [];
     let flag = true;
@@ -324,45 +348,15 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
                 fileNames.push(files[file].name);
                 let oldpath = files[file].path;
                 let newpath = dirOfProcess + '/' + files[file].name;
-                fs.rename(oldpath, newpath, function (err) {
-                    if (err) throw err;
-                });
+                try{
+                    fs.renameSync(oldpath, newpath);
+                }catch (e) {
+                    console.log(e);
+                }
             }
         }
     }
-    let nextStageRoles = [];
-    for (let attr in fields) {
-        if (fields.hasOwnProperty(attr) && !isNaN(attr)) {
-            nextStageRoles.push(parseInt(attr));
-        }
-    }
-    let stage = {
-        comments: fields.comments,
-        fileNames: fileNames,
-        nextStageRoles: nextStageRoles
-    };
-    handleProcess(userEmail, processName, stage, callback);
 }
-
-function assignSingleUsersToStages(process, newlyAddedStages, callback) {
-    let roleIDs = [];
-    newlyAddedStages.forEach(curr => {
-        let stage = process.getStageByStageNum(curr);
-        if (stage.userEmail === null) roleIDs.push(stage.roleID);
-    });
-    usersAndRolesController.findRolesByArray(roleIDs, (err, roles) => {
-        if (err) callback(err);
-        else {
-            roles.forEach(role => {
-                if (role.userEmail.length === 1) {
-                    process.assignUserToStage(role._id, role.userEmail[0]);
-                }
-            });
-            callback(null, process);
-        }
-    });
-}
-
 
 /**
  * approving process and updating stages
@@ -427,6 +421,26 @@ function handleProcess(userEmail, processName, stageDetails, callback) {
                     }
                 }
             });
+        }
+    });
+}
+
+
+function assignSingleUsersToStages(process, newlyAddedStages, callback) {
+    let roleIDs = [];
+    newlyAddedStages.forEach(curr => {
+        let stage = process.getStageByStageNum(curr);
+        if (stage.userEmail === null) roleIDs.push(stage.roleID);
+    });
+    usersAndRolesController.findRolesByArray(roleIDs, (err, roles) => {
+        if (err) callback(err);
+        else {
+            roles.forEach(role => {
+                if (role.userEmail.length === 1) {
+                    process.assignUserToStage(role._id, role.userEmail[0]);
+                }
+            });
+            callback(null, process);
         }
     });
 }

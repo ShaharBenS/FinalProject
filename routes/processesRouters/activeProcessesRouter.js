@@ -80,10 +80,13 @@ router.post('/startProcess', function (req, res) {
     let processDate = req.body.processDate;
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
-    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err) => {
-        if (err) res.render('errorViews/error');
+    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err, result) => {
+        if (err){
+            console.log(err);
+            res.render('errorViews/error');
+        }
         else {
-            res.send("success");
+            res.send(result);
         }
     });
 });
