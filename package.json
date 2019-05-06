@@ -6,12 +6,12 @@
     "start": "node ./bin/www",
     "test": "mocha ./test/integration/usersAndRoles.js",
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
-    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests"
+    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests",
+    "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "bson": "latest",
-    "casper": "^0.1.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "^2.6.1",
@@ -38,9 +38,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "jest-puppeteer": "^3.9.0",
     "mocha": "^5.2.0",
-    "nyc": "^14.1.0",
     "testcafe": "^1.1.3"
   }
 }
