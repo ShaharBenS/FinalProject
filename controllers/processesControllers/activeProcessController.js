@@ -702,7 +702,7 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
 };
 
 module.exports.advanceProcessesIfTimeHasPassed = ()=>{
-    activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
+    this.getAllActiveProcesses((err, activeProcesses) =>
     {
         if (err) {
             console.log(err);

@@ -118,7 +118,7 @@ function updateOnlineForms() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if (xmlHttp.responseText === "success") {
-                alertify.alert("טפסים נוצרו בהצלחה",()=>{
+                alertify.alert("טפסים נוצרו בהצלחה", () => {
                     window.location.href = '/Home'
                 });
             } else
@@ -170,7 +170,12 @@ function confirmStartProcess() {
     let processName = document.getElementById("start-processes-name").value;
     let processDate = document.getElementById("start-processes-date").value;
     let urgency = document.getElementById("start-processes-urgency").value;
-    let data = {processName: processName, structureName: structureName, processDate: processDate, processUrgency: urgency};
+    let data = {
+        processName: processName,
+        structureName: structureName,
+        processDate: processDate,
+        processUrgency: urgency
+    };
     if (processName === "") {
         alertify.alert("שם לא יכול להיות ריק");
         return;
@@ -180,7 +185,7 @@ function confirmStartProcess() {
         return;
     }
     let today = new Date();
-    if(today.getTime() >= new Date(processDate).getTime()){
+    if (today.getTime() >= new Date(processDate).getTime()) {
         alertify.alert("התאריך חייב להיות מאוחר יותר מהיום");
         return;
     }
@@ -195,7 +200,7 @@ function confirmStartProcess() {
     ).done(function (responseText, status) {
         if (status === "success") {
             if (responseText === "success") {
-                alertify.alert("תהליך נוצר בהצלחה",()=>{
+                alertify.alert("תהליך נוצר בהצלחה", () => {
                     window.location.href = '/Home';
                 });
             } else {
