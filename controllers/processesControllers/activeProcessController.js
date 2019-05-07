@@ -91,13 +91,41 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 lastApproached: today,
                 stageToReturnTo: initialStage
             }, activeProcessStages);
+            let initialStages = activeProcessToReturn.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
+            while(initialStages.length !== 0)
+            {
+                let stage = initialStages.shift();
+                if (stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg)) {
+                    activeProcessToReturn.removeStage(stage.stageNum);
+                    initialStages = activeProcessToReturn.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
+                    continue;
+                }
+                for(let i=0;i<stage.nextStages.length;i++)
+                {
+                    let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[i]);
+                    if(nextStage.userEmail !== null && stage.userEmail === nextStage.userEmail)
+                    {
+                        activeProcessToReturn.removeStage(nextStage.stageNum);
+                        initialStages = activeProcessToReturn.stages.filter((stage)=>stage.stagesToWaitFor.length === 0);
+                        break;
+                    }
+                    initialStages.push(activeProcessToReturn.getStageByStageNum(nextStage.stageNum));
+                }
+            }
+            /*
             for (let i = 0; i < activeProcessToReturn.stages.length; i++) {
                 let stage = activeProcessToReturn.stages[i];
                 if (stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg)) {
                     activeProcessToReturn.removeStage(stage.stageNum);
                     i--;
                 }
-            }
+                if(stage.userEmail === lastUserEmail)
+                {
+                    activeProcessToReturn.removeStage(stage.stageNum);
+                    i--;
+                }
+                lastUserEmail = stage.userEmail;
+            }*/
             callback(null, activeProcessToReturn);
         }
     });
