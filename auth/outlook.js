@@ -5,7 +5,7 @@ let OutlookStrategy = require('passport-outlook').Strategy;
 passport.use(new OutlookStrategy({
         clientID: "ba13fb4b-878c-4d71-a5eb-f68305542676",
         clientSecret: "vqACHBJKZ69!zzcho429];#",
-        callbackURL: 'https://localhost:3000/auth/outlook/callback'
+        callbackURL: 'https://localhost/auth/outlook/callback'
     },
     function (accessToken, refreshToken, profile, done)
     {
