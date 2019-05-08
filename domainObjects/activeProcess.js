@@ -129,11 +129,11 @@ class activeProcess {
         }
     }
 
-    handleStage(stageDetails) {
-        let stage = this.getStageByStageNum(stageDetails.stageNum);
+    handleStage(stageNum) {
+        let stage = this.getStageByStageNum(stageNum);
         if(stage instanceof Error) return stage;
         if(stage.kind === 'Creator') {
-            this.stageToReturnTo = stageDetails.stageNum;
+            this.stageToReturnTo = stageNum;
         }
         let result = stage.handleStage();
         if(result instanceof Error) return result;
@@ -141,7 +141,7 @@ class activeProcess {
         {
             let currentStage = this.getStageByStageNum((stage.nextStages[i]));
             if(currentStage instanceof Error) return currentStage;
-            let result = currentStage.removeStagesToWaitFor([stageDetails.stageNum]);
+            let result = currentStage.removeStagesToWaitFor([stageNum]);
             if(result instanceof Error) return result;
         }
     }
