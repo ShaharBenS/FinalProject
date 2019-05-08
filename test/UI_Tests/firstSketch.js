@@ -5,7 +5,7 @@ let ClientFunction = require("testcafe").ClientFunction;
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
 fixture('Login Test')
-    .page('https://localhost:3000/');
+    .page('https://localhost');
 
 test('Create todo', async browser => {
     await browser
@@ -16,7 +16,7 @@ test('Create todo', async browser => {
     await browser
         .typeText('[name="passwd"]', 'tomer8108')
         .pressKey('enter');
-    await browser.expect(getCurrentUrl()).eql('https://localhost:3000/Home', {timeout: 5000});
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home', {timeout: 5000});
 });
 
 /*
