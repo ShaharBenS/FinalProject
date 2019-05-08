@@ -19,13 +19,13 @@ passport.use(new OutlookStrategy({
                 usersAccessor.findAdmins({userEmail: email}, (err, results) =>
                 {
                     if (err) {
-                        done(null, null);
+                        return done(err);
                     }
                     else if (results.length === 0) {
                         usersAccessor.findUsername({userEmail: email}, (err, result) =>
                         {
                             if (err) {
-                                done(null, null);
+                                return done(err);
                             }
                             else if (result.length === 0) {
                                 done(null, null);
