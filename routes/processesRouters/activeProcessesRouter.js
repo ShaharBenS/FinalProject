@@ -23,9 +23,12 @@ router.post('/handleProcess', function (req, res) {
     form.parse(req, function (err, fields, files) {
         let userEmail = req.user.emails[0].value;
         activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files,'files', (err, ret) => {
-            if (err) res.render('errorsViews/error');
+            if (err){
+                console.log(err);
+                res.render('errorsViews/error');
+            }
             else {
-                res.send('success');
+                res.send(ret);
             }
         });
     });

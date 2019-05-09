@@ -313,6 +313,10 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
             let foundStage = null;
             for (let i = 0; i < process.currentStages.length; i++) {
                 let currentStage = process.getStageByStageNum(process.currentStages[i]);
+                if(currentStage instanceof Error) {
+                    callback(currentStage);
+                    return;
+                }
                 if (currentStage.userEmail === userEmail) {
                     foundStage = currentStage;
                     break;
@@ -330,12 +334,12 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
             }
             for (let i = 0; i < nextStageRoles.length; i++) {
                 if (!foundStage.nextStages.includes(nextStageRoles[i])) {
-                    callback(new Error('HandleProcess: next stages are wrong'));
+                    callback(null, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגואים');
                     return;
                 }
             }
             if (nextStageRoles.length === 0 && foundStage.nextStages.length !== 0) {
-                callback(new Error('HandleProcess: next stages are empty and process cannot be finished'));
+                callback(null, 'לא סומנו תפקידים לשלב הבא');
                 return;
             }
             let today = new Date();
@@ -348,7 +352,13 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
                         fileNames: fileNames,stageNum: foundStage.stageNum,
                         action: 'continue'
                     };
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetailsForReport, today, callback);
+                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetailsForReport, today, (err,result)=>{
+                        if(err) callback(err);
+                        else
+                        {
+                            callback(null, 'success');
+                        }
+                    });
                 }
             });
         }
@@ -397,7 +407,8 @@ function uploadFiles(processName, dirOfFiles, files){
  * @param callback
  */
 function handleProcess(userEmail, process, currentStage, nextStageRoles, nowDate, callback) {
-    process.handleStage(currentStage.stageNum);
+    let result = process.handleStage(currentStage.stageNum);
+    if(result instanceof Error) callback(result);
     advanceProcess(process, currentStage.stageNum, nextStageRoles, nowDate, (err, newlyAddedStages) => {
         if (err) callback(err);
         else {

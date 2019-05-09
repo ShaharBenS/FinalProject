@@ -65,7 +65,7 @@ $(document).ready(function() {
         }
         else
         {
-            alert('קרתה שגיאה בעת העברת התהליך לשלב הבא');
+            alert(response);
         }
     });
 });
@@ -86,7 +86,7 @@ function cancelProcess(processName)
             }
             else
             {
-                alert('קרתה שגיאה בעת ביטול התהליך');
+                alert(xhr.responseText);
             }
             window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
         }
