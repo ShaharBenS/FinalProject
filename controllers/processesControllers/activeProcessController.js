@@ -323,7 +323,7 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
                 }
             }
             if (foundStage === null) {
-                callback(new Error('HandleProcess: user not found in current stages'));
+                callback(null, 'אינך רשאי לטפל בתהליך זה מכיוון שאינך כלול בשלבים הנוכחיים של התהליך');
                 return;
             }
             let nextStageRoles = [];
@@ -334,7 +334,7 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
             }
             for (let i = 0; i < nextStageRoles.length; i++) {
                 if (!foundStage.nextStages.includes(nextStageRoles[i])) {
-                    callback(null, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגואים');
+                    callback(null, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
                     return;
                 }
             }
@@ -467,7 +467,7 @@ function advanceProcess(process, stageNum, nextStages, nowDate, callback) {
                 currentStages: process.currentStages, stages: process.stages, lastApproached: nowDate,
                 stageToReturnTo: process.stageToReturnTo
             }, (err, res) => {
-                if (err) callback(new Error(">>> ERROR: advance process | UPDATE"));
+                if (err) callback(err);
                 else {
                     callback(null, addedCurrentStages);
                 }
@@ -803,3 +803,4 @@ module.exports.advanceProcess = advanceProcess;
 module.exports.getRoleNamesForArray = getRoleNamesForArray;
 module.exports.getRoleIDsOfDeregStages = getRoleIDsOfDeregStages;
 module.exports.getNewActiveProcess = getNewActiveProcess;
+module.exports.uploadFiles = uploadFiles;
