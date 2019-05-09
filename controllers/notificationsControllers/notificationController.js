@@ -51,63 +51,65 @@ module.exports.countNotifications = (email, callback) =>
     notificationAccessor.countNotifications({userEmail: email}, callback)
 };
 
-/*
-    TODO: This function has a bug that need to be fixed. When the active process diverges into two roles, the last approach time , however, applies on both of them.
- */
-module.exports.updateNotifications = () =>
+module.exports.updateNotifications = (callback) =>
 {
     activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
     {
         if (err) {
             console.log(err);
+            callback(err);
         }
         else {
             activeProcesses.forEach(activeProcess =>
             {
-                let timePassedInHours = Math.floor(((new Date()) - activeProcess.lastApproached) / 36e5);
-                if (timePassedInHours % activeProcess.notificationTime === 0) {
-                    let emails = [];
-                    let incrementCycles = [];
-                    activeProcess.currentStages.forEach(curr =>
+                let emails = [];
+                let times = [];
+                let incrementCycles = [];
+                activeProcess.currentStages.forEach(curr =>
+                {
+                    let timePassedInSeconds = Math.floor(((new Date()) - activeProcess.stages[curr].assignmentTime) % 60000 / 1000);
+                    if (activeProcess.stages[curr].notificationsCycle <= timePassedInSeconds / activeProcess.notificationTime) {
+                        incrementCycles.push(curr);
+                        emails.push(activeProcess.stages[curr].userEmail);
+                        times.push(timePassedInSeconds/60/60)
+                    }
+                });
+                activeProcessController.incrementStageCycle(activeProcess.processName, incrementCycles, (_) =>
+                {
+                    emails.reduce((prev, curr) =>
                     {
-                        if (activeProcess.stages[curr].notificationsCycle <= timePassedInHours / activeProcess.notificationTime) {
-                            incrementCycles.push(curr);
-                            emails.push(activeProcess.stages[curr].userEmail);
-                        }
-                    });
-                    activeProcessController.incrementStageCycle(activeProcess.processName, incrementCycles, (_) =>
-                    {
-                        emails.reduce((prev, curr) =>
-                        {
-                            return (err) =>
-                            {
-                                if (err) {
-                                    prev(err);
-                                }
-                                else {
-                                    this.addNotificationToUser(curr,
-                                        new Notification(
-                                            "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + timePassedInHours + " שעות", "תזכורת להתליך בהמתנה"),
-                                        (err) =>
-                                        {
-                                            if (err) {
-                                                prev(err);
-                                            }
-                                            else {
-                                                prev(null);
-                                            }
-                                        }
-                                    );
-                                }
-                            }
-                        }, (err) =>
+                        return (err) =>
                         {
                             if (err) {
-                                console.log(err);
+                                prev(err);
                             }
-                        })(null);
-                    });
-                }
+                            else {
+                                this.addNotificationToUser(curr,
+                                    new Notification(
+                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + times[emails.indexOf(curr)] + " שעות", "תזכורת להתליך בהמתנה"),
+                                    (err) =>
+                                    {
+                                        if (err) {
+                                            prev(err);
+                                        }
+                                        else {
+                                            prev(null);
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    }, (err) =>
+                    {
+                        if (err) {
+                            console.log(err);
+                            callback(err);
+                        }
+                        else{
+                            callback(null);
+                        }
+                    })(null);
+                });
             });
         }
     })
