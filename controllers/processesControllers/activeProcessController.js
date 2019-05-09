@@ -431,6 +431,7 @@ function assignSingleUsersToStages(process, newlyAddedStages, callback) {
     let roleIDs = [];
     newlyAddedStages.forEach(curr => {
         let stage = process.getStageByStageNum(curr);
+        if(stage instanceof Error) callback(stage);
         if (stage.userEmail === null) roleIDs.push(stage.roleID);
     });
     usersAndRolesController.findRolesByArray(roleIDs, (err, roles) => {
@@ -438,7 +439,8 @@ function assignSingleUsersToStages(process, newlyAddedStages, callback) {
         else {
             roles.forEach(role => {
                 if (role.userEmail.length === 1) {
-                    process.assignUserToStage(role._id, role.userEmail[0]);
+                    let result = process.assignUserToStage(role._id, role.userEmail[0]);
+                    if(result instanceof Error) callback(result);
                 }
             });
             callback(null, process);
@@ -457,6 +459,7 @@ function assignSingleUsersToStages(process, newlyAddedStages, callback) {
  */
 function advanceProcess(process, stageNum, nextStages, nowDate, callback) {
     let addedCurrentStages = process.advanceProcess(stageNum, nextStages);
+    if(addedCurrentStages instanceof Error) callback(addedCurrentStages);
     assignSingleUsersToStages(process, addedCurrentStages, (err, process) => {
         if (err) callback(err);
         else {
@@ -480,7 +483,8 @@ module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) callback(err);
                 else {
-                    process.assignUserToStage(roleID, userEmail);
+                    let result = process.assignUserToStage(roleID, userEmail);
+                    if(result instanceof Error) callback(result);
                     processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
                 }
             });
@@ -495,7 +499,8 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
                 if (err) callback(err);
                 else {
-                    process.unAssignUserToStage(roleID, userEmail);
+                    let result = process.unAssignUserToStage(roleID, userEmail);
+                    if(result instanceof Error) callback(result);
                     processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
                 }
             });
@@ -523,6 +528,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 let foundStage = null;
                 for (let i = 0; i < process.currentStages.length; i++) {
                     let currentStage = process.getStageByStageNum(process.currentStages[i]);
+                    if(currentStage instanceof Error) callback(currentStage);
                     if (currentStage.userEmail === userEmail) {
                         foundStage = currentStage;
                         break;
@@ -535,7 +541,9 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                 }
                 let nextStagesArr = [];
                 for (let j = 0; j < foundStage.nextStages.length; j++) {
-                    nextStagesArr.push(process.getStageByStageNum(foundStage.nextStages[j]));
+                    let stageToPush = process.getStageByStageNum(foundStage.nextStages[j]);
+                    if(stageToPush instanceof Error) callback(stageToPush);
+                    nextStagesArr.push(stageToPush);
                 }
                 this.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
@@ -581,12 +589,15 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
                 return;
             }
             let creatorEmail = process.returnProcessToCreator();
+            if(creatorEmail instanceof Error) callback(creatorEmail);
             let today = new Date();
+            let currentNumberForUser = process.getCurrentStageNumberForUser(userEmail);
+            if(currentNumberForUser instanceof Error) callback(currentNumberForUser);
             let stage = {
                 comments: comments,
                 fileNames: [],
                 action: "return",
-                stageNum: process.getCurrentStageNumberForUser(userEmail)
+                stageNum: currentNumberForUser
             };
             processAccessor.updateActiveProcess({processName: processName}, {
                 currentStages: process.currentStages,
@@ -613,12 +624,14 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
         if (err) callback(err);
         else {
             let today = new Date();
+            let currentNumberForUser = process.getCurrentStageNumberForUser(userEmail);
+            if(currentNumberForUser instanceof Error) callback(currentNumberForUser);
             let stage = {
                 comments: comments,
                 filledForms: [],
                 fileNames: [],
                 action: "cancel",
-                stageNum: process.getCurrentStageNumberForUser(userEmail)
+                stageNum: currentNumberForUser
             };
             processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
                 if (err) callback(err);
@@ -738,7 +751,8 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            process.incrementNotificationsCycle(stageNumbers);
+            let result = process.incrementNotificationsCycle(stageNumbers);
+            if(result instanceof Error) callback(result);
             processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
         }
     })
@@ -758,12 +772,16 @@ module.exports.advanceProcessesIfTimeHasPassed = ()=>{
                     activeProcess.currentStages.forEach(curr =>
                     {
                         let currStage = activeProcess.getStageByStageNum(curr);
+                        if(currStage instanceof Error) {
+                            console.log(currStage);
+                            return;
+                        }
                         let timePassedInHours = ((new Date()) - currStage.assignmentTime) / 36e5;
                         if (timePassedInHours > activeProcess.automaticAdvanceTime) {
                             this.handleProcess(currStage.userEmail, activeProcess.processName, {comments: '',
                                 fileNames: [],
                                 nextStageRoles: currStage.nextStages},(err)=>{
-                                console.log(err);
+                                if(err) console.log(err);
                             });
                         }
                     });
@@ -772,12 +790,6 @@ module.exports.advanceProcessesIfTimeHasPassed = ()=>{
         }
     })
 };
-
-/////////
-module.exports.replaceSingleQuotes = (st)=>{
-    return st.replace(/([\"\'])/g,'\\'+$1);
-};
-/////////
 
 
 module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleIDWithRoleNameAndUserEmailWithUserName;
