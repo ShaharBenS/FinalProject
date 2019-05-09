@@ -570,7 +570,7 @@ module.exports.getFatherOfDeregByArrayOfRoleIDs = (roleID, deregs, callback)=>
             callback(null, toReturn);
         }
     });
-}
+};
 
 function addChildrenToRole(roleObjectID, childrenObjectID, callback)
 {
@@ -672,20 +672,20 @@ function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID
             processes.forEach(process => {
                 process.stages.filter(stage=>stage.roleID !== undefined).forEach(stage => {
                     if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
-                        if (stage.userEmail === null) {
-                            let findReplacement = (roleId) => {
-                                let replacement = oldTree.getFatherOf(roleId);
-                                if (replacement === undefined) {
-                                    return rootID;
-                                }
-                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
-                                    return findReplacement(replacement);
-                                } else {
-                                    return replacement;
-                                }
-                            };
-                            stage.roleID = findReplacement(stage.roleID);
-                        }
+                        let findReplacement = (roleId) => {
+                            let replacement = oldTree.getFatherOf(roleId);
+                            if (replacement === undefined) {
+                                return rootID;
+                            }
+                            if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
+                                return findReplacement(replacement);
+                            } else {
+                                return replacement;
+                            }
+                        };
+                        stage.roleID = findReplacement(stage.roleID);
+                        /* TODO: need Kuti's help here */
+                        /* TODO: basically need to out the process in available process */
                     }
                 });
             });
