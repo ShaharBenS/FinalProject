@@ -933,12 +933,12 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
 
         if (!(figure instanceof draw2d.Connection)) {
             if((figure instanceof sankey.shape.State) && ((diagramContext === '__tree__') || (figure.children.data[0].figure.text === ""))){
-                items.bgcolor = {name: "<i style='font-size: 20px' class='ion ion-shuffle'><label style='padding-right: 6px;font-weight: normal'>דרג</label><i>"};
+                //items.bgcolor = {name: "<i style='font-size: 20px' class='ion ion-shuffle'><label style='padding-right: 6px;font-weight: normal'>דרג</label><i>"};
             }
         }
         if (figure instanceof sankey.shape.State) {
             if (diagramContext === '__tree__') {
-                items.users = {name: "<i style='font-size: 20px' class='ion ion-android-people'><label style='padding-right: 6px;font-weight: normal'>ראה משתמשים</label><i>"}
+                items.users = {name: "<i style='font-size: 20px' class='ion ion-settings'><label style='padding-right: 6px;font-weight: normal'>הגדרות תפקיד</label><i>"}
             }
         }
         if ((figure instanceof sankey.shape.Start) ||
@@ -964,12 +964,12 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         this._setColor(figure, "color");
                         break;
                     case "bgcolor":
-                        //this._setColor(figure, "bgColor");
-                        let roleName = figure.children.data[0].figure.text;
+                        this._setColor(figure, "bgColor");
+                        /*let roleName = figure.children.data[0].figure.text;
                         $('#dereg-select').val(roleToDereg[roleName]).change();
                         currentRoleNameClicked = roleName;
                         document.getElementById('select-dereg-modal').style.display = 'block';
-                        break;
+                        break;*/
                     case "fontcolor":
                         //this._setColor(figure, "fontColor");
                         break;
@@ -985,8 +985,10 @@ sankey.policy.EditPolicy = draw2d.policy.canvas.BoundingboxSelectionPolicy.exten
                         break;
                     case "users":
                         if (diagramContext === '__tree__') {
-                            currentRoleNameClicked = figure.children.data[0].figure.text;
-                            rolesToHTML(figure.children.data[0].figure.text);
+                            let roleName = figure.children.data[0].figure.text;
+                            currentRoleNameClicked = roleName;
+                            $('#dereg-select').val(roleToDereg[roleName]).change();
+                            rolesToHTML(roleName);
                             document.getElementById("select_users_modal").style.display = "block";
                         }
                         break;

@@ -44,7 +44,7 @@ $(document).ready(function () {
     };
 
     let modal3 = document.getElementById('select-dereg-modal');
-    let modal4 = document.getElementById('define-auto-time-modal');
+    let modal4 = document.getElementById('define-times-modal');
     let modal5 = document.getElementById('define-notification-time-modal');
     let modal6 = document.getElementById('getHelpProcessStructure');
 
