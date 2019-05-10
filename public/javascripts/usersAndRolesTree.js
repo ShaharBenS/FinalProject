@@ -36,14 +36,10 @@ xmlHttp2.send(null);
 
 $(document).ready(() => {
     var modal = document.getElementById('select_users_modal');
-    var modal2 = document.getElementById('select-dereg-modal');
     var modal3 = document.getElementById('getHelpUsersAndRoles');
     window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
-        }
-        if (event.target === modal2) {
-            modal2.style.display = "none";
         }
         if (event.target === modal3) {
             modal3.style.display = "none";
@@ -106,7 +102,6 @@ let currentRoleNameClicked = '';
 function changeDeregClicked() {
     let selector = document.getElementById('dereg-select');
     roleToDereg[currentRoleNameClicked] = selector.options[selector.selectedIndex].value;
-    document.getElementById('select-dereg-modal').style.display = 'none';
 }
 
 function rolesToHTML(roleName) {
