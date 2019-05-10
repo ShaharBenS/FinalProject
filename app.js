@@ -13,8 +13,13 @@ let onlineFormsController = require('./controllers/onlineFormsControllers/online
 ///
 let app = express();
 
+let argv = process.argv;
+let dbName = "Aguda";
 // Connecting to DB
-mongoose.connect('mongodb://localhost:27017/Aguda', {useNewUrlParser: true});
+if (argv.length >= 3 && argv[2] === "TEST")
+    dbName = "Tests";
+
+mongoose.connect('mongodb://localhost:27017/' + dbName, {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
 
 

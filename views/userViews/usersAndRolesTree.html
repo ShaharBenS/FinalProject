@@ -113,11 +113,13 @@
             <div style="height: 30%"></div>
             <button onclick="getHelp()" title="Save Report" class="btn btn-primary">עזרה</button>
             <div style="height: 6%"></div>
-            <button onclick="loadDefaultTree()" title="Save Report" class="btn btn-primary">טען עץ<br>ברירת<br>מחדל</button>
+            <button class="btn btn-primary" id="loadDefaultTree" onclick="loadDefaultTree()" title="Save Report">טען
+                עץ<br>ברירת<br>מחדל
+            </button>
             <div style="height: 6%"></div>
             <button class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
             <div style="height: 6%"></div>
-            <button onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
+            <button class="btn btn-primary" id="saveTree" onclick="confirm()" title="Save Report"> שמור
             </button>
         </div>
         <div id="view">

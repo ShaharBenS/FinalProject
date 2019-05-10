@@ -38,7 +38,7 @@
             <button class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
                 תהליכים שממתינים לי
             </button>
-            <button class="btn btn-default sameWidth"
+            <button class="btn btn-default sameWidth" id="availableProcesses"
                     onclick="location.href='/activeProcesses/getAvailableActiveProcessesByUser'">תהליכים זמינים
             </button>
         </div>
@@ -51,7 +51,9 @@
             <button class="btn btn-default sameWidth"
                     onclick="location.href='/activeProcesses/getAllProcessesReportsByUser'">הצג דוחות
             </button>
-            <button class="btn btn-default sameWidth" onclick="editUsersAndRolesTree()">עריכת עץ המשתמשים</button>
+            <button class="btn btn-default sameWidth" id="editUsersTree" onclick="editUsersAndRolesTree()">עריכת עץ
+                המשתמשים
+            </button>
         </div>
 
         <hr class="orange-hr" style="width: 90%">
