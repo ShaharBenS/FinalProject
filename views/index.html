@@ -35,7 +35,7 @@
             <button class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">
                 התהליכים שלי
             </button>
-            <button class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
+            <button name="myWaitingProcesses" class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getWaitingActiveProcessesByUser'">
                 תהליכים שממתינים לי
             </button>
             <button class="btn btn-default sameWidth"
@@ -47,7 +47,7 @@
 
         <div>
             <h4><b>פעולות</b></h4>
-            <button class="btn btn-default sameWidth" onclick="startActiveProcess()">התחל תהליך</button>
+            <button name="startProcessView" class="btn btn-default sameWidth" onclick="startActiveProcess()">התחל תהליך</button>
             <button class="btn btn-default sameWidth"
                     onclick="location.href='/activeProcesses/getAllProcessesReportsByUser'">הצג דוחות
             </button>

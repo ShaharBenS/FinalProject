@@ -43,6 +43,7 @@ let getCurrentUrl = ClientFunction(() => window.location.href);
 fixture('Login Test').page('https://localhost:3000/').before(beforeGlobal);
 
 test('Create todo', async browser => {
+    await browser.setNativeDialogHandler(() => true);
     await browser
         .click('#login_button');
     await browser
@@ -51,7 +52,27 @@ test('Create todo', async browser => {
     await browser
         .typeText('[name="passwd"]', 'tomer8108')
         .pressKey('enter');
-    await  browser
-        .click('[name=treeEdit]');
-    await browser.expect(getCurrentUrl()).eql('https://localhost:3000/Home', {timeout: 5000});
+    await browser
+        .click('[name=startProcessView]');
+    await browser
+        .typeText('#start-processes-name', 'תהליך אישור')
+        .typeText('#start-processes-date', '2020-11-03T05:00')
+        .click('#start-process-button');
+    await browser
+        .wait(1000)
+        .pressKey('enter');
+    await browser
+        .click('[name="myWaitingProcesses"]');
+    await browser
+        .click('[id="תהליך אישור"]');
+    await browser
+        .typeText('[name="comments"]', 'הערות של אחראי מיתוג קמפיינים')
+        .click('#advanceProcess');
+    /*const history = await browser.getNativeDialogHistory();
+    await browser
+        .expect(history.length).eql(1)
+        .expect(history[0].type).eql('alert')
+        .expect(history[0].text).eql('שם לא יכול להיות ריק');*/
+    /*await browser
+    await browser.expect(getCurrentUrl()).eql('https://localhost:3000/Home', {timeout: 5000});*/
 });
