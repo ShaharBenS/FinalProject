@@ -108,16 +108,16 @@
         <div id="palette" align="center" style="display:flex;justify-content: center;align-items: center">
             <h6 style="color:#000">הוסף תפקיד</h6>
             <div style="height: 2%;"></div>
-            <img src="/draw_sankey/server/html/editor/assets/img/person-add.png" data-shape="sankey.shape.State"
+            <img id="role-dragger" src="/draw_sankey/server/html/editor/assets/img/person-add.png" data-shape="sankey.shape.State"
                  class="palette_node_element draw2d_droppable">
             <div style="height: 30%"></div>
             <button onclick="getHelp()" title="Save Report" class="btn btn-primary">עזרה</button>
             <div style="height: 6%"></div>
             <button onclick="loadDefaultTree()" title="Save Report" class="btn btn-primary">טען עץ<br>ברירת<br>מחדל</button>
             <div style="height: 6%"></div>
-            <button class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
+            <button id="center-button" class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
             <div style="height: 6%"></div>
-            <button onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
+            <button id="save-button" onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
             </button>
         </div>
         <div id="view">
