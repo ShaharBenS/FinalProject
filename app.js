@@ -16,7 +16,7 @@ let app = express();
 let argv = process.argv;
 let dbName = "Aguda";
 // Connecting to DB
-if (argv.length >= 3 && argv[2] === "TEST")
+if (argv.length >= 3 && argv[2].toLowerCase() === "test")
     dbName = "Tests";
 
 mongoose.connect('mongodb://localhost:27017/' + dbName, {useNewUrlParser: true});
