@@ -130,7 +130,6 @@ function updateOnlineForms() {
 }
 
 function startActiveProcess() {
-    $('#start-processes-date').datepicker('setDate', new Date());
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
