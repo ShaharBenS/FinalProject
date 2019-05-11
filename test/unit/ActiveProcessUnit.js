@@ -114,7 +114,9 @@ describe('1.0 remove stage', function () {
         assert.deepEqual(testProcess.getStageByStageNum(0).nextStages, [1]);
         assert.deepEqual(testProcess.getStageByStageNum(2).stagesToWaitFor, [1]);
         testProcess.removeStage(1);
-        expect(() => testProcess.getStageByStageNum(1)).to.throw();
+        let result = testProcess.getStageByStageNum(1);
+        assert.deepEqual(result instanceof Error, true);
+        assert.deepEqual(result.message, 'getStageByStageNum: stage does not exist');
         assert.deepEqual(testProcess.getStageByStageNum(0).nextStages, [2]);
         assert.deepEqual(testProcess.getStageByStageNum(2).stagesToWaitFor, [0]);
     });
