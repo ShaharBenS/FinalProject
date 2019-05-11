@@ -267,6 +267,8 @@ test('Handle', async browser => {
         .click('[id="תהליך אישור"]');
     await browser
         .typeText('[name="comments"]', 'הערות של אחראי מיתוג קמפיינים')
+        .click('[name="3"]')
+        .click('[name="4"]')
         .click('#advanceProcess');
     /*const history = await browser.getNativeDialogHistory();
     await browser
