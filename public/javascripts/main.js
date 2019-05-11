@@ -130,7 +130,6 @@ function updateOnlineForms() {
 }
 
 function startActiveProcess() {
-    $('#start-processes-date').datepicker('setDate', new Date());
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
@@ -206,6 +205,12 @@ function confirmStartProcess() {
             } else {
                 alertify.alert(responseText);
             }
+        }
+        else
+        {
+            alertify.alert("קרתה שגיאה בעת התחלת התהליך", () => {
+                window.location.href = '/Home';
+            });
         }
     });
 }

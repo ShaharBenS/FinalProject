@@ -274,6 +274,7 @@ function seeFormsOpened() {
     let button = document.createElement("button");
     button.class = "btn";
     button.innerText = '+';
+    button.className += "plus-button";
     button.onclick = () => {
         let selectValue = select.options[select.selectedIndex].innerText;
         let found = false;

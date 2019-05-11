@@ -23,9 +23,12 @@ router.post('/handleProcess', function (req, res) {
     form.parse(req, function (err, fields, files) {
         let userEmail = req.user.emails[0].value;
         activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files,'files', (err, ret) => {
-            if (err) res.render('errorsViews/error');
+            if (err){
+                console.log(err);
+                res.render('errorsViews/error');
+            }
             else {
-                res.send('success');
+                res.send(ret);
             }
         });
     });
@@ -80,10 +83,13 @@ router.post('/startProcess', function (req, res) {
     let processDate = req.body.processDate;
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
-    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err) => {
-        if (err) res.render('errorViews/error');
+    activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err, result) => {
+        if (err){
+            console.log(err);
+            res.render('errorViews/error');
+        }
         else {
-            res.send("success");
+            res.send(result);
         }
     });
 });
