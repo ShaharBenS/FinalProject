@@ -59,21 +59,21 @@
     <div id="editor">
         <div id="palette" align="center">
             <h6 style="color:#000">הוסף שלב לפי תפקיד</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
+            <img id="add-by-role" src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
                  data-shape="sankey.shape.State.ByRole"
                  class="palette_node_element draw2d_droppable">
             <h6 style="color:#000">הוסף שלב לפי דרג</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
+            <img id="add-by-dereg" src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
                  data-shape="sankey.shape.State.ByDereg"
                  class="palette_node_element draw2d_droppable">
             <h6 style="color:#000">יוצר התהליך</h6>
-            <img src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
+            <img id="add-creator" src="/draw_sankey/server/html/editor/assets/img/palette_pipe.png"
                  data-shape="sankey.shape.State.Creator"
                  class="palette_node_element draw2d_droppable">
             <div style="height: 3%;"></div>
             <button class="btn btn-primary" onclick="getHelp();">עזרה</button>
             <div style="height: 3%"></div>
-            <button class="btn btn-primary"
+            <button id="define-times-button" class="btn btn-primary"
                     onclick="document.getElementById('define-times-modal').style.display = 'block'">הגדרת<br>זמנים
             </button>
             <!--<div style="height: 3%"></div>
@@ -83,9 +83,9 @@
             <div style="height: 3%"></div>
             <button id="deleteButton" class="btn btn-primary" onclick="deleteStructureClicked();">מחק</button>
             <div id="deleteButton_padding" style="height: 3%"></div>
-            <button class="btn btn-primary" onclick="seeFormsOpened();">טפסים</button>
+            <button id="forms-button" class="btn btn-primary" onclick="seeFormsOpened();">טפסים</button>
             <div style="height: 3%"></div>
-            <button class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
+            <button id="center-button" class="btn btn-primary" onclick="app.view.centerDocument();">מרכז</button>
             <div style="height: 3%"></div>
             <button id="saveButton" onclick="confirm()" title="Save Report" class="btn btn-primary"> שמור
             </button>
@@ -407,7 +407,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary okButton"
+                <button id="define-times-confirm" class="btn btn-primary okButton"
                         onclick="document.getElementById('define-times-modal').style.display = 'none'">
                     <span>אישור</span>
                 </button>

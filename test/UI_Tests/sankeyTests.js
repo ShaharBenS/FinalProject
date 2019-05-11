@@ -8,7 +8,7 @@ const elementWithClassNameAt = Selector((value, index) =>
     return document.getElementsByClassName(value)[index];
 });
 
-fixture('Sankey Tests').page('https://localhost/usersAndRoles/editTree/');
+fixture('Sankey Tests').page('https://localhost/');
 test('editing tree', async browser =>
 {
 
@@ -61,32 +61,31 @@ test('editing tree', async browser =>
         .typeText('[class="ajs-input"]', 'II')
         .pressKey('enter');
 
-
     await browser.click('#center-button');
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(0),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(0),160,0,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(0),160,0);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(1),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),160,0,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),160,0);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(1),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),160,-100,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),160,-100);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(1),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),160,100,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),160,100);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(3),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(3),160,-50,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(3),160,-50);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(3),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(3),160,50,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(3),160,50);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(4),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),160,100,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),160,100);
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(7),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(7),160,100,{speed:0.5});
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(7),160,100);
 
     await browser.rightClick(Selector('[class="sankey_shape_State"]').nth(0), {offsetX: 2, offsetY: 2})
         .click(Selector('[class="ion ion-settings"]').nth(0))
@@ -214,13 +213,116 @@ test('editing tree', async browser =>
         .wait(500)
         .click(Selector('#no-id123'));
 
-    await browser.click('#save-button').wait(300).pressKey('enter');
-    await browser.expect(getCurrentUrl()).eql('https://localhost/Home/', {timeout: 5000});
+    await browser.click('#save-button').wait(800).pressKey('enter');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home', {timeout: 5000});
+    await browser.click("#edit-tree-button");
+    await browser.expect(getCurrentUrl()).eql('https://localhost/usersAndRoles/editTree/', {timeout: 5000});
 
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > 3000) {
-            break;
-        }
-    }
+    await browser.expect(Selector('[class="sankey_shape_State"]').count).eql(9);
+    await browser.rightClick(Selector('[class="sankey_shape_State"]').nth(0), {offsetX: 2, offsetY: 2})
+        .click(Selector('[class="ion ion-settings"]').nth(0))
+        .expect(Selector('.email').nth(0).value).eql("shahar0897@outlook.com")
+        .expect(Selector('.name').nth(0).value).eql("שחר בן שטרית");
+    await browser.expect(Selector("#dereg-select").selectedIndex).eql(4);
+    await browser.navigateTo('https://localhost/Home/');
+    await browser.click("#add-process-structure")
+        .typeText("#new-process-structure-name","Test Structure")
+        .click("#new-process-structure-button")
+        .expect(getCurrentUrl()).eql('https://localhost/processStructures/addProcessStructure/?name=Test%20Structure', {timeout: 5000});
+
+    await browser.wait(1500);
+    await browser.drag('#add-by-role', 200, 50)
+        .click("#role_selector")
+        .click(Selector('#role_selector').find('option').withText("II"))
+        .click('#select_role_okay_button');
+
+    await browser.drag('#add-by-role', 350, 50)
+        .click("#role_selector")
+        .click(Selector('#role_selector').find('option').withText("HH"))
+        .click('#select_role_okay_button');
+
+    await browser.drag('#add-by-dereg', 500, -57)
+        .click("#dereg-select")
+        .click(Selector('#dereg-select').find('option').withText("דרג רמ\"ד"))
+        .click('#no-id1234');
+
+    await browser.drag('#add-by-role', 650, 50)
+        .click("#role_selector")
+        .click(Selector('#role_selector').find('option').withText("FF"))
+        .click('#select_role_okay_button');
+
+    await browser.drag('#add-creator', 200, 50);
+
+    await browser.drag('#add-by-role', 400, 200)
+        .click("#role_selector")
+        .click(Selector('#role_selector').find('option').withText("DD"))
+        .click('#select_role_okay_button');
+
+    await browser.drag('#add-by-role', 400, 350)
+        .click("#role_selector")
+        .click(Selector('#role_selector').find('option').withText("CC"))
+        .click('#select_role_okay_button');
+
+    await browser.drag('#add-by-dereg', 600, 150)
+        .click("#dereg-select")
+        .click(Selector('#dereg-select').find('option').withText("דרג סיו\"ר"))
+        .click('#no-id1234');
+
+    await browser.drag('#add-by-dereg', 800, 150)
+        .click("#dereg-select")
+        .click(Selector('#dereg-select').find('option').withText("דרג יו\"ר"))
+        .click('#no-id1234');
+
+    await browser.click('#center-button');
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(0),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(0),110,0);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(1),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(1),110,0);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(2),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(2),80,0);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(3),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(3),-500,210,{speed:0.7});
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(4),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),110,-50);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(4),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),105,90);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(5),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(5),150,50);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(6),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(6),150,-90);
+
+    await browser.hover(Selector('[class="sankey_shape_State"]').nth(7),{offsetX: 2, offsetY: 2})
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(7),130,0);
+
+    await browser.click('#define-times-button')
+        .click('#automaticTimeSelect')
+        .click(Selector('#automaticTimeSelect').find('option').withText("48 שעות"))
+        .click('#notificationTimeSelect')
+        .click(Selector('#notificationTimeSelect').find('option').withText("36 שעות"))
+        .click('#define-times-confirm');
+
+    await browser.click('#forms-button')
+        .click(Selector('.plus-button').nth(0))
+        .click('#selectForm')
+        .click(Selector('#selectForm').find('option').withText("טופס קניות"))
+        .click(Selector('.plus-button').nth(0))
+        .click('#no-id124');
+
+    await browser.click('#saveButton').wait(500).pressKey('enter');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home', {timeout: 5000});
+    await browser.click('#edit-process-structure')
+        .click('#processes_selector')
+        .click(Selector('#processes_selector').find('option').withText("Test Structure"))
+        .click('#edit-process-structure-button');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/processStructures/editProcessStructure/?name=Test%20Structure', {timeout: 5000});
+
+    await browser.wait(2000);
 });
