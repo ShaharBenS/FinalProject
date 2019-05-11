@@ -133,7 +133,7 @@ sankey.Application = Class.extend(
                 new sankey.dialog.FileSave(_this.currentFileHandle).show(data, function ()
                 {
                     _this.view.diagramName = _this.currentFileHandle.title;
-                    _this.updateWeights();
+                    //_this.updateWeights();
                 });
             });
         },

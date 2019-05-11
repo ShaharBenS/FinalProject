@@ -27,13 +27,13 @@ test('go to permissions', async browser => {
          .click(Selector('button').with({'title': 'בחר משתמש'}))
          .click(Selector('span').withText('midaArabic@outlook.com'))
          .click(Selector('a').with({'href':"/Home"}));*/
-    await browser.click('#editUsersTree');
+    await browser.click('#edit-tree-button');
     await browser.click('#loadDefaultTree');
     await browser.wait(500);
     await browser.pressKey('enter');
     await browser.wait(500);
     await browser.pressKey('enter');
-    await browser.click('#saveTree');
+    await browser.click('#save-button');
     await browser.pressKey('enter');
     await browser.navigateTo('https://localhost/Home');
     await browser.wait(5000);
