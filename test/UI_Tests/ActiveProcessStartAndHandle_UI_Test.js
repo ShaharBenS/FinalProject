@@ -7,11 +7,26 @@ let emailsToFullName = require('../inputs/trees/treeForGUIStartAndHandle/emailsT
 let rolesToDereg = require('../inputs/trees/treeForGUIStartAndHandle/rolesToDeregs');
 let rolesToEmails = require('../inputs/trees/treeForGUIStartAndHandle/rolesToEmails');
 let processStructureSankeyJSON = require('../inputs/processStructures/processStructureForGuiStartAndHandle/processStructure');
+let processStructureController = require('../../controllers/processesControllers/processStructureController');
+
+function addProcessStructure()
+{
+    return new Promise(resolve => {
+        processStructureController.addProcessStructure('yor@outlook.co.il', 'תהליך אישור', JSON.stringify(processStructureSankeyJSON), [], 0, "12", (err, needApproval) => {
+            if (err) {
+                resolve(err);
+            }
+            else {
+                console.log('blahblah');
+                resolve();
+            }
+        });
+    });
+}
 
 function insertToDB() {
     return new Promise(resolve => {
         userAccessor.createSankeyTree({sankey: JSON.stringify({content: {diagram: []}})}, (err, result) => {
-            console.log('blahblah');
             if (err) {
                 resolve(err);
             }
@@ -23,14 +38,7 @@ function insertToDB() {
                             resolve(err);
                         }
                         else {
-                            processStructureController.addProcessStructure('yor@outlook.co.il', 'תהליך אישור', JSON.stringify(processStructureSankeyJSON), [], 0, "12", (err, needApproval) => {
-                                if (err) {
-                                    resolve(err);
-                                }
-                                else {
-                                    resolve();
-                                }
-                            });
+                            resolve();
                         }
                     });
             }
@@ -39,18 +47,18 @@ function insertToDB() {
 }
 
 let beforeGlobal = async function () {
-    return await insertToDB();
+    mongoose.set('useCreateIndex', true);
+    await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
+    mongoose.connection.db.dropDatabase();
+    await insertToDB();
+    await addProcessStructure();
 };
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
-fixture('Handle Process').page('https://localhost:3000/');
+fixture('Handle Process').page('https://localhost');
 
 test('Start And Handle', async browser => {
-    /*this.enableTimeouts(false);
-    mongoose.set('useCreateIndex', true);
-    await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-    let something = await insertToDB();*/
     await browser.setNativeDialogHandler(() => true);
     await browser
         .click('#login_button');
@@ -83,7 +91,7 @@ test('Start And Handle', async browser => {
         .expect(history[0].text).eql('שם לא יכול להיות ריק');*/
     /*await browser
     await browser.expect(getCurrentUrl()).eql('https://localhost:3000/Home', {timeout: 5000});*/
-});
+}).before(beforeGlobal);
 
 test('Handle', async browser => {
     await browser.setNativeDialogHandler(() => true);
