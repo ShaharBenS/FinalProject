@@ -54,19 +54,18 @@ let beforeGlobal = async function () {
 };
 
 async function login(browser, userEmail, password) {
+    await browser.setNativeDialogHandler(() => true);
     await browser
         .click('#login_button');
     await browser
         .typeText('[name="loginfmt"]', userEmail)
         .pressKey('enter');
-    if(password === undefined)
-    {
+    if (password === undefined) {
         await browser
             .typeText('[name="passwd"]', 'tomer8108')
             .pressKey('enter');
     }
-    else
-    {
+    else {
         await browser
             .typeText('[name="passwd"]', password)
             .pressKey('enter');
@@ -79,7 +78,7 @@ async function startProcess(browser, activeProcessName, date, urgency, processSt
     let processStructureSelect = Selector('#start-processes-selector');
     let processStructureOption = processStructureSelect.find('option').withText(processStructureName);
     await browser
-        .typeText('#start-processes-name', 'תהליך אישור', { caretPos: 0, replace: true})
+        .typeText('#start-processes-name', 'תהליך אישור', {caretPos: 0, replace: true})
         .typeText('#start-processes-date', '2020-11-03T05:00')
         .click('#start-processes-urgency')
         .click(urgencyOption)
@@ -88,12 +87,12 @@ async function startProcess(browser, activeProcessName, date, urgency, processSt
         .click('#start-process-button');
 }
 
-async function handleProcess(browser, processName, comments, options, allOptions)
-{
+async function handleProcess(browser, processName, comments, options, allOptions, files) {
     await browser
         .click('[id="' + processName + '"]');
-    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/handleProcessView/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {timeout: 5000});
-
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/handleProcessView/?process_name=' + encodeURI(processName), {timeout: 5000});
+    let h1 = Selector('h1');
+    await browser.expect(h1.textContent).eql('טיפול בתהליך ' + processName);
     await browser
         .typeText('[name="comments"]', comments);
     /*for(let stageNum in allOptions)
@@ -102,9 +101,18 @@ async function handleProcess(browser, processName, comments, options, allOptions
         {
             await browser.expect(Selector('[name="'+ stageNum+'"]').textContent).eql(allOptions[stageNum]);
         }
-    }*/
-    for(let i=0;i<options.length;i++)
+    }
+    if(files !== undefined)
     {
+        for (let i = 0; i < files.length; i++) {
+            await browser
+                .click('#upFake')
+                .setFilesToUpload('#fileUpload', [
+                    files[i]
+                ]);
+        }
+    }*/
+    for (let i = 0; i < options.length; i++) {
         await browser
             .click('[name="' + options[i] + '"]');
     }
@@ -113,8 +121,7 @@ async function handleProcess(browser, processName, comments, options, allOptions
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home', {timeout: 5000});
 }
 
-async function takePartInProcess(browser, processName)
-{
+async function takePartInProcess(browser, processName) {
     await browser
         .click('[id="' + processName + '"]');
     await browser
@@ -122,8 +129,7 @@ async function takePartInProcess(browser, processName)
         .pressKey('enter');
 }
 
-async function returnProcessToCreator(browser, comments, processName)
-{
+async function returnProcessToCreator(browser, comments, processName) {
     await browser
         .click('[id="' + processName + '"]');
     await browser
@@ -136,7 +142,6 @@ let getCurrentUrl = ClientFunction(() => window.location.href);
 fixture('Handle Process').page('https://localhost');
 
 test('Start And Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'levtom@outlook.co.il');
     let h1 = Selector('h1');
     await browser.expect(h1.textContent).eql('מערכת לניהול תהליכים ארגוניים');
@@ -172,11 +177,10 @@ test('Start And Handle', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {timeout: 5000});
     await browser.expect(Selector('td').nth(0).textContent).eql('תהליך אישור');
     await browser.expect(Selector('td').nth(5).exists).notOk();
-    await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', [], {'1': 'רמד הסברה'});
+    await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', [], {'1': 'רמד הסברה'}, ['../fileTests/inputFiles/a.txt']);
 }).before(beforeGlobal);
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -185,15 +189,16 @@ test('Handle', async browser => {
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'levtom@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
-    await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', ['3', '4'], {'3': 'אחראי רכש', '4': 'גרפיקאי'});
+    await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', ['3', '4'], {
+        '3': 'אחראי רכש',
+        '4': 'גרפיקאי'
+    });
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'levtom2@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -201,7 +206,6 @@ test('Handle', async browser => {
 });
 
 test('Take Part In Process', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'shahar0897@outlook.com');
     await browser
         .click('[name="myAvailableProcesses"]');
@@ -209,7 +213,6 @@ test('Take Part In Process', async browser => {
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'shahar0897@outlook.com');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -217,7 +220,6 @@ test('Handle', async browser => {
 });
 
 test('Return To Creator', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -225,15 +227,16 @@ test('Return To Creator', async browser => {
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'levtom@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
-    await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', ['3', '4'], {'3': 'אחראי רכש', '4': 'גרפיקאי'});
+    await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', ['3', '4'], {
+        '3': 'אחראי רכש',
+        '4': 'גרפיקאי'
+    });
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'levtom2@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -241,7 +244,6 @@ test('Handle', async browser => {
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'shahar0897@outlook.com');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -249,7 +251,6 @@ test('Handle', async browser => {
 });
 
 test('Handle', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -257,7 +258,6 @@ test('Handle', async browser => {
 });
 
 test('Finish', async browser => {
-    await browser.setNativeDialogHandler(() => true);
     await login(browser, 'levtom@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
