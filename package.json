@@ -6,8 +6,8 @@
     "start": "node ./bin/www",
     "test": "mocha ./test/integration/usersAndRoles.js",
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
-    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/GUI_available_processes.js",
-    "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/GUI_available_processes.js"
+    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/GUI_notifications.js",
+    "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/GUI_notifications.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
