@@ -8,6 +8,12 @@ const elementWithClassNameAt = Selector((value, index) =>
     return document.getElementsByClassName(value)[index];
 });
 
+let beforeGlobal = async function () {
+    mongoose.set('useCreateIndex', true);
+    await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
+    mongoose.connection.db.dropDatabase();
+};
+
 fixture('Sankey Tests').page('https://localhost/');
 test('Testing Sankey', async browser =>
 {
@@ -359,4 +365,4 @@ test('Testing Sankey', async browser =>
     await browser.click('#saveButton').wait(500).pressKey('enter');
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home', {timeout: 5000});
     await browser.wait(1000);
-});
+}).before(beforeGlobal);
