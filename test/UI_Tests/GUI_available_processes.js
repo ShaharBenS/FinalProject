@@ -9,6 +9,7 @@ let rolesToDereg = require('../inputs/trees/treeForGUIStartAndHandle/rolesToDere
 let rolesToEmails = require('../inputs/trees/treeForGUIStartAndHandle/rolesToEmails');
 let processStructureSankeyJSON = require('../inputs/processStructures/processStructureForGuiStartAndHandle/processStructure');
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
+let onlineFormsController = require('../../controllers/onlineFormsControllers/onlineFormController');
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
@@ -34,6 +35,12 @@ let login2 = async function (browser) {
         .typeText('[name="passwd"]', 'tomer8108')
         .pressKey('enter');
 };
+
+function addForms() {
+    return new Promise(resolve => {
+        onlineFormsController.createAllOnlineForms(() => resolve());
+    })
+}
 
 
 function addProcessStructure() {
@@ -93,6 +100,7 @@ fixture('Available Processes')
         mongoose.set('useCreateIndex', true);
         await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
         mongoose.connection.db.dropDatabase();
+        await addForms();
         await insertToDB();
         await addProcessStructure();
         await browser.setNativeDialogHandler(() => true);

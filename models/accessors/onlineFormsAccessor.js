@@ -7,7 +7,7 @@ let OnlineForm = require('../../domainObjects/onlineForm');
  * @param callback
  */
 module.exports.createOnlineForm = (newOnlineForm, callback) => {
-    this.findOnlineFormByName(newOnlineForm.formName, (err, form) => {
+    findOnlineFormByName(newOnlineForm.formName, (err, form) => {
         if (err || form === null)
             onlineFormSchema.create(newOnlineForm, callback);
         else callback(new Error("The form \"" + newOnlineForm.formName + "\" already exists in db"));
@@ -19,7 +19,7 @@ module.exports.createOnlineForm = (newOnlineForm, callback) => {
  * @param formName - the form name
  * @param callback
  */
-module.exports.findOnlineFormByName = (formName, callback) => {
+let findOnlineFormByName = function (formName, callback) {
     onlineFormSchema.findOne({formName: formName}, (err, res) => {
         if (err)
             callback(err);
@@ -105,3 +105,4 @@ module.exports.getSchemaRecordFromOnlineForm = (form) => {
 };
 
 
+module.exports.findOnlineFormByName = findOnlineFormByName;
