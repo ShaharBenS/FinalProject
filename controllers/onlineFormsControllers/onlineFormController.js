@@ -19,7 +19,7 @@ module.exports.createAllOnlineForms = (callback) => {
         if (fileName !== 'form_template.html' && fileName.substring(fileName.length - 5) === '.html') {
             let fileNameNoHTML = fileName.replace('.html', '');
             let formName = whileReplace(fileNameNoHTML, '_', ' ');
-            this.createOnlineFrom(formName, fileNameNoHTML, (err) => {
+            createOnlineFrom(formName, fileNameNoHTML, (err) => {
                 if (err)
                     console.log(err.message);
                 success++;
@@ -33,7 +33,7 @@ module.exports.createAllOnlineForms = (callback) => {
     }
 };
 
-module.exports.createOnlineFrom = (formName, srcHTML, callback) => {
+let createOnlineFrom = function (formName, srcHTML, callback) {
     try {
         let newOnlineForm = new OnlineForm(formName, srcHTML);
         onlineFormAccessor.createOnlineForm(onlineFormAccessor.getSchemaRecordFromOnlineForm(newOnlineForm), callback);
@@ -57,3 +57,5 @@ module.exports.findOnlineFormsNamesByFormsIDs = (formsIDs, callback) => {
 module.exports.getOnlineFormByName = (formName, callback) => {
     onlineFormAccessor.findOnlineFormByName(formName, callback);
 };
+
+module.exports.createOnlineFrom = createOnlineFrom;
