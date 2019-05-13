@@ -1,6 +1,6 @@
 let Selector = require("testcafe").Selector;
 let ClientFunction = require("testcafe").ClientFunction;
-
+let mongoose = require('mongoose');
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 const elementWithClassNameAt = Selector((value, index) =>

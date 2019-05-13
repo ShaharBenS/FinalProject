@@ -4,11 +4,6 @@ let processStructure = require('../controllers/processesControllers/processStruc
 let UsersAndRolesTreeSankey = require('../controllers/usersControllers/usersAndRolesController');
 let waitingProcessStructuresController = require("../controllers/processesControllers/waitingProcessStructuresController");
 let onlineFormsController = require("../controllers/onlineFormsControllers/onlineFormController");
-let sankeyContent = require('../test/inputs/trees/treeForGUIStartAndHandle/sankey');
-let emailsToFullName = require('../test/inputs/trees/treeForGUIStartAndHandle/emailsToFullNames');
-let rolesToDereg = require('../test/inputs/trees/treeForGUIStartAndHandle/rolesToDeregs');
-let rolesToEmails = require('../test/inputs/trees/treeForGUIStartAndHandle/rolesToEmails');
-let processStructureSankeyJSON = require('../test/inputs/processStructures/processStructureForGuiStartAndHandle/processStructure');
 
 router.post('/file/save', function (req, res) {
     let userEmail = req.user.emails[0].value;
@@ -16,7 +11,7 @@ router.post('/file/save', function (req, res) {
         onlineFormsController.findOnlineFormsIDsByFormsNames(JSON.parse(req.body.onlineFormsOfProcess), (err, onlineFormsIDs)=>{
             if(err) callback(err);
             else {
-                processStructure.addProcessStructure(userEmail, req.body.processStructureName, JSON.stringify(processStructureSankeyJSON), onlineFormsIDs,req.body.automaticAdvanceTime, req.body.notificationTime, (err, needApprove) => {
+                processStructure.addProcessStructure(userEmail, req.body.processStructureName, req.body.content, onlineFormsIDs,req.body.automaticAdvanceTime, req.body.notificationTime, (err, needApprove) => {
                     if (err) {
                         res.send(err);
                     }
@@ -68,9 +63,9 @@ router.post('/file/save', function (req, res) {
         });
     }
     else if (req.body.context === '__tree__') {
-        UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,JSON.stringify(sankeyContent),
-            rolesToEmails,emailsToFullName,
-            rolesToDereg, (err) => {
+        UsersAndRolesTreeSankey.setUsersAndRolesTree(userEmail,req.body.content,
+            JSON.parse(req.body.roleToEmails),JSON.parse(req.body.emailToFullName),
+            JSON.parse(req.body.roleToDereg), (err) => {
                 if (err) {
                     res.send(err);
                 }
