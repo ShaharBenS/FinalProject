@@ -18,27 +18,20 @@
 </head>
 <style>
     .sameWidth {
-        width: 30%;
-        font-size: 18px;
-
+        width: 28%;
     }
-
-    .main-div {
-        width: 70%;
-    }
-
 </style>
 <body dir="rtl">
 <div align="center">
     <div class="top-bar" id="top-bar">
     </div>
-    <div class="main-div">
+    <div class="main-div" style="width: 60%">
         <h1>מערכת לניהול תהליכים ארגוניים</h1>
         <h3>אגודת הסטודנטים אוניברסיטת בן-גוריון</h3>
         <hr class="orange-hr" style="width: 90%">
 
         <div>
-            <h3><b>תהליכים פעילים</b></h3>
+            <h4><b>תהליכים פעילים</b></h4>
             <button name="myActiveProcesses" class="btn btn-default sameWidth" onclick="location.href='/activeProcesses/getAllActiveProcessesByUser'">
                 התהליכים שלי
             </button>
@@ -53,7 +46,7 @@
         <hr class="orange-hr" style="width: 90%">
 
         <div>
-            <h3><b>פעולות</b></h3>
+            <h4><b>פעולות</b></h4>
             <button name="startProcessView" class="btn btn-default sameWidth" onclick="startActiveProcess()">התחל תהליך</button>
             <button class="btn btn-default sameWidth"
                     onclick="location.href='/activeProcesses/getAllProcessesReportsByUser'">הצג דוחות
@@ -64,7 +57,7 @@
         <hr class="orange-hr" style="width: 90%">
 
         <div>
-            <h3><b>מבני תהליכים</b></h3>
+            <h4><b>מבני תהליכים</b></h4>
             <button id="add-process-structure" class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="addProcessStructureClicked()">הוספת מבנה תהליך</button>
             <button id="edit-process-structure" class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="editProcessStructureClicked()">עריכת מבנה תהליך</button>
             <button class="btn btn-default sameWidth" style="margin-bottom: 0px" onclick="waitingStructuresClicked()">מבני תהליכים הממתינים לאישור</button>
@@ -75,7 +68,7 @@
             <div class="modal-content" style="width: 30%">
                 <span id="close-add" class="close">&times;</span>
                 <br>
-                <h3>הוספת מבנה תהליך</h3>
+                <h4>הוספת מבנה תהליך</h4>
                 <br>
                 <input id="new-process-structure-name" type="text" style="text-align: center; width:50%"
                        placeholder="שם מבנה">
@@ -86,7 +79,7 @@
         <div id="edit-process-structure-modal" class="modal">
             <div class="modal-content">
                 <span id="close-edit" class="close">&times;</span>
-                <h3>בחר תהליך</h3>
+                <h4>בחר תהליך</h4>
                 <select id="processes_selector">
                 </select>
                 <br><br>
