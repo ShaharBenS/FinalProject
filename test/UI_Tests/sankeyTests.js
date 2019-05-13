@@ -11,7 +11,7 @@ const elementWithClassNameAt = Selector((value, index) =>
 let beforeGlobal = async function () {
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-    mongoose.connection.db.dropDatabase();
+    //mongoose.connection.db.dropDatabase();
 };
 
 fixture('Sankey Tests').page('https://localhost/');

@@ -685,6 +685,7 @@ function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID
                                 }
                             };
                             stage.roleID = findReplacement(stage.roleID);
+                            stage.userEmail = null;
                         }
                     }
                 });
