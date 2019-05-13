@@ -1,6 +1,7 @@
 let submitForm = function () {
     let oldWin = window.opener;
     let inputs = Array.prototype.slice.call(document.getElementsByTagName('input'));
+    let selects = Array.prototype.slice.call(document.getElementsByTagName('select'));
     let text_areas = Array.prototype.slice.call(document.getElementsByClassName('table_cell'));
     let general_text_areas = Array.prototype.slice.call(document.getElementsByClassName('no_table_cell'));
     let info = [];
@@ -41,6 +42,10 @@ let submitForm = function () {
                 info.push({field: input.name, value: input.value});
             else info.push({field: input.name, value: encodeJSONtoNotJSON(input.value)});
         }
+    });
+
+    selects.forEach((select) => {
+        info.push({field: select.name, value: select.options[select.selectedIndex].value});
     });
 
     Object.keys(tableInputs).forEach((tableID) => {
@@ -159,6 +164,8 @@ let fillForm = function (fields) {
                 element.value = decodeJSONtoNotJSON(field.value);
                 element.style.height = 'auto';
                 element.style.height = element.scrollHeight + 'px';
+            } else if (element.tagName.toLowerCase() === 'select') {
+                element.value = field.value;
             } else {
                 console.log('type error');
                 console.log(element.id);

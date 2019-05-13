@@ -24,7 +24,7 @@ let findOnlineFormByName = function (formName, callback) {
         if (err)
             callback(err);
         else if (res === null) callback(null, null);
-        else callback(null, this.getOnlineFormFromSchemaRecord(res));
+        else callback(null, getOnlineFormFromSchemaRecord(res));
     });
 };
 
@@ -37,7 +37,7 @@ module.exports.findOnlineFormByID = (formID, callback) => {
     onlineFormSchema.findOne({_id: formID}, (err, res) => {
         if (err)
             callback(err);
-        else callback(null, this.getOnlineFormFromSchemaRecord(res));
+        else callback(null, getOnlineFormFromSchemaRecord(res));
     });
 };
 
@@ -81,7 +81,7 @@ module.exports.findAllOnlineForms = (callback) => {
         else {
             let onlineFormsObjects = [];
             onlineFormsArray.forEach((form) => {
-                onlineFormsObjects.push(this.getOnlineFormFromSchemaRecord(form));
+                onlineFormsObjects.push(getOnlineFormFromSchemaRecord(form));
             });
             callback(null, onlineFormsObjects)
         }
@@ -92,7 +92,7 @@ module.exports.findAllOnlineForms = (callback) => {
  *  Converts OnlineForm schema record to OnlineForm object
  *  @param form - type: map, schema of online form
  */
-module.exports.getOnlineFormFromSchemaRecord = (form) => {
+let getOnlineFormFromSchemaRecord = function (form) {
     return new OnlineForm(form.formName, form.HTMLSource, form._id)
 };
 

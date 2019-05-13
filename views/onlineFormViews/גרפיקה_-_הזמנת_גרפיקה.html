@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+    <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="/javascripts/onlineForms.js"></script>
+    <link href="/stylesheets/onlineFormsStyle.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/external_libraries/aes_crypto.js"></script>
+    <script src="/external_libraries/signature_pad.js"></script>
+
+    <script>
+        let _formName = '';
+        let fields = undefined;
+
+        window.onload = function () {
+            _formName = '<%=formName%>';
+            document.title = _formName;
+            document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
+            let isForShow = '<%=isForShow%>' === 'true';
+            fields = '<%= fields %>';
+
+            setupInputs(_formName, isForShow, fields);
+        };
+
+    </script>
+</head>
+<body dir="rtl">
+<div align="center">
+    <div class="main-div-forms">
+        <h2 id="formTitle"><u></u></h2>
+        <h3 id="info"></h3>
+        <hr class="orange-hr">
+        <form id="form" onsubmit="return submitForm()">
+            <fieldset id="fieldset">
+                <div align="right">
+                    <p style="font-size: large">
+                        יש לשים לב שכל סוג פריט הוא הזמנה נפרדת לכן חשוב לציין:
+                        <br>
+                        1. שם הזנה אחיד לכל הגרפיקות של אותה הזמנה
+                        <br>
+                        לדוגמא:
+                        <br>
+                        שם הזמנה - מחירון לנגטיב
+                        <br>
+                        טופס 1 יהיה ל-A3
+                        <br>
+                        טופס 2 יהיה לגיליונות
+                        <br>
+                        <br>
+                        2. תנאים הכרחיים למילוי הטופס:
+                        <br>
+                        - שליחת סקיצה
+                        <br>
+                        - שליחת לוגויים/תמונות
+                        <br>
+                        - אישור הסברה
+                        <br>
+                        - מילוי טופס רכב במידת הצורך
+                        <br>
+                        <br>
+                        3. זמני עבודת גרפיה בשגרה:
+                        <br>
+                        - רגיל - תוך 7 ימי עבודה מלאים
+                        <br>
+                        - צ'ופצ'יק וחוברות - תוך 14 ימי עבודה מלאים
+                    </p>
+                </div>
+                <hr>
+                <br>
+                <table class="no_table" id="date_1">
+                    <tbody>
+                    <tr>
+                        <td><label for="order_name">שם הזמנה</label></td>
+                        <td><textarea id="order_name" name="order_name"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="office">משרד מזמין</label></td>
+                        <td><textarea id="office" name="office"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="who_order">שם המזמין</label></td>
+                        <td><textarea id="who_order" name="who_order"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="need_to_print">צורך בהדפסה</label></td>
+                        <td>
+                            <select id="need_to_print" name="need_to_print">
+                                <option value="yes">כן</option>
+                                <option value="no">לא</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="order_type">סוג הזמנה</label></td>
+                        <td>
+                            <select id="order_type" name="order_type">
+                                <option value="A3">A3</option>
+                                <option value="A4">A4</option>
+                                <option value="גיליון">גיליון</option>
+                                <option value="שמשונית">שמשונית</option>
+                                <option value="פלאייר (A5)">פלאייר (A5)</option>
+                                <option value="רול-אפ">רול-אפ</option>
+                                <option value="אחר">אחר</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="if_other">במידה ואחר - פרט</label></td>
+                        <td><textarea id="if_other" name="if_other"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="quantity">כמות</label></td>
+                        <td><textarea id="quantity" name="quantity"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="urgency">רמת דחיפות</label></td>
+                        <td>
+                            <select id="urgency" name="urgency">
+                                <option value="גבוהה">גבוהה</option>
+                                <option value="בינונית">בינונית</option>
+                                <option value="נמוכה">נמוכה</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="who_authorize">מאושר תקציבית ע"י</label></td>
+                        <td><textarea id="who_authorize" name="who_authorize"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="money">סעיף תקציבי</label></td>
+                        <td><textarea id="money" name="money"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="is_sent">האם נשלחה סקיצה מאושרת הסברה למשרד גרפיקה?</label></td>
+                        <td>
+                            <select id="is_sent" name="is_sent">
+                                <option value="yes">כן</option>
+                                <option value="no">לא</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="is_logo">האם נשלח לוגו?</label></td>
+                        <td>
+                            <select id="is_logo" name="is_logo">
+                                <option value="yes">כן</option>
+                                <option value="no">לא</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="date">תאריך האירוע</label></td>
+                        <td><textarea id="date" name="date"></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <input class="btn-default no_print" id="submitButton" type="submit" value="שלח">
+            </fieldset>
+        </form>
+
+        <br>
+        <button class="btn-default no_print" id="close_win_button" onclick="window.close()">סגור טופס</button>
+    </div>
+</div>
+</body>
+</html>
