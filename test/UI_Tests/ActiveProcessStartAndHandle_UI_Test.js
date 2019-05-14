@@ -102,14 +102,15 @@ async function handleProcess(browser, processName, comments, options, allOptions
             await browser.expect(Selector('[name="'+ stageNum+'"]').textContent).eql(allOptions[stageNum]);
         }
     }
+
     if(files !== undefined)
     {
         for (let i = 0; i < files.length; i++) {
             await browser
                 .click('#upFake')
-                .setFilesToUpload('#fileUpload', [
+                .setFilesToUpload('#fileUpload',
                     files[i]
-                ]);
+                ).wait(2000);
         }
     }*/
     for (let i = 0; i < options.length; i++) {
@@ -117,6 +118,7 @@ async function handleProcess(browser, processName, comments, options, allOptions
             .click('[name="' + options[i] + '"]');
     }
     await browser
+        .wait(2000)
         .click('#advanceProcess');
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home', {timeout: 5000});
 }
