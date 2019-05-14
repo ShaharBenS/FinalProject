@@ -46,6 +46,7 @@
                 //so the event handler works on the new "real" one
                 $('.hidden-inputs .file-chooser__input').removeClass('file-chooser__input').attr('data-uploadId', uploadId);
                 uploadId++;
+                document.getElementById('upFake').blur();
             }
         });
     };
