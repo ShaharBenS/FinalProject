@@ -186,8 +186,17 @@ test('Stage 3 - Check There Is No Active Processes', async browser => {
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 });
 
+test('Stage 4 - Check There Is No Process Reports', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי')
+        .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
+});
 
-test('Stage 4 - Start And Handle The Process', async browser => {
+test('Stage 5 - Start And Handle The Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     let h1 = Selector('h1');
     await browser.expect(h1.textContent).eql('מערכת לניהול תהליכים ארגוניים');
@@ -232,7 +241,7 @@ test('Stage 4 - Start And Handle The Process', async browser => {
     }, ['../fileTests/inputFiles/a.txt']);
 });
 
-test('Stage 5 - Check There Is An Active Process', async browser => {
+test('Stage 6 - Check There Is An Active Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -245,7 +254,29 @@ test('Stage 5 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('- רמד הסברה');
 });
 
-test('Stage 6 - Check There Is No Pending Process', async browser => {
+test('Stage 7 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(1)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('קיילור נבאס - אחראי מיתוג קמפיינים')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של אחראי מיתוג קמפיינים')
+
+});
+
+test('Stage 8 - Check There Is No Pending Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -255,7 +286,7 @@ test('Stage 6 - Check There Is No Pending Process', async browser => {
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 });
 
-test('Stage 7 - Check There Is An Available Process', async browser => {
+test('Stage 9 - Check There Is An Available Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myAvailableProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
@@ -265,7 +296,7 @@ test('Stage 7 - Check There Is An Available Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 8 - Take The Available Process', async browser => {
+test('Stage 10 - Take The Available Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myAvailableProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
@@ -276,7 +307,7 @@ test('Stage 8 - Take The Available Process', async browser => {
     await takePartInProcess(browser, 'תהליך אישור');
 });
 
-test('Stage 9 - Check There Is An Pending Process', async browser => {
+test('Stage 11 - Check There Is An Pending Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -286,7 +317,7 @@ test('Stage 9 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 10 - Handle The Process', async browser => {
+test('Stage 12 - Handle The Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -297,7 +328,29 @@ test('Stage 10 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 11 - Check There Is An Active Process', async browser => {
+test('Stage 13 - Check The Process Report', async browser => {
+    await login(browser, 'kutigolberg@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(2)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('פדריקו ולוורדה - רמד הסברה')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של רמד הסברה')
+
+});
+
+test('Stage 14 - Check There Is An Active Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -310,7 +363,7 @@ test('Stage 11 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('קיילור נבאס - אחראי מיתוג קמפיינים');
 });
 
-test('Stage 12 - Check There Is An Pending Process', async browser => {
+test('Stage 15 - Check There Is An Pending Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -320,7 +373,7 @@ test('Stage 12 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 13 - Handle The Process', async browser => {
+test('Stage 16 - Handle The Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', ['3', '4'], {
@@ -329,7 +382,29 @@ test('Stage 13 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 14 - Check There Is An Active Process', async browser => {
+test('Stage 17 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(3)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('פדריקו ולוורדה - רמד הסברה')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של רמד הסברה')
+
+});
+
+test('Stage 18 - Check There Is An Active Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -342,7 +417,7 @@ test('Stage 14 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('- גרפיקאי קרלוס קאסמירו - אחראי רכש');
 });
 
-test('Stage 15 - Check There Is An Pending Process', async browser => {
+test('Stage 19 - Check There Is An Pending Process', async browser => {
     await login(browser, 'levtom2@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -352,7 +427,7 @@ test('Stage 15 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 16 - Handle The Process', async browser => {
+test('Stage 20 - Handle The Process', async browser => {
     await login(browser, 'levtom2@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי רכש', [], {
@@ -360,7 +435,29 @@ test('Stage 16 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 17 - Check There Is An Active Process', async browser => {
+test('Stage 21 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(4)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('פדריקו ולוורדה - רמד הסברה')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של רמד הסברה')
+
+});
+
+test('Stage 22 - Check There Is An Active Process', async browser => {
     await login(browser, 'levtom2@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -373,7 +470,7 @@ test('Stage 17 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('- גרפיקאי');
 });
 
-test('Stage 18 - Check There Is An Available Process', async browser => {
+test('Stage 23 - Check There Is An Available Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myAvailableProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
@@ -383,7 +480,7 @@ test('Stage 18 - Check There Is An Available Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 19 - Take The Available Process', async browser => {
+test('Stage 24 - Take The Available Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myAvailableProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
@@ -394,7 +491,7 @@ test('Stage 19 - Take The Available Process', async browser => {
     await takePartInProcess(browser, 'תהליך אישור');
 });
 
-test('Stage 20 - Check There Is An Pending Process', async browser => {
+test('Stage 25 - Check There Is An Pending Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -404,7 +501,7 @@ test('Stage 20 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 21 - Handle The Process', async browser => {
+test('Stage 26 - Handle The Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של גרפיקאי', [], {
@@ -412,7 +509,29 @@ test('Stage 21 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 22 - Check There Is An Active Process', async browser => {
+test('Stage 27 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(5)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('גארת בייל - גרפיקאי')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של גרפיקאי')
+
+});
+
+test('Stage 28 - Check There Is An Active Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -425,7 +544,7 @@ test('Stage 22 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('פדריקו ולוורדה - רמד הסברה');
 });
 
-test('Stage 23 - Check There Is An Pending Process', async browser => {
+test('Stage 29 - Check There Is An Pending Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -435,13 +554,13 @@ test('Stage 23 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 24 - Return Process To Creator', async browser => {
+test('Stage 30 - Return Process To Creator', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await returnProcessToCreator(browser, 'הערות חזרה של רמד הסברה', 'תהליך אישור');
 });
 
-test('Stage 25 - Check There Is An Pending Process', async browser => {
+test('Stage 31 - Check There Is An Pending Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -451,7 +570,7 @@ test('Stage 25 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 26 - Check There Is An Active Process', async browser => {
+test('Stage 32 - Check There Is An Active Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -464,7 +583,7 @@ test('Stage 26 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('קיילור נבאס - אחראי מיתוג קמפיינים');
 });
 
-test('Stage 27 - Handle The Process', async browser => {
+test('Stage 33 - Handle The Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', ['3', '4'], {
@@ -473,7 +592,29 @@ test('Stage 27 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 28 - Check There Is An Pending Process', async browser => {
+test('Stage 34 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(7)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('גארת בייל - גרפיקאי')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של גרפיקאי')
+
+});
+
+test('Stage 35 - Check There Is An Pending Process', async browser => {
     await login(browser, 'levtom2@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -483,7 +624,7 @@ test('Stage 28 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 29 - Handle The Process', async browser => {
+test('Stage 36 - Handle The Process', async browser => {
     await login(browser, 'levtom2@outlook.co.il');
     await browser
         .click('[name="myWaitingProcesses"]');
@@ -492,7 +633,29 @@ test('Stage 29 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 30 - Check There Is An Active Process', async browser => {
+test('Stage 37 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(8)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('גארת בייל - גרפיקאי')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של גרפיקאי')
+
+});
+
+test('Stage 38 - Check There Is An Active Process', async browser => {
     await login(browser, 'levtom2@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -505,7 +668,7 @@ test('Stage 30 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('גארת בייל - גרפיקאי');
 });
 
-test('Stage 31 - Check There Is An Pending Process', async browser => {
+test('Stage 39 - Check There Is An Pending Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -515,7 +678,7 @@ test('Stage 31 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 32 - Handle The Process', async browser => {
+test('Stage 40 - Handle The Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של גרפיקאי', [], {
@@ -523,7 +686,30 @@ test('Stage 32 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 33 - Check There Is An Active Process', async browser => {
+test('Stage 41 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(9)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('גארת בייל - גרפיקאי')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של גרפיקאי')
+
+});
+
+
+test('Stage 42 - Check There Is An Active Process', async browser => {
     await login(browser, 'shahar0897@outlook.com');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -536,7 +722,7 @@ test('Stage 33 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('פדריקו ולוורדה - רמד הסברה');
 });
 
-test('Stage 34 - Check There Is An Pending Process', async browser => {
+test('Stage 43 - Check There Is An Pending Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -546,7 +732,7 @@ test('Stage 34 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 35 - Handle The Process', async browser => {
+test('Stage 44 - Handle The Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של רמד הסברה', [], {
@@ -554,7 +740,30 @@ test('Stage 35 - Handle The Process', async browser => {
     });
 });
 
-test('Stage 36 - Check There Is An Active Process', async browser => {
+test('Stage 45 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(10)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('גארת בייל - גרפיקאי')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של גרפיקאי')
+
+});
+
+
+test('Stage 46 - Check There Is An Active Process', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
@@ -567,7 +776,7 @@ test('Stage 36 - Check There Is An Active Process', async browser => {
         .expect(Selector('td').nth(3).innerText).eql('קיילור נבאס - אחראי מיתוג קמפיינים');
 });
 
-test('Stage 37 - Check There Is An Pending Process', async browser => {
+test('Stage 47 - Check There Is An Pending Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
@@ -577,13 +786,35 @@ test('Stage 37 - Check There Is An Pending Process', async browser => {
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
-test('Stage 38 - Finish The Process', async browser => {
+test('Stage 48 - Finish The Process', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myWaitingProcesses"]');
     await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', [], {});
 });
 
-test('Stage 39 - Check There Is No Active Processes', async browser => {
+test('Stage 49 - Check The Process Report', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="ProcessReports"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllProcessesReportsByUser', {
+        timeout: 10000
+    })
+        .expect(Selector('h1').innerText).eql('הדוחות שלי');
+    await browser.click(Selector('td').nth(2));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/reportProcess/?process_name=%D7%AA%D7%94%D7%9C%D7%99%D7%9A%20%D7%90%D7%99%D7%A9%D7%95%D7%A8', {
+        timeout: 10000
+    })
+        .expect(Selector('#processName').innerText).eql('דו"ח תהליך אישור')
+        .expect(Selector('#processCreatorName').innerText).eql('שם יוצר התהליך: קיילור נבאס')
+        .expect(Selector('#processDate').innerText).eql('תאריך היעד: 03/11/2020 05:00:00')
+        .expect(Selector('#processUrgency').innerText).eql('דחיפות התהליך: 1')
+        .expect(Selector('#processStatus').innerText).eql('סטטוס: פעיל')
+        .expect(Selector('#example tbody tr').count).eql(10)
+        .expect(Selector('#example tbody tr td').nth(0).innerText).eql('גארת בייל - גרפיקאי')
+        .expect(Selector('#example tbody tr td').nth(2).innerText).eql('הערות של גרפיקאי')
+
+});
+
+test('Stage 50 - Check There Is No Active Processes', async browser => {
     await login(browser, 'levtom@outlook.co.il');
     await browser.click('[name="myActiveProcesses"]');
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {

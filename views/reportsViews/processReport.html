@@ -56,23 +56,23 @@
     </div>
     <div align="center" class="main-div-tables">
         <br>
-        <h1 style="margin: auto">דו"ח <%=processDetails.processName%></h1>
+        <h1 id="processName" style="margin: auto">דו"ח <%=processDetails.processName%></h1>
         <hr class="orange-hr">
         <table>
             <col width="250">
             <col width="250">
             <tr>
 
-                    <label>שם יוצר התהליך: <%=processDetails.processCreatorName%></label>
+                    <label id="processCreatorName">שם יוצר התהליך: <%=processDetails.processCreatorName%></label>
 
             </tr>
             <tr>
-                <td><label>תאריך יצירה: <%=processDetails.creationTime%></label></td>
-                <td><label>תאריך היעד: <%=processDetails.processDate%></label></td>
+                <td><label >תאריך יצירה: <%=processDetails.creationTime%></label></td>
+                <td><label id="processDate">תאריך היעד: <%=processDetails.processDate%></label></td>
             </tr>
             <tr>
-                <td><label>דחיפות התהליך: <%=processDetails.urgency%></label></td>
-                <td><label>סטטוס: <%=processDetails.status%></label></td>
+                <td><label id="processUrgency">דחיפות התהליך: <%=processDetails.urgency%></label></td>
+                <td><label id="processStatus">סטטוס: <%=processDetails.status%></label></td>
             </tr>
         </table>
         <table>
