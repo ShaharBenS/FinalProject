@@ -8,6 +8,7 @@ let userPermissionsController = require('../usersControllers/UsersPermissionsCon
 let userPermissionsAccessor = require('../../models/accessors/usersPermissionsAccessor');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let notificationsAccessor = require('../../models/accessors/notificationsAccessor');
+let Notification = require('../../domainObjects/notification');
 let fs = require("fs");
 
 module.exports.getRoleToEmails = (callback) =>
@@ -684,8 +685,18 @@ function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID
                             }
                         };
                         stage.roleID = findReplacement(stage.roleID);
-                        /* TODO: need Kuti's help here */
-                        /* TODO: basically need to out the process in available process */
+                        stage.userEmail = null;
+                        let notification = new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין");
+                        module.exports.getEmailsByRoleId(stage.roleID,(err,userEmail)=>{
+                            if(Array.isArray(userEmail)){
+                                userEmail.forEach(userEmail=>{
+                                    notificationsAccessor.addNotification({
+                                        userEmail: userEmail,
+                                        notification: notification.getNotification(),
+                                    })
+                                });
+                            }
+                        });
                     }
                 });
             });
