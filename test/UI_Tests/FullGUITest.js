@@ -24,7 +24,7 @@ function addProcessStructure() {
     });
 }
 
-function insertToDB() {
+function addUsersAndRolesTree() {
     return new Promise(resolve => {
         userAccessor.createSankeyTree({
             sankey: JSON.stringify({
@@ -56,7 +56,7 @@ let beforeGlobal = async function () {
         useNewUrlParser: true
     });
     mongoose.connection.db.dropDatabase();
-    await insertToDB();
+    await addUsersAndRolesTree();
     await addProcessStructure();
 };
 
