@@ -87,7 +87,7 @@ function generateActiveProcesses() {
     });
 }
 
-let beforeGlobal = async function () {
+let beforeGlobal = async function() {
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {
         useNewUrlParser: true
@@ -329,4 +329,52 @@ test('Stage 6 - Check The Everything Is In The Table And Reversed Sorted By Dest
         .expect(Selector('tbody tr').nth(5).child(0).innerText).eql('אישור תקציב שנתי 1')
         .expect(Selector('tbody tr').nth(5).child(1).innerText).eql('3')
         .expect(Selector('tbody tr').nth(5).child(2).innerText).eql('01/01/2020 12:00:00');
+});
+
+test('Stage 7 - Search Process By Name', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="myActiveProcesses"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
+        timeout: 10000
+    });
+    await browser
+        .click(Selector('#example_filter input'))
+        .typeText('[class="form-control form-control-sm"]', 'אישור פרסום');
+    await browser
+        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        //Line 1.
+        .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור פרסום')
+        .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('1')
+        .expect(Selector('tbody tr').nth(0).child(2).innerText).eql('02/01/2020 12:00:00');
+    await browser
+        .click(Selector('#example_filter input'))
+        .pressKey('ctrl+a delete')
+        .typeText('[class="form-control form-control-sm"]', 'אישור תקציב שנתי');
+    await browser
+        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        //Line 1.
+        .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור תקציב שנתי 1')
+        .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('3')
+        .expect(Selector('tbody tr').nth(0).child(2).innerText).eql('01/01/2020 12:00:00')
+        //Line 2.
+        .expect(Selector('tbody tr').nth(1).child(0).innerText).eql('אישור תקציב שנתי 2')
+        .expect(Selector('tbody tr').nth(1).child(1).innerText).eql('2')
+        .expect(Selector('tbody tr').nth(1).child(2).innerText).eql('01/01/2020 13:00:00');
+});
+
+
+test('Stage 8 - Search Process By Destination Date', async browser => {
+    await login(browser, 'levtom@outlook.co.il');
+    await browser.click('[name="myActiveProcesses"]');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
+        timeout: 10000
+    });
+    await browser
+        .click(Selector('#example_filter input'))
+        .typeText('[class="form-control form-control-sm"]', '01/02/2020 13:00:00');
+    await browser
+        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור הזמנת מופע')
+        .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('3')
+        .expect(Selector('tbody tr').nth(0).child(2).innerText).eql('01/02/2020 13:00:00');
 });
