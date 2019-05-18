@@ -8,6 +8,7 @@ let userPermissionsController = require('../usersControllers/UsersPermissionsCon
 let userPermissionsAccessor = require('../../models/accessors/usersPermissionsAccessor');
 let UserPermissions = require('../../domainObjects/UserPermissions');
 let notificationsAccessor = require('../../models/accessors/notificationsAccessor');
+let Notification = require('../../domainObjects/notification');
 let fs = require("fs");
 
 module.exports.getRoleToEmails = (callback) =>
@@ -17,7 +18,7 @@ module.exports.getRoleToEmails = (callback) =>
         if (err) {
             callback(err);
         }
-        else{
+        else {
             callback(null, new usersAndRolesTree(roles).getRoleToEmails());
         }
     })
@@ -30,7 +31,7 @@ module.exports.getRoleToDereg = (callback) =>
         if (err) {
             callback(err);
         }
-        else{
+        else {
             callback(null, new usersAndRolesTree(roles).getRoleToDereg())
         }
     })
@@ -102,7 +103,7 @@ module.exports.getUsersAndRolesTree = (callback) =>
     });
 };
 
-module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, roleToDereg,callback) =>
+module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToFullName, roleToDereg, callback) =>
 {
     let firstTime = false;
     let commonCallback = () =>
@@ -138,7 +139,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                     else if (sankeyTree.hasCycles()) {
                         callback('שגיאה: העץ מכיל מעגלים.');
                     }
-                    else if(!sankeyTree.isTree()){
+                    else if (!sankeyTree.isTree()) {
                         callback('שגיאה: אין מבנה של עץ.');
                     }
                     else if (emails.filter(emailValidator).length !== emails.length) {
@@ -206,7 +207,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                             if (existingRoleIndex > -1) {
                                                                                 _id = oldUsersAndRoles.getIdByRoleName(roleName);
                                                                             }
-                                                                            addUsersAndRole(_id, roleName, roleToEmails[roleName],roleToDereg[roleName], (_err, usersAndRole) =>
+                                                                            addUsersAndRole(_id, roleName, roleToEmails[roleName], roleToDereg[roleName], (_err, usersAndRole) =>
                                                                             {
                                                                                 if (err) {
                                                                                     acc(err);
@@ -344,22 +345,32 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                                                                                     }
                                                                                     else {
                                                                                         let rootName = sankeyTree.getRootName();
-                                                                                        let rootID = usersAndRoleDocuments.find((usersAndRole)=>{
-                                                                                            if(usersAndRole.roleName === rootName){
+                                                                                        let rootID = usersAndRoleDocuments.find((usersAndRole) =>
+                                                                                        {
+                                                                                            if (usersAndRole.roleName === rootName) {
                                                                                                 return true;
                                                                                             }
                                                                                         })._id;
-                                                                                        updateDeletedRolesInEveryActiveProcess(deletedRolesIds,oldUsersAndRoles,rootID, (err)=>{
-                                                                                            if(err){
+                                                                                        updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldUsersAndRoles, rootID, (err) =>
+                                                                                        {
+                                                                                            if (err) {
                                                                                                 callback(err);
                                                                                             }
-                                                                                            else{
-                                                                                                if(firstTime){
-                                                                                                    addAdmin(userEmail,callback);
-                                                                                                }
-                                                                                                else{
-                                                                                                    callback(null);
-                                                                                                }
+                                                                                            else {
+                                                                                                removeDeletedEmailsFromActiveStages(oldUsersAndRoles, usersAndRoleDocuments, (err) =>
+                                                                                                {
+                                                                                                    if (err) {
+                                                                                                        callback(err);
+                                                                                                    }
+                                                                                                    else {
+                                                                                                        if (firstTime) {
+                                                                                                            addAdmin(userEmail, callback);
+                                                                                                        }
+                                                                                                        else {
+                                                                                                            callback(null);
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
                                                                                             }
                                                                                         });
                                                                                     }
@@ -434,12 +445,13 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
 
 module.exports.findAdmins = function (callback)
 {
-    userAccessor.findAdmins({},(err,admins)=>{
-        if(err){
+    userAccessor.findAdmins({}, (err, admins) =>
+    {
+        if (err) {
             callback(err);
         }
-        else{
-            callback(null,admins.map(admin=>admin.userEmail));
+        else {
+            callback(null, admins.map(admin => admin.userEmail));
         }
     });
 };
@@ -460,14 +472,15 @@ module.exports.getRoleNameByUsername = function (username, callback)
     });
 };
 
-module.exports.getEmailsByRoleId = (roleId,callback)=>
+module.exports.getEmailsByRoleId = (roleId, callback) =>
 {
-    userAccessor.findRole({_id:roleId},(err,role)=>{
-        if(err){
+    userAccessor.findRole({_id: roleId}, (err, role) =>
+    {
+        if (err) {
             callback(err);
         }
-        else{
-            callback(null,role[0].userEmail);
+        else {
+            callback(null, role[0].userEmail);
         }
     });
 };
@@ -490,24 +503,25 @@ module.exports.getFullNameByEmail = (email, callback) =>
 
 module.exports.findRolesByArray = (roleIDs, callback) =>
 {
-    userAccessor.findRolesByArray(roleIDs,callback);
+    userAccessor.findRolesByArray(roleIDs, callback);
 };
 
 module.exports.getAllUsers = (callback) =>
 {
     let toReturn = [];
-    userAccessor.findAdmins({},(err,admins)=>{
-        if(err){
+    userAccessor.findAdmins({}, (err, admins) =>
+    {
+        if (err) {
             callback(err);
         }
-        else{
+        else {
             userAccessor.findUser({}, (err, res) =>
             {
                 if (err) callback(err);
                 else {
                     for (let i = 0; i < res.length; i++) {
                         for (let j = 0; j < res[i].userEmail.length; j++) {
-                            if(!admins.map(admin=>admin.userEmail).includes(res[i].userEmail[j])){
+                            if (!admins.map(admin => admin.userEmail).includes(res[i].userEmail[j])) {
                                 toReturn.push(res[i].userEmail[j]);
                             }
                         }
@@ -528,7 +542,7 @@ module.exports.loadDefaultTree = (userEmail, callback) =>
     this.setUsersAndRolesTree(userEmail, demoTreeString, rolesToEmails, emailsToFullName, rolesToDereg, callback);
 };
 
-module.exports.getAllChildren = (userEmail, callback)=>
+module.exports.getAllChildren = (userEmail, callback) =>
 {
     userAccessor.findUser({}, (err, res) =>
     {
@@ -556,28 +570,27 @@ module.exports.getAllChildren = (userEmail, callback)=>
 /*
     returns the fathers of roleID that are of a dereg that in deregs array
  */
-module.exports.getFatherOfDeregByArrayOfRoleIDs = (roleID, deregs, callback)=>
+module.exports.getFatherOfDeregByArrayOfRoleIDs = (roleID, deregs, callback) =>
 {
     userAccessor.findRole({}, (err, res) =>
     {
         if (err) callback(err);
         else {
             let toReturn = {};
-            for(let i=0;i<deregs.length;i++)
-            {
-                toReturn[deregs[i]] = recursiveFatherOfDeregFinder(res,roleID,deregs[i]);
+            for (let i = 0; i < deregs.length; i++) {
+                toReturn[deregs[i]] = recursiveFatherOfDeregFinder(res, roleID, deregs[i]);
             }
             callback(null, toReturn);
         }
     });
-}
+};
 
 function addChildrenToRole(roleObjectID, childrenObjectID, callback)
 {
     userAccessor.updateRole({_id: roleObjectID}, {$push: {children: childrenObjectID}}, callback);
 }
 
-function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
+function addUsersAndRole(_id, roleName, usersEmail, dereg, callback)
 {
     let countsArray = {};
     usersEmail.forEach((email) =>
@@ -596,8 +609,8 @@ function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
     if (dupEmails)
         callback(new Error("should not allow duplicated emails"));
     else {
-        let params = {roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
-        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail,dereg:dereg, children: []};
+        let params = {roleName: roleName, userEmail: usersEmail, dereg: dereg, children: []};
+        let params_id = {_id: _id, roleName: roleName, userEmail: usersEmail, dereg: dereg, children: []};
         userAccessor.createRole(_id === undefined ? params : params_id, (err, usersAndRole) =>
         {
             if (err) {
@@ -610,23 +623,23 @@ function addUsersAndRole(_id, roleName, usersEmail,dereg, callback)
     }
 }
 
-function addAdmin(userEmail,callback)
+function addAdmin(userEmail, callback)
 {
-    userAccessor.addAdmin({userEmail:userEmail},(err)=>{
-        if(err){
+    userAccessor.addAdmin({userEmail: userEmail}, (err) =>
+    {
+        if (err) {
             callback(err);
         }
-        else{
+        else {
             callback(null);
         }
     });
 }
 
-function includesRoleID(arr,roleID)
+function includesRoleID(arr, roleID)
 {
-    for(let i=0;i<arr.length;i++)
-    {
-        if(arr[i].id.equals(roleID.id))
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].id.equals(roleID.id))
             return true;
     }
     return false;
@@ -634,16 +647,12 @@ function includesRoleID(arr,roleID)
 
 function recursiveFatherOfDeregFinder(tree, roleID, dereg)
 {
-    for(let i=0;i<tree.length;i++)
-    {
-        if(roleID.id.equals(tree[i]._id.id) && dereg === tree[i].dereg)
-        {
+    for (let i = 0; i < tree.length; i++) {
+        if (roleID.id.equals(tree[i]._id.id) && dereg === tree[i].dereg) {
             return tree[i]._id;
         }
-        if(includesRoleID(tree[i].children,roleID))
-        {
-            if(dereg === tree[i].dereg)
-            {
+        if (includesRoleID(tree[i].children, roleID)) {
+            if (dereg === tree[i].dereg) {
                 return tree[i]._id;
             }
             return recursiveFatherOfDeregFinder(tree, tree[i]._id, dereg);
@@ -664,38 +673,59 @@ function getChildrenRecursive(role, roleMapping)
     return toReturn;
 }
 
-function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID, callback){
-    activeProcessAccessor.getActiveProcesses((err, processes) => {
+function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID, callback)
+{
+    activeProcessAccessor.getActiveProcesses((err, processes) =>
+    {
         if (err) {
             callback(err);
-        } else {
-            processes.forEach(process => {
-                process.stages.filter(stage=>stage.roleID !== undefined).forEach(stage => {
+        }
+        else {
+            processes.forEach(process =>
+            {
+                process.stages.filter(stage => stage.roleID !== undefined).forEach(stage =>
+                {
                     if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
-                        if (stage.userEmail === null) {
-                            let findReplacement = (roleId) => {
-                                let replacement = oldTree.getFatherOf(roleId);
-                                if (replacement === undefined) {
-                                    return rootID;
-                                }
-                                if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
-                                    return findReplacement(replacement);
-                                } else {
-                                    return replacement;
-                                }
-                            };
-                            stage.roleID = findReplacement(stage.roleID);
-                            stage.userEmail = null;
-                        }
+                        let findReplacement = (roleId) =>
+                        {
+                            let replacement = oldTree.getFatherOf(roleId);
+                            if (replacement === undefined) {
+                                return rootID;
+                            }
+                            if (deletedRolesIds.map(x => x.toString()).includes(replacement.toString())) {
+                                return findReplacement(replacement);
+                            }
+                            else {
+                                return replacement;
+                            }
+                        };
+                        stage.roleID = findReplacement(stage.roleID);
+                        stage.userEmail = null;
+                        let notification = new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין");
+                        module.exports.getEmailsByRoleId(stage.roleID, (err, userEmail) =>
+                        {
+                            if (Array.isArray(userEmail)) {
+                                userEmail.forEach(userEmail =>
+                                {
+                                    notificationsAccessor.addNotification({
+                                        userEmail: userEmail,
+                                        notification: notification.getNotification(),
+                                    })
+                                });
+                            }
+                        });
                     }
                 });
             });
 
-            processes.reduce((prev, process) => {
-                return (err) => {
+            processes.reduce((prev, process) =>
+            {
+                return (err) =>
+                {
                     if (err) {
                         prev(err)
-                    } else {
+                    }
+                    else {
                         activeProcessAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev);
                     }
                 }
@@ -704,6 +734,80 @@ function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID
     });
 }
 
+function removeDeletedEmailsFromActiveStages(oldUsersAndRoles, usersAndRoleDocuments, callback)
+{
+    let roleIdToDeletedEmail = {};
+    usersAndRoleDocuments.forEach(usersAndRole =>
+    {
+        oldUsersAndRoles.usersAndRoles.forEach(_usersAndRole =>
+        {
+            if(_usersAndRole._id.toString() === usersAndRole._id.toString()){
+                let deletedEmails = [];
+                _usersAndRole.userEmail.forEach(_userEmail=>{
+                    if(usersAndRole.userEmail.every(userEmail=>{
+                        return userEmail !== _userEmail;
+                    })){
+                        deletedEmails.push(_userEmail);
+                    }
+                });
+                if(deletedEmails.length !== 0){
+                    roleIdToDeletedEmail[_usersAndRole._id.toString()] = deletedEmails;
+                }
+            }
+        });
+    });
+    if(Object.keys(roleIdToDeletedEmail).length === 0){
+        callback(null);
+        return;
+    }
+    activeProcessAccessor.getActiveProcesses((err, processes) =>
+    {
+        if (err) {
+            callback(err);
+        }
+        else {
+            processes.forEach(process =>
+            {
+                process.stages.filter(stage => stage.roleID !== undefined).forEach(stage =>
+                {
+                    if (Object.keys(roleIdToDeletedEmail).includes(stage.roleID.toString())) {
+                        if(stage.userEmail !== null){
+                            if(roleIdToDeletedEmail[stage.roleID.toString()].includes(stage.userEmail)){
+                                stage.userEmail = null;
+                                let notification = new Notification("התהליך " + process.processName + " מחכה ברשימת התהליכים הזמינים לך", "תהליך זמין");
+                                module.exports.getEmailsByRoleId(stage.roleID, (err, userEmail) =>
+                                {
+                                    if (Array.isArray(userEmail)) {
+                                        userEmail.forEach(userEmail =>
+                                        {
+                                            notificationsAccessor.addNotification({
+                                                userEmail: userEmail,
+                                                notification: notification.getNotification(),
+                                            })
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+
+            processes.reduce((prev, process) =>
+            {
+                return (err) =>
+                {
+                    if (err) {
+                        prev(err)
+                    }
+                    else {
+                        activeProcessAccessor.updateAllActiveProcesses({_id: process._id}, {$set: {stages: process.stages}}, prev);
+                    }
+                }
+            }, callback)(null);
+        }
+    });
+}
 
 function emailValidator(email)
 {
