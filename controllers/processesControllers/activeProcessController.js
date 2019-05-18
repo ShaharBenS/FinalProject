@@ -545,7 +545,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                     if(stageToPush instanceof Error) callback(stageToPush);
                     nextStagesArr.push(stageToPush);
                 }
-                this.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
+                usersAndRolesController.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
                         onlineFormController.findOnlineFormsNamesByFormsIDs(process.onlineForms, (err, onlineFormsNames) => {
@@ -560,23 +560,6 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
         }
     });
 };
-
-function getRoleNamesForArray(stages, index, roleNamesArray, callback){
-    if (index === stages.length) {
-        callback(null, roleNamesArray);
-        return;
-    }
-    let roleID = stages[index].roleID;
-    (function (array, stageNum) {
-        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                array.push([roleName, stageNum]);
-                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
-            }
-        });
-    })(roleNamesArray, stages[index].stageNum);
-}
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
@@ -773,11 +756,9 @@ module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleID
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
-module.exports.getFilledOnlineForms = getFilledOnlineForms;
 module.exports.assignSingleUsersToStages = assignSingleUsersToStages;
 module.exports.handleProcess = handleProcess;
 module.exports.advanceProcess = advanceProcess;
-module.exports.getRoleNamesForArray = getRoleNamesForArray;
 module.exports.getRoleIDsOfDeregStages = getRoleIDsOfDeregStages;
 module.exports.getNewActiveProcess = getNewActiveProcess;
 module.exports.uploadFiles = uploadFiles;

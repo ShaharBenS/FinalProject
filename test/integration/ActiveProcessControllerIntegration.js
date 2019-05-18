@@ -1171,184 +1171,9 @@ describe('Active Process Controller', function () {
         }).timeout(30000);
     });
 
-    describe('16.0 getNextStagesRolesAndOnlineForms', function () {
+    describe('15.0 getActiveProcessByProcessName', function () {
         beforeEach(createTree1WithStructure1);
-        beforeEach(startProcess);
-        it('16.1 getNextStagesRolesAndOnlineForms correct', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'files', (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativemanager@outlook.co.il', (err, result) => {
-                        if (err) done(err);
-                        else {
-                            let sortedResult = result[0].sort((x, y) => {
-                                if (x[1] < y[1]) return -1;
-                                if (x[1] > y[1]) return 1;
-                                return 0;
-                            });
-                            assert.deepEqual(result[0].length, 3);
-                            assert.deepEqual(sortedResult[0], ['דובר', 0]);
-                            assert.deepEqual(sortedResult[1], ['גרפיקאי', 1]);
-                            assert.deepEqual(sortedResult[2], ['רמד הסברה', 4]);
-                            done();
-                        }
-                    })
-                }
-            });
-        }).timeout(30000);
-
-        it('16.2 getNextStagesRolesAndOnlineForms user is wrong', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'files', (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativevicemanager1@outlook.co.il', (err, result) => {
-                        assert.deepEqual(true, err !== null);
-                        assert.deepEqual(err.message, 'GetNextStagesRolesAndOnlineForms: user not found in current stages');
-                        done();
-                    })
-                }
-            });
-        }).timeout(30000);
-    });
-
-    describe('18.0 returnToCreator', function () {
-        beforeEach(createTree1WithStructure1);
-        beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
-        it('18.1 returnToCreator correct', function (done) {
-            activeProcessController.returnToCreator('publicitydepartmenthead@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות חזרה', (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                        if (err) done(err);
-                        else {
-                            assert.deepEqual([3], process.currentStages);
-                            done();
-                        }
-                    });
-                }
-            });
-        }).timeout(30000);
-
-        it('18.2 returnToCreator wrong user', function (done) {
-            activeProcessController.returnToCreator('publicitydepartmenthead1@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות חזרה', (err) => {
-                assert.deepEqual(true, err !== null);
-                assert.deepEqual(err.message, 'Return To Creator: wrong userEmail');
-                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                    if (err) done(err);
-                    else {
-                        assert.deepEqual([1, 4], process.currentStages.sort());
-                        done();
-                    }
-                });
-            });
-        }).timeout(30000);
-    });
-
-    describe('19.0 cancel process', function () {
-        beforeEach(createTree1WithStructure1);
-        beforeEach(startProcess);
-        it('19.1 cancel process', function (done) {
-            activeProcessController.cancelProcess('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות לביטול', (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                        if (err) done(err);
-                        else {
-                            assert.deepEqual(true, process === null);
-                            done()
-                        }
-                    });
-                }
-            });
-        }).timeout(30000);
-    });
-
-    describe('20.0 incrementStageCycle', function () {
-        beforeEach(createTree1WithStructure1);
-        beforeEach(startProcess);
-        it('20.1 incrementStageCycle', function (done) {
-            activeProcessController.incrementStageCycle('גרפיקה להקרנת בכורה', [0, 1, 4], (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                        if (err) done(err);
-                        else {
-                            assert.deepEqual(2, process.getStageByStageNum(0).notificationsCycle);
-                            assert.deepEqual(2, process.getStageByStageNum(1).notificationsCycle);
-                            assert.deepEqual(2, process.getStageByStageNum(4).notificationsCycle);
-                            assert.deepEqual(1, process.getStageByStageNum(2).notificationsCycle);
-                            assert.deepEqual(1, process.getStageByStageNum(3).notificationsCycle);
-                            activeProcessController.incrementStageCycle('גרפיקה להקרנת בכורה', [2, 1, 4], (err) => {
-                                if (err) done(err);
-                                else {
-                                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                                        if (err) done(err);
-                                        else {
-                                            assert.deepEqual(2, process.getStageByStageNum(0).notificationsCycle);
-                                            assert.deepEqual(3, process.getStageByStageNum(1).notificationsCycle);
-                                            assert.deepEqual(3, process.getStageByStageNum(4).notificationsCycle);
-                                            assert.deepEqual(2, process.getStageByStageNum(2).notificationsCycle);
-                                            assert.deepEqual(1, process.getStageByStageNum(3).notificationsCycle);
-                                            done();
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }).timeout(30000);
-    });
-
-
-
-    describe('1.10 addFilledOnlineFormToProcess', function () {
-        beforeEach((done) => {
-            onlineFormsController.createOnlineFrom('frm', 'frmsrc', (err, res) => {
-                if (err) done(err);
-                else {
-                    done();
-                }
-            });
-        });
-        beforeEach(createTree1WithStructure1);
-        beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
-        it('1.10.1 addFilledOnlineFormToProcess', function (done) {
-            filledOnlineFormsController.createFilledOnlineFrom('frm', [{'name': 'blah'}], (err, dbForm) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.addFilledOnlineFormToProcess('גרפיקה להקרנת בכורה', dbForm._id, (err) => {
-                        if (err) done(err);
-                        else {
-                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                                if (err) done(err);
-                                else {
-                                    assert.deepEqual(process.filledOnlineForms, [dbForm._id]);
-                                    done();
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }).timeout(30000);
-    });
-
-
-
-
-    describe('1.16 getActiveProcessByProcessName', function () {
-        beforeEach(createTree1WithStructure1);
-        it('1.5.1 Active processes of specific process.', function (done) {
+        it('15.1 Active processes of specific process.', function (done) {
             activeProcessController.getActiveProcessByProcessName('אין תהליך כזה', (err, activeProcesses1) => {
                 if (err) {
                     done(err);
@@ -1459,11 +1284,145 @@ describe('Active Process Controller', function () {
                 }
             });
         }).timeout(30000);
-
     });
-    describe('1.17 replaceRoleIDWithRoleNameAndUserEmailWithUserName', function () {
+
+    describe('16.0 getNextStagesRolesAndOnlineForms', function () {
         beforeEach(createTree1WithStructure1);
-        it('1.6.1 Active processes of specific users.', function (done) {
+        beforeEach(startProcess);
+        it('16.1 getNextStagesRolesAndOnlineForms correct', function (done) {
+            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                2: 'on',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'files', (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativemanager@outlook.co.il', (err, result) => {
+                        if (err) done(err);
+                        else {
+                            let sortedResult = result[0].sort((x, y) => {
+                                if (x[1] < y[1]) return -1;
+                                if (x[1] > y[1]) return 1;
+                                return 0;
+                            });
+                            assert.deepEqual(result[0].length, 3);
+                            assert.deepEqual(sortedResult[0], ['דובר', 0]);
+                            assert.deepEqual(sortedResult[1], ['גרפיקאי', 1]);
+                            assert.deepEqual(sortedResult[2], ['רמד הסברה', 4]);
+                            done();
+                        }
+                    })
+                }
+            });
+        }).timeout(30000);
+
+        it('16.2 getNextStagesRolesAndOnlineForms user is wrong', function (done) {
+            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                2: 'on',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'files', (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativevicemanager1@outlook.co.il', (err, result) => {
+                        assert.deepEqual(true, err !== null);
+                        assert.deepEqual(err.message, 'GetNextStagesRolesAndOnlineForms: user not found in current stages');
+                        done();
+                    })
+                }
+            });
+        }).timeout(30000);
+    });
+
+    describe('17.0 returnToCreator', function () {
+        beforeEach(createTree1WithStructure1);
+        beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
+        it('17.1 returnToCreator correct', function (done) {
+            activeProcessController.returnToCreator('publicitydepartmenthead@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות חזרה', (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual([3], process.currentStages);
+                            done();
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+
+        it('17.2 returnToCreator wrong user', function (done) {
+            activeProcessController.returnToCreator('publicitydepartmenthead1@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות חזרה', (err) => {
+                assert.deepEqual(true, err !== null);
+                assert.deepEqual(err.message, 'Return To Creator: wrong userEmail');
+                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    if (err) done(err);
+                    else {
+                        assert.deepEqual([1, 4], process.currentStages.sort());
+                        done();
+                    }
+                });
+            });
+        }).timeout(30000);
+    });
+
+    describe('18.0 cancel process', function () {
+        beforeEach(createTree1WithStructure1);
+        beforeEach(startProcess);
+        it('18.1 cancel process', function (done) {
+            activeProcessController.cancelProcess('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות לביטול', (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(true, process === null);
+                            done()
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+    });
+
+    describe('19.0 addFilledOnlineFormToProcess', function () {
+
+        beforeEach((done) => {
+            onlineFormsController.createOnlineFrom('frm', 'frmsrc', (err, res) => {
+                if (err) done(err);
+                else {
+                    done();
+                }
+            });
+        });
+        beforeEach(createTree1WithStructure1);
+        beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
+
+        it('19.1 addFilledOnlineFormToProcess', function (done) {
+            filledOnlineFormsController.createFilledOnlineFrom('frm', [{'name': 'blah'}], (err, dbForm) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.addFilledOnlineFormToProcess('גרפיקה להקרנת בכורה', dbForm._id, (err) => {
+                        if (err) done(err);
+                        else {
+                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(process.filledOnlineForms, [dbForm._id]);
+                                    done();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+    });
+
+    describe('20.0 replaceRoleIDWithRoleNameAndUserEmailWithUserName', function () {
+        beforeEach(createTree1WithStructure1);
+        it('20.1 Active processes of specific users.', function (done) {
             userAccessor.findRoleIDByRoleName('דובר', (err1, roleID1) => {
                 if (err1) {
                     done(err1);
@@ -1520,9 +1479,10 @@ describe('Active Process Controller', function () {
             });
         }).timeout(30000);
     });
-    describe('1.18 convertDate', function () {
+
+    describe('21.0 convertDate', function () {
         beforeEach(createTree1WithStructure1);
-        it('1.7.1 Change the date conversion.', function (done) {
+        it('21.1 Change the date conversion.', function (done) {
             let activeProcess1 = new activeProcess({
                 processName: 'ערב פוקר שבועי 1',
                 creatorUserEmail: undefined,
@@ -1575,6 +1535,44 @@ describe('Active Process Controller', function () {
             assert.deepEqual(array[2].creationTime, '22/01/2020 12:50:30');
             assert.deepEqual(array[2].lastApproached, '22/01/2020 12:50:30');
             done();
+        }).timeout(30000);
+    });
+
+    describe('22.0 incrementStageCycle', function () {
+        beforeEach(createTree1WithStructure1);
+        beforeEach(startProcess);
+        it('22.1 incrementStageCycle', function (done) {
+            activeProcessController.incrementStageCycle('גרפיקה להקרנת בכורה', [0, 1, 4], (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(2, process.getStageByStageNum(0).notificationsCycle);
+                            assert.deepEqual(2, process.getStageByStageNum(1).notificationsCycle);
+                            assert.deepEqual(2, process.getStageByStageNum(4).notificationsCycle);
+                            assert.deepEqual(1, process.getStageByStageNum(2).notificationsCycle);
+                            assert.deepEqual(1, process.getStageByStageNum(3).notificationsCycle);
+                            activeProcessController.incrementStageCycle('גרפיקה להקרנת בכורה', [2, 1, 4], (err) => {
+                                if (err) done(err);
+                                else {
+                                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(2, process.getStageByStageNum(0).notificationsCycle);
+                                            assert.deepEqual(3, process.getStageByStageNum(1).notificationsCycle);
+                                            assert.deepEqual(3, process.getStageByStageNum(4).notificationsCycle);
+                                            assert.deepEqual(2, process.getStageByStageNum(2).notificationsCycle);
+                                            assert.deepEqual(1, process.getStageByStageNum(3).notificationsCycle);
+                                            done();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         }).timeout(30000);
     });
 });

@@ -420,7 +420,7 @@ module.exports.getRoleByUsername = function (username, callback)
     });
 };
 
-module.exports.getRoleNameByRoleID = function (roleID, callback)
+function getRoleNameByRoleID(roleID, callback)
 {
     userAccessor.findRole({_id: roleID}, (err, user) =>
     {
@@ -430,7 +430,7 @@ module.exports.getRoleNameByRoleID = function (roleID, callback)
             else callback(null, user[0].roleName);
         }
     });
-};
+}
 
 module.exports.findAdmins = function (callback)
 {
@@ -711,3 +711,22 @@ function emailValidator(email)
     return regularExpression.test(String(email).toLowerCase());
 }
 
+function getRoleNamesForArray(stages, index, roleNamesArray, callback){
+    if (index === stages.length) {
+        callback(null, roleNamesArray);
+        return;
+    }
+    let roleID = stages[index].roleID;
+    (function (array, stageNum) {
+        getRoleNameByRoleID(roleID, (err, roleName) => {
+            if (err) callback(err);
+            else {
+                array.push([roleName, stageNum]);
+                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
+            }
+        });
+    })(roleNamesArray, stages[index].stageNum);
+}
+
+module.exports.getRoleNamesForArray = getRoleNamesForArray;
+module.exports.getRoleNameByRoleID = getRoleNameByRoleID;
