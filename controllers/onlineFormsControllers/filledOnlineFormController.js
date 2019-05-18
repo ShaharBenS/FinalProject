@@ -124,3 +124,19 @@ module.exports.updateOrAddFilledForm = function (processName, formName, formFiel
         }
     })
 };
+
+function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) {
+    if (index === filledFormIds.length) {
+        callback(null, filledFormsArray);
+        return;
+    }
+    this.getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
+        if (err) callback(err);
+        else {
+            filledFormsArray.push(form);
+            getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
+        }
+    });
+}
+
+module.exports.getFilledOnlineForms = getFilledOnlineForms;

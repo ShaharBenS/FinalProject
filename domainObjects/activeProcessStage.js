@@ -88,12 +88,15 @@ class activeProcessStage {
         }
         else
         {
-            throw new Error('addNextStages: stages are invalid');
+            return new Error('addNextStages: stages are invalid');
         }
     }
 
     handleStage()
     {
+        if(this.assignmentTime === null) {
+            return new Error("handleStage: stage hasn't been assigned");
+        }
         if (this.approvalTime === null && this.stagesToWaitFor.length === 0) {
             this.approvalTime = new Date();
         } else return new Error('handleStage: stage already handled or is waiting for stages')

@@ -3,6 +3,7 @@ let usersAccessor = require('../../models/accessors/usersAccessor');
 let processReportAccessor = require('../../models/accessors/processReportAccessor');
 let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
+let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let moment = require('moment');
 
 module.exports.addProcessReport = (processName, creationTime, processDate, processUrgency, processCreatorEmail, callback) => {
@@ -150,7 +151,7 @@ module.exports.processReport = function (process_name, callback) {
             for (let i = 0; i < result[1].length; i++) {
                 result[1][i]._doc.approvalTime = moment(result[1][i]._doc.approvalTime).format("DD/MM/YYYY HH:mm:ss");
             }
-            activeProcessController.getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
+            filledOnlineFormsController.getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
                 for (let i = 0; i < formsArr.length; i++) {
                     result[0].filledOnlineForms[i] = formsArr[i];
                 }

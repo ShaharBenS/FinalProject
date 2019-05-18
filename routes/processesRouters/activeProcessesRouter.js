@@ -232,12 +232,4 @@ router.get('/reportProcess', function (req, res) {
     })
 });
 
-router.get('/processStartPage', function (req, res) {
-    res.render('processStartPage');
-});
-
-router.get('/myWaitingProcessesPage', function (req, res) {
-    res.render('activeProcessesViews/myWaitingProcessesPage');
-});
-
 module.exports = router;
