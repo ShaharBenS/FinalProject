@@ -149,6 +149,9 @@ function startActiveProcess() {
                 selector.appendChild(option);
             });
             let urgencySelector = document.getElementById("start-processes-urgency");
+            while (urgencySelector.firstChild) {
+                urgencySelector.removeChild(urgencySelector.firstChild);
+            }
             document.getElementById("start-active-process-modal").style.display = "block";
             for(let i=1; i<=3; i++){
                 let option = document.createElement('option');
