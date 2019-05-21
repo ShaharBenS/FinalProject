@@ -356,13 +356,21 @@ let sankeyToStructure = function (sankeyContent, callback)
             });
 
             // Check if there are stages with no role.
+            if(processStructureSankeyObject.getSankeyStages().filter(sankeyStage =>
+            {
+                return sankeyStage.bgColor.toLowerCase() === "#ff1100";
+
+            }).length !== 0){
+                callback('שגיאה: יש ראשית למחוק תפקידים שנמחקו מהעץ (אדומים).');
+                return;
+            }
             let rolesName = roles.map(role =>
             {
                 return role.roleName
             });
             if (!Array.from(new Set(processStructureSankeyObject.getSankeyStages().filter(sankeyStage =>
             {
-                return sankeyStage.bgColor.toLowerCase() === "#f6a500" || sankeyStage.bgColor.toLowerCase() === "#ff1100";
+                return sankeyStage.bgColor.toLowerCase() === "#f6a500";
 
             }).map(stage=>stage.labels[0].text))).every(roleName =>
             {
