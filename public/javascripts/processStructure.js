@@ -160,7 +160,9 @@ function onDrop_extension(type, command, figure, kind) {
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                         let selector = document.getElementById("role_selector");
 
-                        JSON.parse(xmlHttp.responseText).forEach((role) => {
+                        JSON.parse(xmlHttp.responseText).sort((a,b)=>{
+                            return a.roleName.localeCompare(b.roleName);
+                        }).forEach((role) => {
                             let option = document.createElement('option');
                             option.value = role._id;
                             option.innerText = role.roleName;
