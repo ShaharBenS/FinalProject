@@ -476,8 +476,8 @@ function advanceProcess(process, stageNum, nextStages, nowDate, callback) {
     });
 }
 
-module.exports.takePartInActiveProcess = (processName, userEmail, callback) => {
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
+module.exports.takePartInActiveProcess = (processID, userEmail, callback) => {
+    getActiveProcessByProcessID(processID, (err, process) => {
         if (err) callback(err);
         else {
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
@@ -518,8 +518,18 @@ function getActiveProcessByProcessName(processName, callback) {
     });
 }
 
-module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEmail, callback) {
-    getActiveProcessByProcessName(processName, (err, process) => {
+function getActiveProcessByProcessID(processID, callback) {
+    processAccessor.findActiveProcesses({_id: processID}, (err, processArray) => {
+        if (err) callback(err);
+        else {
+            if (processArray === null || processArray.length === 0) callback(null, null);
+            else callback(null, processArray[0]);
+        }
+    });
+}
+
+module.exports.getNextStagesRolesAndOnlineForms = function (processID, userEmail, callback) {
+    getActiveProcessByProcessID(processID, (err, process) => {
         if (err) callback(err);
         else {
             if (!process) {
@@ -551,7 +561,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                         onlineFormController.findOnlineFormsNamesByFormsIDs(process.onlineForms, (err, onlineFormsNames) => {
                             if (err) callback(err);
                             else {
-                                callback(null, [rolesNames, onlineFormsNames]);
+                                callback(null, [rolesNames, onlineFormsNames, process.processName, process.processID]);
                             }
                         });
                     }
@@ -602,8 +612,8 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
     });
 };
 
-module.exports.cancelProcess = function (userEmail, processName, comments, callback) {
-    getActiveProcessByProcessName(processName, (err, process) => {
+module.exports.cancelProcess = function (userEmail, processID, comments, callback) {
+    getActiveProcessByProcessID(processID, (err, process) => {
         if (err) callback(err);
         else {
             let today = new Date();
@@ -616,10 +626,10 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                 action: "cancel",
                 stageNum: currentNumberForUser
             };
-            processAccessor.deleteOneActiveProcess({processName: processName}, (err) => {
+            processAccessor.deleteOneActiveProcess({_id: processID}, (err) => {
                 if (err) callback(err);
                 else {
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                    processReportController.addActiveProcessDetailsToReport(process.processName, userEmail, stage, today, (err) => {
                         if (err) {
                             callback(err);
                         } else {

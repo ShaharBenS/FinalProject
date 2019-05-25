@@ -1,9 +1,8 @@
-function takePartInProcess(processName,userEmail)
+function takePartInProcess(processID)
 {
     let xhr = new XMLHttpRequest();
     let data = new FormData();
-    data.append('processName', processName);
-    data.append('userEmail', userEmail);
+    data.append('processID', processID);
     xhr.open("POST", '/activeProcesses/unTakePartInProcess', true);
     //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function() { // Call a function when the state changes.

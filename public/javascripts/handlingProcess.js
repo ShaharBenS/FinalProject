@@ -71,11 +71,11 @@ $(document).ready(function() {
     });
 });
 
-function cancelProcess(processName)
+function cancelProcess(processID)
 {
     let xhr = new XMLHttpRequest();
     let data = new FormData();
-    data.append('processName', processName);
+    data.append('processID', processID);
     data.append('comments', document.getElementsByName('comments')[0].value);
     xhr.open("POST", '/activeProcesses/cancelProcess', true);
     //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

@@ -54,8 +54,8 @@ router.post('/takePartInProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields) {
         let userEmail = req.user.emails[0].value;
-        let processName = fields.processName;
-        activeProcessController.takePartInActiveProcess(processName, userEmail, (err) => {
+        let processID = fields.processID;
+        activeProcessController.takePartInActiveProcess(processID, userEmail, (err) => {
             if (err) res.render('errorViews/error');
             else {
                 res.send("success");
@@ -99,9 +99,9 @@ router.post('/cancelProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields) {
         let userEmail = req.user.emails[0].value;
-        let processName = fields.processName;
+        let processID = fields.processID;
         let comments = fields.comments;
-        activeProcessController.cancelProcess(userEmail, processName, comments, (err) => {
+        activeProcessController.cancelProcess(userEmail, processID, comments, (err) => {
             if (err) res.render('errorViews/error');
             else {
                 res.send("success");
@@ -207,14 +207,15 @@ router.get('/getAvailableActiveProcessesByUser', function (req, res) {
 
 router.get('/handleProcessView', function (req, res) {
     let userName = req.user.emails[0].value;
-    let processName = req.query.process_name;
-    activeProcessController.getNextStagesRolesAndOnlineForms(processName, userName, (err, rolesArr) => {
+    let processID = req.query.processID;
+    activeProcessController.getNextStagesRolesAndOnlineForms(processID, userName, (err, rolesArr) => {
         if (err) {
             res.render('errorViews/error');
         } else {
             res.render('activeProcessesViews/handleProcess', {
-                userName: userName, processName: processName,
-                nextRoles: rolesArr[0], formsNames: rolesArr[1]
+                userName: userName, nextRoles: rolesArr[0],
+                formsNames: rolesArr[1], processName: rolesArr[2],
+                processID: rolesArr[3]
             });
         }
     });
