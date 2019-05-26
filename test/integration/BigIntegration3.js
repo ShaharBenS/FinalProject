@@ -252,160 +252,172 @@ describe('1. addUsersAndRole', function ()
                                         done(err);
                                     }
                                     else {
-                                        activeProcessController.takePartInActiveProcess("תהליך 1", "new_media@outlook.com", (err) =>
-                                        {
-                                            if (err) {
-                                                done(err);
-                                            }
-                                            else {
-                                                activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
-                                                    processName: "תהליך 1",
-                                                    3: "on",
-                                                    comments: "הערה 3"
-                                                }, [], [], (err) =>
-                                                {
-                                                    if (err) {
-                                                        done(err);
-                                                    }
-                                                    else {
-                                                        activeProcessController.uploadFilesAndHandleProcess("meizamim@outlook.com", {
-                                                            processName: "תהליך 1",
-                                                            4: "on",
-                                                            comments: "הערה 4"
-                                                        }, [], [], (err) =>
-                                                        {
-                                                            if (err) {
-                                                                done(err);
-                                                            }
-                                                            else {
-                                                                activeProcessController.uploadFilesAndHandleProcess("academy@outlook.com", {
-                                                                    processName: "תהליך 1",
-                                                                    5: "on",
-                                                                    6: "on",
-                                                                    comments: "הערה 56"
-                                                                }, [], [], (err) =>
-                                                                {
-                                                                    if (err) {
-                                                                        done(err);
-                                                                    }
-                                                                    else {
-                                                                        activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
-                                                                            processName: "תהליך 1",
-                                                                            9: "on",
-                                                                            comments: "הערה 7.1"
-                                                                        }, [], [], (err) =>
-                                                                        {
-                                                                            if (err) {
-                                                                                done(err);
-                                                                            }
-                                                                            else {
-                                                                                activeProcessController.uploadFilesAndHandleProcess("revaha@outlook.com", {
-                                                                                    processName: "תהליך 1",
-                                                                                    9: "on",
-                                                                                    comments: "הערה 7.2"
-                                                                                }, [], [], (err) =>
-                                                                                {
-                                                                                    if (err) {
-                                                                                        done(err);
-                                                                                    }
-                                                                                    else {
-                                                                                        activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
-                                                                                            processName: "תהליך 1",
-                                                                                            7: "on",
-                                                                                            comments: "הערה 7"
-                                                                                        }, [], [], (err) =>
-                                                                                        {
-                                                                                            if (err) {
-                                                                                                done(err);
-                                                                                            }
-                                                                                            else {
-                                                                                                activeProcessController.uploadFilesAndHandleProcess("sayor@outlook.com", {
-                                                                                                    processName: "תהליך 1",
-                                                                                                    8: "on",
-                                                                                                    comments: "הערה 8"
-                                                                                                }, [], [], (err) =>
-                                                                                                {
-                                                                                                    if (err) {
-                                                                                                        done(err);
-                                                                                                    }
-                                                                                                    else {
-                                                                                                        activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
-                                                                                                            processName: "תהליך 1",
-                                                                                                            comments: "הערה 10"
-                                                                                                        }, [], [], (err) =>
-                                                                                                        {
-                                                                                                            if (err) {
-                                                                                                                done(err);
-                                                                                                            }
-                                                                                                            else {
-                                                                                                                activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
-                                                                                                                {
-                                                                                                                    if (err) {
-                                                                                                                        done(err);
-                                                                                                                    }
-                                                                                                                    else {
-                                                                                                                        assert.deepEqual(activeProcesses.length, 0);
-                                                                                                                        activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 2",
-                                                                                                                            new Date(2022, 4, 26, 16), 2, (err) =>
-                                                                                                                            {
-                                                                                                                                if (err) {
-                                                                                                                                    done(err);
-                                                                                                                                }
-                                                                                                                                else {
-                                                                                                                                    activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
-                                                                                                                                        {
-                                                                                                                                            processName: "תהליך 2",
-                                                                                                                                            1: "on",
-                                                                                                                                            comments: "הערה 1"
-                                                                                                                                        }, [], [], (err) =>
-                                                                                                                                        {
-                                                                                                                                            if (err) {
-                                                                                                                                                done(err);
-                                                                                                                                            }
-                                                                                                                                            else {
-                                                                                                                                                activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
-                                                                                                                                                    processName: "תהליך 2",
-                                                                                                                                                    2: "on",
-                                                                                                                                                    comments: "הערה 2"
-                                                                                                                                                }, [], [], (err) =>
-                                                                                                                                                {
-                                                                                                                                                    if (err) {
-                                                                                                                                                        done(err);
-                                                                                                                                                    }
-                                                                                                                                                    else {
-                                                                                                                                                        activeProcessController.cancelProcess("new_media@outlook.com", "תהליך 2", "בדיקת בוטל", (err) =>
-                                                                                                                                                        {
-                                                                                                                                                            if (err) {
-                                                                                                                                                                done(err);
-                                                                                                                                                            }
-                                                                                                                                                            done();
-                                                                                                                                                        });
-                                                                                                                                                    }
-                                                                                                                                                });
-                                                                                                                                            }
-                                                                                                                                        });
-                                                                                                                                }
-                                                                                                                            });
-                                                                                                                    }
-                                                                                                                });
-                                                                                                            }
-                                                                                                        });
-                                                                                                    }
-                                                                                                });
-                                                                                            }
-                                                                                        });
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
+                                        activeProcessController.getActiveProcessByProcessName("תהליך 1", (err, process)=>{
+                                           if(err) done(err);
+                                           else
+                                           {
+                                               activeProcessController.takePartInActiveProcess("new_media@outlook.com", process.processID, (err) =>
+                                               {
+                                                   if (err) {
+                                                       done(err);
+                                                   }
+                                                   else {
+                                                       activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
+                                                           processName: "תהליך 1",
+                                                           3: "on",
+                                                           comments: "הערה 3"
+                                                       }, [], [], (err) =>
+                                                       {
+                                                           if (err) {
+                                                               done(err);
+                                                           }
+                                                           else {
+                                                               activeProcessController.uploadFilesAndHandleProcess("meizamim@outlook.com", {
+                                                                   processName: "תהליך 1",
+                                                                   4: "on",
+                                                                   comments: "הערה 4"
+                                                               }, [], [], (err) =>
+                                                               {
+                                                                   if (err) {
+                                                                       done(err);
+                                                                   }
+                                                                   else {
+                                                                       activeProcessController.uploadFilesAndHandleProcess("academy@outlook.com", {
+                                                                           processName: "תהליך 1",
+                                                                           5: "on",
+                                                                           6: "on",
+                                                                           comments: "הערה 56"
+                                                                       }, [], [], (err) =>
+                                                                       {
+                                                                           if (err) {
+                                                                               done(err);
+                                                                           }
+                                                                           else {
+                                                                               activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
+                                                                                   processName: "תהליך 1",
+                                                                                   9: "on",
+                                                                                   comments: "הערה 7.1"
+                                                                               }, [], [], (err) =>
+                                                                               {
+                                                                                   if (err) {
+                                                                                       done(err);
+                                                                                   }
+                                                                                   else {
+                                                                                       activeProcessController.uploadFilesAndHandleProcess("revaha@outlook.com", {
+                                                                                           processName: "תהליך 1",
+                                                                                           9: "on",
+                                                                                           comments: "הערה 7.2"
+                                                                                       }, [], [], (err) =>
+                                                                                       {
+                                                                                           if (err) {
+                                                                                               done(err);
+                                                                                           }
+                                                                                           else {
+                                                                                               activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
+                                                                                                   processName: "תהליך 1",
+                                                                                                   7: "on",
+                                                                                                   comments: "הערה 7"
+                                                                                               }, [], [], (err) =>
+                                                                                               {
+                                                                                                   if (err) {
+                                                                                                       done(err);
+                                                                                                   }
+                                                                                                   else {
+                                                                                                       activeProcessController.uploadFilesAndHandleProcess("sayor@outlook.com", {
+                                                                                                           processName: "תהליך 1",
+                                                                                                           8: "on",
+                                                                                                           comments: "הערה 8"
+                                                                                                       }, [], [], (err) =>
+                                                                                                       {
+                                                                                                           if (err) {
+                                                                                                               done(err);
+                                                                                                           }
+                                                                                                           else {
+                                                                                                               activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
+                                                                                                                   processName: "תהליך 1",
+                                                                                                                   comments: "הערה 10"
+                                                                                                               }, [], [], (err) =>
+                                                                                                               {
+                                                                                                                   if (err) {
+                                                                                                                       done(err);
+                                                                                                                   }
+                                                                                                                   else {
+                                                                                                                       activeProcessController.getAllActiveProcesses((err, activeProcesses) =>
+                                                                                                                       {
+                                                                                                                           if (err) {
+                                                                                                                               done(err);
+                                                                                                                           }
+                                                                                                                           else {
+                                                                                                                               assert.deepEqual(activeProcesses.length, 0);
+                                                                                                                               activeProcessController.startProcessByUsername("website@outlook.com", "מעורבות באתר אקדמיה", "תהליך 2",
+                                                                                                                                   new Date(2022, 4, 26, 16), 2, (err) =>
+                                                                                                                                   {
+                                                                                                                                       if (err) {
+                                                                                                                                           done(err);
+                                                                                                                                       }
+                                                                                                                                       else {
+                                                                                                                                           activeProcessController.uploadFilesAndHandleProcess("website@outlook.com",
+                                                                                                                                               {
+                                                                                                                                                   processName: "תהליך 2",
+                                                                                                                                                   1: "on",
+                                                                                                                                                   comments: "הערה 1"
+                                                                                                                                               }, [], [], (err) =>
+                                                                                                                                               {
+                                                                                                                                                   if (err) {
+                                                                                                                                                       done(err);
+                                                                                                                                                   }
+                                                                                                                                                   else {
+                                                                                                                                                       activeProcessController.uploadFilesAndHandleProcess("hasbara@outlook.com", {
+                                                                                                                                                           processName: "תהליך 2",
+                                                                                                                                                           2: "on",
+                                                                                                                                                           comments: "הערה 2"
+                                                                                                                                                       }, [], [], (err) =>
+                                                                                                                                                       {
+                                                                                                                                                           if (err) {
+                                                                                                                                                               done(err);
+                                                                                                                                                           }
+                                                                                                                                                           else {
+                                                                                                                                                               activeProcessController.getActiveProcessByProcessName("תהליך 2", (err, process)=>{
+                                                                                                                                                                   if(err) done(err);
+                                                                                                                                                                   else
+                                                                                                                                                                   {
+                                                                                                                                                                       activeProcessController.cancelProcess("new_media@outlook.com", process.processID, "בדיקת בוטל", (err) =>
+                                                                                                                                                                       {
+                                                                                                                                                                           if (err) {
+                                                                                                                                                                               done(err);
+                                                                                                                                                                           }
+                                                                                                                                                                           done();
+                                                                                                                                                                       });
+                                                                                                                                                                   }});
+                                                                                                                                                           }
+                                                                                                                                                       });
+                                                                                                                                                   }
+                                                                                                                                               });
+                                                                                                                                       }
+                                                                                                                                   });
+                                                                                                                           }
+                                                                                                                       });
+                                                                                                                   }
+                                                                                                               });
+                                                                                                           }
+                                                                                                       });
+                                                                                                   }
+                                                                                               });
+                                                                                           }
+                                                                                       });
+                                                                                   }
+                                                                               });
+                                                                           }
+                                                                       });
+                                                                   }
+                                                               });
+                                                           }
+                                                       });
+                                                   }
+                                               });
+                                           }
                                         });
+
                                     }
                                 });
                             }

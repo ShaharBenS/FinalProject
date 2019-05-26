@@ -476,7 +476,7 @@ function advanceProcess(process, stageNum, nextStages, nowDate, callback) {
     });
 }
 
-module.exports.takePartInActiveProcess = (processID, userEmail, callback) => {
+module.exports.takePartInActiveProcess = (userEmail, processID, callback) => {
     getActiveProcessByProcessID(processID, (err, process) => {
         if (err) callback(err);
         else {
@@ -492,7 +492,7 @@ module.exports.takePartInActiveProcess = (processID, userEmail, callback) => {
     });
 };
 
-module.exports.unTakePartInActiveProcess = (processID, userEmail, callback) => {
+module.exports.unTakePartInActiveProcess = (userEmail, processID, callback) => {
     getActiveProcessByProcessID(processID, (err, process) => {
         if (err) callback(err);
         else {
@@ -571,8 +571,8 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processID, userEmail
     });
 };
 
-module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
-    getActiveProcessByProcessName(processName, (err, process) => {
+module.exports.returnToCreator = function (userEmail, processID, comments, callback) {
+    getActiveProcessByProcessID(processID, (err, process) => {
         if(err) callback(err);
         else
         {
@@ -592,18 +592,18 @@ module.exports.returnToCreator = function (userEmail, processName, comments, cal
                 action: "return",
                 stageNum: currentNumberForUser
             };
-            processAccessor.updateActiveProcess({processName: processName}, {
+            processAccessor.updateActiveProcess({processName: process.processName}, {
                 currentStages: process.currentStages,
                 stages: process.stages,
                 lastApproached: today
             }, (err) => {
                 if (err) callback(err);
                 else {
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stage, today, (err) => {
+                    processReportController.addActiveProcessDetailsToReport(process.processName, userEmail, stage, today, (err) => {
                         if (err) {
                             callback(err);
                         } else {
-                            notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + processName + " חזר אליך", "תהליך חזר ליוצר"), callback);
+                            notificationsController.addNotificationToUser(creatorEmail, new Notification("התהליך " + process.processName + " חזר אליך", "תהליך חזר ליוצר"), callback);
                         }
                     });
                 }

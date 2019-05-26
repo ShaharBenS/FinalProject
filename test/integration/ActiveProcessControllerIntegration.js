@@ -1140,7 +1140,7 @@ describe('Active Process Controller', function () {
             activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.takePartInActiveProcess(process.processID, 'graphicartist@outlook.co.il', (err) => {
+                    activeProcessController.takePartInActiveProcess('graphicartist@outlook.co.il', process.processID, (err) => {
                         if (err) done(err);
                         else {
                             activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1164,7 +1164,7 @@ describe('Active Process Controller', function () {
             activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.unTakePartInActiveProcess(process.processID, 'publicitydepartmenthead@outlook.co.il', (err) => {
+                    activeProcessController.unTakePartInActiveProcess('publicitydepartmenthead@outlook.co.il', process.processID, (err) => {
                         if (err) done(err);
                         else {
                             activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
@@ -1359,14 +1359,19 @@ describe('Active Process Controller', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
         it('17.1 returnToCreator correct', function (done) {
-            activeProcessController.returnToCreator('publicitydepartmenthead@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות חזרה', (err) => {
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    activeProcessController.returnToCreator('publicitydepartmenthead@outlook.co.il', process.processID, 'הערות חזרה', (err) => {
                         if (err) done(err);
                         else {
-                            assert.deepEqual([3], process.currentStages);
-                            done();
+                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual([3], process.currentStages);
+                                    done();
+                                }
+                            });
                         }
                     });
                 }
@@ -1374,16 +1379,21 @@ describe('Active Process Controller', function () {
         }).timeout(30000);
 
         it('17.2 returnToCreator wrong user', function (done) {
-            activeProcessController.returnToCreator('publicitydepartmenthead1@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות חזרה', (err) => {
-                assert.deepEqual(true, err !== null);
-                assert.deepEqual(err.message, 'Return To Creator: wrong userEmail');
-                activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                    if (err) done(err);
-                    else {
-                        assert.deepEqual([1, 4], process.currentStages.sort());
-                        done();
-                    }
-                });
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.returnToCreator('publicitydepartmenthead1@outlook.co.il', process.processID, 'הערות חזרה', (err) => {
+                        assert.deepEqual(true, err !== null);
+                        assert.deepEqual(err.message, 'Return To Creator: wrong userEmail');
+                        activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual([1, 4], process.currentStages.sort());
+                                done();
+                            }
+                        });
+                    });
+                }
             });
         }).timeout(30000);
     });

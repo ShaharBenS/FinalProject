@@ -195,31 +195,35 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.8 Return Process To Its Creator.', function (done) {
-        activeProcessController.returnToCreator('midaArabic@outlook.com', 'קמפיין בחירות', 'הערות ותיקונים של מידענ/ית ערבית', (err) => {
+        activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
             if (err) done(err);
             else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                activeProcessController.returnToCreator('midaArabic@outlook.com', process.processID, 'הערות ותיקונים של מידענ/ית ערבית', (err) => {
                     if (err) done(err);
                     else {
-                        assert.deepEqual(process.currentStages, [0]);
-                        let currentStage = process.getStageByStageNum(0);
-                        assert.deepEqual(currentStage.userEmail, 'orehMishne@outlook.com');
-                        processReportController.processReport('קמפיין בחירות', (err, report) => {
+                        activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
                             if (err) done(err);
                             else {
-                                assert.deepEqual(report[1].length, 3);
-                                assert.deepEqual(report[1][2].userEmail, 'midaArabic@outlook.com');
-                                assert.deepEqual(report[1][2].userName, 'ש ש');
-                                assert.deepEqual(report[1][2].roleName, 'מידענ/ית ערבית');
-                                assert.deepEqual(report[1][2].comments, 'הערות ותיקונים של מידענ/ית ערבית');
-                                assert.deepEqual(report[1][2].action, 'return');
-                                done();
+                                assert.deepEqual(process.currentStages, [0]);
+                                let currentStage = process.getStageByStageNum(0);
+                                assert.deepEqual(currentStage.userEmail, 'orehMishne@outlook.com');
+                                processReportController.processReport('קמפיין בחירות', (err, report) => {
+                                    if (err) done(err);
+                                    else {
+                                        assert.deepEqual(report[1].length, 3);
+                                        assert.deepEqual(report[1][2].userEmail, 'midaArabic@outlook.com');
+                                        assert.deepEqual(report[1][2].userName, 'ש ש');
+                                        assert.deepEqual(report[1][2].roleName, 'מידענ/ית ערבית');
+                                        assert.deepEqual(report[1][2].comments, 'הערות ותיקונים של מידענ/ית ערבית');
+                                        assert.deepEqual(report[1][2].action, 'return');
+                                        done();
+                                    }
+                                });
                             }
                         });
                     }
                 });
-            }
-        });
+            }});
     }).timeout(30000);
 
     it('1.9 Handle Process.', function (done) {
@@ -352,20 +356,24 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.13 Take Part In Process', function (done) {
-        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err) => {
+        activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
             if (err) done(err);
             else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                activeProcessController.takePartInActiveProcess('MenaelAtar1@outlook.com', process.processID,  (err) => {
                     if (err) done(err);
                     else {
-                        assert.deepEqual(process.currentStages, [3]);
-                        let currentStage = process.getStageByStageNum(3);
-                        assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
-                        done();
+                        activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(process.currentStages, [3]);
+                                let currentStage = process.getStageByStageNum(3);
+                                assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
+                                done();
+                            }
+                        });
                     }
                 });
-            }
-        });
+            }});
     }).timeout(30000);
 
     it('1.14 Handle Process.', function (done) {
@@ -496,20 +504,24 @@ describe('1. Big Integration Test', function () {
     }).timeout(30000);
 
     it('1.19 Take Part In Process', function (done) {
-        activeProcessController.takePartInActiveProcess('קמפיין בחירות', 'MenaelAtar1@outlook.com', (err) => {
+        activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
             if (err) done(err);
             else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                activeProcessController.takePartInActiveProcess('MenaelAtar1@outlook.com', process.processID, (err) => {
                     if (err) done(err);
                     else {
-                        assert.deepEqual(process.currentStages, [7]);
-                        let currentStage = process.getStageByStageNum(7);
-                        assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
-                        done();
+                        activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(process.currentStages, [7]);
+                                let currentStage = process.getStageByStageNum(7);
+                                assert.deepEqual(currentStage.userEmail, 'MenaelAtar1@outlook.com');
+                                done();
+                            }
+                        });
                     }
                 });
-            }
-        });
+            }});
     }).timeout(30000);
 
     it('1.20 Handle Process.', function (done) {

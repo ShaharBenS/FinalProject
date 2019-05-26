@@ -702,166 +702,173 @@ describe('8. updateNotifications', function ()
                                         done(err);
                                     }
                                     else {
-                                        activeProcessController.takePartInActiveProcess("תהליך 1", "new_media@outlook.com", (err) =>
-                                        {
-                                            if (err) {
-                                                done(err);
-                                            }
-                                            else {
-                                                setTimeout(() =>
-                                                {
-                                                    notificationController.updateNotifications(() =>
-                                                    {
-                                                        notificationController.getUserNotifications("new_media@outlook.com", (err, notifications) =>
-                                                        {
-                                                            assert.deepEqual(notifications.some(notification =>
-                                                            {
-                                                                return notification.notificationType === "תזכורת להתליך בהמתנה";
-                                                            }), true);
-                                                            activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
-                                                                processName: "תהליך 1",
-                                                                3: "on",
-                                                                comments: "הערה 3"
-                                                            }, [], [], (err) =>
-                                                            {
-                                                                if (err) {
-                                                                    done(err);
-                                                                }
-                                                                else {
-                                                                    activeProcessController.uploadFilesAndHandleProcess("meizamim@outlook.com", {
-                                                                        processName: "תהליך 1",
-                                                                        4: "on",
-                                                                        comments: "הערה 4"
-                                                                    }, [], [], (err) =>
-                                                                    {
-                                                                        if (err) {
-                                                                            done(err);
-                                                                        }
-                                                                        else {
-                                                                            activeProcessController.uploadFilesAndHandleProcess("academy@outlook.com", {
-                                                                                processName: "תהליך 1",
-                                                                                5: "on",
-                                                                                6: "on",
-                                                                                comments: "הערה 56"
-                                                                            }, [], [], (err) =>
-                                                                            {
-                                                                                if (err) {
-                                                                                    done(err);
-                                                                                }
-                                                                                else {
-                                                                                    setTimeout(() =>
-                                                                                    {
-                                                                                        notificationController.updateNotifications((err) =>
-                                                                                        {
-                                                                                            notificationController.getUserNotifications("cesef@outlook.com", (err, notifications1) =>
-                                                                                            {
-                                                                                                notificationController.getUserNotifications("revaha@outlook.com", (err, notifications2) =>
-                                                                                                {
-                                                                                                    assert.deepEqual(notifications1.some(notification =>
-                                                                                                    {
-                                                                                                        return notification.notificationType === "תזכורת להתליך בהמתנה";
-                                                                                                    }), true);
-                                                                                                    assert.deepEqual(notifications2.some(notification =>
-                                                                                                    {
-                                                                                                        return notification.notificationType === "תזכורת להתליך בהמתנה";
-                                                                                                    }), true);
-                                                                                                    notificationController.deleteAllNotification("cesef@outlook.com",(err)=>{
-                                                                                                        notificationController.deleteAllNotification("revaha@outlook.com",(err)=>{
-                                                                                                            setTimeout(()=>{
-                                                                                                                notificationController.updateNotifications((err)=>{
-                                                                                                                    notificationController.getUserNotifications("cesef@outlook.com", (err, notifications1) =>
-                                                                                                                    {
-                                                                                                                        notificationController.getUserNotifications("revaha@outlook.com", (err, notifications2) =>
-                                                                                                                        {
-                                                                                                                            assert.deepEqual(notifications1.some(notification =>
-                                                                                                                            {
-                                                                                                                                return notification.notificationType === "תזכורת להתליך בהמתנה";
-                                                                                                                            }), true);
-                                                                                                                            assert.deepEqual(notifications2.some(notification =>
-                                                                                                                            {
-                                                                                                                                return notification.notificationType === "תזכורת להתליך בהמתנה";
-                                                                                                                            }), true);
-                                                                                                                            activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
-                                                                                                                                processName: "תהליך 1",
-                                                                                                                                9: "on",
-                                                                                                                                comments: "הערה 7.1"
-                                                                                                                            }, [], [], (err) =>
-                                                                                                                            {
-                                                                                                                                if (err) {
-                                                                                                                                    done(err);
-                                                                                                                                }
-                                                                                                                                else {
-                                                                                                                                    activeProcessController.uploadFilesAndHandleProcess("revaha@outlook.com", {
-                                                                                                                                        processName: "תהליך 1",
-                                                                                                                                        9: "on",
-                                                                                                                                        comments: "הערה 7.2"
-                                                                                                                                    }, [], [], (err) =>
-                                                                                                                                    {
-                                                                                                                                        if (err) {
-                                                                                                                                            done(err);
-                                                                                                                                        }
-                                                                                                                                        else {
-                                                                                                                                            activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
-                                                                                                                                                processName: "תהליך 1",
-                                                                                                                                                7: "on",
-                                                                                                                                                comments: "הערה 7"
-                                                                                                                                            }, [], [], (err) =>
-                                                                                                                                            {
-                                                                                                                                                if (err) {
-                                                                                                                                                    done(err);
-                                                                                                                                                }
-                                                                                                                                                else {
-                                                                                                                                                    activeProcessController.uploadFilesAndHandleProcess("sayor@outlook.com", {
-                                                                                                                                                        processName: "תהליך 1",
-                                                                                                                                                        8: "on",
-                                                                                                                                                        comments: "הערה 8"
-                                                                                                                                                    }, [], [], (err) =>
-                                                                                                                                                    {
-                                                                                                                                                        if (err) {
-                                                                                                                                                            done(err);
-                                                                                                                                                        }
-                                                                                                                                                        else {
-                                                                                                                                                            activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
-                                                                                                                                                                processName: "תהליך 1",
-                                                                                                                                                                comments: "הערה 10"
-                                                                                                                                                            }, [], [], (err) =>
-                                                                                                                                                            {
-                                                                                                                                                                if (err) {
-                                                                                                                                                                    done(err);
-                                                                                                                                                                }
-                                                                                                                                                                else {
-                                                                                                                                                                    done();
-                                                                                                                                                                }
-                                                                                                                                                            });
-                                                                                                                                                        }
-                                                                                                                                                    });
-                                                                                                                                                }
-                                                                                                                                            });
-                                                                                                                                        }
-                                                                                                                                    });
-                                                                                                                                }
-                                                                                                                            });
-                                                                                                                        });
-                                                                                                                    });
-                                                                                                                });
-                                                                                                            },15000);
-                                                                                                        });
-                                                                                                    });
-                                                                                                });
-                                                                                            });
-                                                                                        });
-                                                                                    }, 15100);
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-                                                        });
-                                                    });
-                                                }, 15100);
-                                            }
+                                        activeProcessController.getActiveProcessByProcessName('תהליך 1', (err, process)=>{
+                                           if(err) done(err);
+                                           else
+                                           {
+                                               activeProcessController.takePartInActiveProcess("new_media@outlook.com", process.processID, (err) =>
+                                               {
+                                                   if (err) {
+                                                       done(err);
+                                                   }
+                                                   else {
+                                                       setTimeout(() =>
+                                                       {
+                                                           notificationController.updateNotifications(() =>
+                                                           {
+                                                               notificationController.getUserNotifications("new_media@outlook.com", (err, notifications) =>
+                                                               {
+                                                                   assert.deepEqual(notifications.some(notification =>
+                                                                   {
+                                                                       return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                   }), true);
+                                                                   activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
+                                                                       processName: "תהליך 1",
+                                                                       3: "on",
+                                                                       comments: "הערה 3"
+                                                                   }, [], [], (err) =>
+                                                                   {
+                                                                       if (err) {
+                                                                           done(err);
+                                                                       }
+                                                                       else {
+                                                                           activeProcessController.uploadFilesAndHandleProcess("meizamim@outlook.com", {
+                                                                               processName: "תהליך 1",
+                                                                               4: "on",
+                                                                               comments: "הערה 4"
+                                                                           }, [], [], (err) =>
+                                                                           {
+                                                                               if (err) {
+                                                                                   done(err);
+                                                                               }
+                                                                               else {
+                                                                                   activeProcessController.uploadFilesAndHandleProcess("academy@outlook.com", {
+                                                                                       processName: "תהליך 1",
+                                                                                       5: "on",
+                                                                                       6: "on",
+                                                                                       comments: "הערה 56"
+                                                                                   }, [], [], (err) =>
+                                                                                   {
+                                                                                       if (err) {
+                                                                                           done(err);
+                                                                                       }
+                                                                                       else {
+                                                                                           setTimeout(() =>
+                                                                                           {
+                                                                                               notificationController.updateNotifications((err) =>
+                                                                                               {
+                                                                                                   notificationController.getUserNotifications("cesef@outlook.com", (err, notifications1) =>
+                                                                                                   {
+                                                                                                       notificationController.getUserNotifications("revaha@outlook.com", (err, notifications2) =>
+                                                                                                       {
+                                                                                                           assert.deepEqual(notifications1.some(notification =>
+                                                                                                           {
+                                                                                                               return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                           }), true);
+                                                                                                           assert.deepEqual(notifications2.some(notification =>
+                                                                                                           {
+                                                                                                               return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                           }), true);
+                                                                                                           notificationController.deleteAllNotification("cesef@outlook.com",(err)=>{
+                                                                                                               notificationController.deleteAllNotification("revaha@outlook.com",(err)=>{
+                                                                                                                   setTimeout(()=>{
+                                                                                                                       notificationController.updateNotifications((err)=>{
+                                                                                                                           notificationController.getUserNotifications("cesef@outlook.com", (err, notifications1) =>
+                                                                                                                           {
+                                                                                                                               notificationController.getUserNotifications("revaha@outlook.com", (err, notifications2) =>
+                                                                                                                               {
+                                                                                                                                   assert.deepEqual(notifications1.some(notification =>
+                                                                                                                                   {
+                                                                                                                                       return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                                                   }), true);
+                                                                                                                                   assert.deepEqual(notifications2.some(notification =>
+                                                                                                                                   {
+                                                                                                                                       return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                                                   }), true);
+                                                                                                                                   activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
+                                                                                                                                       processName: "תהליך 1",
+                                                                                                                                       9: "on",
+                                                                                                                                       comments: "הערה 7.1"
+                                                                                                                                   }, [], [], (err) =>
+                                                                                                                                   {
+                                                                                                                                       if (err) {
+                                                                                                                                           done(err);
+                                                                                                                                       }
+                                                                                                                                       else {
+                                                                                                                                           activeProcessController.uploadFilesAndHandleProcess("revaha@outlook.com", {
+                                                                                                                                               processName: "תהליך 1",
+                                                                                                                                               9: "on",
+                                                                                                                                               comments: "הערה 7.2"
+                                                                                                                                           }, [], [], (err) =>
+                                                                                                                                           {
+                                                                                                                                               if (err) {
+                                                                                                                                                   done(err);
+                                                                                                                                               }
+                                                                                                                                               else {
+                                                                                                                                                   activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
+                                                                                                                                                       processName: "תהליך 1",
+                                                                                                                                                       7: "on",
+                                                                                                                                                       comments: "הערה 7"
+                                                                                                                                                   }, [], [], (err) =>
+                                                                                                                                                   {
+                                                                                                                                                       if (err) {
+                                                                                                                                                           done(err);
+                                                                                                                                                       }
+                                                                                                                                                       else {
+                                                                                                                                                           activeProcessController.uploadFilesAndHandleProcess("sayor@outlook.com", {
+                                                                                                                                                               processName: "תהליך 1",
+                                                                                                                                                               8: "on",
+                                                                                                                                                               comments: "הערה 8"
+                                                                                                                                                           }, [], [], (err) =>
+                                                                                                                                                           {
+                                                                                                                                                               if (err) {
+                                                                                                                                                                   done(err);
+                                                                                                                                                               }
+                                                                                                                                                               else {
+                                                                                                                                                                   activeProcessController.uploadFilesAndHandleProcess("yor@outlook.com", {
+                                                                                                                                                                       processName: "תהליך 1",
+                                                                                                                                                                       comments: "הערה 10"
+                                                                                                                                                                   }, [], [], (err) =>
+                                                                                                                                                                   {
+                                                                                                                                                                       if (err) {
+                                                                                                                                                                           done(err);
+                                                                                                                                                                       }
+                                                                                                                                                                       else {
+                                                                                                                                                                           done();
+                                                                                                                                                                       }
+                                                                                                                                                                   });
+                                                                                                                                                               }
+                                                                                                                                                           });
+                                                                                                                                                       }
+                                                                                                                                                   });
+                                                                                                                                               }
+                                                                                                                                           });
+                                                                                                                                       }
+                                                                                                                                   });
+                                                                                                                               });
+                                                                                                                           });
+                                                                                                                       });
+                                                                                                                   },15000);
+                                                                                                               });
+                                                                                                           });
+                                                                                                       });
+                                                                                                   });
+                                                                                               });
+                                                                                           }, 15100);
+                                                                                       }
+                                                                                   });
+                                                                               }
+                                                                           });
+                                                                       }
+                                                                   });
+                                                               });
+                                                           });
+                                                       }, 15100);
+                                                   }
+                                               });
+                                           }
                                         });
+
                                     }
                                 });
                             }
