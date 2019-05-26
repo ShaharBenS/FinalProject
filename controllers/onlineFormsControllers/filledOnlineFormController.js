@@ -14,9 +14,9 @@ module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
     })
 };
 
-module.exports.getFilledOnlineFormByID = (formID, callback) => {
+function getFilledOnlineFormByID(formID, callback){
     filledOnlineFormAccessor.findFilledOnlineFormByFormID(formID, callback);
-};
+}
 
 module.exports.displayFilledForm = function (filledFormID, callback) {
     this.getFilledOnlineFormByID(filledFormID, (err, form) => {
@@ -130,7 +130,7 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
         callback(null, filledFormsArray);
         return;
     }
-    this.getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
+    getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
         if (err) callback(err);
         else {
             filledFormsArray.push(form);
@@ -140,3 +140,4 @@ function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) 
 }
 
 module.exports.getFilledOnlineForms = getFilledOnlineForms;
+module.exports.getFilledOnlineFormByID = getFilledOnlineFormByID;

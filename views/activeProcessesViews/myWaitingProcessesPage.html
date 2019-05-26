@@ -69,13 +69,13 @@
                         <td><%=process.lastApproached%></td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" id="<%=process.processName%>"
-                                    onclick="handleProcess('<%=process.processName%>')">טפל בתהליך
+                                    onclick="handleProcess(this.id)">טפל בתהליך
                             </button>
                         </td>
                         <%if(flagToShowUntakeButton) { %>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" id="<%=process.processName%>2"
-                                    onclick="takePartInProcess('<%=process.processName%>','<%=username%>')">בטל לקיחת
+                                    onclick="unTakePartInProcess(this.id.substring(0,this.id.length - 1),'<%=username%>')">בטל לקיחת
                                 חלק
                                 בתהליך
                             </button>
