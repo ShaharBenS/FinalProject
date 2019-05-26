@@ -40,8 +40,8 @@ module.exports.displayFilledForm = function (filledFormID, callback) {
     });
 };
 
-module.exports.getFormReadyToFill = function (processName, formName, callback) {
-    this.getFormReady(processName, formName, (err, form) => {
+module.exports.getFormReadyToFill = function (processID, formName, callback) {
+    this.getFormReady(processID, formName, (err, form) => {
         if (err) callback(err);
         else if (form === undefined) {
             onlineFormsController.getOnlineFormByName(formName, (err, form) => {
@@ -78,8 +78,8 @@ module.exports.getFormReadyToFill = function (processName, formName, callback) {
     });
 };
 
-module.exports.getFormReady = function (processName, formName, callback) {
-    activeProcessController.getActiveProcessByProcessName(processName, (err, activeProcess) => {
+module.exports.getFormReady = function (processID, formName, callback) {
+    activeProcessController.getActiveProcessByProcessID(processID, (err, activeProcess) => {
         if (err) callback(err);
         else if (activeProcess === null) callback(new Error("process was not found"));
         else {

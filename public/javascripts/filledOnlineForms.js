@@ -21,10 +21,10 @@ function receiveFormInfo(formName, info) {
 /**
  * called whenever @formName is clicked
  * @param formName
- * @param processName
+ * @param processID
  * @returns {boolean}
  */
-function formClick(formName, processName) {
-    window.open("/onlineForms/fill?formName=" + formName + "&processName=" + processName);
+function formClick(formName, processID) {
+    window.open("/onlineForms/fill?formName=" + formName + "&processID=" + processID);
     return false;
 }

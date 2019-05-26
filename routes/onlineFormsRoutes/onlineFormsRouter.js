@@ -52,7 +52,7 @@ router.get('/display', function (req, res) {
 });
 
 router.get('/fill', function (req, res) {
-    filledOnlineFormsController.getFormReadyToFill(req.query.processName, req.query.formName, (err, HTMLSource, locals) => {
+    filledOnlineFormsController.getFormReadyToFill(req.query.processID, req.query.formName, (err, HTMLSource, locals) => {
         if (err) res.send(err);
         else {
             res.render('onlineFormViews/' + HTMLSource, locals);

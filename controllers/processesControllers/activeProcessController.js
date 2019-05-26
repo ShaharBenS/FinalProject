@@ -772,3 +772,4 @@ module.exports.advanceProcess = advanceProcess;
 module.exports.getRoleIDsOfDeregStages = getRoleIDsOfDeregStages;
 module.exports.getNewActiveProcess = getNewActiveProcess;
 module.exports.uploadFiles = uploadFiles;
+module.exports.getActiveProcessByProcessID = getActiveProcessByProcessID;
