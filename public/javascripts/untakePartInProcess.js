@@ -1,4 +1,4 @@
-function takePartInProcess(processID)
+function unTakePartInProcess(processID)
 {
     let xhr = new XMLHttpRequest();
     let data = new FormData();

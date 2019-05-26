@@ -1020,12 +1020,12 @@ describe('Active Process Controller', function () {
                                 if (err) done(err);
                                 else {
                                     let currentProcessNum = process.getCurrentStageNumberForUser('publicitydepartmenthead@outlook.co.il');
-                                    if(currentProcessNum instanceof Error) {
+                                    if (currentProcessNum instanceof Error) {
                                         done(currentProcessNum);
                                         return;
                                     }
                                     let currStage = process.getStageByStageNum(currentProcessNum);
-                                    if(currStage instanceof Error){
+                                    if (currStage instanceof Error) {
                                         done(currStage);
                                         return;
                                     }
@@ -1055,12 +1055,12 @@ describe('Active Process Controller', function () {
                 if (err) done(err);
                 else {
                     let currentProcessNum = process.getCurrentStageNumberForUser('negativevicemanager@outlook.co.il');
-                    if(currentProcessNum instanceof Error) {
+                    if (currentProcessNum instanceof Error) {
                         done(currentProcessNum);
                         return;
                     }
                     let currStage = process.getStageByStageNum(currentProcessNum);
-                    if(currStage instanceof Error){
+                    if (currStage instanceof Error) {
                         done(currStage);
                         return;
                     }
@@ -1137,14 +1137,19 @@ describe('Active Process Controller', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
         it('13.1 takePartInProcess', function (done) {
-            activeProcessController.takePartInActiveProcess('גרפיקה להקרנת בכורה', 'graphicartist@outlook.co.il', (err) => {
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    activeProcessController.takePartInActiveProcess(process.processID, 'graphicartist@outlook.co.il', (err) => {
                         if (err) done(err);
                         else {
-                            assert.deepEqual('graphicartist@outlook.co.il', process.getStageByStageNum(1).userEmail);
-                            done();
+                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual('graphicartist@outlook.co.il', process.getStageByStageNum(1).userEmail);
+                                    done();
+                                }
+                            });
                         }
                     });
                 }
@@ -1156,18 +1161,24 @@ describe('Active Process Controller', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
         it('14.1 unTakePartInProcess', function (done) {
-            activeProcessController.unTakePartInActiveProcess('גרפיקה להקרנת בכורה', 'publicitydepartmenthead@outlook.co.il', (err) => {
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    activeProcessController.unTakePartInActiveProcess(process.processID, 'publicitydepartmenthead@outlook.co.il', (err) => {
                         if (err) done(err);
                         else {
-                            assert.deepEqual(null, process.getStageByStageNum(4).userEmail);
-                            done();
+                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(null, process.getStageByStageNum(4).userEmail);
+                                    done();
+                                }
+                            });
                         }
                     });
                 }
             });
+
         }).timeout(30000);
     });
 
@@ -1297,21 +1308,26 @@ describe('Active Process Controller', function () {
             }, [], 'files', (err) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativemanager@outlook.co.il', (err, result) => {
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                         if (err) done(err);
                         else {
-                            let sortedResult = result[0].sort((x, y) => {
-                                if (x[1] < y[1]) return -1;
-                                if (x[1] > y[1]) return 1;
-                                return 0;
+                            activeProcessController.getNextStagesRolesAndOnlineForms(process.processID, 'negativemanager@outlook.co.il', (err, result) => {
+                                if (err) done(err);
+                                else {
+                                    let sortedResult = result[0].sort((x, y) => {
+                                        if (x[1] < y[1]) return -1;
+                                        if (x[1] > y[1]) return 1;
+                                        return 0;
+                                    });
+                                    assert.deepEqual(result[0].length, 3);
+                                    assert.deepEqual(sortedResult[0], ['דובר', 0]);
+                                    assert.deepEqual(sortedResult[1], ['גרפיקאי', 1]);
+                                    assert.deepEqual(sortedResult[2], ['רמד הסברה', 4]);
+                                    done();
+                                }
                             });
-                            assert.deepEqual(result[0].length, 3);
-                            assert.deepEqual(sortedResult[0], ['דובר', 0]);
-                            assert.deepEqual(sortedResult[1], ['גרפיקאי', 1]);
-                            assert.deepEqual(sortedResult[2], ['רמד הסברה', 4]);
-                            done();
                         }
-                    })
+                    });
                 }
             });
         }).timeout(30000);
@@ -1324,11 +1340,16 @@ describe('Active Process Controller', function () {
             }, [], 'files', (err) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.getNextStagesRolesAndOnlineForms('גרפיקה להקרנת בכורה', 'negativevicemanager1@outlook.co.il', (err, result) => {
-                        assert.deepEqual(true, err !== null);
-                        assert.deepEqual(err.message, 'GetNextStagesRolesAndOnlineForms: user not found in current stages');
-                        done();
-                    })
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                        if (err) done(err);
+                        else {
+                            activeProcessController.getNextStagesRolesAndOnlineForms(process.processID, 'negativevicemanager1@outlook.co.il', (err, result) => {
+                                assert.deepEqual(true, err !== null);
+                                assert.deepEqual(err.message, 'GetNextStagesRolesAndOnlineForms: user not found in current stages');
+                                done();
+                            })
+                        }
+                    });
                 }
             });
         }).timeout(30000);
@@ -1371,14 +1392,19 @@ describe('Active Process Controller', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcess);
         it('18.1 cancel process', function (done) {
-            activeProcessController.cancelProcess('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות לביטול', (err) => {
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                    activeProcessController.cancelProcess('negativevicemanager@outlook.co.il', process.processID, 'הערות לביטול', (err) => {
                         if (err) done(err);
                         else {
-                            assert.deepEqual(true, process === null);
-                            done()
+                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(true, process === null);
+                                    done();
+                                }
+                            });
                         }
                     });
                 }

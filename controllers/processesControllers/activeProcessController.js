@@ -485,15 +485,15 @@ module.exports.takePartInActiveProcess = (processID, userEmail, callback) => {
                 else {
                     let result = process.assignUserToStage(roleID, userEmail);
                     if(result instanceof Error) callback(result);
-                    processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
+                    processAccessor.updateActiveProcess({processName: process.processName}, {stages: process.stages}, callback);
                 }
             });
         }
     });
 };
 
-module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) => {
-    processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
+module.exports.unTakePartInActiveProcess = (processID, userEmail, callback) => {
+    getActiveProcessByProcessID(processID, (err, process) => {
         if (err) callback(err);
         else {
             usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
@@ -501,7 +501,7 @@ module.exports.unTakePartInActiveProcess = (processName, userEmail, callback) =>
                 else {
                     let result = process.unAssignUserToStage(roleID, userEmail);
                     if(result instanceof Error) callback(result);
-                    processAccessor.updateActiveProcess({processName: processName}, {stages: process.stages}, callback);
+                    processAccessor.updateActiveProcess({processName: process.processName}, {stages: process.stages}, callback);
                 }
             });
         }

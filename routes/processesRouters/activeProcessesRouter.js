@@ -68,8 +68,8 @@ router.post('/unTakePartInProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields) {
         let userEmail = req.user.emails[0].value;
-        let processName = fields.processName;
-        activeProcessController.unTakePartInActiveProcess(processName, userEmail, (err) => {
+        let processID = fields.processID;
+        activeProcessController.unTakePartInActiveProcess(processID, userEmail, (err) => {
             if (err) res.render('errorViews/error');
             else {
                 res.send("success");
