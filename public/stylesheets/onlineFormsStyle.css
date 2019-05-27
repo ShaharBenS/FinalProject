@@ -72,3 +72,14 @@ td > textarea {
     width: 40%;
 }
 
+#print {
+    background-color: #5280f6;
+}
+
+#print:hover {
+    background-color: white;
+    color: #5280f6;
+    border-color: #5280f6;
+}
+
+
