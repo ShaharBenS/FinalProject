@@ -16,6 +16,10 @@ table {
     width: 85%;
 }
 
+.no_table_print {
+    width: 85%;
+}
+
 label {
     padding: 0 10px;
     margin-bottom: 0;

@@ -38,10 +38,6 @@
         <form id="form" onsubmit="return submitForm()">
             <fieldset id="fieldset">
 
-                <p style="font-size: large">
-                    אל: ראש מדור כספים
-                </p>
-                <br>
                 <table class="no_table" id="date_1" style="width: 30%;">
                     <tbody>
                     <tr>
@@ -52,29 +48,59 @@
                 </table>
                 <hr>
 
-                <table class="no_table" id="information">
+                <h2><u>העברה תקציבית עבור נסיעה ברכב אגודה</u></h2>
+
+
+                <table class="no_table" id="details">
                     <tbody>
                     <tr>
-                        <td><label for="why">מטרת הרכישה</label></td>
-                        <td><textarea id="why" name="why"></textarea></td>
+                        <td><label for="mador">מדור</label></td>
+                        <td colspan="2"><textarea id="mador" name="mador"></textarea></td>
                     </tr>
                     <tr>
-                        <td><label for="sum">סכום לתשלום</label></td>
+                        <td><label for="date2">תאריך נסיעה</label></td>
+                        <td colspan="2"><textarea id="date2" name="date2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="why">מטרת נסיעה</label></td>
+                        <td colspan="2"><textarea id="why" name="why"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="where">להיכן יוצאת הנסיעה</label></td>
+                        <td colspan="2"><textarea id="where" name="where"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="dist">מרחק נסיעה משוער (על פי עיר)</label></td>
+                        <td colspan="2"><textarea id="dist" name="dist"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="sum">סכום לתשלום: ק"מ
+                            כפול
+                            0.8 שח לק"מ</label></td>
                         <td><textarea id="sum" name="sum"></textarea></td>
+                        <td><label for="sum">ש"ח</label></td>
                     </tr>
                     <tr>
-                        <td><label for="full_name">שם מלא</label></td>
-                        <td><textarea id="full_name" name="full_name"></textarea></td>
+                        <td><label for="saif">העברה מסעיף תקציבי</label></td>
+                        <td><textarea id="saif" name="saif"></textarea></td>
+                        <td><label for="saif">לסעיף תקציבי
+                            <u><b>הוצאות רכב(תפעול)</b></u></label></td>
                     </tr>
+                    </tbody>
+                </table>
+                <hr>
+
+                <table class="no_table signature_table" id="signature_1">
+                    <tbody>
                     <tr>
-                        <td><label>חתימת מקבל ההחזר</label></td>
                         <td>
-                            <div id="signature_1_div"></div>
+                            <div class="padding">חתימת רמ"ד/"מנהל</div>
                         </td>
                     </tr>
                     <tr>
-                        <td><label for="budget">סעיף תקציבי</label></td>
-                        <td><textarea id="budget" name="budget"></textarea></td>
+                        <td>
+                            <div id="signature_1_div"></div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -83,12 +109,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            <div class="padding">הריני מאשר כי ההוצאה הובאה מראש לידיעתי ואושרה על ידי.</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="padding"><b>חותמת וחתימת מנהל ממונה / רמ"ד</b></div>
+                            <div class="padding">חתימת מנהל תפעול</div>
                         </td>
                     </tr>
                     <tr>
@@ -99,18 +120,11 @@
                     </tbody>
                 </table>
                 <hr>
-
                 <table class="no_table signature_table" id="signature_3">
                     <tbody>
                     <tr>
                         <td>
-                            <div class="padding">הריני מאשר כי דרישת הרכישה הינה במסגרת נוהל רכש - פרק כרטיס אשראי.
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="padding"><b>חותמת וחתימת ראש מדור כספים</b></div>
+                            <div class="padding">חתימת סגן יו"ר</div>
                         </td>
                     </tr>
                     <tr>
@@ -120,8 +134,9 @@
                     </tr>
                     </tbody>
                 </table>
-                <hr>
 
+
+                <hr>
                 <input class="btn-default no_print" id="submitButton" type="submit" value="שלח">
             </fieldset>
         </form>

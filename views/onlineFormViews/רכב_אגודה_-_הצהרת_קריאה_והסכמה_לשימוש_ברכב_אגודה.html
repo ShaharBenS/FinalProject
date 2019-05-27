@@ -38,10 +38,6 @@
         <form id="form" onsubmit="return submitForm()">
             <fieldset id="fieldset">
 
-                <p style="font-size: large">
-                    אל: ראש מדור כספים
-                </p>
-                <br>
                 <table class="no_table" id="date_1" style="width: 30%;">
                     <tbody>
                     <tr>
@@ -52,43 +48,62 @@
                 </table>
                 <hr>
 
-                <table class="no_table" id="information">
+                <p style="text-align:right; font-size: medium">
+                    נהג/ת יקר/ה,
+                </p>
+
+                <h2><u>הצהרת קריאה והסכמה לנוהל רכב אגודת הסטודנטים בן-גוריון</u></h2>
+                <br>
+
+                <table class="no_table" id="details" style="width: 40%;">
                     <tbody>
                     <tr>
-                        <td><label for="why">מטרת הרכישה</label></td>
-                        <td><textarea id="why" name="why"></textarea></td>
+                        <td><label for="name">שם מלא</label></td>
+                        <td><textarea id="name" name="name"></textarea></td>
                     </tr>
                     <tr>
-                        <td><label for="sum">סכום לתשלום</label></td>
-                        <td><textarea id="sum" name="sum"></textarea></td>
+                        <td><label for="id">תעודת זהות</label></td>
+                        <td><textarea id="id" name="id"></textarea></td>
                     </tr>
                     <tr>
-                        <td><label for="full_name">שם מלא</label></td>
-                        <td><textarea id="full_name" name="full_name"></textarea></td>
+                        <td><label for="role">תפקיד</label></td>
+                        <td><textarea id="role" name="role"></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+
+                <table class="no_table signature_table" id="signature_1">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="padding" style="font-size: medium">הנני מצהיר בזאת כי קראתי את נוהל השימוש ברכב
+                                אגודת הסטודנטים בן-גוריון. הנני מתחייב לעמוד בנהלים באופן אחראי.
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <td><label>חתימת מקבל ההחזר</label></td>
+                        <td>
+                            <div class="padding">חתימת העובד</div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             <div id="signature_1_div"></div>
                         </td>
                     </tr>
-                    <tr>
-                        <td><label for="budget">סעיף תקציבי</label></td>
-                        <td><textarea id="budget" name="budget"></textarea></td>
-                    </tr>
                     </tbody>
                 </table>
+                <hr>
+                <p style="text-align:right; font-size: medium">
+                    * במועד החתימה, יצולם רישיון נהיגה בתוקף לשימוש משרד תפעול.
+                </p>
                 <hr>
                 <table class="no_table signature_table" id="signature_2">
                     <tbody>
                     <tr>
                         <td>
-                            <div class="padding">הריני מאשר כי ההוצאה הובאה מראש לידיעתי ואושרה על ידי.</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="padding"><b>חותמת וחתימת מנהל ממונה / רמ"ד</b></div>
+                            <div class="padding">חתימת מנהל תפעול</div>
                         </td>
                     </tr>
                     <tr>
@@ -98,30 +113,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <hr>
 
-                <table class="no_table signature_table" id="signature_3">
-                    <tbody>
-                    <tr>
-                        <td>
-                            <div class="padding">הריני מאשר כי דרישת הרכישה הינה במסגרת נוהל רכש - פרק כרטיס אשראי.
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="padding"><b>חותמת וחתימת ראש מדור כספים</b></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="signature_3_div"></div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
                 <hr>
-
                 <input class="btn-default no_print" id="submitButton" type="submit" value="שלח">
             </fieldset>
         </form>

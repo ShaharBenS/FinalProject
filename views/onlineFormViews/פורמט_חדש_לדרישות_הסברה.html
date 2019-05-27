@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -38,8 +38,32 @@
         <form id="form" onsubmit="return submitForm()">
             <fieldset id="fieldset">
 
-                ENTER YOUR FORM IN HERE!
+                <table id="event">
+                    <tbody>
+                    <tr>
+                        <th>שם האירוע</th>
+                        <th>פירוט הדרישה</th>
+                        <th>תאריך אירוע ושעה</th>
+                        <th>מקום האירוע</th>
+                        <th>מטרת הפרסום (לדוגמה:מכירת כרטיסים / העלאת מודעות)</th>
+                        <th>האם יש גרפיקה (אם לא מצורפת - לציין מתי תיהיה מוכנה)</th>
+                        <th>האם יש תמונה מתאימה</th>
+                        <th>אחראי/ת מטעם המדור</th>
+                        <th>רמת חשיבות (גבוהה מאוד, גבוהה או בינית)</th>
+                        <th>סטטוס (ימולא על ידי הסברה)</th>
+                    </tr>
+                    </tbody>
+                </table>
 
+                <hr>
+                <table class="no_table" id="comments">
+                    <tbody>
+                    <tr>
+                        <td><label for="comments_text">הערות נוספות</label></td>
+                        <td><textarea id="comments_text" name="comments_text"></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
 
                 <hr>
                 <input class="btn-default no_print" id="submitButton" type="submit" value="שלח">
