@@ -143,7 +143,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
                         callback('שגיאה: אין מבנה של עץ.');
                     }
                     else if (emails.filter(emailValidator).length !== emails.length) {
-                        callback('שגיאה: אחד או יותר מהמיילים שצורפו לא תקינים.'); //TODO: tell what specific email is not okay.
+                        callback('שגיאה: אחד או יותר מהמיילים שצורפו לא תקינים.');
                     }
                     else {
                         userAccessor.findRole({}, (err, roles) =>
@@ -270,7 +270,7 @@ module.exports.setUsersAndRolesTree = (userEmail, sankey, roleToEmails, emailToF
 
                                                                                     let fromNodeRoleIndex = roleNames.indexOf(fromNodeRoleName);
                                                                                     let toNodeRoleIndex = roleNames.indexOf(toNodeRoleName);
-                                                                                    // TODO: RoleIndex check if -1
+
                                                                                     let fromNodeID = usersAndRoleDocuments[fromNodeRoleIndex]._id;
                                                                                     let toNodeID = usersAndRoleDocuments[toNodeRoleIndex]._id;
 

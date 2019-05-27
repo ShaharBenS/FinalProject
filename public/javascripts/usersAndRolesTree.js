@@ -132,6 +132,7 @@ function rolesToHTML(roleName) {
         };
 
         let input = document.createElement("input");
+        input.style.width = "270px";
         input.className += " email";
         input.value = userEmail;
         div.appendChild(a);
@@ -140,6 +141,7 @@ function rolesToHTML(roleName) {
         outerDiv.append(div);
 
         input = document.createElement("input");
+        input.style.width = "270px";
         input.className += " name";
         input.dir = "rtl";
         input.value = emailToFullName[userEmail];

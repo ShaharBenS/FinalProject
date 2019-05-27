@@ -185,7 +185,6 @@ module.exports.getAllProcessStructures = (callback) =>
     processStructureAccessor.findProcessStructures(callback);
 };
 
-//TODO: need to redesign this function
 module.exports.getAllProcessStructuresAvailableForUser = (userEmail, callback) =>
 {
     usersAndRolesController.getRoleByUsername(userEmail, (err, role) => {
