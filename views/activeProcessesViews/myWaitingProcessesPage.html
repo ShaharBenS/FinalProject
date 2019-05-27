@@ -41,6 +41,7 @@
                     <thead>
                     <tr>
                         <th>שם התהליך</th>
+                        <th>דחיפות התהליך</th>
                         <th>זמן יצירת התהליך</th>
                         <th>האדם אצלו נמצא התהליך כרגע</th>
                         <th>הזמן בו עודכן לאחרונה</th>
@@ -54,6 +55,7 @@
                     <%waitingProcesses.forEach(function(process){%>
                     <tr>
                         <td><%=process.processName%></td>
+                        <td><%=process.processUrgency%></td>
                         <td><%=process.creationTime%></td>
                         <td>
                             <%process.currentStages.forEach(function(stage){%>
