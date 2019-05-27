@@ -194,7 +194,13 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
                     activeProcess.currentStages = currStages;
                 });
                 usersAndRolesController.getRoleIdByUsername(userName, (err1, roleID) => {
-                    if (err1) res.render('errorViews/error');
+                    if (err1) {
+                        res.render('activeProcessesViews/myWaitingProcessesPage', {
+                            waitingProcesses: [],
+                            username: 'Admin',
+                            flagToShowUntakeButton: false
+                        });
+                    }
                     else {
                         usersAndRolesController.getEmailsByRoleId(roleID, (err2, emailArray) => {
                             if (err2) res.render('errorViews/error');

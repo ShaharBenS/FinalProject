@@ -228,7 +228,7 @@ module.exports.getWaitingActiveProcessesByUser = (userEmail, callback) => {
 module.exports.getAvailableActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err, roleID) => {
         if (err) {
-            callback(err);
+            callback(null, []);
         } else {
             let availableActiveProcesses = [];
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
@@ -256,7 +256,7 @@ module.exports.getAllActiveProcesses = function (callback) {
 module.exports.getAllActiveProcessesByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {
-            callback(err);
+            callback(null, []);
         } else {
             processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
                 if (err) callback(err);
