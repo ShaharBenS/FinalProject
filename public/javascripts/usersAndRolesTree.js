@@ -194,7 +194,10 @@ function updateUsersMaps(roleName) {
     let emailsArray = [];
     for (let i = 0; i < emails.length; i++) {
         if (!emailValidator(emails[i].value)) {
-            return emails[i].value;
+            return {errorType:"invalid",email:emails[i].value};
+        }
+        if(Object.keys(emailToFullName).includes(emails[i].value)){
+            return {errorType:"duplicate",email:emails[i].value};
         }
         emailsArray.push(emails[i].value);
     }
@@ -210,7 +213,12 @@ function updateUsername() {
     if (result === undefined) {
         document.getElementById('select_users_modal').style.display = 'none';
     } else {
-        alertify.alert("הכתובת " + result + " אינה תקינה.");
+        if(result.errorType === "invalid"){
+            alertify.alert("הכתובת " + result.email + " אינה תקינה.");
+        }
+        else if(result.errorType === "duplicate"){
+            alertify.alert("הכתובת "+result.email+" מקושרת כבר לתפקיד אחר.");
+        }
     }
 }
 
