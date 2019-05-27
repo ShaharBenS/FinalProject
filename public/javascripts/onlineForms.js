@@ -181,7 +181,7 @@ let fillForm = function (fields) {
 };
 
 let disableForm = function () {
-    document.getElementById('close_win_button').style.display = "block";
+    document.getElementById('close_win_button').style.visibility = "visible";
     document.getElementById("fieldset").setAttribute("disabled", "disabled");
     document.getElementById("submitButton").setAttribute("disabled", "disabled");
     let submit = document.getElementById("submitButton");
@@ -227,7 +227,7 @@ let setupInputs = function (formName, isForShow, fields) {
     setupTextAreasNoTableCells();
     initSignatures();
 
-    document.getElementById('close_win_button').style.display = "none";
+    document.getElementById('close_win_button').style.visibility = "hidden";
 
     let num_of_rows_to_add = 2;
     if (fields !== 'false') {
