@@ -14,9 +14,9 @@ module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
     })
 };
 
-module.exports.getFilledOnlineFormByID = (formID, callback) => {
+function getFilledOnlineFormByID(formID, callback){
     filledOnlineFormAccessor.findFilledOnlineFormByFormID(formID, callback);
-};
+}
 
 module.exports.displayFilledForm = function (filledFormID, callback) {
     this.getFilledOnlineFormByID(filledFormID, (err, form) => {
@@ -83,7 +83,7 @@ module.exports.getFormReady = function (processName, formName, callback) {
         if (err) callback(err);
         else if (activeProcess === null) callback(new Error("process was not found"));
         else {
-            activeProcessController.getFilledOnlineForms(activeProcess.filledOnlineForms, 0, [], (err, filledForms) => {
+            getFilledOnlineForms(activeProcess.filledOnlineForms, 0, [], (err, filledForms) => {
                 if (err) callback(err);
                 else {
                     let myForm = undefined;
@@ -124,3 +124,20 @@ module.exports.updateOrAddFilledForm = function (processName, formName, formFiel
         }
     })
 };
+
+function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) {
+    if (index === filledFormIds.length) {
+        callback(null, filledFormsArray);
+        return;
+    }
+    getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
+        if (err) callback(err);
+        else {
+            filledFormsArray.push(form);
+            getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
+        }
+    });
+}
+
+module.exports.getFilledOnlineForms = getFilledOnlineForms;
+module.exports.getFilledOnlineFormByID = getFilledOnlineFormByID;

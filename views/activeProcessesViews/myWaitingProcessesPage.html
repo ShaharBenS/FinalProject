@@ -8,8 +8,8 @@
     <script type="text/javascript" src="/draw_sankey/server/html/common/lib/DataTables/datatables.min.js"></script>
     <script src="/javascripts/topbar.js"></script>
     <script src="/javascripts/handleProcess.js"></script>
+    <script src="/javascripts/untakePartInProcess.js"></script>
     <link type="text/css" rel="stylesheet" href="/draw_sankey/server/html/common/lib/ionicons/css/ionicons.min.css"/>
-
     <script>
         $(document).ready(function () {
             $('#example').DataTable(tableLanguageOption);
@@ -23,7 +23,6 @@
         td {
             text-align: center;
         }
-
         th {
             text-align: center;
         }
@@ -46,6 +45,9 @@
                         <th>האדם אצלו נמצא התהליך כרגע</th>
                         <th>הזמן בו עודכן לאחרונה</th>
                         <th>טיפול בתהליך</th>
+                        <%if(flagToShowUntakeButton) { %>
+                        <th>החזרת תהליך למאגר הזמינים</th>
+                        <% } %>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,9 +69,18 @@
                         <td><%=process.lastApproached%></td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" id="<%=process.processName%>"
-                                    onclick="handleProcess('<%=process.processName%>')">טפל בתהליך
+                                    onclick="handleProcess(this.id)">טפל בתהליך
                             </button>
                         </td>
+                        <%if(flagToShowUntakeButton) { %>
+                        <td>
+                            <button class="btn btn-outline-secondary btn-sm" id="<%=process.processName%>2"
+                                    onclick="unTakePartInProcess(this.id.substring(0,this.id.length - 1),'<%=username%>')">בטל לקיחת
+                                חלק
+                                בתהליך
+                            </button>
+                        </td>
+                        <% } %>
                     </tr>
                     <%})%>
                     </tbody>

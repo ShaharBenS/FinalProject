@@ -430,36 +430,6 @@ describe('1. Big Integration Test', function () {
         });
     }).timeout(30000);
 
-    it('1.16 Handle Process.', function (done) {
-        activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
-            comments: 'הערות של עורך/ת משנה',
-            6: 'on',
-            processName: 'קמפיין בחירות'
-        }, [],'files', (err) => {
-            if (err) done(err);
-            else {
-                activeProcessController.getActiveProcessByProcessName('קמפיין בחירות', (err, process) => {
-                    if (err) done(err);
-                    else {
-                        assert.deepEqual(process.currentStages, [6]);
-                        processReportController.processReport('קמפיין בחירות', (err, report) => {
-                            if (err) done(err);
-                            else {
-                                assert.deepEqual(report[1].length, 9);
-                                assert.deepEqual(report[1][8].userEmail, 'orehMishne@outlook.com');
-                                assert.deepEqual(report[1][8].userName, 'ר ר');
-                                assert.deepEqual(report[1][8].roleName, 'עורך/ת משנה');
-                                assert.deepEqual(report[1][8].comments, 'הערות של עורך/ת משנה');
-                                assert.deepEqual(report[1][8].action, 'continue');
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }).timeout(30000);
-
     it('1.17 Handle Process.', function (done) {
         activeProcessController.uploadFilesAndHandleProcess('orehMishne@outlook.com', {
             comments: 'הערות של עורך/ת משנה',
@@ -475,12 +445,12 @@ describe('1. Big Integration Test', function () {
                         processReportController.processReport('קמפיין בחירות', (err, report) => {
                             if (err) done(err);
                             else {
-                                assert.deepEqual(report[1].length, 10);
-                                assert.deepEqual(report[1][9].userEmail, 'orehMishne@outlook.com');
-                                assert.deepEqual(report[1][9].userName, 'ר ר');
-                                assert.deepEqual(report[1][9].roleName, 'עורך/ת משנה');
-                                assert.deepEqual(report[1][9].comments, 'הערות של עורך/ת משנה');
-                                assert.deepEqual(report[1][9].action, 'continue');
+                                assert.deepEqual(report[1].length, 9);
+                                assert.deepEqual(report[1][8].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][8].userName, 'ר ר');
+                                assert.deepEqual(report[1][8].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][8].comments, 'הערות של עורך/ת משנה');
+                                assert.deepEqual(report[1][8].action, 'continue');
                                 done();
                             }
                         });
@@ -559,12 +529,12 @@ describe('1. Big Integration Test', function () {
                         processReportController.processReport('קמפיין בחירות', (err, report) => {
                             if (err) done(err);
                             else {
-                                assert.deepEqual(report[1].length, 11);
-                                assert.deepEqual(report[1][10].userEmail, 'MenaelAtar1@outlook.com');
-                                assert.deepEqual(report[1][10].userName, 'ס ס');
-                                assert.deepEqual(report[1][10].roleName, 'מנהל/ת אתר אינטרנט');
-                                assert.deepEqual(report[1][10].comments, 'הערות של מנהל/ת אתר אינטרנט');
-                                assert.deepEqual(report[1][10].action, 'continue');
+                                assert.deepEqual(report[1].length, 10);
+                                assert.deepEqual(report[1][9].userEmail, 'MenaelAtar1@outlook.com');
+                                assert.deepEqual(report[1][9].userName, 'ס ס');
+                                assert.deepEqual(report[1][9].roleName, 'מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][9].comments, 'הערות של מנהל/ת אתר אינטרנט');
+                                assert.deepEqual(report[1][9].action, 'continue');
                                 done();
                             }
                         });
@@ -589,12 +559,12 @@ describe('1. Big Integration Test', function () {
                         processReportController.processReport('קמפיין בחירות', (err, report) => {
                             if (err) done(err);
                             else {
-                                assert.deepEqual(report[1].length, 12);
-                                assert.deepEqual(report[1][11].userEmail, 'ramadHasbara@outlook.com');
-                                assert.deepEqual(report[1][11].userName, 'ו ו');
-                                assert.deepEqual(report[1][11].roleName, 'רמ"ד הסברה');
-                                assert.deepEqual(report[1][11].comments, 'הערות של רמ"ד הסברה');
-                                assert.deepEqual(report[1][11].action, 'continue');
+                                assert.deepEqual(report[1].length, 11);
+                                assert.deepEqual(report[1][10].userEmail, 'ramadHasbara@outlook.com');
+                                assert.deepEqual(report[1][10].userName, 'ו ו');
+                                assert.deepEqual(report[1][10].roleName, 'רמ"ד הסברה');
+                                assert.deepEqual(report[1][10].comments, 'הערות של רמ"ד הסברה');
+                                assert.deepEqual(report[1][10].action, 'continue');
                                 done();
                             }
                         });
@@ -618,12 +588,12 @@ describe('1. Big Integration Test', function () {
                         processReportController.processReport('קמפיין בחירות', (err, report) => {
                             if (err) done(err);
                             else {
-                                assert.deepEqual(report[1].length, 13);
-                                assert.deepEqual(report[1][12].userEmail, 'orehMishne@outlook.com');
-                                assert.deepEqual(report[1][12].userName, 'ר ר');
-                                assert.deepEqual(report[1][12].roleName, 'עורך/ת משנה');
-                                assert.deepEqual(report[1][12].comments, 'הערות של עורך/ת משנה');
-                                assert.deepEqual(report[1][12].action, 'continue');
+                                assert.deepEqual(report[1].length, 12);
+                                assert.deepEqual(report[1][11].userEmail, 'orehMishne@outlook.com');
+                                assert.deepEqual(report[1][11].userName, 'ר ר');
+                                assert.deepEqual(report[1][11].roleName, 'עורך/ת משנה');
+                                assert.deepEqual(report[1][11].comments, 'הערות של עורך/ת משנה');
+                                assert.deepEqual(report[1][11].action, 'continue');
                                 done();
                             }
                         });

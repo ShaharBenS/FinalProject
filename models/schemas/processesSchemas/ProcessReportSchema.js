@@ -13,7 +13,7 @@ const processReportSchema = new Schema({
     attachedFilesNames: [String],
     stages: [{
         roleName: String,
-        userEmail: String, //TODO Maybe Link To User In UsersAndRoles,
+        userEmail: String,
         userName: String,
         stageNum: Number,
         approvalTime: Date,

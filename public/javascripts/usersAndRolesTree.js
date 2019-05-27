@@ -132,6 +132,7 @@ function rolesToHTML(roleName) {
         };
 
         let input = document.createElement("input");
+        input.style.width = "270px";
         input.className += " email";
         input.value = userEmail;
         div.appendChild(a);
@@ -140,6 +141,7 @@ function rolesToHTML(roleName) {
         outerDiv.append(div);
 
         input = document.createElement("input");
+        input.style.width = "270px";
         input.className += " name";
         input.dir = "rtl";
         input.value = emailToFullName[userEmail];
@@ -194,7 +196,10 @@ function updateUsersMaps(roleName) {
     let emailsArray = [];
     for (let i = 0; i < emails.length; i++) {
         if (!emailValidator(emails[i].value)) {
-            return emails[i].value;
+            return {errorType:"invalid",email:emails[i].value};
+        }
+        if(Object.keys(emailToFullName).includes(emails[i].value)){
+            return {errorType:"duplicate",email:emails[i].value};
         }
         emailsArray.push(emails[i].value);
     }
@@ -210,7 +215,12 @@ function updateUsername() {
     if (result === undefined) {
         document.getElementById('select_users_modal').style.display = 'none';
     } else {
-        alertify.alert("הכתובת " + result + " אינה תקינה.");
+        if(result.errorType === "invalid"){
+            alertify.alert("הכתובת " + result.email + " אינה תקינה.");
+        }
+        else if(result.errorType === "duplicate"){
+            alertify.alert("הכתובת "+result.email+" מקושרת כבר לתפקיד אחר.");
+        }
     }
 }
 

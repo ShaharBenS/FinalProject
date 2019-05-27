@@ -668,6 +668,7 @@ sankey.dialog.FileSave = Class.extend({
 
                 let selector2 = document.getElementById("notificationTimeSelect");
                 notificationTime = selector2.options[selector2.selectedIndex].value;
+                notificationTime = parseInt(notificationTime) * 60 * 60;
             }
             var data = {
                 base64Image: imageDataUrl,

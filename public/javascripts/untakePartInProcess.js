@@ -1,21 +1,21 @@
-function takePartInProcess(processName)
+function unTakePartInProcess(processName)
 {
     let xhr = new XMLHttpRequest();
     let data = new FormData();
     data.append('processName', processName);
-    xhr.open("POST", '/activeProcesses/takePartInProcess', true);
+    xhr.open("POST", '/activeProcesses/unTakePartInProcess', true);
     //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function() { // Call a function when the state changes.
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             if(xhr.responseText === "success")
             {
-                alert('לקיחת חלק בתהליך הצליחה.');
+                alert('החזרת תהליך למאגר התהליכים הזמינים הצליחה.');
             }
             else
             {
-                alert('קרתה שגיאה בעת לקיחת חלק בתהליך');
+                alert('קרתה שגיאה בעת החזרת תהליך למאגר התהליכים הזמינים.');
             }
-            window.location.href = "/activeProcesses/getAvailableActiveProcessesByUser";
+            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
         }
     };
     xhr.send(data);

@@ -10,6 +10,7 @@
     "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/"
   },
   "dependencies": {
+    "artillery": "^1.6.0-28",
     "body-parser": "^1.18.3",
     "bson": "latest",
     "cookie-parser": "~1.4.3",

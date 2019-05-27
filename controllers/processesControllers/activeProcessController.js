@@ -545,7 +545,7 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
                     if(stageToPush instanceof Error) callback(stageToPush);
                     nextStagesArr.push(stageToPush);
                 }
-                this.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
+                usersAndRolesController.getRoleNamesForArray(nextStagesArr, 0, [], (err, rolesNames) => {
                     if (err) callback(err);
                     else {
                         onlineFormController.findOnlineFormsNamesByFormsIDs(process.onlineForms, (err, onlineFormsNames) => {
@@ -560,23 +560,6 @@ module.exports.getNextStagesRolesAndOnlineForms = function (processName, userEma
         }
     });
 };
-
-function getRoleNamesForArray(stages, index, roleNamesArray, callback){
-    if (index === stages.length) {
-        callback(null, roleNamesArray);
-        return;
-    }
-    let roleID = stages[index].roleID;
-    (function (array, stageNum) {
-        usersAndRolesController.getRoleNameByRoleID(roleID, (err, roleName) => {
-            if (err) callback(err);
-            else {
-                array.push([roleName, stageNum]);
-                getRoleNamesForArray(stages, index + 1, roleNamesArray, callback);
-            }
-        });
-    })(roleNamesArray, stages[index].stageNum);
-}
 
 module.exports.returnToCreator = function (userEmail, processName, comments, callback) {
     getActiveProcessByProcessName(processName, (err, process) => {
@@ -644,39 +627,6 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                         }
                     });
                 }
-            });
-        }
-    });
-};
-
-function getFilledOnlineForms(filledFormIds, index, filledFormsArray, callback) {
-    if (index === filledFormIds.length) {
-        callback(null, filledFormsArray);
-        return;
-    }
-    filledOnlineFormController.getFilledOnlineFormByID(filledFormIds[index], (err, form) => {
-        if (err) callback(err);
-        else {
-            filledFormsArray.push(form);
-            getFilledOnlineForms(filledFormIds, index + 1, filledFormsArray, callback);
-        }
-    });
-}
-
-module.exports.processReport = function (process_name, callback) {
-    this.getAllActiveProcessDetails(process_name, (err, result) => {
-        if (err) callback(err);
-        else {
-            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
-            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
-            for (let i = 0; i < result[1].length; i++) {
-                result[1][i].approvalTime = moment(result[1][i].approvalTime).format("DD/MM/YYYY HH:mm:ss");
-            }
-            getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
-                for (let i = 0; i < formsArr.length; i++) {
-                    result[0].filledOnlineForms[i] = formsArr[i];
-                }
-                callback(null, result);
             });
         }
     });
@@ -758,6 +708,18 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
     })
 };
 
+function advanceProcessForUsers(process, stagesToAdvance)
+{
+    if(stagesToAdvance.length !== 0)
+    {
+        let stage = stagesToAdvance[0];
+        this.handleProcess(stage.userEmail, process, stage, stage.nextStages, new Date(), (err)=>{
+            if(err) console.log(err);
+        });
+    }
+
+}
+
 module.exports.advanceProcessesIfTimeHasPassed = ()=>{
     this.getAllActiveProcesses((err, activeProcesses) =>
     {
@@ -769,6 +731,7 @@ module.exports.advanceProcessesIfTimeHasPassed = ()=>{
             {
                 if(activeProcess.automaticAdvanceTime !== 0)
                 {
+                    let stagesToAdvance = [];
                     activeProcess.currentStages.forEach(curr =>
                     {
                         let currStage = activeProcess.getStageByStageNum(curr);
@@ -778,13 +741,10 @@ module.exports.advanceProcessesIfTimeHasPassed = ()=>{
                         }
                         let timePassedInHours = ((new Date()) - currStage.assignmentTime) / 36e5;
                         if (timePassedInHours > activeProcess.automaticAdvanceTime) {
-                            this.handleProcess(currStage.userEmail, activeProcess.processName, {comments: '',
-                                fileNames: [],
-                                nextStageRoles: currStage.nextStages},(err)=>{
-                                if(err) console.log(err);
-                            });
+                            stagesToAdvance.push(currStage.userEmail);
                         }
                     });
+                    advanceProcessForUsers(activeProcess, stagesToAdvance);
                 }
             });
         }
@@ -796,11 +756,9 @@ module.exports.replaceRoleIDWithRoleNameAndUserEmailWithUserName = replaceRoleID
 module.exports.getActiveProcessByProcessName = getActiveProcessByProcessName;
 module.exports.uploadFilesAndHandleProcess = uploadFilesAndHandleProcess;
 module.exports.convertDate = convertDate;
-module.exports.getFilledOnlineForms = getFilledOnlineForms;
 module.exports.assignSingleUsersToStages = assignSingleUsersToStages;
 module.exports.handleProcess = handleProcess;
 module.exports.advanceProcess = advanceProcess;
-module.exports.getRoleNamesForArray = getRoleNamesForArray;
 module.exports.getRoleIDsOfDeregStages = getRoleIDsOfDeregStages;
 module.exports.getNewActiveProcess = getNewActiveProcess;
 module.exports.uploadFiles = uploadFiles;

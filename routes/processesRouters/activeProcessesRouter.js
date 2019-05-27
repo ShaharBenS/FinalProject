@@ -1,6 +1,7 @@
 let express = require('express');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processReportController = require('../../controllers/processesControllers/processReportController');
+let usersAndRolesController = require('../../controllers/usersControllers/usersAndRolesController');
 let usersAccessor = require('../../models/accessors/usersAccessor');
 let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let router = express.Router();
@@ -22,8 +23,8 @@ router.post('/handleProcess', function (req, res) {
     let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
         let userEmail = req.user.emails[0].value;
-        activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files,'files', (err, ret) => {
-            if (err){
+        activeProcessController.uploadFilesAndHandleProcess(userEmail, fields, files, 'files', (err, ret) => {
+            if (err) {
                 console.log(err);
                 res.render('errorsViews/error');
             }
@@ -84,7 +85,7 @@ router.post('/startProcess', function (req, res) {
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
     activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err, result) => {
-        if (err){
+        if (err) {
             console.log(err);
             res.render('errorViews/error');
         }
@@ -131,7 +132,7 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
                 }
                 result.forEach((activeProcess) => {
                     let currStages = [];
-                    activeProcess.currentStages.forEach((currentStage)=>{
+                    activeProcess.currentStages.forEach((currentStage) => {
                         currStages.push(activeProcess.getStageByStageNum(currentStage));
                     });
                     activeProcess.currentStages = currStages;
@@ -165,14 +166,26 @@ router.get('/getWaitingActiveProcessesByUser', function (req, res) {
                 activeProcessController.convertDate(result);
                 result.forEach((activeProcess) => {
                     let currStages = [];
-                    activeProcess.currentStages.forEach((currentStage)=>{
+                    activeProcess.currentStages.forEach((currentStage) => {
                         currStages.push(activeProcess.getStageByStageNum(currentStage));
                     });
                     activeProcess.currentStages = currStages;
                 });
-                res.render('activeProcessesViews/myWaitingProcessesPage', {
-                    waitingProcesses: result,
-                    username: userName
+                usersAndRolesController.getRoleIdByUsername(userName, (err1, roleID) => {
+                    if (err1) res.render('errorViews/error');
+                    else {
+                        usersAndRolesController.getEmailsByRoleId(roleID, (err2, emailArray) => {
+                            if (err2) res.render('errorViews/error');
+                            else {
+                                let flagToShowUntakeButton = emailArray.length !== 1;
+                                res.render('activeProcessesViews/myWaitingProcessesPage', {
+                                    waitingProcesses: result,
+                                    username: userName,
+                                    flagToShowUntakeButton: flagToShowUntakeButton
+                                });
+                            }
+                        });
+                    }
                 });
             }));
         }
@@ -217,14 +230,6 @@ router.get('/reportProcess', function (req, res) {
                 table: result[1]
             });
     })
-});
-
-router.get('/processStartPage', function (req, res) {
-    res.render('processStartPage');
-});
-
-router.get('/myWaitingProcessesPage', function (req, res) {
-    res.render('activeProcessesViews/myWaitingProcessesPage');
 });
 
 module.exports = router;

@@ -1,19 +1,167 @@
 {
-  "יו\"ר": ["levtom3@outlook.co.il"],
-  "סיו\"ר": ["sayor@outlook.com"],
-  "מנהלת משאבי אנוש": ["omriat@outlook.co.il"],
-  "רמ\"ד תרבות": ["levtom1@outlook.co.il"],
-  "רמ\"ד מעורבות": ["levtom2@outlook.co.il"],
-  "רמ\"ד הסברה": ["levtom@outlook.co.il"],
-  "רמ\"ד אקדמיה": ["levtom4@outlook.co.il"],
-  "רמ\"ד כספים": ["csafim@outlook.co.il"],
-  "רכז ניו מדיה": ["rakaznNewMedia1@outlook.com", "rakaznNewMedia2@outlook.com", "rakaznNewMedia3@outlook.com"],
-  "דובר/ת": ["shahar0897@outlook.com"],
-  "אחראי/ת קמפיינים ומיתוג": ["kutigolberg1@outlook.co.il"],
-  "מנהל/ת אתר אינטרנט": ["MenaelAtar1@outlook.com", "MenaelAtar2@outlook.com"],
-  "צלמים": ["zalam1@outlook.com", "zalam2@outlook.com"],
-  "עורכ/ת וידאו": ["orehVideo@outlook.com"],
-  "עורך/ת משנה": ["kutigolberg@outlook.co.il"],
-  "מידענ/ית ערבית": ["midaArabic@outlook.com"],
-  "מידענ/ית אנגלית": ["midaEnglish1@outlook.com"]
+  "מנהלת חשבונות": [
+    "Olga@aguda.bgu.ac.il"
+  ],
+  "ר. כספים": [
+    "ksafim1@aguda.bgu.ac.il"
+  ],
+  "ר. סטודנטים בינלאומיים": [
+    "kashach@aguda.bgu.ac.il"
+  ],
+  "ר. סטודנטים ערבים": [
+    "arabstudents@aguda.bgu.ac.il"
+  ],
+  "ר. זכיינים ונגישות": [
+    "zakyanim@aguda.bgu.ac.il"
+  ],
+  "ר. דיור": [
+    "rk_diyur@aguda.bgu.ac.il"
+  ],
+  "ר. מעורבות סטודנטיאלית": [
+    "meoravut1@aguda.bgu.ac.il"
+  ],
+  "ר. מעורבות קהילתית": [
+    "meoravut2@aguda.bgu.ac.il"
+  ],
+  "פ. עושים רחוב": [
+    "community@aguda.bgu.ac.il"
+  ],
+  "ר. שיוויון מגדרי והטרדות מיניות": [
+    "gender@aguda.bgu.ac.il"
+  ],
+  "א. אקדמיה להנדסה ב": [
+    "han2@aguda.bgu.ac.il"
+  ],
+  "ר. אקדמיה להנדסה א": [
+    "han1@aguda.bgu.ac.il"
+  ],
+  "ר. אקדמיה טבע": [
+    "teva@aguda.bgu.ac.il"
+  ],
+  "ר. אקדמיה לרו\"ח": [
+    "ruach@aguda.bgu.ac.il"
+  ],
+  "ר. אקדמיה לבריאות וניהול": [
+    "briut@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת סיוע אקדמי": [
+    "assistance@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת משרד מילואים": [
+    "reserve@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת מיזמים אקדמיים": [
+    "services@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת ליגות": [
+    "ligot@aguda.bgu.ac.il"
+  ],
+  "ר. ספורט": [
+    "sport@aguda.bgu.ac.il"
+  ],
+  "סגנ/ית מנהל סטודיו": [
+    "B-POSITIVE2@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת סטודיו פוזיטיב": [
+    "B-POSITIVE1@aguda.bgu.ac.il"
+  ],
+  "ר. הפקות": [
+    "hafakot@aguda.bgu.ac.il"
+  ],
+  "פ. קשרי חוץ": [
+    "international@aguda.bgu.ac.il"
+  ],
+  "רכז/ת ניו מדיה": [
+    "newmedia@aguda.bgu.ac.il"
+  ],
+  "ע. דובר": [
+    "Dover@aguda.bgu.ac.il"
+  ],
+  "אחראי/ת קמפיינים ומיתוג": [
+    "rk_hasbara@aguda.bgu.ac.il"
+  ],
+  "מידענ/ית אנגלית": [
+    "web_eng@aguda.bgu.ac.il"
+  ],
+  "מידענ/ית ערבית": [
+    "midanaravit@aguda.bgu.ac.il"
+  ],
+  "עורך/ת משנה": [
+    "web2@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת אתר אינטרנט": [
+    "web@aguda.bgu.ac.il"
+  ],
+  "יועצ/ת שיווק ומכירות 2": [
+    "shivuk3@aguda.bgu.ac.il"
+  ],
+  "יועצ/ת שיווק ומכירות 1": [
+    "shivuk2@aguda.bgu.ac.il"
+  ],
+  "יועצ/ת פרסום": [
+    "shivuk1@aguda.bgu.ac.il"
+  ],
+  "עורכ/ת עיתון צ'ופצ'יק": [
+    "chupchik@aguda.bgu.ac.il"
+  ],
+  "ר. תפעול שטח": [
+    "tiful@aguda.bgu.ac.il"
+  ],
+  "ר. תפעול לוגיסטי": [
+    "rk_tiful2@aguda.bgu.ac.il"
+  ],
+  "ס. מנהל נגטיב": [
+    "negative2@aguda.bgu.ac.il"
+  ],
+  "גרפיקאי": [
+    "graph2@aguda.bgu.ac.il"
+  ],
+  "ר. גרפיקה": [
+    "rk_graph@aguda.bgu.ac.il"
+  ],
+  "טכנאי/ת מחשוב": [
+    "technician@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת תפעול": [
+    "mantal@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת נגטיב": [
+    "negative@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת שיווק": [
+    "shivuk@aguda.bgu.ac.il"
+  ],
+  "מנהלת גרפיקה": [
+    "graph1@aguda.bgu.ac.il"
+  ],
+  "ר. מחשוב": [
+    "admin@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת משאבי אנוש": [
+    "hr@aguda.bgu.ac.il"
+  ],
+  "רמ\"ד תרבות": [
+    "tarbut@aguda.bgu.ac.il"
+  ],
+  "מנהל/ת רווחה": [
+    "rk_revaha@aguda.bgu.ac.il"
+  ],
+  "רמ\"ד מעורבות": [
+    "meoravut@aguda.bgu.ac.il"
+  ],
+  "רמ\"ד הסברה": [
+    "hasbara@aguda.bgu.ac.il"
+  ],
+  "רמ\"ד אקדמיה": [
+    "academia@aguda.bgu.ac.il"
+  ],
+  "רמ\"ד כספים": [
+    "ksafim@aguda.bgu.ac.il"
+  ],
+  "סיו\"ר": [
+    "syor@aguda.bgu.ac.il"
+  ],
+  "יו\"ר": [
+    "yor@aguda.bgu.ac.il"
+  ]
 }

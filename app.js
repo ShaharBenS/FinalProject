@@ -78,9 +78,9 @@ onlineFormsController.createAllOnlineForms(() => {
 });
 
 // Thread for updating notifications
-let updateTimeInMinutes = 10;
+let updateTimeInMinutes = 15;
 setInterval(()=>{
-    notificationControllers.updateNotifications();
+    notificationControllers.updateNotifications(()=>{});
 },updateTimeInMinutes * 60000);
 
 //Thread for automatic advance

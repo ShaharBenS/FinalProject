@@ -167,7 +167,7 @@
                 <br>
                 <br>
                 <%formsNames.forEach(function(formName){%>
-                <a class="btn-form" onclick="formClick('<%=formName%>','<%=processName%>')"><%=formName%></a>
+                <a class="btn-form" onclick="formClick('<%=formName%>',document.getElementsByName('processName')[0].value)"><%=formName%></a>
                 <br><br>
                 <%})%>
                 <% } %>
@@ -178,7 +178,7 @@
 
             <hr>
 
-            <button class="btn btn-default" id="cancel" onclick="cancelProcess('<%=processName%>');return false;">ביטול
+            <button class="btn btn-default" id="cancel" onclick="cancelProcess(document.getElementsByName('processName')[0].value);return false;">ביטול
                 תהליך
             </button>
             <button class="btn btn-default" id="advanceProcess" onclick="return isChecked();">
@@ -190,7 +190,7 @@
             </button>
 
             <button class="btn btn-default" id="returnToCreator1"
-                    onclick="returnToCreator('<%=processName%>');return false;"
+                    onclick="returnToCreator(document.getElementsByName('processName')[0].value);return false;"
                     type="button">החזר ליוצר התהליך
             </button>
             <br>

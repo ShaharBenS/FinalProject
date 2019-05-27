@@ -90,7 +90,8 @@ $(document).ready(function () {
         var xmlHttp1 = new XMLHttpRequest();
         xmlHttp1.onreadystatechange = function () {
             if (xmlHttp1.readyState === 4 && xmlHttp1.status === 200) {
-                document.getElementById("notificationTimeSelect").value = xmlHttp1.responseText;
+                let notificationTime = parseInt(xmlHttp1.responseText)/60/60;
+                document.getElementById("notificationTimeSelect").value = ""+notificationTime;
             }
         };
         xmlHttp1.open("GET", '/processStructures/getNotificationTime/' + "?processStructureName=" + processStructureName + '&fromWaiting=' + (diagramContext === 'viewProcessStructure' ? ('true&mongoId=' + mongoId) : 'false'), true);
@@ -159,7 +160,9 @@ function onDrop_extension(type, command, figure, kind) {
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                         let selector = document.getElementById("role_selector");
 
-                        JSON.parse(xmlHttp.responseText).forEach((role) => {
+                        JSON.parse(xmlHttp.responseText).sort((a,b)=>{
+                            return a.roleName.localeCompare(b.roleName);
+                        }).forEach((role) => {
                             let option = document.createElement('option');
                             option.value = role._id;
                             option.innerText = role.roleName;
