@@ -77,6 +77,15 @@ module.exports.addActiveProcessDetailsToReport = (processName, userEmail, stageD
     });
 };
 
+module.exports.getAllProcessesReportsInSystem = (callback) => {
+    processReportAccessor.findProcessesReports({}, (err, processReports) => {
+        if (err) callback(err);
+        else {
+            callback(null, processReports);
+        }
+    });
+};
+
 module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
     usersAndRolesController.getRoleIdByUsername(userEmail, (err) => {
         if (err) {

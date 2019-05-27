@@ -2,6 +2,7 @@ let express = require('express');
 let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 let processReportController = require('../../controllers/processesControllers/processReportController');
 let usersAndRolesController = require('../../controllers/usersControllers/usersAndRolesController');
+let usersPermissionsController = require('../../controllers/usersControllers/UsersPermissionsController');
 let usersAccessor = require('../../models/accessors/usersAccessor');
 let filledOnlineFormsController = require('../../controllers/onlineFormsControllers/filledOnlineFormController');
 let router = express.Router();
@@ -145,14 +146,35 @@ router.get('/getAllActiveProcessesByUser', function (req, res) {
 
 router.get('/getAllProcessesReportsByUser', function (req, res) {
     let userName = req.user.emails[0].value;
-    processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
-        if (err) res.render('errorViews/error');
-        if (array === undefined) {
-            res.render('reportsViews/processReportPage', {processReports: []});
-        }
+    usersPermissionsController.getUserPermissions(userName, (error, permissions) => {
+        if (error) callback(error);
         else {
-            processReportController.convertDate(array);
-            res.render('reportsViews/processReportPage', {processReports: array});
+            if(permissions.observerPermission)
+            {
+                processReportController.getAllProcessesReportsInSystem((err, array) => {
+                    if (err) res.render('errorViews/error');
+                    if (array === undefined || array === null) {
+                        res.render('reportsViews/processReportPage', {processReports: []});
+                    }
+                    else {
+                        processReportController.convertDate(array);
+                        res.render('reportsViews/processReportPage', {processReports: array});
+                    }
+                });
+            }
+            else
+            {
+                processReportController.getAllProcessesReportsByUser(userName, (err, array) => {
+                    if (err) res.render('errorViews/error');
+                    if (array === undefined || array === null) {
+                        res.render('reportsViews/processReportPage', {processReports: []});
+                    }
+                    else {
+                        processReportController.convertDate(array);
+                        res.render('reportsViews/processReportPage', {processReports: array});
+                    }
+                });
+            }
         }
     });
 });
