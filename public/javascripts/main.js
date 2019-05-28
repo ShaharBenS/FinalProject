@@ -153,12 +153,18 @@ function startActiveProcess() {
                 urgencySelector.removeChild(urgencySelector.firstChild);
             }
             document.getElementById("start-active-process-modal").style.display = "block";
-            for(let i=1; i<=3; i++){
-                let option = document.createElement('option');
-                option.value = i;
-                option.innerText = i.toString();
-                urgencySelector.appendChild(option);
-            }
+            let option1 = document.createElement('option');
+            option1.value = 1;
+            option1.innerText = '1 - דחיפות גבוהה';
+            urgencySelector.appendChild(option1);
+            let option2 = document.createElement('option');
+            option2.value = 2;
+            option2.innerText = '2 - דחיפות בינונית';
+            urgencySelector.appendChild(option2);
+            let option3 = document.createElement('option');
+            option3.value = 3;
+            option3.innerText = '3 - דחיפות נמוכה';
+            urgencySelector.appendChild(option3);
         }
     };
     xmlHttp.open("GET", '/processStructures/getAllProcessStructuresForUser/', true);
