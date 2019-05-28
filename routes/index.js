@@ -8,7 +8,12 @@ let notificationController = require('../controllers/notificationsControllers/no
 
 router.get('/', function (req, res)
 {
-    res.render('userViews/login');
+    if(req.isAuthenticated()){
+        res.redirect('/Home');
+    }
+    else{
+        res.render('userViews/login');
+    }
 });
 
 router.get('/getTopBar', function (req, res)
