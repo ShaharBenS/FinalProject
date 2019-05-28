@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <SCRIPT src="/draw_sankey/server/html/common/assets/javascript/dependencies.js"></SCRIPT>
+    <SCRIPT src="/draw_sankey/server/html/common/lib/bootstrap/js/bootstrap.min.js"></SCRIPT>
+    <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="/javascripts/onlineForms.js"></script>
+    <link href="/stylesheets/onlineFormsStyle.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/external_libraries/aes_crypto.js"></script>
+    <script src="/external_libraries/signature_pad.js"></script>
+
+    <script>
+        let _formName = '';
+        let fields = undefined;
+
+        window.onload = function () {
+            _formName = '<%=formName%>';
+            document.title = _formName;
+            document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
+            let isForShow = '<%=isForShow%>' === 'true';
+            fields = '<%= fields %>';
+
+            setupInputs(_formName, isForShow, fields);
+        };
+
+    </script>
+</head>
+<body dir="rtl">
+<div align="center">
+    <img alt="header" id="header_img" src="/images/form_header.png">
+    <div class="main-div-forms">
+        <h2 id="formTitle"><u></u></h2>
+        <h3 id="info"></h3>
+        <hr class="orange-hr">
+        <form id="form" onsubmit="return submitForm()">
+            <fieldset id="fieldset">
+
+                <table class="no_table" id="date_1" style="width: 30%;">
+                    <tbody>
+                    <tr>
+                        <td><label for="date1">תאריך</label></td>
+                        <td><textarea id="date1" name="date1"></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+
+                <p style="text-align:right; font-size: medium">
+                    נהג/ת יקר/ה,
+                </p>
+
+                <h2><u>הצהרת קריאה והסכמה לנוהל רכב אגודת הסטודנטים בן-גוריון</u></h2>
+                <br>
+
+                <table class="no_table" id="details" style="width: 40%;">
+                    <tbody>
+                    <tr>
+                        <td><label for="name">שם מלא</label></td>
+                        <td><textarea id="name" name="name"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="id">תעודת זהות</label></td>
+                        <td><textarea id="id" name="id"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="role">תפקיד</label></td>
+                        <td><textarea id="role" name="role"></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+
+                <table class="no_table signature_table" id="signature_1">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="padding" style="font-size: medium">הנני מצהיר בזאת כי קראתי את נוהל השימוש ברכב
+                                אגודת הסטודנטים בן-גוריון. הנני מתחייב לעמוד בנהלים באופן אחראי.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="padding">חתימת העובד</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="signature_1_div"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <p style="text-align:right; font-size: medium">
+                    * במועד החתימה, יצולם רישיון נהיגה בתוקף לשימוש משרד תפעול.
+                </p>
+                <hr>
+                <table class="no_table signature_table" id="signature_2">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="padding">חתימת מנהל תפעול</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="signature_2_div"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <hr>
+                <input class="btn-default no_print" id="submitButton" type="submit" value="שלח">
+            </fieldset>
+        </form>
+
+        <br>
+        <button class="btn-default no_print" id="close_win_button" onclick="window.close()">סגור טופס</button>
+        <br>
+        <button class="btn btn-default no_print" id="print"
+                onclick="window.print();return false;"
+                type="button">הדפס טופס
+        </button>
+    </div>
+    <img alt="footer" id="footer_img" src="/images/form_footer.png">
+</div>
+</body>
+</html>

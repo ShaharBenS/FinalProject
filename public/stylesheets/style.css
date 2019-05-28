@@ -202,11 +202,11 @@ body {
     height: 34px;
 }
 
+
 @media print {
     .no_print {
-        visibility: hidden;
+        display: none;
     }
-
 
     .main-div-forms {
         padding: 2% 2% 2%;
@@ -226,4 +226,5 @@ body {
     .signature_table {
         page-break-inside: avoid;
     }
+
 }

@@ -74,21 +74,17 @@
             border-color: var(--confirm-color);
         }
 
-        .removal-button {
-            width: 6%;
-            height: 3%;
-            border: none;
-            background-color: #f6a500;
-            color: white;
+        #finishProcess {
+            background-color: #f38ef6;
+            font-size: small;
         }
 
-        .removal-button::before {
-            content: 'X';
+        #finishProcess:hover {
+            background-color: white;
+            color: #f38ef6;
+            border-color: #f38ef6;
         }
 
-        .removal-button:focus {
-            outline: 0;
-        }
 
     </style>
 
@@ -167,7 +163,8 @@
                 <br>
                 <br>
                 <%formsNames.forEach(function(formName){%>
-                <a class="btn-form" onclick="formClick('<%=formName%>',document.getElementsByName('processName')[0].value)"><%=formName%></a>
+                <a class="btn-form"
+                   onclick="formClick('<%=formName%>',document.getElementsByName('processName')[0].value)"><%=formName%></a>
                 <br><br>
                 <%})%>
                 <% } %>
@@ -177,24 +174,33 @@
             <br>
 
             <hr>
+            <div style="display: flex; justify-content: center; width: 100%;">
+                <button class="btn btn-default" id="cancel"
+                        onclick="cancelProcess(document.getElementsByName('processName')[0].value);return false;">ביטול
+                    תהליך
+                </button>
+                <br>
+                <button class="btn btn-default" id="advanceProcess" onclick="return isChecked();">
+                    <%if (nextRoles.length > 0) { %>
+                    העבר לשלב הבא
+                    <% } else {%>
+                    סיים תהליך
+                    <% }%>
+                </button>
 
-            <button class="btn btn-default" id="cancel" onclick="cancelProcess(document.getElementsByName('processName')[0].value);return false;">ביטול
-                תהליך
-            </button>
-            <button class="btn btn-default" id="advanceProcess" onclick="return isChecked();">
-                <%if (nextRoles.length > 0) { %>
-                העבר לשלב הבא
-                <% } else {%>
-                סיים תהליך
-                <% }%>
-            </button>
+                <button class="btn btn-default" id="returnToCreator1"
+                        onclick="returnToCreator(document.getElementsByName('processName')[0].value);return false;"
+                        type="button">החזר ליוצר התהליך
+                </button>
 
-            <button class="btn btn-default" id="returnToCreator1"
-                    onclick="returnToCreator(document.getElementsByName('processName')[0].value);return false;"
-                    type="button">החזר ליוצר התהליך
-            </button>
+                <button class="btn btn-default" id="finishProcess"
+                        onclick="FinishProcess(document.getElementsByName('processName')[0].value);return false;"
+                        type="button">סיים תהליך
+                </button>
+            </div>
+            <br><br>
             <br>
-            <br>
+
 
         </form>
     </div>

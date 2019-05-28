@@ -16,6 +16,10 @@ table {
     width: 85%;
 }
 
+.no_table_print {
+    width: 85%;
+}
+
 label {
     padding: 0 10px;
     margin-bottom: 0;
@@ -68,3 +72,30 @@ td > textarea {
     width: 40%;
 }
 
+#print {
+    background-color: #5280f6;
+}
+
+#print:hover {
+    background-color: white;
+    color: #5280f6;
+    border-color: #5280f6;
+}
+
+#header_img {
+    margin-top: 20px;
+    width: 70%;
+}
+
+
+#footer_img {
+    margin-bottom: 20px;
+    width: 70%;
+}
+
+@media print {
+    #header_img, #footer_img {
+        width: 100%;
+    }
+
+}
