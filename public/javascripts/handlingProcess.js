@@ -116,3 +116,25 @@ function isChecked()
     return false;
 }
 
+function finishProcessInTheMiddle(processName){
+    let xhr = new XMLHttpRequest();
+    let data = new FormData();
+    data.append('processName', processName);
+    data.append('comments', document.getElementsByName('comments')[0].value);
+    xhr.open("POST", '/activeProcesses/finishProcessInTheMiddle', true);
+    //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() { // Call a function when the state changes.
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            if(xhr.responseText === "success")
+            {
+                alert('התהליך הסתיים');
+            }
+            else
+            {
+                alert(xhr.responseText);
+            }
+            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+        }
+    };
+    xhr.send(data);
+}

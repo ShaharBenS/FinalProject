@@ -67,7 +67,7 @@ module.exports.updateNotifications = (callback) =>
                 let incrementCycles = [];
                 activeProcess.currentStages.forEach(curr =>
                 {
-                    let timePassedInSeconds = Math.floor(((new Date()) - activeProcess.stages[curr].assignmentTime) % 60000 / 1000);
+                    let timePassedInSeconds = Math.floor(((new Date()) - activeProcess.stages[curr].assignmentTime) / 1000);
                     if (activeProcess.stages[curr].notificationsCycle <= timePassedInSeconds / activeProcess.notificationTime) {
                         incrementCycles.push(curr);
                         emails.push(activeProcess.stages[curr].userEmail);

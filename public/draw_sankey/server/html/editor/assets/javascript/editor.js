@@ -665,6 +665,7 @@ sankey.dialog.FileSave = Class.extend({
             if((diagramContext === 'editProcessStructure' || diagramContext === 'addProcessStructure' || diagramContext === 'viewProcessStructure')){
                 let selector = document.getElementById("automaticTimeSelect");
                 automaticAdvanceTime = selector.options[selector.selectedIndex].value;
+                automaticAdvanceTime = parseInt(automaticAdvanceTime) * 60 * 60;
 
                 let selector2 = document.getElementById("notificationTimeSelect");
                 notificationTime = selector2.options[selector2.selectedIndex].value;

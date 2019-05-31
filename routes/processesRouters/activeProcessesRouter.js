@@ -110,6 +110,21 @@ router.post('/cancelProcess', function (req, res) {
     });
 });
 
+router.post('/finishProcessInTheMiddle', function (req, res) {
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields) {
+        let userEmail = req.user.emails[0].value;
+        let processName = fields.processName;
+        let comments = fields.comments;
+        activeProcessController.finishProcessInTheMiddle(userEmail, processName, comments, (err) => {
+            if (err) res.render('errorViews/error');
+            else {
+                res.send("success");
+            }
+        });
+    });
+});
+
 /*
    _____ ______ _______
   / ____|  ____|__   __|

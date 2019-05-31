@@ -22,7 +22,7 @@ const processStructureSchema = new Schema({
     sankey: String,
     available: {type:Boolean, default: true},
     notificationTime: Number,   // in seconds
-    automaticAdvanceTime: {type:Number}// possible values : ["0","24","48","72","96","120","144"] // 0 means there's no automaticAdvanceTime
+    automaticAdvanceTime: {type:Number}// in seconds ,0 means there's no automaticAdvanceTime
 });
 
 processStructureSchema.plugin(idValidator);

@@ -60,10 +60,17 @@ module.exports.addActiveProcessDetailsToReport = (processName, userEmail, stageD
                                     newAttachedFiles.push(stageDetails.fileNames[i]);
                                 }
                             }
+                            let status = report.status;
+                            if(stageDetails.status !== undefined)
+                                status = stageDetails.status;
                             processAccessor.updateProcessReport({processName: processName}, {
                                 $push: {
                                     stages: newStage,
                                     attachedFilesNames: {$each: newAttachedFiles}
+                                }
+                                ,
+                                $set : {
+                                    status: status
                                 }
                             }, (err) => {
                                 if (err) callback(err);
