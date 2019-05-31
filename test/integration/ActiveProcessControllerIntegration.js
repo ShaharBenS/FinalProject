@@ -252,6 +252,7 @@ describe('Active Process Controller', function () {
     describe('3.0 startProcessByUsername', function () {
         beforeEach(createTree1WithStructure1);
         it('3.1 start process correct', function (done) {
+            this.timeout(30000);
             activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
                 if (err) done(err);
                 else {
@@ -282,25 +283,10 @@ describe('Active Process Controller', function () {
                     });
                 }
             });
-        }).timeout(30000);
+        });
 
-        it('3.2 start process userEmail not in process structure', function (done) {
-            activeProcessController.startProcessByUsername('chairman@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
-                if (err) done(err);
-                else {
-                    assert.deepEqual(result, 'אינך רשאי להתחיל תהליך זה מכיוון שאינך נמצא בשלבי מבנה התהליך');
-                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
-                        if (err) done(err);
-                        else {
-                            assert.deepEqual(true, process === null);
-                            done();
-                        }
-                    });
-                }
-            });
-        }).timeout(30000);
-
-        it('3.3 start process process structure doesn\'t exist', function (done) {
+        it("3.2 start process process structure doesn't exist", function (done) {
+            this.timeout(30000);
             activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גלפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
                 if (err) done(err);
                 else {
@@ -309,18 +295,31 @@ describe('Active Process Controller', function () {
                         if (err) done(err);
                         else {
                             assert.deepEqual(true, process === null);
-                            done();
+                            processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(true, report === null);
+                                    notificationsController.getUserNotifications('negativevicemanager@outlook.co.il', (err, results) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(results.length, 0);
+                                            done();
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 }
             });
-        }).timeout(30000);
+        });
 
-        it('3.4 start process process structure is unavailable', function (done) {
+        it('3.3 start process process structure is unavailable', function (done) {
+            this.timeout(30000);
             processStructureAccessor.updateProcessStructure({structureName: 'תהליך גרפיקה'}, {$set: {available: false}}, (err) => {
                 if (err) done(err);
                 else {
-                    activeProcessController.startProcessByUsername('chairman@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
+                    activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
                         if (err) done(err);
                         else {
                             assert.deepEqual(result, 'מבנה התהליך שנבחר אינו קיים או אינו זמין עקב שינויים בעץ המשתמשים');
@@ -328,17 +327,29 @@ describe('Active Process Controller', function () {
                                 if (err) done(err);
                                 else {
                                     assert.deepEqual(true, process === null);
-                                    done();
+                                    processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(true, report === null);
+                                            notificationsController.getUserNotifications('negativevicemanager@outlook.co.il', (err, results) => {
+                                                if (err) done(err);
+                                                else {
+                                                    assert.deepEqual(results.length, 0);
+                                                    done();
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
                         }
                     });
                 }
             });
+        });
 
-        }).timeout(30000);
-
-        it('3.5 start process same name', function (done) {
+        it('3.4 start process same name', function (done) {
+            this.timeout(30000);
             activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
                 if (err) done(err);
                 else {
@@ -357,7 +368,38 @@ describe('Active Process Controller', function () {
                     });
                 }
             });
-        }).timeout(30000);
+        });
+
+        it('3.5 start process userEmail not in process structure', function (done) {
+            this.timeout(30000);
+            activeProcessController.startProcessByUsername('chairman@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(result, 'אינך רשאי להתחיל תהליך זה מכיוון שאינך נמצא בשלבי מבנה התהליך');
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(true, process === null);
+                            processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(true, report === null);
+                                    notificationsController.getUserNotifications('chairman@outlook.co.il', (err, results) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(results.length, 0);
+                                            done();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+
     });
 
     describe('4.0 getWaitingActiveProcessesByUser', function () {
@@ -852,98 +894,9 @@ describe('Active Process Controller', function () {
                 }
             }
         );
-        it('8.1 userEmail not in current stages', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'test/fileTests/outputFiles', (err, result) => {
-                if (err) done(err);
-                else {
-                    assert.deepEqual(result, 'אינך רשאי לטפל בתהליך זה מכיוון שאינך כלול בשלבים הנוכחיים של התהליך');
-                    done();
-                }
-            });
-        }).timeout(30000);
 
-        it('8.2 next stages are wrong but exist', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                4: 'on',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'test/fileTests/outputFiles', (err, result) => {
-                if (err) done(err);
-                else {
-                    assert.deepEqual(result, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
-                    done();
-                }
-            });
-        }).timeout(30000);
-
-        it('8.3 next stages are wrong and not exist', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                1000: 'on',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'test/fileTests/outputFiles', (err, result) => {
-                if (err) done(err);
-                else {
-                    assert.deepEqual(result, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
-                    done();
-                }
-            });
-        }).timeout(30000);
-
-        it('8.4 next stages are empty but process cant be finished', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'test/fileTests/outputFiles', (err, result) => {
-                if (err) done(err);
-                else {
-                    assert.deepEqual(result, 'לא סומנו תפקידים לשלב הבא');
-                    done();
-                }
-            });
-        }).timeout(30000);
-
-        it('8.5 next stages are not empty but process must be finished', function (done) {
-            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
-                comments: 'הערות של סגן מנהל נגטיב',
-                2: 'on',
-                processName: 'גרפיקה להקרנת בכורה'
-            }, [], 'test/fileTests/outputFiles', (err) => {
-                if (err) done(err);
-                else {
-                    activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
-                        comments: 'הערות של מנהל נגטיב',
-                        4: 'on',
-                        processName: 'גרפיקה להקרנת בכורה'
-                    }, [], 'test/fileTests/outputFiles', (err) => {
-                        if (err) done(err);
-                        else {
-                            activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
-                                comments: 'הערות של סגן מנהל נגטיב',
-                                2: 'on',
-                                4: 'on',
-                                processName: 'גרפיקה להקרנת בכורה'
-                            }, [], 'test/fileTests/outputFiles', (err, result) => {
-                                if (err) done(err);
-                                else {
-                                    assert.deepEqual(result, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
-                                    done();
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-        }).timeout(30000);
-
-        it('8.6 correct', function (done) {
+        it('8.1 correct', function (done) {
+            this.timeout(30000);
             activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
                 comments: 'הערות של סגן מנהל נגטיב',
                 2: 'on',
@@ -958,14 +911,243 @@ describe('Active Process Controller', function () {
                         if (err) done(err);
                         else {
                             assert.deepEqual(process.currentStages, [2]);
-                            done();
+                            processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(report[1].length, 1);
+                                    assert.deepEqual(report[1][0].action, 'continue');
+                                    assert.deepEqual(report[1][0].approvalTime !== null, true);
+                                    assert.deepEqual(report[1][0].comments, 'הערות של סגן מנהל נגטיב');
+                                    assert.deepEqual(report[1][0].roleName, 'סגן מנהל מגטיב');
+                                    assert.deepEqual(report[1][0].userEmail, 'negativevicemanager@outlook.co.il');
+                                    assert.deepEqual(report[1][0].roleName, 'סגן מנהל מגטיב');
+                                    assert.deepEqual(report[0].processName, 'גרפיקה להקרנת בכורה');
+                                    assert.deepEqual(report[0].status, 'פעיל');
+                                    assert.deepEqual(report[0].urgency, 3);
+                                    assert.deepEqual(report[0].filledOnlineForms, []);
+                                    notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(results.length, 1);
+                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה להקרנת בכורה מחכה לטיפולך.');
+                                            assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                            done();
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 }
             });
-        }).timeout(30000);
-    });
+        });
 
+        it('8.2 userEmail not in current stages', function (done) {
+            this.timeout(30000);
+            activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                2: 'on',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'test/fileTests/outputFiles', (err, result) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(result, 'אינך רשאי לטפל בתהליך זה מכיוון שאינך כלול בשלבים הנוכחיים של התהליך');
+                    processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(report[1].length, 0);
+                            notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(results.length, 0);
+                                    done();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        it('8.3 next stages are wrong but exist', function (done) {
+            this.timeout(30000);
+            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                4: 'on',
+                2: 'on',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'test/fileTests/outputFiles', (err, result) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(result, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
+                    processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(report[1].length, 0);
+                            notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(results.length, 0);
+                                    done();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        it('8.4 next stages are wrong and not exist', function (done) {
+            this.timeout(30000);
+            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                1000: 'on',
+                2: 'on',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'test/fileTests/outputFiles', (err, result) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(result, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
+                    processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(report[1].length, 0);
+                            notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(results.length, 0);
+                                    done();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        it('8.5 next stages are empty but process cant be finished', function (done) {
+            this.timeout(30000);
+            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'test/fileTests/outputFiles', (err, result) => {
+                if (err) done(err);
+                else {
+                    assert.deepEqual(result, 'לא סומנו תפקידים לשלב הבא');
+                    processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(report[1].length, 0);
+                            notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(results.length, 0);
+                                    done();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        it('8.6 next stages are not empty but process must be finished', function (done) {
+            this.timeout(30000);
+            activeProcessController.uploadFilesAndHandleProcess('negativevicemanager@outlook.co.il', {
+                comments: 'הערות של סגן מנהל נגטיב',
+                2: 'on',
+                processName: 'גרפיקה להקרנת בכורה'
+            }, [], 'test/fileTests/outputFiles', (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(process.currentStages, [2]);
+                            processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(report[1].length, 1);
+                                    assert.deepEqual(report[1][0].action, 'continue');
+                                    assert.deepEqual(report[1][0].approvalTime !== null, true);
+                                    assert.deepEqual(report[1][0].comments, 'הערות של סגן מנהל נגטיב');
+                                    assert.deepEqual(report[1][0].roleName, 'סגן מנהל מגטיב');
+                                    assert.deepEqual(report[1][0].userEmail, 'negativevicemanager@outlook.co.il');
+                                    assert.deepEqual(report[1][0].roleName, 'סגן מנהל מגטיב');
+                                    assert.deepEqual(report[0].processName, 'גרפיקה להקרנת בכורה');
+                                    assert.deepEqual(report[0].status, 'פעיל');
+                                    assert.deepEqual(report[0].urgency, 3);
+                                    assert.deepEqual(report[0].filledOnlineForms, []);
+                                    notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(results.length, 1);
+                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה להקרנת בכורה מחכה לטיפולך.');
+                                            assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                            activeProcessController.uploadFilesAndHandleProcess('negativemanager@outlook.co.il', {
+                                                comments: 'הערות של מנהל נגטיב',
+                                                4: 'on',
+                                                processName: 'גרפיקה להקרנת בכורה'
+                                            }, [], 'test/fileTests/outputFiles', (err) => {
+                                                if (err) done(err);
+                                                else {
+                                                    activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                                        if (err) done(err);
+                                                        else {
+                                                            assert.deepEqual(process.currentStages, [4]);
+                                                            processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                                                if (err) done(err);
+                                                                else {
+                                                                    assert.deepEqual(report[1].length, 2);
+                                                                    assert.deepEqual(report[1][1].action, 'continue');
+                                                                    assert.deepEqual(report[1][1].approvalTime !== null, true);
+                                                                    assert.deepEqual(report[1][1].comments, 'הערות של מנהל נגטיב');
+                                                                    assert.deepEqual(report[1][1].roleName, 'מנהל נגטיב');
+                                                                    assert.deepEqual(report[1][1].userEmail, 'negativemanager@outlook.co.il');
+                                                                    assert.deepEqual(report[1][1].roleName, 'מנהל נגטיב');
+                                                                    assert.deepEqual(report[0].processName, 'גרפיקה להקרנת בכורה');
+                                                                    assert.deepEqual(report[0].status, 'פעיל');
+                                                                    assert.deepEqual(report[0].urgency, 3);
+                                                                    assert.deepEqual(report[0].filledOnlineForms, []);
+                                                                    notificationsController.getUserNotifications('publicitydepartmenthead@outlook.co.il', (err, results) => {
+                                                                        if (err) done(err);
+                                                                        else {
+                                                                            assert.deepEqual(results.length, 1);
+                                                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה להקרנת בכורה מחכה לטיפולך.');
+                                                                            assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                            if (err) done(err);
+                                                                            else {
+                                                                                activeProcessController.uploadFilesAndHandleProcess('publicitydepartmenthead@outlook.co.il', {
+                                                                                    comments: 'הערות של רמד פרסום',
+                                                                                    2: 'on',
+                                                                                    4: 'on',
+                                                                                    processName: 'גרפיקה להקרנת בכורה'
+                                                                                }, [], 'test/fileTests/outputFiles', (err, result) => {
+                                                                                    if (err) done(err);
+                                                                                    else {
+                                                                                        assert.deepEqual(result, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
+                                                                                        done();
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
 
     describe('9.0 uploadFiles', function () {
 
@@ -1020,12 +1202,12 @@ describe('Active Process Controller', function () {
                                 if (err) done(err);
                                 else {
                                     let currentProcessNum = process.getCurrentStageNumberForUser('publicitydepartmenthead@outlook.co.il');
-                                    if(currentProcessNum instanceof Error) {
+                                    if (currentProcessNum instanceof Error) {
                                         done(currentProcessNum);
                                         return;
                                     }
                                     let currStage = process.getStageByStageNum(currentProcessNum);
-                                    if(currStage instanceof Error){
+                                    if (currStage instanceof Error) {
                                         done(currStage);
                                         return;
                                     }
@@ -1055,12 +1237,12 @@ describe('Active Process Controller', function () {
                 if (err) done(err);
                 else {
                     let currentProcessNum = process.getCurrentStageNumberForUser('negativevicemanager@outlook.co.il');
-                    if(currentProcessNum instanceof Error) {
+                    if (currentProcessNum instanceof Error) {
                         done(currentProcessNum);
                         return;
                     }
                     let currStage = process.getStageByStageNum(currentProcessNum);
-                    if(currStage instanceof Error){
+                    if (currStage instanceof Error) {
                         done(currStage);
                         return;
                     }

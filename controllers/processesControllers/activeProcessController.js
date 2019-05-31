@@ -7,7 +7,6 @@ let processStructureController = require('./processStructureController');
 let notificationsController = require('../notificationsControllers/notificationController');
 let Notification = require('../../domainObjects/notification');
 let onlineFormController = require('../onlineFormsControllers/onlineFormController');
-let filledOnlineFormController = require('../onlineFormsControllers/filledOnlineFormController');
 let fs = require('fs');
 let moment = require('moment');
 let ActiveProcessStage = require('../../domainObjects/activeProcessStage');
@@ -109,20 +108,6 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                     initialStages.push(activeProcessToReturn.getStageByStageNum(nextStage.stageNum));
                 }
             }
-            /*
-            for (let i = 0; i < activeProcessToReturn.stages.length; i++) {
-                let stage = activeProcessToReturn.stages[i];
-                if (stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg)) {
-                    activeProcessToReturn.removeStage(stage.stageNum);
-                    i--;
-                }
-                if(stage.userEmail === lastUserEmail)
-                {
-                    activeProcessToReturn.removeStage(stage.stageNum);
-                    i--;
-                }
-                lastUserEmail = stage.userEmail;
-            }*/
             callback(null, activeProcessToReturn);
         }
     });

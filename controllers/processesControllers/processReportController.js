@@ -149,41 +149,48 @@ module.exports.getAllProcessesReportsByUser = (userEmail, callback) => {
     });
 };
 
-module.exports.processReport = function (process_name, callback) {
-    this.getAllActiveProcessDetails(process_name, (err, result) => {
+module.exports.processReport = function (processName, callback) {
+    this.getProcessReportFromDB(processName, (err, result) => {
         if (err) callback(err);
         else {
-            result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
-            result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
-            for (let i = 0; i < result[1].length; i++) {
-                result[1][i]._doc.approvalTime = moment(result[1][i]._doc.approvalTime).format("DD/MM/YYYY HH:mm:ss");
-            }
-            filledOnlineFormsController.getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
-                for (let i = 0; i < formsArr.length; i++) {
-                    result[0].filledOnlineForms[i] = formsArr[i];
+            if(result === null) callback(null, null);
+            else {
+                result[0].creationTime = moment(result[0].creationTime).format("DD/MM/YYYY HH:mm:ss");
+                result[0].processDate = moment(result[0].processDate).format("DD/MM/YYYY HH:mm:ss");
+                for (let i = 0; i < result[1].length; i++) {
+                    result[1][i]._doc.approvalTime = moment(result[1][i]._doc.approvalTime).format("DD/MM/YYYY HH:mm:ss");
                 }
-                callback(null, result);
-            });
+                filledOnlineFormsController.getFilledOnlineForms(result[0].filledOnlineForms, 0, [], (err, formsArr) => {
+                    for (let i = 0; i < formsArr.length; i++) {
+                        result[0].filledOnlineForms[i] = formsArr[i];
+                    }
+                    callback(null, result);
+                });
+            }
         }
     });
 };
 
-module.exports.getAllActiveProcessDetails = (processName, callback) => {
+module.exports.getProcessReportFromDB = (processName, callback) => {
     processReportAccessor.findProcessReport({processName: processName}, (err, processReport) => {
         if (err) callback(err);
         else {
-            processReport = processReport._doc;
-            let returnProcessDetails = {
-                processName: processReport.processName,
-                creationTime: processReport.creationTime,
-                status: processReport.status,
-                urgency: processReport.processUrgency,
-                processDate: processReport.processDate,
-                filledOnlineForms: processReport.filledOnlineForms,
-                attachedFilesNames: processReport.attachedFilesNames,
-                processCreatorName: processReport.processCreatorName
-            };
-            callback(null, [returnProcessDetails, processReport.stages]);
+            if(processReport === null) callback(null, null);
+            else
+            {
+                processReport = processReport._doc;
+                let returnProcessDetails = {
+                    processName: processReport.processName,
+                    creationTime: processReport.creationTime,
+                    status: processReport.status,
+                    urgency: processReport.processUrgency,
+                    processDate: processReport.processDate,
+                    filledOnlineForms: processReport.filledOnlineForms,
+                    attachedFilesNames: processReport.attachedFilesNames,
+                    processCreatorName: processReport.processCreatorName
+                };
+                callback(null, [returnProcessDetails, processReport.stages]);
+            }
         }
     });
 };
