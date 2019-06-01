@@ -194,11 +194,15 @@ function updateUsersMaps(roleName) {
     let emails = document.getElementsByClassName("email");
     let names = document.getElementsByClassName("name");
     let emailsArray = [];
+    let emailsToCheckDuplicate = Object.keys(emailToFullName).filter((email)=>{
+        return !roleToEmails[roleName].includes(email);
+
+    });
     for (let i = 0; i < emails.length; i++) {
         if (!emailValidator(emails[i].value)) {
             return {errorType:"invalid",email:emails[i].value};
         }
-        if(Object.keys(emailToFullName).includes(emails[i].value)){
+        if(emailsToCheckDuplicate.includes(emails[i].value) || emailsArray.includes(emails[i].value)){
             return {errorType:"duplicate",email:emails[i].value};
         }
         emailsArray.push(emails[i].value);
