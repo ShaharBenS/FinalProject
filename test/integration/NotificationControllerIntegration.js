@@ -570,7 +570,7 @@ describe('7. notifyCancelledProcess', function ()
                             activeProcessController.getActiveProcessByProcessName(processName, (err, process) =>
                             {
                                 if (err) done(err);
-                                notificationController.notifyCancelledProcess(process, (err) =>
+                                notificationController.notifyCancelledProcess(process, userAA, (err) =>
                                 {
                                     if (err) done(err);
                                     notificationController.getUserNotifications(userAA, (err, notifications) =>
@@ -593,7 +593,59 @@ describe('7. notifyCancelledProcess', function ()
     });
 });
 
-describe('8. updateNotifications', function ()
+describe('8. notifyFinishedInTheMiddleProcess', function ()
+{
+
+    before(connectsToTestingDatabase);
+    afterEach(clearDatabase);
+    after(closeConnection);
+
+    it('notifies to all the process participants about the cancel', function (done)
+    {
+        this.timeout(10000);
+        createUserAndRolesTree((err) =>
+        {
+            if (err) done(err);
+            createProcessStructure((err) =>
+            {
+                if (err) done(err);
+                createActiveProcess((err) =>
+                {
+                    if (err) done(err);
+                    activeProcessController.uploadFilesAndHandleProcess(userAA,
+                        {
+                            processName: processName,
+                            1: "on",
+                            comments: "הערה 1"
+                        }, [], "files", () =>
+                        {
+                            activeProcessController.getActiveProcessByProcessName(processName, (err, process) =>
+                            {
+                                if (err) done(err);
+                                notificationController.notifyFinishedInTheMiddleProcess(process, userAA, (err) =>
+                                {
+                                    if (err) done(err);
+                                    notificationController.getUserNotifications(userAA, (err, notifications) =>
+                                    {
+                                        if (err) done(err);
+                                        assert.equal(notifications[notifications.length - 1].notificationType, "תהליך הופסק באמצע");
+                                        notificationController.getUserNotifications(userBB, (err, notifications) =>
+                                        {
+                                            if (err) done(err);
+                                            assert.equal(notifications[notifications.length - 1].notificationType, "תהליך הופסק באמצע");
+                                            done();
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                });
+            });
+        });
+    });
+});
+
+describe('9. updateNotifications', function ()
 {
 
     before(connectsToTestingDatabase);

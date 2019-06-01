@@ -1,0 +1,905 @@
+{
+  "content": {
+    "diagram": [
+      {
+        "type": "sankey.shape.State",
+        "id": "d0f1d942-2635-0750-09e3-b81a06c40a50",
+        "x": 1078,
+        "y": 388.4000015258789,
+        "width": 50,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "4c351419-2e8c-c29b-b3f4-ad3b69d0d41f",
+            "x": 11.5,
+            "y": 26.5,
+            "width": 18.8125,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "יור",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "497c4623-cd71-05a5-f951-6401263e1332",
+        "x": 1236,
+        "y": 163.4000015258789,
+        "width": 50,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "5ae4a395-08d1-d13e-27ba-a213b449a9e4",
+            "x": 6.5,
+            "y": 26.5,
+            "width": 25.21875,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "סיור",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "75d1f3a4-ee3c-1b74-69cb-e6c87e049e09",
+        "x": 1442,
+        "y": 161.4000015258789,
+        "width": 88.6875,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "001f4a1b-5300-9f2b-98a9-efd814f47cf7",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 52.828125,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "רכז גרפיקה",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "c61acfeb-8d6d-60ea-3693-45e09c31b767",
+        "x": 1222,
+        "y": 392.4000015258789,
+        "width": 100.6875,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "852da98b-8e3c-f3f0-dcc8-a5fd807230ec",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 59.875,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "מנהל גרפיקה",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "f00a990c-93dd-7ef3-d66f-c1c3723eaadf",
+        "x": 1531,
+        "y": 391.4000015258789,
+        "width": 63.09375,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "41bc97f4-a084-9dac-7cef-51c404b24f6d",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 39.40625,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "גרפיקאי",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "bfea529f-bd5f-3238-b1bf-38b8d51dfee1",
+        "x": 1565,
+        "y": 516.4000015258789,
+        "width": 50,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "143db483-3c24-9e70-1ba1-ca7aa8bb989d",
+            "x": 4.5,
+            "y": 26.5,
+            "width": 27.375,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "דובר",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "02bf87b8-e306-43bf-7cca-f6d932293f25",
+        "x": 1780,
+        "y": 498.4000015258789,
+        "width": 87.671875,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "5a6216e5-9aaf-05c9-30b5-0c6a17a3449e",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 52.640625,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "מנהל נגטיב",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "81891d07-e1f6-4d7e-2de2-4bbff7ff1692",
+        "x": 1517,
+        "y": 615.4000015258789,
+        "width": 93.0625,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "ba431d7f-8198-f8ae-7dd8-2fc0c8aec1f5",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 55.25,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "רמד הסברה",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "72becdd3-59cf-e583-e4f5-4df42ea5392a",
+        "x": 1740,
+        "y": 645.4000015258789,
+        "width": 167.578125,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "f129d43f-231b-f87d-b233-abcd25f1e190",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 97.625,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "אחראי קמפיינים ומיתוג",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.State",
+        "id": "613d1a9d-2f33-3ae8-3627-b67e914583ab",
+        "x": 1399,
+        "y": 725.4000015258789,
+        "width": 114.6875,
+        "height": 80,
+        "alpha": 1,
+        "angle": 0,
+        "userData": {},
+        "cssClass": "sankey_shape_State",
+        "bgColor": "#F6A500",
+        "color": "#000000",
+        "stroke": 1,
+        "radius": 0,
+        "dasharray": null,
+        "labels": [
+          {
+            "type": "draw2d.shape.basic.Label",
+            "id": "ad9fecd6-d8cc-9a67-b169-968b5d9cbd7a",
+            "x": 0.5,
+            "y": 26.5,
+            "width": 67.890625,
+            "height": 19.1875,
+            "alpha": 1,
+            "angle": 0,
+            "userData": {},
+            "cssClass": "draw2d_shape_basic_Label",
+            "ports": [],
+            "bgColor": "none",
+            "color": "#1B1B1B",
+            "stroke": 0,
+            "radius": 0,
+            "dasharray": null,
+            "text": "סגן מנהל נגטיב",
+            "outlineStroke": 0,
+            "outlineColor": "none",
+            "fontSize": 18,
+            "fontColor": "#FFFFFF",
+            "fontFamily": null,
+            "locator": "draw2d.layout.locator.CenterLocator"
+          }
+        ]
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "5c6a4159-1b6e-2efb-a20f-ed0f7377713b",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1322.6875,
+            "y": 422.4000015258789
+          },
+          {
+            "x": 1443.84375,
+            "y": 422.4000015258789
+          },
+          {
+            "x": 1443.84375,
+            "y": 556.4000015258789
+          },
+          {
+            "x": 1565,
+            "y": 556.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "c61acfeb-8d6d-60ea-3693-45e09c31b767",
+          "port": "output0"
+        },
+        "target": {
+          "node": "bfea529f-bd5f-3238-b1bf-38b8d51dfee1",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "206c49ec-2693-d082-0b71-44839d4060b0",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1322.6875,
+            "y": 402.4000015258789
+          },
+          {
+            "x": 1426.84375,
+            "y": 402.4000015258789
+          },
+          {
+            "x": 1426.84375,
+            "y": 431.4000015258789
+          },
+          {
+            "x": 1531,
+            "y": 431.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "c61acfeb-8d6d-60ea-3693-45e09c31b767",
+          "port": "output0"
+        },
+        "target": {
+          "node": "f00a990c-93dd-7ef3-d66f-c1c3723eaadf",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "3f14e281-09bb-8759-55a1-5e7acff0a9fc",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1322.6875,
+            "y": 462.4000015258789
+          },
+          {
+            "x": 1360.84375,
+            "y": 462.4000015258789
+          },
+          {
+            "x": 1360.84375,
+            "y": 765.4000015258789
+          },
+          {
+            "x": 1399,
+            "y": 765.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "c61acfeb-8d6d-60ea-3693-45e09c31b767",
+          "port": "output0"
+        },
+        "target": {
+          "node": "613d1a9d-2f33-3ae8-3627-b67e914583ab",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "4fa9d7cf-1562-beb3-3eb5-aba9f1dd2cff",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1615,
+            "y": 556.4000015258789
+          },
+          {
+            "x": 1697.5,
+            "y": 556.4000015258789
+          },
+          {
+            "x": 1697.5,
+            "y": 538.4000015258789
+          },
+          {
+            "x": 1780,
+            "y": 538.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "bfea529f-bd5f-3238-b1bf-38b8d51dfee1",
+          "port": "output0"
+        },
+        "target": {
+          "node": "02bf87b8-e306-43bf-7cca-f6d932293f25",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "e61bb748-4a98-eb59-d120-f727ca52cfbb",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1128,
+            "y": 448.4000015258789
+          },
+          {
+            "x": 1175,
+            "y": 448.4000015258789
+          },
+          {
+            "x": 1175,
+            "y": 432.4000015258789
+          },
+          {
+            "x": 1222,
+            "y": 432.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "d0f1d942-2635-0750-09e3-b81a06c40a50",
+          "port": "output0"
+        },
+        "target": {
+          "node": "c61acfeb-8d6d-60ea-3693-45e09c31b767",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "72c9a5d5-22c1-7796-5028-8a85295eced4",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1286,
+            "y": 203.4000015258789
+          },
+          {
+            "x": 1364,
+            "y": 203.4000015258789
+          },
+          {
+            "x": 1364,
+            "y": 201.4000015258789
+          },
+          {
+            "x": 1442,
+            "y": 201.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "497c4623-cd71-05a5-f951-6401263e1332",
+          "port": "output0"
+        },
+        "target": {
+          "node": "75d1f3a4-ee3c-1b74-69cb-e6c87e049e09",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "ae0b42ab-d636-158d-3f22-6a9b3ffb447a",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1128,
+            "y": 408.4000015258789
+          },
+          {
+            "x": 1182,
+            "y": 408.4000015258789
+          },
+          {
+            "x": 1182,
+            "y": 203.4000015258789
+          },
+          {
+            "x": 1236,
+            "y": 203.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "d0f1d942-2635-0750-09e3-b81a06c40a50",
+          "port": "output0"
+        },
+        "target": {
+          "node": "497c4623-cd71-05a5-f951-6401263e1332",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "de64dd8a-0f62-763d-885b-d9f2dd0c87c9",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1610.0625,
+            "y": 655.4000015258789
+          },
+          {
+            "x": 1675.03125,
+            "y": 655.4000015258789
+          },
+          {
+            "x": 1675.03125,
+            "y": 685.4000015258789
+          },
+          {
+            "x": 1740,
+            "y": 685.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "81891d07-e1f6-4d7e-2de2-4bbff7ff1692",
+          "port": "output0"
+        },
+        "target": {
+          "node": "72becdd3-59cf-e583-e4f5-4df42ea5392a",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      },
+      {
+        "type": "sankey.shape.Connection",
+        "id": "b89d447c-0aa6-202d-05e7-84e0ade757bb",
+        "alpha": 1,
+        "angle": 0,
+        "userData": {
+          "jsonPath": ""
+        },
+        "cssClass": "sankey_shape_Connection",
+        "stroke": 5,
+        "color": "#129CE4",
+        "outlineStroke": 0,
+        "outlineColor": "none",
+        "dasharray": "-",
+        "policy": "draw2d.policy.line.OrthogonalSelectionFeedbackPolicy",
+        "vertex": [
+          {
+            "x": 1322.6875,
+            "y": 442.4000015258789
+          },
+          {
+            "x": 1419.84375,
+            "y": 442.4000015258789
+          },
+          {
+            "x": 1419.84375,
+            "y": 655.4000015258789
+          },
+          {
+            "x": 1517,
+            "y": 655.4000015258789
+          }
+        ],
+        "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+        "radius": 3,
+        "routingMetaData": {
+          "routedByUserInteraction": false,
+          "fromDir": 1,
+          "toDir": 3
+        },
+        "source": {
+          "node": "c61acfeb-8d6d-60ea-3693-45e09c31b767",
+          "port": "output0"
+        },
+        "target": {
+          "node": "81891d07-e1f6-4d7e-2de2-4bbff7ff1692",
+          "port": "input0",
+          "decoration": "draw2d.decoration.connection.ArrowDecorator"
+        },
+        "labels": []
+      }
+    ]
+  }
+}

@@ -341,7 +341,7 @@ describe('1. Process Report Controller', function () {
             });
         }).timeout(30000);
     });
-    describe('1.5 getAllActiveProcessDetails', function () {
+    describe('1.5 getProcessReportFromDB', function () {
         it('1.5.1 Get active process details.', function (done) {
             activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה לחג', new Date(), 1, (err1, result1) => {
                 if (err1) {
@@ -384,7 +384,7 @@ describe('1. Process Report Controller', function () {
                                             done(err4)
                                         }
                                         else {
-                                            processReportContoller.getAllActiveProcessDetails('גרפיקה לחג', (err5, report) => {
+                                            processReportContoller.getProcessReportFromDB('גרפיקה לחג', (err5, report) => {
                                                 if (err5) {
                                                     done(err5);
                                                 }

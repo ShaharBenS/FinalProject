@@ -26,7 +26,6 @@ xmlHttpOnlineForms.onreadystatechange = function () {
 xmlHttpOnlineForms.open("GET", '/onlineForms/getAllOnlineFormsNames/', true);
 xmlHttpOnlineForms.send(null);
 
-
 $(document).ready(function () {
     let modal = document.getElementById('select_role_modal');
     let span = document.getElementsByClassName("close")[0];
