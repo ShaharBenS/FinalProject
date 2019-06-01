@@ -85,7 +85,7 @@ setInterval(()=>{
 
 //Thread for automatic advance
 setInterval(()=>{
-    activeProcessControllers.advanceProcessesIfTimeHasPassed();
+    activeProcessControllers.advanceProcessesIfTimeHasPassed(()=>{});
 },updateTimeInMinutes * 60000);
 
 module.exports = app;

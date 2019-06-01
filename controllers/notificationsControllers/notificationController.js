@@ -207,7 +207,7 @@ module.exports.notifyNotFinishedProcess = (process, newStages, callback) =>
     })(null);
 };
 
-module.exports.notifyCancelledProcess = (process, callback) =>
+module.exports.notifyCancelledProcess = (process, cancelingUser, callback) =>
 {
     let usersToNotify = process.getParticipatingUsers();
     usersToNotify.reduce((prev, curr) =>
@@ -219,7 +219,34 @@ module.exports.notifyCancelledProcess = (process, callback) =>
             }
             else {
                 addNotificationToUser(curr,
-                    new Notification("התהליך " + process.processName + " בוטל על ידי " + curr, "תהליך בוטל"), prev);
+                    new Notification("התהליך " + process.processName + " בוטל על ידי " + cancelingUser, "תהליך בוטל"), prev);
+            }
+        }
+    }, (err) =>
+    {
+        if (err) {
+            console.log(err);
+            callback(err);
+        }
+        else {
+            callback(null);
+        }
+    })(null);
+};
+
+module.exports.notifyFinishedInTheMiddleProcess = (process, stoppingUSer, callback) =>
+{
+    let usersToNotify = process.getParticipatingUsers();
+    usersToNotify.reduce((prev, curr) =>
+    {
+        return (err) =>
+        {
+            if (err) {
+                prev(err);
+            }
+            else {
+                addNotificationToUser(curr,
+                    new Notification("התהליך " + process.processName + " הופסק באמצע על ידי " + stoppingUSer, "תהליך הופסק באמצע"), prev);
             }
         }
     }, (err) =>

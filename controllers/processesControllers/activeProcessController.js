@@ -603,7 +603,7 @@ module.exports.cancelProcess = function (userEmail, processName, comments, callb
                         if (err) {
                             callback(err);
                         } else {
-                            notificationsController.notifyCancelledProcess(process, callback);
+                            notificationsController.notifyCancelledProcess(process, userEmail, callback);
                         }
                     });
                 }
@@ -622,7 +622,7 @@ module.exports.finishProcessInTheMiddle = function (userEmail, processName, comm
             let stage = {
                 comments: comments,
                 fileNames: [],
-                action: "cancel",
+                action: "finishInMiddle",
                 stageNum: currentNumberForUser,
                 status: 'הסתיים באמצע'
             };
@@ -633,7 +633,7 @@ module.exports.finishProcessInTheMiddle = function (userEmail, processName, comm
                         if (err) {
                             callback(err);
                         } else {
-                            notificationsController.notifyCancelledProcess(process, callback);
+                            notificationsController.notifyFinishedInTheMiddleProcess(process, userEmail, callback);
                         }
                     });
                 }
@@ -719,6 +719,13 @@ module.exports.incrementStageCycle = (processName, stageNumbers, callback) => {
 
 function advanceProcessForUsers(process, stagesToAdvance, callback) {
     if (stagesToAdvance.length !== 0) {
+        if(!stagesToAdvance.every((stage)=> {
+            return process.currentStages.includes(stage);
+        }))
+        {
+            callback(new Error("advanceProcessForUsers some stages don't exist in current stages"));
+            return;
+        }
         stagesToAdvance.reduce((prev, stageNum) => {
             return (err)=>{
                 if(err) {
@@ -727,7 +734,9 @@ function advanceProcessForUsers(process, stagesToAdvance, callback) {
                 else
                 {
                     let stage = process.getStageByStageNum(stageNum);
-                    this.handleProcess(stage.userEmail, process, stage, stage.nextStages, new Date(), prev);
+                    handleProcess(stage.userEmail, process, stage, stage.nextStages, new Date(), (err)=>{
+                        prev(err);
+                    });
                 }
             };
         }, (err) => {
@@ -735,46 +744,62 @@ function advanceProcessForUsers(process, stagesToAdvance, callback) {
                 console.log(err);
                 callback(err);
             }
+            else
+            {
+                callback(null);
+            }
         })(null);
     }
-
+    else
+    {
+        callback(null);
+    }
 }
 
-module.exports.advanceProcessesIfTimeHasPassed = () => {
-    this.getAllActiveProcesses((err, activeProcesses) => {
+module.exports.advanceProcessesIfTimeHasPassed = (callback) => {
+    processAccessor.findActiveProcesses({}, (err, activeProcesses) => {
         if (err) {
             console.log(err);
         }
         else {
-            activeProcesses.reduce((prev, activeProcess) => {
-                return (err) => {
-                    if (err) {
-                        prev(err);
-                    }
-                    else {
-                        if (activeProcess.automaticAdvanceTime !== 0) {
-                            let stagesToAdvance = [];
-                            activeProcess.currentStages.forEach(curr => {
-                                let currStage = activeProcess.getStageByStageNum(curr);
-                                if (currStage instanceof Error) {
-                                    console.log(currStage);
-                                    return;
-                                }
-                                let timePassedInSeconds = ((new Date()) - currStage.assignmentTime) / 36e5;
-                                if (timePassedInSeconds > activeProcess.automaticAdvanceTime) {
-                                    stagesToAdvance.push(currStage.userEmail);
-                                }
-                            });
-                            advanceProcessForUsers(activeProcess, stagesToAdvance, prev);
+            if(activeProcesses !== null)
+            {
+                activeProcesses.reduce((prev, activeProcess) => {
+                    return (err) => {
+                        if (err) {
+                            prev(err);
+                        }
+                        else {
+                            if (activeProcess.automaticAdvanceTime !== 0) {
+                                let stagesToAdvance = [];
+                                activeProcess.currentStages.forEach(curr => {
+                                    let currStage = activeProcess.getStageByStageNum(curr);
+                                    if (currStage instanceof Error) {
+                                        console.log(currStage);
+                                        return;
+                                    }
+                                    let timePassedInSeconds = ((new Date()) - currStage.assignmentTime) / 1000;
+                                    if (timePassedInSeconds > activeProcess.automaticAdvanceTime) {
+                                        stagesToAdvance.push(currStage.stageNum);
+                                    }
+                                });
+                                advanceProcessForUsers(activeProcess, stagesToAdvance,  (err)=>{
+                                    prev(err);
+                                });
+                            }
                         }
                     }
-                }
-            }, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-
-            })(null);
+                }, (err) => {
+                    if (err) {
+                        console.log(err);
+                        callback(err);
+                    }
+                    else
+                    {
+                        callback(null);
+                    }
+                })(null);
+            }
         }
     })
 };
@@ -790,3 +815,4 @@ module.exports.advanceProcess = advanceProcess;
 module.exports.getRoleIDsOfDeregStages = getRoleIDsOfDeregStages;
 module.exports.getNewActiveProcess = getNewActiveProcess;
 module.exports.uploadFiles = uploadFiles;
+module.exports.advanceProcessForUsers = advanceProcessForUsers;

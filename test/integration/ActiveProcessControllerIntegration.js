@@ -31,6 +31,14 @@ let rolesToEmailsOfGraphics = require('../inputs/trees/GraphicsTree/rolesToEmail
 let processStructureSankeyJSONOfGraphics = require('../inputs/processStructures/GraphicsProcessStructure/graphicsSankey');
 //End Of Graphics Inputs
 
+//Automatic Advance Inputs
+let sankeyContentOfAutomaticAdvance = require('../inputs/trees/treeForAutomaticAdvanceTest/sankey');
+let emailsToFullNameOfAutomaticAdvance = require('../inputs/trees/treeForAutomaticAdvanceTest/emailsToFullNames');
+let rolesToDeregOfAutomaticAdvance = require('../inputs/trees/treeForAutomaticAdvanceTest/rolesToDeregs');
+let rolesToEmailsOfAutomaticAdvance = require('../inputs/trees/treeForAutomaticAdvanceTest/rolesToEmails');
+let processStructureSankeyJSONOfAutomaticAdvance = require('../inputs/processStructures/processStructureForAutomaticAdvanceTest/structure');
+//End Of Automatic Advance Inputs
+
 let beforeGlobal = async function () {
     this.enableTimeouts(false);
     mongoose.set('useCreateIndex', true);
@@ -130,6 +138,19 @@ let startProcessAndHandleTwice = function (done) {
         }
     });
 };
+let takePartGraphicsAndSpokesperson = function (done) {
+    activeProcessController.takePartInActiveProcess('גרפיקה להקרנת בכורה', 'graphicartist@outlook.co.il', (err) => {
+        if (err) done(err);
+        else {
+            activeProcessController.takePartInActiveProcess('גרפיקה להקרנת בכורה', 'spokesperson@outlook.co.il', (err) => {
+                if (err) done(err);
+                else {
+                    done();
+                }
+            });
+        }
+    });
+};
 
 let startProcessAndHandleTwiceWithGraphicsAndPublicity = function (done) {
     activeProcessController.startProcessByUsername('negativevicemanager@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה להקרנת בכורה', new Date(2018, 11, 24, 10, 33, 30, 0), 3, (err, result) => {
@@ -155,6 +176,35 @@ let startProcessAndHandleTwiceWithGraphicsAndPublicity = function (done) {
                     });
                 }
             });
+        }
+    });
+};
+
+let treeAndStructureForAutomaticAdvanceAndStart = (done) => {
+    UsersAndRolesTreeSankey.setUsersAndRolesTree('chairman@outlook.co.il', JSON.stringify(sankeyContentOfAutomaticAdvance),
+        rolesToEmailsOfAutomaticAdvance, emailsToFullNameOfAutomaticAdvance,
+        rolesToDeregOfAutomaticAdvance, (err) => {
+            if (err) {
+                done(err);
+            }
+            else {
+                processStructureController.addProcessStructure('chairman@outlook.co.il', 'תהליך גרפיקה', JSON.stringify(processStructureSankeyJSONOfAutomaticAdvance), [], "10", "12", (err, needApproval) => {
+                    if (err) {
+                        done(err);
+                    }
+                    else {
+                        done();
+                    }
+                });
+            }
+        });
+};
+
+let startProcessForAutomaticAdvanceTest = (done) => {
+    activeProcessController.startProcessByUsername('chairman@outlook.co.il', 'תהליך גרפיקה', 'גרפיקה ליום הסטודנט', new Date(2022, 4, 26, 16), 2, (err) => {
+        if (err) done(err);
+        else {
+            done();
         }
     });
 };
@@ -1682,7 +1732,55 @@ describe('Active Process Controller', function () {
         }).timeout(30000);
     });
 
-    describe('19.0 addFilledOnlineFormToProcess', function () {
+    describe('19.0 finishProcessInTheMiddle', function () {
+        beforeEach(createTree1WithStructure1);
+        beforeEach(startProcess);
+        it('19.1 finish process in the middle', function (done) {
+            notificationsAccessor.deleteAllNotifications({}, (err) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.finishProcessInTheMiddle('negativevicemanager@outlook.co.il', 'גרפיקה להקרנת בכורה', 'הערות לסיום באמצע', (err) => {
+                        if (err) done(err);
+                        else {
+                            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                                if (err) done(err);
+                                else {
+                                    assert.deepEqual(true, process === null);
+                                    processReportController.processReport('גרפיקה להקרנת בכורה', (err, report) => {
+                                        if (err) done(err);
+                                        else {
+                                            assert.deepEqual(report[1].length, 1);
+                                            assert.deepEqual(report[1][0].action, 'finishInMiddle');
+                                            assert.deepEqual(report[1][0].approvalTime !== null, true);
+                                            assert.deepEqual(report[1][0].comments, 'הערות לסיום באמצע');
+                                            assert.deepEqual(report[1][0].roleName, 'סגן מנהל מגטיב');
+                                            assert.deepEqual(report[1][0].userEmail, 'negativevicemanager@outlook.co.il');
+                                            assert.deepEqual(report[1][0].roleName, 'סגן מנהל מגטיב');
+                                            assert.deepEqual(report[0].processName, 'גרפיקה להקרנת בכורה');
+                                            assert.deepEqual(report[0].status, 'הסתיים באמצע');
+                                            assert.deepEqual(report[0].urgency, 3);
+                                            assert.deepEqual(report[0].filledOnlineForms, []);
+                                            notificationsController.getUserNotifications('negativevicemanager@outlook.co.il', (err, results) => {
+                                                if (err) done(err);
+                                                else {
+                                                    assert.deepEqual(results.length, 1);
+                                                    assert.deepEqual(results[0].description, 'התהליך גרפיקה להקרנת בכורה הופסק באמצע על ידי negativevicemanager@outlook.co.il');
+                                                    assert.deepEqual(results[0].notificationType, 'תהליך הופסק באמצע');
+                                                    done();
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+    });
+
+    describe('20.0 addFilledOnlineFormToProcess', function () {
 
         beforeEach((done) => {
             onlineFormsController.createOnlineFrom('frm', 'frmsrc', (err, res) => {
@@ -1695,7 +1793,7 @@ describe('Active Process Controller', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
 
-        it('19.1 addFilledOnlineFormToProcess', function (done) {
+        it('20.1 addFilledOnlineFormToProcess', function (done) {
             filledOnlineFormsController.createFilledOnlineFrom('frm', [{'name': 'blah'}], (err, dbForm) => {
                 if (err) done(err);
                 else {
@@ -1716,9 +1814,9 @@ describe('Active Process Controller', function () {
         }).timeout(30000);
     });
 
-    describe('20.0 replaceRoleIDWithRoleNameAndUserEmailWithUserName', function () {
+    describe('21.0 replaceRoleIDWithRoleNameAndUserEmailWithUserName', function () {
         beforeEach(createTree1WithStructure1);
-        it('20.1 Active processes of specific users.', function (done) {
+        it('21.1 Active processes of specific users.', function (done) {
             userAccessor.findRoleIDByRoleName('דובר', (err1, roleID1) => {
                 if (err1) {
                     done(err1);
@@ -1776,9 +1874,9 @@ describe('Active Process Controller', function () {
         }).timeout(30000);
     });
 
-    describe('21.0 convertDate', function () {
+    describe('22.0 convertDate', function () {
         beforeEach(createTree1WithStructure1);
-        it('21.1 Change the date conversion.', function (done) {
+        it('22.1 Change the date conversion.', function (done) {
             let activeProcess1 = new activeProcess({
                 processName: 'ערב פוקר שבועי 1',
                 creatorUserEmail: undefined,
@@ -1834,10 +1932,10 @@ describe('Active Process Controller', function () {
         }).timeout(30000);
     });
 
-    describe('22.0 incrementStageCycle', function () {
+    describe('23.0 incrementStageCycle', function () {
         beforeEach(createTree1WithStructure1);
         beforeEach(startProcess);
-        it('22.1 incrementStageCycle', function (done) {
+        it('23.1 incrementStageCycle', function (done) {
             activeProcessController.incrementStageCycle('גרפיקה להקרנת בכורה', [0, 1, 4], (err) => {
                 if (err) done(err);
                 else {
@@ -1870,5 +1968,208 @@ describe('Active Process Controller', function () {
                 }
             });
         }).timeout(30000);
+    });
+
+    describe('24.0 advanceProcessForUsers', function () {
+
+        beforeEach(createTree1WithStructure1);
+        beforeEach(startProcessAndHandleTwice);
+        beforeEach(takePartGraphicsAndSpokesperson);
+
+        it('24.1 advanceProcessForUsers correct', function (done) {
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.advanceProcessForUsers(process, [0, 1, 4], (err) => {
+                        if (err) done(err);
+                        else {
+                            assert.deepEqual(true, process.isFinished());
+                            done();
+                        }
+                    });
+                }
+            });
+        }).timeout(30000);
+
+        it('24.2 advanceProcessForUsers incorrect stages', function (done) {
+            activeProcessController.getActiveProcessByProcessName('גרפיקה להקרנת בכורה', (err, process) => {
+                if (err) done(err);
+                else {
+                    activeProcessController.advanceProcessForUsers(process, [0, 1, 5], (err) => {
+                        assert.deepEqual(true, err !== null);
+                        assert.deepEqual(err.message, 'advanceProcessForUsers some stages don\'t exist in current stages');
+                        done();
+                    });
+                }
+            });
+        }).timeout(30000);
+    });
+
+    describe('25.0 advanceProcessesIfTimeHasPassed', function () {
+
+        beforeEach(treeAndStructureForAutomaticAdvanceAndStart);
+        beforeEach(startProcessForAutomaticAdvanceTest);
+        it('25.1 advanceProcessesIfTimeHasPassed', function (done) {
+            setTimeout(() => {
+                activeProcessController.advanceProcessesIfTimeHasPassed((err) => {
+                    if (err) done(err);
+                    else {
+                        activeProcessController.getActiveProcessByProcessName('גרפיקה ליום הסטודנט', (err, process) => {
+                            if (err) done(err);
+                            else {
+                                assert.deepEqual(process.currentStages.sort(), [1, 3]);
+                                assert.deepEqual(process.getStageByStageNum(1).userEmail, 'vicechairman@outlook.co.il');
+                                assert.deepEqual(process.getStageByStageNum(3).userEmail, 'graphicsmanager@outlook.co.il');
+                                assert.deepEqual(process.currentStages.sort(), [1, 3]);
+                                notificationsController.getUserNotifications('vicechairman@outlook.co.il', (err, results) => {
+                                    if (err) done(err);
+                                    else {
+                                        assert.deepEqual(results.length, 1);
+                                        assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                        assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                        notificationsController.getUserNotifications('graphicsmanager@outlook.co.il', (err, results) => {
+                                            if (err) done(err);
+                                            else {
+                                                assert.deepEqual(results.length, 1);
+                                                assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                setTimeout(() => {
+                                                    activeProcessController.advanceProcessesIfTimeHasPassed((err) => {
+                                                        if (err) done(err);
+                                                        else {
+                                                            activeProcessController.getActiveProcessByProcessName('גרפיקה ליום הסטודנט', (err, process) => {
+                                                                if (err) done(err);
+                                                                else {
+                                                                    assert.deepEqual(process.currentStages.sort(), [2, 4, 5, 7, 9]);
+                                                                    assert.deepEqual(process.getStageByStageNum(2).userEmail, 'racazgraphics@outlook.co.il');
+                                                                    assert.deepEqual(process.getStageByStageNum(4).userEmail, 'graphicai@outlook.co.il');
+                                                                    assert.deepEqual(process.getStageByStageNum(5).userEmail, 'spokesperson@outlook.co.il');
+                                                                    assert.deepEqual(process.getStageByStageNum(7).userEmail, 'publicitydepartmentmanager@outlook.co.il');
+                                                                    assert.deepEqual(process.getStageByStageNum(9).userEmail, 'negativevicemanager@outlook.co.il');
+                                                                    notificationsController.getUserNotifications('racazgraphics@outlook.co.il', (err, results) => {
+                                                                        if (err) done(err);
+                                                                        else {
+                                                                            assert.deepEqual(results.length, 1);
+                                                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                            assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                            notificationsController.getUserNotifications('graphicai@outlook.co.il', (err, results) => {
+                                                                                if (err) done(err);
+                                                                                else {
+                                                                                    assert.deepEqual(results.length, 1);
+                                                                                    assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                                    assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                                    notificationsController.getUserNotifications('spokesperson@outlook.co.il', (err, results) => {
+                                                                                        if (err) done(err);
+                                                                                        else {
+                                                                                            assert.deepEqual(results.length, 1);
+                                                                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                                            assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                                            notificationsController.getUserNotifications('publicitydepartmentmanager@outlook.co.il', (err, results) => {
+                                                                                                if (err) done(err);
+                                                                                                else {
+                                                                                                    assert.deepEqual(results.length, 1);
+                                                                                                    assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                                                    assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                                                    notificationsController.getUserNotifications('negativevicemanager@outlook.co.il', (err, results) => {
+                                                                                                        if (err) done(err);
+                                                                                                        else {
+                                                                                                            assert.deepEqual(results.length, 1);
+                                                                                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                                                            assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                                                            setTimeout(() => {
+                                                                                                                activeProcessController.advanceProcessesIfTimeHasPassed((err) => {
+                                                                                                                    if (err) done(err);
+                                                                                                                    else {
+                                                                                                                        activeProcessController.getActiveProcessByProcessName('גרפיקה ליום הסטודנט', (err, process) => {
+                                                                                                                            if (err) done(err);
+                                                                                                                            else {
+                                                                                                                                assert.deepEqual(process.currentStages.sort(), [6, 8]);
+                                                                                                                                assert.deepEqual(process.getStageByStageNum(6).userEmail, 'negativemanager@outlook.co.il');
+                                                                                                                                assert.deepEqual(process.getStageByStageNum(8).userEmail, 'branding@outlook.co.il');
+                                                                                                                                notificationsController.getUserNotifications('branding@outlook.co.il', (err, results) => {
+                                                                                                                                    if (err) done(err);
+                                                                                                                                    else {
+                                                                                                                                        assert.deepEqual(results.length, 1);
+                                                                                                                                        assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                                                                                        assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                                                                                        notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                                                                                                                                if (err) done(err);
+                                                                                                                                                else {
+                                                                                                                                                    assert.deepEqual(results.length, 1);
+                                                                                                                                                    assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט מחכה לטיפולך.');
+                                                                                                                                                    assert.deepEqual(results[0].notificationType, 'תהליך בהמתנה');
+                                                                                                                                                    setTimeout(() => {
+                                                                                                                                                            notificationsAccessor.deleteAllNotifications({}, (err) => {
+                                                                                                                                                                if (err) done(err);
+                                                                                                                                                                else {
+                                                                                                                                                                    activeProcessController.advanceProcessesIfTimeHasPassed((err) => {
+                                                                                                                                                                        if (err) done(err);
+                                                                                                                                                                        else {
+                                                                                                                                                                            activeProcessController.getActiveProcessByProcessName('גרפיקה ליום הסטודנט', (err, process) => {
+                                                                                                                                                                                if (err) done(err);
+                                                                                                                                                                                else {
+                                                                                                                                                                                    assert.deepEqual(process, null);
+                                                                                                                                                                                    notificationsController.getUserNotifications('negativemanager@outlook.co.il', (err, results) => {
+                                                                                                                                                                                        if (err) done(err);
+                                                                                                                                                                                        else {
+                                                                                                                                                                                            assert.deepEqual(results.length, 1);
+                                                                                                                                                                                            assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט הושלם בהצלחה');
+                                                                                                                                                                                            assert.deepEqual(results[0].notificationType, 'תהליך נגמר בהצלחה');
+                                                                                                                                                                                            notificationsController.getUserNotifications('spokesperson@outlook.co.il', (err, results) => {
+                                                                                                                                                                                                if (err) done(err);
+                                                                                                                                                                                                else {
+                                                                                                                                                                                                    assert.deepEqual(results.length, 1);
+                                                                                                                                                                                                    assert.deepEqual(results[0].description, 'התהליך גרפיקה ליום הסטודנט הושלם בהצלחה');
+                                                                                                                                                                                                    assert.deepEqual(results[0].notificationType, 'תהליך נגמר בהצלחה');
+                                                                                                                                                                                                    done();
+                                                                                                                                                                                                }
+                                                                                                                                                                                            });
+                                                                                                                                                                                        }
+                                                                                                                                                                                    });
+                                                                                                                                                                                }
+                                                                                                                                                                            });
+                                                                                                                                                                        }
+                                                                                                                                                                    });
+                                                                                                                                                                }
+                                                                                                                                                            });
+                                                                                                                                                        }
+                                                                                                                                                        ,
+                                                                                                                                                        15000
+                                                                                                                                                    );
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        );
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            }, 15000);
+                                                                                                        }
+                                                                                                    });
+                                                                                                }
+                                                                                            });
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }, 15000);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }, 15000);
+        }).timeout(300000);
     });
 });
