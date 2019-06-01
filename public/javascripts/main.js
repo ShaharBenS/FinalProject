@@ -133,8 +133,7 @@ function startActiveProcess() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-
-            if(JSON.parse(xmlHttp.responseText).length < 1)
+            if(JSON.parse(xmlHttp.responseText).length < 1 || !Array.isArray(JSON.parse(xmlHttp.responseText)))
             {
                 alert('לא קיימים מבני תהליכים במערכת להתחיל');
                 return;
