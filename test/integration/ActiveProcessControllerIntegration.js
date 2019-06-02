@@ -1794,7 +1794,7 @@ describe('Active Process Controller', function () {
         beforeEach(startProcessAndHandleTwiceWithGraphicsAndPublicity);
 
         it('20.1 addFilledOnlineFormToProcess', function (done) {
-            filledOnlineFormsController.createFilledOnlineFrom('frm', [{'name': 'blah'}], (err, dbForm) => {
+            filledOnlineFormsController.createFilledOnlineFrom('frm', [{'name': 'blah'}], true, (err, dbForm) => {
                 if (err) done(err);
                 else {
                     activeProcessController.addFilledOnlineFormToProcess('גרפיקה להקרנת בכורה', dbForm._id, (err) => {

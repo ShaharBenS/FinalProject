@@ -33,8 +33,8 @@ let clearDatabase = function () {
 
 
 let processName = "תהליך 1";
-let formName = "טופס דרישה פנימית והזמנת רכש לספק";
-let formSRC = "טופס_דרישה_פנימית_והזמנת_רכש_לספק";
+let formName = "כספים - דרישה פנימית והזמנת רכש לספק";
+let formSRC = "כספים_-_דרישה_פנימית_והזמנת_רכש_לספק";
 let formFields1 = [
     {
         "field": "date",
