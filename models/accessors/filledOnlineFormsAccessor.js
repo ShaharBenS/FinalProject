@@ -19,12 +19,11 @@ module.exports.updateFilledOnlineForm = (AP, update, callback) => {
 };
 
 module.exports.getFilledOnlineFormFromSchemaRecord = (form) => {
-    return new FilledOnlineForm(form.formName, form.fields)
+    return new FilledOnlineForm(form.formName, form.fields, form.isLocked)
 };
 
 module.exports.getSchemaRecordFromFilledOnlineForm = (form) => {
     let fields = [];
     form.fields.forEach((answerMap) => fields.push({fieldName: answerMap.field, value: answerMap.value}));
-    return {formName: form.formName, fields: fields}
+    return {formName: form.formName, fields: fields, isLocked: form.isLocked}
 };
-

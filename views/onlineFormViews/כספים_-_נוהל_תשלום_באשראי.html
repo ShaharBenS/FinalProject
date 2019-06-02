@@ -23,8 +23,8 @@
             document.getElementById("formTitle").appendChild(document.createTextNode(_formName));
             let isForShow = '<%=isForShow%>' === 'true';
             fields = '<%= fields %>';
-
-            setupInputs(_formName, isForShow, fields);
+            let shouldLock = '<%shouldLock%>';
+            setupInputs(_formName, isForShow, fields, shouldLock);
         };
 
     </script>

@@ -33,8 +33,8 @@ let clearDatabase = function () {
 
 
 let processName = "תהליך 1";
-let formName = "טופס דרישה פנימית והזמנת רכש לספק";
-let formSRC = "טופס_דרישה_פנימית_והזמנת_רכש_לספק";
+let formName = "כספים - דרישה פנימית והזמנת רכש לספק";
+let formSRC = "כספים_-_דרישה_פנימית_והזמנת_רכש_לספק";
 let formFields1 = [
     {
         "field": "date",
@@ -431,7 +431,7 @@ describe('1. createFilledOnlineFrom', function () {
     it('1.1 creates filled online form and checks its in the db', function (done) {
         this.timeout(10000);
         onlineFormsController.createAllOnlineForms(() => {
-            filledOnlineFormsController.createFilledOnlineFrom(formName, formFields1, (err, res) => {
+            filledOnlineFormsController.createFilledOnlineFrom(formName, formFields1, true, (err, res) => {
                 if (err) done(err);
                 else {
                     let formID = res._id;
@@ -454,7 +454,7 @@ describe('1. createFilledOnlineFrom', function () {
     it('1.2 creates filled online form with empty fields and checks its in the db', function (done) {
         this.timeout(10000);
         onlineFormsController.createAllOnlineForms(() => {
-            filledOnlineFormsController.createFilledOnlineFrom(formName, [], (err, res) => {
+            filledOnlineFormsController.createFilledOnlineFrom(formName, [], true, (err, res) => {
                 if (err) done(err);
                 else {
                     let formID = res._id;
@@ -472,7 +472,7 @@ describe('1. createFilledOnlineFrom', function () {
 
     it('1.3 creates filled form with invalid form name', function (done) {
         this.timeout(10000);
-        filledOnlineFormsController.createFilledOnlineFrom("INVALID NAME", [], (err, res) => {
+        filledOnlineFormsController.createFilledOnlineFrom("INVALID NAME", [], true, (err, res) => {
             expect(err).to.be.an('error');
             done();
         })
@@ -487,9 +487,9 @@ describe('2. displayFilledForm', function () {
 
 
     it('2.1 checks that the format of filled is correct', function (done) {
-        this.timeout(10000);
+        this.timeout(20000);
         onlineFormsController.createAllOnlineForms(() => {
-            filledOnlineFormsController.createFilledOnlineFrom(formName, formFields1, (err, res) => {
+            filledOnlineFormsController.createFilledOnlineFrom(formName, formFields1, true, (err, res) => {
                 if (err) done(err);
                 else {
                     let formID = res._id;
@@ -554,7 +554,7 @@ describe('3. getFormReady', function () {
                 createActiveProcess((err) => {
                     if (err) done(err);
                     onlineFormsController.createAllOnlineForms(() => {
-                        filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, (err) => {
+                        filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, false, (err) => {
                             if (err) done(err);
                             filledOnlineFormsController.getFormReady(processName, formName, (err, form) => {
                                 if (err) done(err);
@@ -721,7 +721,7 @@ describe('5. updateOrAddFilledForm', function () {
                     onlineFormsController.createAllOnlineForms(() => {
                         activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
                             assert.equal(process.filledOnlineForms.length, 0);
-                            filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, (err) => {
+                            filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, false, (err) => {
                                 if (err) done(err);
                                 activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
                                     assert.equal(process.filledOnlineForms.length, 1);
@@ -756,11 +756,11 @@ describe('5. updateOrAddFilledForm', function () {
                     onlineFormsController.createAllOnlineForms(() => {
                         activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
                             assert.equal(process.filledOnlineForms.length, 0);
-                            filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, (err) => {
+                            filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, false, (err) => {
                                 if (err) done(err);
                                 activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
                                     assert.equal(process.filledOnlineForms.length, 1);
-                                    filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields2, (err) => {
+                                    filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields2, false, (err) => {
                                         if (err) done(err);
                                         activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
                                             assert.equal(process.filledOnlineForms.length, 1);
@@ -795,7 +795,7 @@ describe('5. updateOrAddFilledForm', function () {
                 createActiveProcess((err) => {
                     if (err) done(err);
                     onlineFormsController.createAllOnlineForms(() => {
-                        filledOnlineFormsController.updateOrAddFilledForm(processName, "INVALID", formFields1, (err) => {
+                        filledOnlineFormsController.updateOrAddFilledForm(processName, "INVALID", formFields1, false, (err) => {
                             expect(err).to.be.an('error');
                             done();
                         })
@@ -814,12 +814,42 @@ describe('5. updateOrAddFilledForm', function () {
                 createActiveProcess((err) => {
                     if (err) done(err);
                     onlineFormsController.createAllOnlineForms(() => {
-                        filledOnlineFormsController.updateOrAddFilledForm("INVALID", formName, formFields1, (err, form) => {
+                        filledOnlineFormsController.updateOrAddFilledForm("INVALID", formName, formFields1, false, (err, form) => {
                             expect(err).to.be.an('error');
                             done();
                         })
                     });
                 })
+            });
+        });
+    });
+
+    it('5.6 checks for update locked form', function (done) {
+        this.timeout(10000);
+        createUserAndRolesTree((err) => {
+            if (err) done(err);
+            createProcessStructure((err) => {
+                if (err) done(err);
+                createActiveProcess((err) => {
+                    if (err) done(err);
+                    onlineFormsController.createAllOnlineForms(() => {
+                        activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
+                            assert.equal(process.filledOnlineForms.length, 0);
+                            filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, true, (err) => {
+                                if (err) done(err);
+                                activeProcessController.getActiveProcessByProcessName(processName, (err, process) => {
+                                    assert.equal(process.filledOnlineForms.length, 1);
+                                    filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields2, false, (err) => {
+                                        if (err) {
+                                            expect(err).to.be.an('error');
+                                            done();
+                                        } else done(new Error("should not let us do it"));
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
             });
         });
     });

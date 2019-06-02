@@ -1,8 +1,9 @@
 class filledOnlineForm {
 
-    constructor(formName, fields) {
+    constructor(formName, fields, isLocked) {
         this.formName = formName;
         this.fields = fields;
+        this.isLocked = isLocked;
     }
 
 }

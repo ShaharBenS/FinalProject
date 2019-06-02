@@ -77,8 +77,9 @@ router.post('/updateOrAddFilledForm', function (req, res) {
     data.parse(req, function (err, fields) {
         let processName = fields.processName;
         let formName = fields.formName;
+        let shouldLock = fields.shouldLock;
         let formFields = JSON.parse(fields.info);
-        filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields, (err) => {
+        filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields, shouldLock, (err) => {
             if (err) res.send(err);
             else res.send("success");
         });
