@@ -9,7 +9,7 @@ router.get('/', (req, res) =>
     usersAndRolesController.getAllUsers((err,result)=>{
        if(err)
        {
-
+           res.send(err);
        }
        else
        {
@@ -24,7 +24,7 @@ router.get('/getUserPermissions', (req, res) =>
     usersPermissionsController.getUserPermissions(userEmail,(err,result)=>{
         if(err)
         {
-
+            res.send(err);
         }
         else
         {

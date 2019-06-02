@@ -443,7 +443,7 @@ describe('runs active process with online forms and filling them, checks that fr
                             if (err) {
                                 done(err);
                             } else {
-                                filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, (err, res) => {
+                                filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields1, false, (err, res) => {
                                     if (err) done(err);
                                     filledOnlineFormsController.getFormReady(processName, formName, (err, form) => {
                                         if (err) done(err);
@@ -515,7 +515,7 @@ describe('runs active process with online forms and filling them, checks that fr
                                                                                                     if (err) {
                                                                                                         done(err);
                                                                                                     } else {
-                                                                                                        filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields2, (err) => {
+                                                                                                        filledOnlineFormsController.updateOrAddFilledForm(processName, formName, formFields2, false, (err) => {
                                                                                                             if (err) done(err);
                                                                                                             activeProcessController.uploadFilesAndHandleProcess("website@outlook.com", {
                                                                                                                 processName: "תהליך 1",

@@ -3,18 +3,18 @@ let filledOnlineFormAccessor = require('../../models/accessors/filledOnlineForms
 let onlineFormsController = require('./onlineFormController');
 let activeProcessController = require('../processesControllers/activeProcessController.js');
 
-module.exports.createFilledOnlineFrom = (formName, fields, callback) => {
+module.exports.createFilledOnlineFrom = (formName, fields, shouldLock, callback) => {
     onlineFormsController.getOnlineFormByName(formName, (err, form) => {
         if (err) callback(err);
         else if (form === null) callback(new Error("form was not found"));
         else {
-            let newFilledOnlineForm = new FilledOnlineForm(formName, fields);
+            let newFilledOnlineForm = new FilledOnlineForm(formName, fields, shouldLock);
             filledOnlineFormAccessor.createFilledOnlineForm(filledOnlineFormAccessor.getSchemaRecordFromFilledOnlineForm(newFilledOnlineForm), callback);
         }
     })
 };
 
-function getFilledOnlineFormByID(formID, callback){
+function getFilledOnlineFormByID(formID, callback) {
     filledOnlineFormAccessor.findFilledOnlineFormByFormID(formID, callback);
 }
 
@@ -32,7 +32,9 @@ module.exports.displayFilledForm = function (filledFormID, callback) {
                         fields.push({fieldName: field.fieldName, value: field.value})
                     });
                     let fieldsStr = JSON.stringify(fields);
-                    let locals = {formName: form.formName, isForShow: true, fields: fieldsStr};
+                    let locals = {
+                        formName: form.formName, isForShow: true, fields: fieldsStr, shouldLock: true
+                    };
                     callback(null, locals, onlineForm.HTMLSource);
                 }
             })
@@ -51,7 +53,8 @@ module.exports.getFormReadyToFill = function (processName, formName, callback) {
                     let locals = {
                         formName: form.formName,
                         isForShow: false,
-                        fields: false
+                        fields: false,
+                        shouldLock: false
                     };
                     callback(null, form.HTMLSource, locals);
                 }
@@ -69,7 +72,8 @@ module.exports.getFormReadyToFill = function (processName, formName, callback) {
                     let locals = {
                         formName: form.formName,
                         isForShow: false,
-                        fields: fieldsStr
+                        fields: fieldsStr,
+                        shouldLock: form.isLocked
                     };
                     callback(null, form.HTMLSource, locals);
                 }
@@ -99,12 +103,12 @@ module.exports.getFormReady = function (processName, formName, callback) {
     });
 };
 
-module.exports.updateOrAddFilledForm = function (processName, formName, formFields, callback) {
+module.exports.updateOrAddFilledForm = function (processName, formName, formFields, shouldLock, callback) {
     this.getFormReady(processName, formName, (err, form) => {
         if (err) callback(err);
         else {
             if (form === undefined) {
-                this.createFilledOnlineFrom(formName, formFields, (err, dbForm) => {
+                this.createFilledOnlineFrom(formName, formFields, shouldLock, (err, dbForm) => {
                     if (err) callback(err);
                     else {
                         activeProcessController.addFilledOnlineFormToProcess(processName, dbForm._id, callback);
@@ -116,10 +120,19 @@ module.exports.updateOrAddFilledForm = function (processName, formName, formFiel
                 formFields.forEach(field => {
                     newField.push({fieldName: field.field, value: field.value});
                 });
-                filledOnlineFormAccessor.updateFilledOnlineForm({_id: formID}, {fields: newField}, (err, res) => {
-                    if (err) callback(err);
-                    else callback(null, res);
-                });
+                let isLocked = false;
+                if (!form.formObject.isLocked && shouldLock)
+                    isLocked = true;
+                if (form.formObject.isLocked) {
+                    callback(new Error("form error! cant update locked form"));
+                } else
+                    filledOnlineFormAccessor.updateFilledOnlineForm({_id: formID}, {
+                        fields: newField,
+                        isLocked: shouldLock
+                    }, (err, res) => {
+                        if (err) callback(err);
+                        else callback(null, res);
+                    });
             }
         }
     })

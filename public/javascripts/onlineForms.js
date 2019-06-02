@@ -6,6 +6,8 @@ let submitForm = function () {
     let general_text_areas = Array.prototype.slice.call(document.getElementsByClassName('no_table_cell'));
     let info = [];
     let tableInputs = {};
+    let signatures = 0;
+    let filledSignatures = 0;
     let tables = Array.prototype.slice.call(document.getElementsByTagName('table'));
     tables.forEach((table) => {
         if (!table.className.includes("no_table"))
@@ -38,9 +40,12 @@ let submitForm = function () {
             } else if (input.type === 'checkbox' || input.type === 'radio') {
                 if (input.checked)
                     info.push({field: input.name, value: input.value});
-            } else if (input.id.includes("signature_"))
+            } else if (input.id.includes("signature_")) {
+                signatures++;
+                if (input.value !== '')
+                    filledSignatures++;
                 info.push({field: input.name, value: input.value});
-            else info.push({field: input.name, value: encodeJSONtoNotJSON(input.value)});
+            } else info.push({field: input.name, value: encodeJSONtoNotJSON(input.value)});
         }
     });
 
@@ -54,7 +59,7 @@ let submitForm = function () {
         info.push({field: '__table_' + tableID, value: strFields})
     });
     //receiveFormInfo is a function on the opener window that receive the form's data
-    oldWin.receiveFormInfo(_formName, info);
+    oldWin.receiveFormInfo(_formName, info, filledSignatures === signatures);
     alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת");
     window.close();
     return false;
@@ -222,7 +227,7 @@ let setupTextAreasNoTableCells = function () {
     });
 };
 
-let setupInputs = function (formName, isForShow, fields) {
+let setupInputs = function (formName, isForShow, fields, shouldLock) {
 
     setupTextAreasNoTableCells();
     initSignatures();
@@ -242,6 +247,8 @@ let setupInputs = function (formName, isForShow, fields) {
     } else {
         setupTables(num_of_rows_to_add, 'every_table');
     }
+
+    if (shouldLock) disableForm()
 };
 
 let createTableRow = function (table) {

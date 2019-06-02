@@ -3,12 +3,14 @@
  * @var myForms
  * @param formName
  * @param info - array of maps {field:, value:}
+ * @param shouldLock if should lock the form or not
  */
-function receiveFormInfo(formName, info) {
+function receiveFormInfo(formName, info, shouldLock) {
     let xhr = new XMLHttpRequest();
     let data = new FormData();
     data.append('processName', processName);
     data.append('formName', formName);
+    data.append('shouldLock', shouldLock);
     data.append('info', JSON.stringify(info));
     xhr.open("POST", '/onlineForms/updateOrAddFilledForm', true);
     xhr.onreadystatechange = function () {
