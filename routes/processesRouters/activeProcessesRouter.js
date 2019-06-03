@@ -30,6 +30,7 @@ router.post('/handleProcess', function (req, res) {
                 res.render('errorsViews/error');
             }
             else {
+                console.log("advance");
                 res.send(ret);
             }
         });

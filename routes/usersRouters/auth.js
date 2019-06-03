@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let passportGoogle = require('../../auth/google');
 let passportOutlook = require('../../auth/outlook');
+let dummyAuth = require('../../auth/dummyAuth');
 
 /* LOGOUT ROUTER */
 router.get('/logout', function (req, res)
@@ -49,6 +50,15 @@ router.get('/outlook/callback',
         }
         else
         {
+            res.redirect('userViews/login')
+        }
+    });
+
+router.get('/dummyAuth', dummyAuth.authenticate('local', {failureRedirect: '/userViews/login'}),
+    function (req, res) {
+        if (req.isAuthenticated()) {
+            res.redirect('/Home')
+        } else {
             res.redirect('userViews/login')
         }
     });
