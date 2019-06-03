@@ -9,6 +9,8 @@ let routes = require('./routes/routes');
 let notificationControllers = require('./controllers/notificationsControllers/notificationController');
 let activeProcessControllers = require('./controllers/processesControllers/activeProcessController');
 let onlineFormsController = require('./controllers/onlineFormsControllers/onlineFormController');
+let AsyncLock = require('async-lock');
+let lock = new AsyncLock();
 
 ///
 let app = express();
@@ -47,6 +49,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
+let key = {};
+app.use((req,res,next)=>{
+    lock.acquire(key, function(done) {
+        next();
+        done();
+    }, function() {},{});
+});
+
 routes(app);
 
 
