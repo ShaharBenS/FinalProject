@@ -46,31 +46,31 @@
                         <th>סוג שינוי</th>
                         <th>תאריך</th>
                         <th>המבנה החדש</th>
-                        <th></th>
-                        <th></th>
+                        <th>אישור שינויים</th>
+                        <th>דחיית שינויים</th>
                     </tr>
                     </thead>
                     <tbody>
                     <%waitingStructures.forEach(function(waitingStructure){%>
                     <tr>
                         <td><%=waitingStructure.structureName%></td>
-                        <td><%=waitingStructure.userEmail%></td>
+                        <td><%=waitingStructure.userName%> - <%=waitingStructure.roleName%></td>
                         <td><%=waitingStructure.deleteRequest ? 'מחיקה' : (waitingStructure.addOrEdit ? 'הוספה' :
                             'עריכה')%>
                         </td>
                         <td><%=waitingStructure.date%></td>
                         <td>
-                            <button class="btn btn-default" style="visibility: <%=waitingStructure.deleteRequest ? 'hidden' : 'visible' %> " onclick="viewStructureClicked(this.id)"
+                            <button class="btn btn-outline-secondary btn-sm" style="visibility: <%=waitingStructure.deleteRequest ? 'hidden' : 'visible' %> " onclick="viewStructureClicked(this.id)"
                                     id=<%='view_'+waitingStructure.id%>>ראה
                             </button>
                         </td>
                         <td>
-                            <button class="btn btn-default" onclick="approveClicked(this.id)"
+                            <button class="btn btn-outline-secondary btn-sm" onclick="approveClicked(this.id)"
                                     id=<%='approve_'+waitingStructure.id%>>אשר שינוי
                             </button>
                         </td>
                         <td>
-                            <button class="btn btn-default" onclick="disapproveClicked(this.id)"
+                            <button class="btn btn-outline-secondary btn-sm" onclick="disapproveClicked(this.id)"
                                     id=<%='disapprove_'+waitingStructure.id%>>דחה שינוי
                             </button>
                         </td>

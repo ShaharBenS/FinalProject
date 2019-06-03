@@ -5,28 +5,68 @@ let onlineFormsController = require('../onlineFormsControllers/onlineFormControl
 let usersPermissionsController = require('../usersControllers/UsersPermissionsController');
 let notificationController = require('../notificationsControllers/notificationController');
 let Notification = require('../../domainObjects/notification');
-
+let userAccessor = require('../../models/accessors/usersAccessor');
+let usersAndRolesController = require('../usersControllers/usersAndRolesController');
 module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
     waitingProcessStructuresAccessor.findWaitingProcessStructures({}, (err, waitingProcessStructures) => {
         if (err) {
             callback(err);
         }
-        let dates = waitingProcessStructures.map(waitingProcessStructure => waitingProcessStructure.date);
-        activeProcessController.convertDate(dates, true);
-        let waitingProcessStructuresWithFixedDates = waitingProcessStructures.map((waitingProcessStructure, index) => {
-            return {
-                id: waitingProcessStructure._id,
-                userEmail: waitingProcessStructure.userEmail,
-                structureName: waitingProcessStructure.structureName,
-                addOrEdit: waitingProcessStructure.addOrEdit,
-                deleteRequest: waitingProcessStructure.deleteRequest,
-                date: dates[index],
-                onlineForms: waitingProcessStructure.onlineForms,
-                automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime,
-                notificationTime: waitingProcessStructure.notificationTime,
-            };
-        });
-        callback(null, waitingProcessStructuresWithFixedDates);
+        else
+        {
+            let dates = waitingProcessStructures.map(waitingProcessStructure => waitingProcessStructure.date);
+            activeProcessController.convertDate(dates, true);
+            userAccessor.findUsername({}, (err2, userNames) => {
+                if (err2) {
+                    callback(err2);
+                }
+                else {
+                    let userEmailToUserName = {};
+                    userNames.forEach(userName => {
+                        userEmailToUserName[userName.userEmail] = userName.userName;
+                    });
+                    waitingProcessStructures.reduce((acc, currentProcess) => {
+                        return (err)=>{
+                            if(err) {
+                                acc(err);
+                            }
+                            else
+                            {
+                                usersAndRolesController.getRoleNameByUsername(currentProcess.userEmail,(err, roleName)=>{
+                                   if(err) acc(err);
+                                   else
+                                   {
+                                       currentProcess.roleName = roleName;
+                                       acc(null);
+                                   }
+                                });
+                            }
+                        };
+                    },(err)=>{
+                        if(err){
+                            callback(err);
+                        }
+                        else{
+                            let waitingProcessStructuresWithFixedDates = waitingProcessStructures.map((waitingProcessStructure, index) => {
+                                return {
+                                    id: waitingProcessStructure._id,
+                                    userName: userEmailToUserName[waitingProcessStructure.userEmail],
+                                    roleName: waitingProcessStructure.roleName,
+                                    structureName: waitingProcessStructure.structureName,
+                                    addOrEdit: waitingProcessStructure.addOrEdit,
+                                    deleteRequest: waitingProcessStructure.deleteRequest,
+                                    date: dates[index],
+                                    onlineForms: waitingProcessStructure.onlineForms,
+                                    automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime,
+                                    notificationTime: waitingProcessStructure.notificationTime,
+                                };
+                            });
+                            callback(null, waitingProcessStructuresWithFixedDates);
+                        }
+                    })(null);
+                }
+            });
+        }
     })
 };
 
@@ -57,7 +97,7 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                             if (err) {
                                 callback(err);
                             }
-                            else{
+                            else {
                                 waitingProcessStructuresAccessor.removeWaitingProcessStructures({_id: waitingStructure._id}, (err) => {
                                     if (err) {
                                         callback(err);
@@ -69,14 +109,14 @@ module.exports.approveProcessStructure = (userEmail, _id, callback) => {
                         };
 
                         if (waitingStructure.deleteRequest) {
-                            notification = new Notification("מחיקת מבנה התהליך "+waitingStructure.structureName+" אושרה בהצלחה.","מבנה תהליך אושר");
+                            notification = new Notification("מחיקת מבנה התהליך " + waitingStructure.structureName + " אושרה בהצלחה.", "מבנה תהליך אושר");
                             processStructureController.removeProcessStructure(userEmail, waitingStructure.structureName, commonCallback);
                         } else {
                             if (waitingStructure.addOrEdit) {
                                 processStructureController.addProcessStructure(userEmail, waitingStructure.structureName,
                                     waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, waitingStructure.notificationTime, commonCallback);
                             } else {
-                                notification = new Notification("עריכת מבנה התהליך "+waitingStructure.structureName+" אושרה בהצלחה.","מבנה תהליך אושר");
+                                notification = new Notification("עריכת מבנה התהליך " + waitingStructure.structureName + " אושרה בהצלחה.", "מבנה תהליך אושר");
                                 processStructureController.editProcessStructure(userEmail, waitingStructure.structureName,
                                     waitingStructure.sankey, waitingStructure.onlineForms, waitingStructure.automaticAdvanceTime, waitingStructure.notificationTime, commonCallback);
                             }
@@ -108,19 +148,19 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
                             } else {
                                 let notification = new Notification("הוספת מבנה התהליך " + waitingStructures[0].structureName + " נדחתה", "מבנה תהליך לא אושר");
                                 if (waitingStructures[0].deleteRequest) {
-                                    notification = new Notification("מחיקת מבנה התהליך "+waitingStructures[0].structureName+" נדחתה","מבנה תהליך לא אושר");
+                                    notification = new Notification("מחיקת מבנה התהליך " + waitingStructures[0].structureName + " נדחתה", "מבנה תהליך לא אושר");
                                 } else {
                                     if (waitingStructures[0].addOrEdit) {
 
                                     } else {
-                                        notification = new Notification("עריכת מבנה התהליך "+waitingStructures[0].structureName+" נדחתה","מבנה תהליך לא אושר");
+                                        notification = new Notification("עריכת מבנה התהליך " + waitingStructures[0].structureName + " נדחתה", "מבנה תהליך לא אושר");
                                     }
                                 }
-                                notificationController.addNotificationToUser(waitingStructures[0].userEmail,notification ,()=>{
-                                    if(err){
+                                notificationController.addNotificationToUser(waitingStructures[0].userEmail, notification, () => {
+                                    if (err) {
                                         callback(err);
                                     }
-                                    else{
+                                    else {
                                         callback(null);
                                     }
                                 })
@@ -138,10 +178,10 @@ module.exports.disapproveProcessStructure = (userEmail, _id, callback) => {
 module.exports.updateStructure = (userEmail, id, sankey, onlineFormsIDs, automaticAdvanceTime, notificationTime, callback) => {
     usersPermissionsController.getUserPermissions(userEmail, (err, permissions) => {
         if (err) {
-           callback(err);
+            callback(err);
         }
-        else{
-            if(permissions.structureManagementPermission){
+        else {
+            if (permissions.structureManagementPermission) {
                 waitingProcessStructuresAccessor.updateWaitingProcessStructures({_id: id}, {
                     $set: {
                         sankey: sankey,
@@ -149,17 +189,17 @@ module.exports.updateStructure = (userEmail, id, sankey, onlineFormsIDs, automat
                         automaticAdvanceTime: parseInt(automaticAdvanceTime),
                         notificationTime: parseInt(notificationTime),
                     }
-                }, (err)=>{
-                    if(err){
+                }, (err) => {
+                    if (err) {
                         callback(err);
                     }
-                    else{
-                        callback(null,'success');
+                    else {
+                        callback(null, 'success');
                     }
                 });
             }
-            else{
-                callback(null,"אין לך הרשאות")
+            else {
+                callback(null, "אין לך הרשאות")
             }
         }
     });
