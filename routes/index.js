@@ -26,7 +26,7 @@ router.get('/permissionsControl', function (req, res) {
                     res.send(err);
                 }
                 else if (admins.includes(req.user.emails[0].value) || permission.permissionsManagementPermission) {
-                    res.redirect('/permissionsControl');
+                    res.render('/permissionsControl');
                 }
                 else {
                     res.redirect('/Home');
