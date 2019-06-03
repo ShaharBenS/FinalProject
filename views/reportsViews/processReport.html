@@ -62,49 +62,48 @@
             <col width="250">
             <col width="250">
             <tr>
-
-                    <label id="processCreatorName">שם יוצר התהליך: <%=processDetails.processCreatorName%></label>
-
+                    <label id="processCreatorName">שם יוצר התהליך : <%=processDetails.processCreatorName%></label>
             </tr>
             <tr>
-                <td><label >תאריך יצירה: <%=processDetails.creationTime%></label></td>
-                <td><label id="processDate">תאריך היעד: <%=processDetails.processDate%></label></td>
+                <td><label >תאריך יצירה : <%=processDetails.creationTime%></label></td>
+                <td><label id="processDate">תאריך היעד : <%=processDetails.processDate%></label></td>
             </tr>
             <tr>
-                <td><label id="processUrgency">דחיפות התהליך: <%=processDetails.urgency%></label></td>
-                <td><label id="processStatus">סטטוס: <%=processDetails.status%></label></td>
+                <td><label id="processUrgency">דחיפות התהליך : <%=processDetails.urgency%></label></td>
+                <td><label id="processStatus">סטטוס : <%=processDetails.status%></label></td>
             </tr>
         </table>
         <table>
-            <col width="250">
-            <col width="250">
-            <tr>
-                <td id="filledOnlineForms">
+                <tr id="filledOnlineForms">
                     <% if(processDetails.filledOnlineForms.length !== 0){ %>
-                    <label>טפסים:</label><%processDetails.filledOnlineForms.forEach(function(form) {%>
+                    <label >טפסים :</label>
+                    <br>
+                    <%processDetails.filledOnlineForms.forEach(function(form) {%>
                     <u><a href="" onclick='return onClickForm("<%=form.formID%>")'
-                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u> ,
+                          title="<%=form.formObject.formName%>"><%=form.formObject.formName%></a></u><br>
                     <%})%>
                     <% } else{ %>
                     <label>אין טפסים המשוייכים לתהליך זה</label>
                     <% } %>
-                </td>
-                <td>
+                </tr>
+            <br>
+                <tr>
                     <% if(processDetails.attachedFilesNames.length !== 0){ %>
+                    <label>קבצים :</label>
+                    <br>
                     <%processDetails.attachedFilesNames.forEach(function(file){%>
                     <form action="/uploadFile/download_file" enctype="multipart/form-data" method="post"
                           style="display: none">
-                        <input id="<%=file%>" name="filetodownload"
+                        <input id="<%=file%>" name="filetodownload" hidden
                                type="submit"
                                value="files/<%=processDetails.processName%>/<%=file%>">
                     </form>
-                    <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u>,
+                    <u><a href="" onclick="return download_file('<%=file%>')"><%=file%></a></u><br>
                     <%})%>
                     <% } else{ %>
                     <label>אין קבצים המשוייכים לתהליך זה</label>
                     <% } %>
-                </td>
-            </tr>
+                </tr>
         </table>
         <br>
         <div class="row">
