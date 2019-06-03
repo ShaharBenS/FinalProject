@@ -14,7 +14,7 @@ function showPermissionsByUser(selectObject)
         document.getElementsByName("ObserverPermission")[0].checked = permissionsArray[2];
         document.getElementsByName("PermissionManagementPermission")[0].checked = permissionsArray[3];
         let pre = "ניהול הרשאות עבור ";
-        document.getElementById("which_user_is_now").innerText = pre + userEmail;
+        document.getElementById("which_user_is_now").innerText = pre + selectObject.options[selectObject.selectedIndex].text;
     }
     else
     {

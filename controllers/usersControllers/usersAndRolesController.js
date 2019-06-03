@@ -508,25 +508,52 @@ module.exports.findRolesByArray = (roleIDs, callback) =>
 
 module.exports.getAllUsers = (callback) =>
 {
-    let toReturn = [];
     userAccessor.findAdmins({}, (err, admins) =>
     {
         if (err) {
             callback(err);
         }
         else {
-            userAccessor.findUser({}, (err, res) =>
-            {
-                if (err) callback(err);
+            userAccessor.findUsername({}, (err2, userNames) => {
+                if (err2) {
+                    callback(err2);
+                }
                 else {
-                    for (let i = 0; i < res.length; i++) {
-                        for (let j = 0; j < res[i].userEmail.length; j++) {
-                            if (!admins.map(admin => admin.userEmail).includes(res[i].userEmail[j])) {
-                                toReturn.push(res[i].userEmail[j]);
+                    let users = [];
+                    userNames.forEach(userName => {
+                        users.push({userEmail: userName.userEmail, userName: userName.userName});
+                    });
+                    users.reduce((acc, user) => {
+                        return (err)=>{
+                            if(err) {
+                                acc(err);
                             }
+                            else
+                            {
+                                this.getRoleNameByUsername(user.userEmail,(err, roleName)=>{
+                                    if(err) acc(err);
+                                    else
+                                    {
+                                        user.roleName = roleName;
+                                        acc(null);
+                                    }
+                                });
+                            }
+                        };
+                    },(err)=>{
+                        if(err){
+                            callback(err);
                         }
-                    }
-                    callback(null, toReturn);
+                        else{
+                            let toReturn = [];
+                            for (let i = 0; i < users.length; i++) {
+                                if (!admins.map(admin => admin.userEmail).includes(users[i].userEmail)) {
+                                    toReturn.push(users[i]);
+                                }
+                            }
+                            callback(null, toReturn);
+                        }
+                    })(null);
                 }
             });
         }

@@ -40,7 +40,7 @@
                     name="userEmail" onchange="showPermissionsByUser(this)">
                 <option value="choose_user">בחר משתמש</option>
                 <%users.forEach(function(user){%>
-                <option value="<%=user%>"><%=user%></option>
+                <option value="<%=user.userEmail%>"><%=user.userName%> - <%=user.roleName%></option>
                 <%})%>
             </select>
             <hr>
