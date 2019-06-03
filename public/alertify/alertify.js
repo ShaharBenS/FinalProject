@@ -48,7 +48,7 @@
         },
         glossary:{
             title:'',
-            ok: 'אוקיי',
+            ok: 'אישור',
             cancel: 'ביטול',
             acccpt: 'קבל',
             deny: 'דחה',

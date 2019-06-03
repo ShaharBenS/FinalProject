@@ -10,13 +10,16 @@ function returnToCreator(processName)
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             if(xhr.responseText === "success")
             {
-                alert('התהליך הוחזר ליוצרו');
+                alertify.alert('התהליך הוחזר ליוצרו', ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
             else
             {
-                alert('קרתה שגיאה בעת החזרת התהליך ליוצרו');
+                alertify.alert('קרתה שגיאה בעת החזרת התהליך ליוצרו', ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
-            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
         }
     };
     xhr.send(data);
@@ -56,17 +59,20 @@ $(document).ready(function() {
             let isFinish = document.getElementsByName('isFinish').length !== 0;
             if(isFinish)
             {
-                alert('התהליך הסתיים בהצלחה');
+                alertify.alert('התהליך הסתיים בהצלחה', ()=>{
+                    window.location.href = "/Home";
+                });
             }
             else
             {
-                alert('התהליך הועבר לשלב הבא בהצלחה');
+                alertify.alert('התהליך הועבר לשלב הבא בהצלחה', ()=>{
+                    window.location.href = "/Home";
+                });
             }
-            window.location.href = "/Home";
         }
         else
         {
-            alert(response);
+            alertify.alert(response);
         }
     });
 });
@@ -83,13 +89,16 @@ function cancelProcess(processName)
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             if(xhr.responseText === "success")
             {
-                alert('התהליך בוטל');
+                alertify.alert('התהליך בוטל', ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
             else
             {
-                alert(xhr.responseText);
+                alertify.alert(xhr.responseText, ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
-            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
         }
     };
     xhr.send(data);
@@ -112,7 +121,7 @@ function isChecked()
     {
         return true;
     }
-    alert('אנא בחר לפחות תפקיד אחד לשלב הבא');
+    alertify.alert('אנא בחר לפחות תפקיד אחד לשלב הבא');
     return false;
 }
 
@@ -127,13 +136,16 @@ function finishProcessInTheMiddle(processName){
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             if(xhr.responseText === "success")
             {
-                alert('התהליך הסתיים');
+                alertify.alert('התהליך הסתיים', ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
             else
             {
-                alert(xhr.responseText);
+                alertify.alert(xhr.responseText, ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
-            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
         }
     };
     xhr.send(data);
