@@ -208,10 +208,13 @@
                         type="button">החזר ליוצר התהליך
                 </button>
 
+                <%if (nextRoles.length > 0) {%>
                 <button class="btn btn-default" id="finishProcess"
                         onclick="finishProcessInTheMiddle(document.getElementsByName('processName')[0].value);return false;"
-                        type="button">סיים תהליך
+                        type="button">סיים תהליך באמצע
                 </button>
+                <%}%>
+
             </div>
             <br><br>
             <br>
