@@ -162,7 +162,7 @@ test('Stage 1 - Check There Is No Available Processes', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הזמינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים זמינים')
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 }).before(beforeGlobal);
 
@@ -172,7 +172,7 @@ test('Stage 2 - Check There Is No Pending Processes', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 });
 
@@ -182,7 +182,7 @@ test('Stage 3 - Check There Is No Active Processes', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 });
 
@@ -268,7 +268,7 @@ test('Stage 8 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -303,7 +303,7 @@ test('Stage 10 - Check There Is No Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 });
 
@@ -313,7 +313,7 @@ test('Stage 11 - Check There Is An Available Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הזמינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים זמינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -323,7 +323,7 @@ test('Stage 12 - Take The Available Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הזמינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים זמינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
     await takePartInProcess(browser, 'תהליך אישור');
 });
@@ -334,7 +334,7 @@ test('Stage 13 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -389,7 +389,7 @@ test('Stage 17 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -402,7 +402,7 @@ test('Stage 18 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -455,7 +455,7 @@ test('Stage 22 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -468,7 +468,7 @@ test('Stage 23 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -520,7 +520,7 @@ test('Stage 27 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -533,7 +533,7 @@ test('Stage 28 - Check There Is An Available Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הזמינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים זמינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -543,7 +543,7 @@ test('Stage 29 - Take The Available Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAvailableActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הזמינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים זמינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
     await takePartInProcess(browser, 'תהליך אישור');
 });
@@ -554,7 +554,7 @@ test('Stage 30 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -606,7 +606,7 @@ test('Stage 34 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -619,7 +619,7 @@ test('Stage 35 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -635,7 +635,7 @@ test('Stage 37 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -645,7 +645,7 @@ test('Stage 38 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -701,7 +701,7 @@ test('Stage 42 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -754,7 +754,7 @@ test('Stage 46 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -767,7 +767,7 @@ test('Stage 47 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -820,7 +820,7 @@ test('Stage 51 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -833,7 +833,7 @@ test('Stage 52 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -886,7 +886,7 @@ test('Stage 56 - Check There Is An Active Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור')
         .expect(Selector('td').nth(1).innerText).eql('1')
         .expect(Selector('td').nth(2).innerText).eql('03/11/2020 05:00:00')
@@ -899,7 +899,7 @@ test('Stage 57 - Check There Is An Pending Process', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getWaitingActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים הממתינים לי')
+        .expect(Selector('h1').innerText).eql('תהליכים ממתינים')
         .expect(Selector('td').nth(0).innerText).eql('תהליך אישור');
 });
 
@@ -997,6 +997,6 @@ test('Stage 65 - Check There Is No Active Processes', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('td').innerText).eql('אין כרגע מידע בטבלה');
 });
