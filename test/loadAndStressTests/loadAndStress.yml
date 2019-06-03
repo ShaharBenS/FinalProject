@@ -3,8 +3,8 @@ config:
   tls:
     rejectUnauthorized: false
   phases:
-    - duration: 10
-      arrivalRate: 70
+    - duration: 55
+      arrivalRate: 1
   variables:
     processname:
       - "activeProcess-1"
@@ -14,9 +14,6 @@ config:
       - "activeProcess-5"
       - "activeProcess-6"
     seconds:
-      - 0.5
-      - 1
-      - 1.5
 scenarios:
   - flow:
       - get: # Login
@@ -28,7 +25,7 @@ scenarios:
             processDate: "2019-12-31T23:59"
             processUrgency: "1"
             processName: "{{processname}}"
-      - think: {{seconds}}
+      - think: 1
       - loop:
           # trying to handle processes
           - post:
@@ -36,7 +33,6 @@ scenarios:
               formData:
                 processName: "{{processname}}"
                 1: "on"
-          - think: {{seconds}}
           - post:
               url: "https://localhost/activeProcesses/handleProcess"
               formData:
@@ -52,7 +48,6 @@ scenarios:
               formData:
                 processName: "{{processname}}"
                 4: "on"
-          - think: {{seconds}}
-        count: 30
+        count: 10
 
 

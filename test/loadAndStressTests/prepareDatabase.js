@@ -4,6 +4,7 @@ let usersAndRolesController = require('../../controllers/usersControllers/usersA
 let userAccessor = require('../../models/accessors/usersAccessor');
 let fs = require("fs");
 
+
 async function setDB() {
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
