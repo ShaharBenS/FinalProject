@@ -16,6 +16,25 @@ router.get('/', function (req, res)
     }
 });
 
+router.get('/permissionsControl', function (req, res)
+{
+    usersPermissionsController.getUserPermissions(req.user.emails[0].value, (err, permission) =>
+    {
+        if (err) {
+            res.send(err);
+        }
+        else {
+            if (permission.permissionsManagementPermission) {
+                res.redirect('/permissionsControl');
+            }
+            else
+            {
+                res.redirect('/Home');
+            }
+        }
+    });
+});
+
 router.get('/getTopBar', function (req, res)
 {
     if (req.isAuthenticated()) {
