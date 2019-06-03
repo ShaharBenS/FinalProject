@@ -6,40 +6,39 @@ let notificationController = require('../controllers/notificationsControllers/no
 
 /* GET home page. */
 
-router.get('/', function (req, res)
-{
-    if(req.isAuthenticated()){
+router.get('/', function (req, res) {
+    if (req.isAuthenticated()) {
         res.redirect('/Home');
     }
-    else{
+    else {
         res.render('userViews/login');
     }
 });
 
-router.get('/permissionsControl', function (req, res)
-{
-    usersPermissionsController.getUserPermissions(req.user.emails[0].value, (err, permission) =>
-    {
+router.get('/permissionsControl', function (req, res) {
+    usersPermissionsController.getUserPermissions(req.user.emails[0].value, (err, permission) => {
         if (err) {
             res.send(err);
         }
         else {
-            if (permission.permissionsManagementPermission) {
-                res.redirect('/permissionsControl');
-            }
-            else
-            {
-                res.redirect('/Home');
-            }
+            usersAndRolesController.findAdmins((err, admins) => {
+                if (err) {
+                    res.send(err);
+                }
+                else if (admins.includes(req.user.emails[0].value) || permission.permissionsManagementPermission) {
+                    res.redirect('/permissionsControl');
+                }
+                else {
+                    res.redirect('/Home');
+                }
+            });
         }
     });
 });
 
-router.get('/getTopBar', function (req, res)
-{
+router.get('/getTopBar', function (req, res) {
     if (req.isAuthenticated()) {
-        usersPermissionsController.getUserPermissions(req.user.emails[0].value, (err, permission) =>
-        {
+        usersPermissionsController.getUserPermissions(req.user.emails[0].value, (err, permission) => {
             if (err) {
                 res.send(err);
             }
@@ -48,40 +47,37 @@ router.get('/getTopBar', function (req, res)
                 if (permission.permissionsManagementPermission) {
                     permissions = "style='display: flex'";
                 }
-                usersAndRolesController.getRoleNameByUsername(req.user.emails[0].value, (err, roleName) =>
-                {
+                usersAndRolesController.getRoleNameByUsername(req.user.emails[0].value, (err, roleName) => {
                     if (err) {
-                        usersAndRolesController.findAdmins((err,admins) =>
-                        {
-                           if(err){
-                               res.render('topbar', {
-                                   roleName: "RoleNotFound",
-                                   userFullName: '',
-                                   permissionsStyle: permissions,
-                                   notificationCount: ''
-                               });
-                           }
-                           else if(admins.includes(req.user.emails[0].value)){
-                               res.render('topbar', {
-                                   roleName: "Admin",
-                                   userFullName: 'אדמין',
-                                   permissionsStyle: permissions,
-                                   notificationCount: ''
-                               });
-                           }
-                           else{
-                               res.render('topbar', {
-                                   roleName: "RoleNotFound",
-                                   userFullName: '',
-                                   permissionsStyle: permissions,
-                                   notificationCount: ''
-                               });
-                           }
+                        usersAndRolesController.findAdmins((err, admins) => {
+                            if (err) {
+                                res.render('topbar', {
+                                    roleName: "RoleNotFound",
+                                    userFullName: '',
+                                    permissionsStyle: permissions,
+                                    notificationCount: ''
+                                });
+                            }
+                            else if (admins.includes(req.user.emails[0].value)) {
+                                res.render('topbar', {
+                                    roleName: "Admin",
+                                    userFullName: 'אדמין',
+                                    permissionsStyle: permissions,
+                                    notificationCount: ''
+                                });
+                            }
+                            else {
+                                res.render('topbar', {
+                                    roleName: "RoleNotFound",
+                                    userFullName: '',
+                                    permissionsStyle: permissions,
+                                    notificationCount: ''
+                                });
+                            }
                         });
                     }
                     else {
-                        usersAndRolesController.getFullNameByEmail(req.user.emails[0].value, (err, fullName) =>
-                        {
+                        usersAndRolesController.getFullNameByEmail(req.user.emails[0].value, (err, fullName) => {
                             if (err) {
                                 res.render('topbar', {
                                     roleName: roleName,
@@ -91,8 +87,7 @@ router.get('/getTopBar', function (req, res)
                                 });
                             }
                             else {
-                                notificationController.countNotifications(req.user.emails[0].value, (err, count) =>
-                                {
+                                notificationController.countNotifications(req.user.emails[0].value, (err, count) => {
                                     if (err) {
                                         res.send(err);
                                     }
@@ -117,8 +112,7 @@ router.get('/getTopBar', function (req, res)
     }
 });
 
-router.get('/Home', function (req, res)
-{
+router.get('/Home', function (req, res) {
     if (req.isAuthenticated()) {
         res.render('index')
     }
