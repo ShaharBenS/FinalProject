@@ -1,6 +1,7 @@
 let Selector = require("testcafe").Selector;
 let ClientFunction = require("testcafe").ClientFunction;
 let mongoose = require('mongoose');
+let onlineFormController = require('../../controllers/onlineFormsControllers/onlineFormController');
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 const elementWithClassNameAt = Selector((value, index) =>
@@ -11,7 +12,8 @@ const elementWithClassNameAt = Selector((value, index) =>
 let beforeGlobal = async function () {
     mongoose.set('useCreateIndex', true);
     await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-    //mongoose.connection.db.dropDatabase();
+    mongoose.connection.db.dropDatabase();
+    await onlineFormController.createAllOnlineForms((err)=>{});
 };
 
 fixture('Sankey Tests').page('https://localhost/');
@@ -315,10 +317,10 @@ test('Testing Sankey', async browser =>
         .drag(Selector('[class="draw2d_OutputPort"]').nth(3),-500,210,{speed:0.7});
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(4),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),110,-50);
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),110,-50,{speed:0.7});
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(4),{offsetX: 2, offsetY: 2})
-        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),105,90);
+        .drag(Selector('[class="draw2d_OutputPort"]').nth(4),105,90,{speed:0.7});
 
     await browser.hover(Selector('[class="sankey_shape_State"]').nth(5),{offsetX: 2, offsetY: 2})
         .drag(Selector('[class="draw2d_OutputPort"]').nth(5),150,50);

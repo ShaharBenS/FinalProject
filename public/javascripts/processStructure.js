@@ -80,7 +80,8 @@ $(document).ready(function () {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                document.getElementById("automaticTimeSelect").value = xmlHttp.responseText;
+                let automaticAdvanceTime = parseInt(xmlHttp.responseText)/60/60;
+                document.getElementById("automaticTimeSelect").value = ""+automaticAdvanceTime;
             }
         };
         xmlHttp.open("GET", '/processStructures/getAutomaticAdvanceTime/' + "?processStructureName=" + processStructureName + '&fromWaiting=' + (diagramContext === 'viewProcessStructure' ? ('true&mongoId=' + mongoId) : 'false'), true);

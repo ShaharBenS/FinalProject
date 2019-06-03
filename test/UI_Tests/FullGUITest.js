@@ -245,7 +245,6 @@ test('Stage 6 - Start And Handle The Process', async browser => {
         timeout: 10000
     });
     await browser.expect(Selector('td').nth(0).textContent).eql('תהליך אישור');
-    await browser.expect(Selector('td').nth(5).exists).notOk();
     await handleProcess(browser, 'תהליך אישור', 'הערות של אחראי מיתוג קמפיינים', [], {
         '1': 'רמד הסברה'
     }, ['../fileTests/inputFiles/a.txt']);
