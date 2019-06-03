@@ -86,7 +86,7 @@ module.exports.updateNotifications = (callback) =>
                             else {
                                 this.addNotificationToUser(curr,
                                     new Notification(
-                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + times[emails.indexOf(curr)] + " שעות", "תזכורת להתליך בהמתנה"),
+                                        "התהליך " + activeProcess.processName + " עדיין מחכה לטיפולך. זמן שעבר: " + times[emails.indexOf(curr)] + " שעות", "תזכורת לתהליך בהמתנה"),
                                     (err) =>
                                     {
                                         if (err) {

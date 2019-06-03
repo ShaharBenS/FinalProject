@@ -43,7 +43,7 @@
                     <tr>
                         <th>שם התהליך</th>
                         <th>דחיפות התהליך</th>
-                        <th>תאריך יעד</th>
+                        <th>תאריך היעד</th>
                         <th>האדם אצלו נמצא התהליך כרגע</th>
                         <th>הזמן בו עודכן לאחרונה</th>
                         <th>דו"ח סיכום</th>
@@ -57,7 +57,7 @@
                         <td><%=process.processDate%></td>
                         <td>
                             <%process.currentStages.forEach(function(stage){%>
-                            <% if(stage.userName !== ''){ %>
+                            <% if(stage.userEmail !== null){ %>
                             <%=stage.userName%>
                             -
                             <%=stage.roleName%>

@@ -59,7 +59,7 @@
                         <td><%=process.creationTime%></td>
                         <td>
                             <%process.currentStages.forEach(function(stage){%>
-                            <% if(stage.userName !== ''){ %>
+                            <% if(stage.userEmail !== null){ %>
                             <%=stage.userName%>
                             -
                             <%=stage.roleName%>
