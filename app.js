@@ -49,12 +49,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
-let key = {};
 app.use((req,res,next)=>{
-    lock.acquire(key, function(done) {
-        next();
-        done();
-    }, function() {},{});
+    lock.acquire("ourkey", function (done) {
+        setTimeout(function () {
+            console.log(">>> message1");
+            next();
+            done();
+            done();
+        }, 1)
+    }, function () {
+    }, {});
 });
 
 routes(app);

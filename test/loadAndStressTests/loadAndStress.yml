@@ -3,8 +3,8 @@ config:
   tls:
     rejectUnauthorized: false
   phases:
-    - duration: 55
-      arrivalRate: 1
+    - duration: 1
+      arrivalRate: 55
   variables:
     processname:
       - "activeProcess-1"

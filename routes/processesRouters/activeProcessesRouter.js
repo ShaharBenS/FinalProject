@@ -30,7 +30,6 @@ router.post('/handleProcess', function (req, res) {
                 res.render('errorsViews/error');
             }
             else {
-                console.log("advance");
                 res.send(ret);
             }
         });
@@ -80,18 +79,21 @@ router.post('/unTakePartInProcess', function (req, res) {
     });
 });
 
+
 router.post('/startProcess', function (req, res) {
     let structureName = req.body.structureName;
     let processName = req.body.processName;
     let processDate = req.body.processDate;
     let processUrgency = req.body.processUrgency;
     let username = req.user.emails[0].value;
+
     activeProcessController.startProcessByUsername(username, structureName, processName, processDate, processUrgency, (err, result) => {
         if (err) {
             console.log(err);
             res.render('errorViews/error');
         }
         else {
+            console.log(">>> message3");
             res.send(result);
         }
     });

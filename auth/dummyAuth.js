@@ -15,6 +15,7 @@ userAccessor.findUsernames((err, res) => {
 
 passport.use(new LocalStrategy(
     function (username, password, done) {
+        console.log(">>> message2");
         console.log("index: " + indexUsers + " | username: " + myUsers[indexUsers][0] + " | email: " + myUsers[indexUsers][1]);
         myAns = {
             username: myUsers[indexUsers][1],
