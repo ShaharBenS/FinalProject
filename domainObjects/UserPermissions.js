@@ -56,7 +56,7 @@ class UserPermissions {
 
     atLeastOneTruePermission(){
         return this._usersManagementPermission === true || this._structureManagementPermission === true
-            || this._observerPermission === true;
+            || this._observerPermission === true || this._permissionsManagementPermission === true;
 
     }
 }
