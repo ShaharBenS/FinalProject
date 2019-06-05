@@ -530,4 +530,13 @@ describe('ActiveProcess', function () {
             assert.deepEqual(testProcess.getStageByStageNum(4).notificationsCycle,1);
         });
     });
+
+    describe('18.0 removePathNotFromStage', function () {
+        beforeEach(createActiveProcess1);
+        it('18.1 removePathNotFromStage', () => {
+            let result = testProcess.removePathNotFromStage(4);
+            assert.deepEqual(result instanceof Error, false);
+            assert.deepEqual(testProcess.getStageByStageNum(6).stagesToWaitFor, [4]);
+        });
+    });
 });

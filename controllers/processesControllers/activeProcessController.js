@@ -90,19 +90,24 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
                 lastApproached: today,
                 stageToReturnTo: initialStage
             }, activeProcessStages);
-            let initialStages = activeProcessToReturn.stages.filter((stage) => stage.stagesToWaitFor.length === 0);
+            let result = activeProcessToReturn.removePathNotFromStage(initialStage);
+            if(result instanceof Error) {
+                callback(result);
+                return;
+            }
+            let initialStages = activeProcessToReturn.stages.filter((stage) => stage.stageNum === initialStage);
             while (initialStages.length !== 0) {
                 let stage = initialStages.shift();
                 if (stage.kind === "ByDereg" && (stage.roleID === null || parseInt(stage.dereg) < startingDereg)) {
                     activeProcessToReturn.removeStage(stage.stageNum);
-                    initialStages = activeProcessToReturn.stages.filter((stage) => stage.stagesToWaitFor.length === 0);
+                    initialStages = activeProcessToReturn.stages.filter((stage) => stage.stageNum === initialStage);
                     continue;
                 }
                 for (let i = 0; i < stage.nextStages.length; i++) {
                     let nextStage = activeProcessToReturn.getStageByStageNum(stage.nextStages[i]);
                     if (nextStage.userEmail !== null && stage.userEmail === nextStage.userEmail) {
                         activeProcessToReturn.removeStage(nextStage.stageNum);
-                        initialStages = activeProcessToReturn.stages.filter((stage) => stage.stagesToWaitFor.length === 0);
+                        initialStages = activeProcessToReturn.stages.filter((stage) => stage.stageNum === initialStage);
                         break;
                     }
                     initialStages.push(activeProcessToReturn.getStageByStageNum(nextStage.stageNum));
