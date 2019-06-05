@@ -9,45 +9,124 @@
     <link href="/draw_sankey/server/html/common/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
     <style>
+
+        body {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-image: url("/images/login_background.jpg");
+            margin: 0;
+            color: #000000AA;
+        }
+
         .main_title > b {
-            color: var(--main-color);
             font-size: xx-large;
         }
 
-        .main_title {
-            font-size: x-large
-        }
-
         .x-main-title {
-            margin-top: 10px;
-            color: var(--main-color);
+            margin-top: 20px;
             font-size: 70px;
         }
+
+        .footer {
+            border-top-width: 2px;
+            border-top-style: solid;
+            border-color: #000000AA;
+            background-color: #FFFFFFDD;
+            height: 30px;
+            margin: 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 5px;
+            -webkit-animation: color-change 120s infinite;
+            -moz-animation: color-change 120s infinite;
+            -o-animation: color-change 120s infinite;
+            -ms-animation: color-change 120s infinite;
+            animation: color-change 120s infinite;
+        }
+
+        @-webkit-keyframes color-change {
+            0% {
+                color: black;
+            }
+            50% {
+                color: #0087c7;
+            }
+            100% {
+                color: black;
+            }
+        }
+
+        @-moz-keyframes color-change {
+            0% {
+                color: black;
+            }
+            50% {
+                color: #0087c7;
+            }
+            100% {
+                color: black;
+            }
+        }
+
+        @-ms-keyframes color-change {
+            0% {
+                color: black;
+            }
+            50% {
+                color: #0087c7;
+            }
+            100% {
+                color: black;
+            }
+        }
+
+        @-o-keyframes color-change {
+            0% {
+                color: black;
+            }
+            50% {
+                color: #0087c7;
+            }
+            100% {
+                color: black;
+            }
+        }
+
+        @keyframes color-change {
+            0% {
+                color: black;
+            }
+            50% {
+                color: #0087c7;
+            }
+            100% {
+                color: black;
+            }
+        }
+
     </style>
 </head>
 <body dir="rtl">
 <div align="center">
-    <div class="main-div" style="width: 70%">
-        <div class="x-main-title" dir="ltr"><b>WMSSA BGU!</b></div>
-        <div class="main_title" dir="ltr">
-            <b>W</b>orkflow <b>M</b>anagment <b>S</b>ystem
-            for the
-            <b>S</b>tudent <b>A</b>ssociation
-            of
-            <b>B</b>en-<b>G</b>urion <b>U</b>niversity
-        </div>
+    <div class="main-div"
+         style="background-color: #FFFFFFF5 ;border-radius: 10px; border-color: #000000AA; width: 60%; margin-top: 30px">
+        <div class="x-main-title" dir="ltr"><b>מערכת לניהול תהליכים ארגוניים</b></div>
         <hr>
-        <h1>מערכת לניהול תהליכים ארגוניים</h1>
-        <h2>אגודת הסטודנטים אוניברסיטת בן-גוריון</h2>
+        <h1>אגודת הסטודנטים אוניברסיטת בן-גוריון</h1>
         <hr>
-        <div>
-            <br>
-            <br>
+        <div style="margin-top:20px">
             <a href="/auth/outlook" id="login_button">
                 <img src="/images/ms-symbollockup_signin_light.png" alt="לוגו">
             </a>
         </div>
     </div>
+
+    <div class="footer"><b>
+        עמרי עטייה | יקותיאל גולברג | שחר בן שטרית | תומר לב
+    </b></div>
 </div>
 </body>
 </html>
