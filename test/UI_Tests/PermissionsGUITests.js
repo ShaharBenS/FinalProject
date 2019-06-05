@@ -12,14 +12,20 @@ let processStructureController = require('../../controllers/processesControllers
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
+
+let userName = 'levtom@outlook.co.il';
+let original = userName;
+let passwd = 'tomer8108';
+let userToChange = 'levtom1@outlook.co.il';
+
 let login = async function (browser) {
     await browser
         .click('#login_button');
     await browser
-        .typeText('[name="loginfmt"]', 'levtom@outlook.co.il')
+        .typeText('[name="loginfmt"]', userName)
         .pressKey('enter');
     await browser
-        .typeText('[name="passwd"]', 'tomer8108')
+        .typeText('[name="passwd"]', passwd)
         .pressKey('enter');
 };
 
@@ -68,35 +74,6 @@ fixture('Permissions')
 
     });
 
-test('check checkboxes', async browser => {
-    await browser.click('#permission');
-    await browser.expect(getCurrentUrl()).eql('https://localhost/permissionsControl')
-        .expect(Selector('#title').innerText).eql('הרשאות משתמשים')
-        .expect(Selector('#user_selector').childNodeCount).gt(5)
-        .click(Selector('button').with({'title': 'בחר משתמש'}))
-        .click(Selector('span').withText('levtom1@outlook.co.il'));
-    let checkbox1 = Selector('#all_checkbox').child(0);
-    let checkbox2 = Selector('#all_checkbox').child(3);
-    let checkbox3 = Selector('#all_checkbox').child(6);
-    let checkbox4 = Selector('#all_checkbox').child(9);
-    let submit = Selector('#all_checkbox').child(13);
-    await browser
-        .expect(checkbox1.checked).notOk()
-        .click(checkbox1)
-        .expect(checkbox1.checked).ok()
-        .expect(checkbox2.checked).notOk()
-        .click(checkbox2)
-        .expect(checkbox2.checked).ok()
-        .expect(checkbox3.checked).notOk()
-        .click(checkbox3)
-        .expect(checkbox3.checked).ok()
-        .expect(checkbox4.checked).notOk()
-        .click(checkbox4)
-        .expect(checkbox4.checked).ok()
-        .click(submit)
-        .click(Selector('a[title="דף הבית"]'));
-    await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
-});
 
 test('type and check', async browser => {
     await browser.click('#permission');
@@ -104,19 +81,49 @@ test('type and check', async browser => {
         .expect(Selector('#title').innerText).eql('הרשאות משתמשים')
         .expect(Selector('#user_selector').childNodeCount).gt(5)
         .click(Selector('button').with({'title': 'בחר משתמש'}))
-        .typeText('[class="input-block-level form-control"]', 'y')
-        .click(Selector('span').withText('sayor@outlook.co.il'));
+        .typeText('[class="input-block-level form-control"]', 'נא')
+        .click(Selector('span').withText('נארוטו אוזומקי - מנהל גרפיקה'));
     let checkbox1 = Selector('#all_checkbox').child(0);
+    let checkbox2 = Selector('#all_checkbox').child(3);
+    let checkbox3 = Selector('#all_checkbox').child(6);
     let checkbox4 = Selector('#all_checkbox').child(9);
     let submit = Selector('#all_checkbox').child(13);
     await browser
-        .expect(checkbox1.checked).notOk()
         .click(checkbox1)
         .expect(checkbox1.checked).ok()
-        .expect(checkbox4.checked).notOk()
+        .click(checkbox2)
+        .expect(checkbox2.checked).ok()
+        .click(checkbox3)
+        .expect(checkbox3.checked).ok()
         .click(checkbox4)
         .expect(checkbox4.checked).ok()
         .click(submit)
         .click(Selector('a[title="דף הבית"]'));
+    userName = userToChange;
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
+});
+
+/*test('check permissions worked', async browser =>{
+    await browser.click('#permission');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/permissionsControl');
+    await browser.click(Selector('a[title="דף הבית"]'));
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
+
+});*/
+
+test('check permissions users tree', async browser => {
+    await browser.click('#edit-tree-button');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/usersAndRoles/editTree/');
+    await browser.click('#save-button');
+    await browser.pressKey('enter');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
+});
+
+test('check permissions structures tree', async browser => {
+    await browser.click('#edit-process-structure');
+    await browser.click('#edit-process-structure-button');
+    await browser.expect(getCurrentUrl()).contains('https://localhost/processStructures/editProcessStructure/');
+    await browser.click('#saveButton');
+    await browser.pressKey('enter');
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
 });
