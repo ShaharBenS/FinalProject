@@ -431,10 +431,11 @@ describe('1. usersAndRolesController', function () {
     });
 
     it('1.16 getAllUsers', function (done) {
+        this.timeout(30000);
         usersAndRolesController.getAllUsers((err,users)=>{
             assert.deepEqual(users.map((user)=>{
                 return user.userEmail
-            }),[
+            }).sort(),[
                 "meizamim@outlook.com",
                 "website@outlook.com",
                 "new_media@outlook.com",
@@ -448,7 +449,7 @@ describe('1. usersAndRolesController', function () {
                 "cesef@outlook.com",
                 "sayor@outlook.com",
                 "yor@outlook.com"
-            ]);
+            ].sort());
             done();
         });
     });
