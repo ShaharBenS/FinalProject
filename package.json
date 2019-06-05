@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "test": "mocha ./test/integration/usersAndRoles.js",
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
-    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/PendingProcessStructureGUITest.js",
+    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/",
     "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/",
     "artillery": "artillery run ./test/loadAndStressTests/check.yml"
   },
