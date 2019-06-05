@@ -96,7 +96,7 @@ async function login(browser, userEmail, password) {
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
-fixture('Tables Search And Sort Test').page('https://localhost');
+fixture('Pending Process Structures').page('https://localhost');
 
 test('Stage 1 - Check There Is A Pending Process Structure', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
@@ -106,7 +106,7 @@ test('Stage 1 - Check There Is A Pending Process Structure', async browser => {
     })
         .expect(Selector('h1').innerText).eql('מבני תהליכים הממתינים לאישור')
         .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('תהליך אישור')
-        .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('levtom@outlook.co.il')
+        .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('קיילור נבאס - אחראי מיתוג קמפיינים')
         .expect(Selector('tbody tr').nth(0).child(2).innerText).eql('הוספה')
         .click(Selector('tbody tr').nth(0).child(5))
         .expect(Selector('tbody tr').nth(0).innerText).eql('אין כרגע מידע בטבלה');
