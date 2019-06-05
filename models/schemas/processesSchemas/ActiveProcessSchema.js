@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const activeProcessSchema = new Schema({
-    processName: {type: String, unique: true},
+    processName: {type: String, unique: true, dropDups: true},
     creatorUserEmail : String,
     processDate: Date,
     processUrgency: { type: Number, min: 1, max: 3},

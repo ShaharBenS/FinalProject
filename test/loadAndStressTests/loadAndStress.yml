@@ -1,0 +1,58 @@
+config:
+  target: 'https://localhost/'
+  tls:
+    rejectUnauthorized: false
+  phases:
+    - duration: 1
+      arrivalRate: 55
+  variables:
+    processname:
+      - "activeProcess-1"
+      - "activeProcess-2"
+      - "activeProcess-3"
+      - "activeProcess-4"
+      - "activeProcess-5"
+      - "activeProcess-6"
+scenarios:
+  - flow:
+      - get: # Login
+          url: "https://localhost/auth/dummyAuth?username=1&password=2"
+      - post: # Start Process
+          url: "https://localhost/activeProcesses/startProcess/"
+          json:
+            structureName: "TestStructure"
+            processDate: "2019-12-31T23:59"
+            processUrgency: "1"
+            processName: "{{processname}}"
+      - think: 1
+      - loop:
+          # trying to handle processes
+          - post:
+              url: "https://localhost/activeProcesses/handleProcess"
+              formData:
+                processName: "{{processname}}"
+                1: "on"
+          - post:
+              url: "https://localhost/activeProcesses/handleProcess"
+              formData:
+                processName: "{{processname}}"
+                2: "on"
+          - post:
+              url: "https://localhost/activeProcesses/handleProcess"
+              formData:
+                processName: "{{processname}}"
+                3: "on"
+          - post:
+              url: "https://localhost/activeProcesses/handleProcess"
+              formData:
+                processName: "{{processname}}"
+                4: "on"
+          - post:
+              url: "https://localhost/activeProcesses/handleProcess"
+              formData:
+                processName: "{{processname}}"
+        count: 40
+        # get reports
+      - get:
+          url: "https://localhost/activeProcesses/getAllProcessesReportsByUser"
+
