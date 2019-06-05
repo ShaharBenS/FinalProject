@@ -93,7 +93,6 @@ router.post('/startProcess', function (req, res) {
             res.render('errorViews/error');
         }
         else {
-            console.log(">>> message3");
             res.send(result);
         }
     });

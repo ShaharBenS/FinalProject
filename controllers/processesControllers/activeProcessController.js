@@ -124,8 +124,6 @@ function getNewActiveProcess(processStructure, role, initialStage, userEmail, pr
  * @param callback
  */
 
-
-
 module.exports.startProcessByUsername = (userEmail, processStructureName, processName, processDate, processUrgency, callback) => {
     usersAndRolesController.getRoleByUsername(userEmail, (err, role) => {
         if (err) {
@@ -292,59 +290,66 @@ function uploadFilesAndHandleProcess(userEmail, fields, files, dirOfFiles, callb
     processAccessor.getActiveProcessByProcessName(processName, (err, process) => {
         if (err) callback(err);
         else {
-            let foundStage = null;
-            for (let i = 0; i < process.currentStages.length; i++) {
-                let currentStage = process.getStageByStageNum(process.currentStages[i]);
-                if (currentStage instanceof Error) {
-                    callback(currentStage);
-                    return;
-                }
-                if (currentStage.userEmail === userEmail) {
-                    foundStage = currentStage;
-                    break;
-                }
-            }
-            if (foundStage === null) {
-                callback(null, 'אינך רשאי לטפל בתהליך זה מכיוון שאינך כלול בשלבים הנוכחיים של התהליך');
-                return;
-            }
-            let nextStageRoles = [];
-            for (let attr in fields) {
-                if (fields.hasOwnProperty(attr) && !isNaN(attr)) {
-                    nextStageRoles.push(parseInt(attr));
-                }
-            }
-            for (let i = 0; i < nextStageRoles.length; i++) {
-                if (!foundStage.nextStages.includes(nextStageRoles[i])) {
-                    callback(null, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
-                    return;
-                }
-            }
-            if (nextStageRoles.length === 0 && foundStage.nextStages.length !== 0) {
-                callback(null, 'לא סומנו תפקידים לשלב הבא');
-                return;
-            }
-            let today = new Date();
-            handleProcess(userEmail, process, foundStage, nextStageRoles, today, (err, result) => {
-                if (err) callback(err);
-                else {
-                    let fileNames = uploadFiles(processName, dirOfFiles, files);
-                    let stageDetailsForReport = {
-                        comments: fields.comments,
-                        fileNames: fileNames, stageNum: foundStage.stageNum,
-                        action: 'continue'
-                    };
-                    if (process.isFinished()) {
-                        stageDetailsForReport['status'] = 'הסתיים';
+            if(process !== null)
+            {
+                let foundStage = null;
+                for (let i = 0; i < process.currentStages.length; i++) {
+                    let currentStage = process.getStageByStageNum(process.currentStages[i]);
+                    if (currentStage instanceof Error) {
+                        callback(currentStage);
+                        return;
                     }
-                    processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetailsForReport, today, (err, result) => {
-                        if (err) callback(err);
-                        else {
-                            callback(null, 'success');
-                        }
-                    });
+                    if (currentStage.userEmail === userEmail) {
+                        foundStage = currentStage;
+                        break;
+                    }
                 }
-            });
+                if (foundStage === null) {
+                    callback(null, 'אינך רשאי לטפל בתהליך זה מכיוון שאינך כלול בשלבים הנוכחיים של התהליך');
+                    return;
+                }
+                let nextStageRoles = [];
+                for (let attr in fields) {
+                    if (fields.hasOwnProperty(attr) && !isNaN(attr)) {
+                        nextStageRoles.push(parseInt(attr));
+                    }
+                }
+                for (let i = 0; i < nextStageRoles.length; i++) {
+                    if (!foundStage.nextStages.includes(nextStageRoles[i])) {
+                        callback(null, 'אחד או יותר המתפקידים הבאים שנבחרו לשלבים הבאים שגויים');
+                        return;
+                    }
+                }
+                if (nextStageRoles.length === 0 && foundStage.nextStages.length !== 0) {
+                    callback(null, 'לא סומנו תפקידים לשלב הבא');
+                    return;
+                }
+                let today = new Date();
+                handleProcess(userEmail, process, foundStage, nextStageRoles, today, (err, result) => {
+                    if (err) callback(err);
+                    else {
+                        let fileNames = uploadFiles(processName, dirOfFiles, files);
+                        let stageDetailsForReport = {
+                            comments: fields.comments,
+                            fileNames: fileNames, stageNum: foundStage.stageNum,
+                            action: 'continue'
+                        };
+                        if (process.isFinished()) {
+                            stageDetailsForReport['status'] = 'הסתיים';
+                        }
+                        processReportController.addActiveProcessDetailsToReport(processName, userEmail, stageDetailsForReport, today, (err, result) => {
+                            if (err) callback(err);
+                            else {
+                                callback(null, 'success');
+                            }
+                        });
+                    }
+                });
+            }
+            else
+            {
+                callback(null, 'לא קיים תהליך זה');
+            }
         }
     });
 }

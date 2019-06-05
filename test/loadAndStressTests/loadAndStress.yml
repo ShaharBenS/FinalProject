@@ -13,7 +13,6 @@ config:
       - "activeProcess-4"
       - "activeProcess-5"
       - "activeProcess-6"
-    seconds:
 scenarios:
   - flow:
       - get: # Login
@@ -48,6 +47,12 @@ scenarios:
               formData:
                 processName: "{{processname}}"
                 4: "on"
-        count: 10
-
+          - post:
+              url: "https://localhost/activeProcesses/handleProcess"
+              formData:
+                processName: "{{processname}}"
+        count: 40
+        # get reports
+      - get:
+          url: "https://localhost/activeProcesses/getAllProcessesReportsByUser"
 

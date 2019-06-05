@@ -9,8 +9,7 @@ let routes = require('./routes/routes');
 let notificationControllers = require('./controllers/notificationsControllers/notificationController');
 let activeProcessControllers = require('./controllers/processesControllers/activeProcessController');
 let onlineFormsController = require('./controllers/onlineFormsControllers/onlineFormController');
-let AsyncLock = require('async-lock');
-let lock = new AsyncLock();
+let locks = require('locks');
 
 ///
 let app = express();
@@ -49,16 +48,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
+let count = 0;
+let mutex = locks.createMutex();
 app.use((req,res,next)=>{
-    lock.acquire("ourkey", function (done) {
-        setTimeout(function () {
-            console.log(">>> message1");
-            next();
-            done();
-            done();
-        }, 1)
-    }, function () {
-    }, {});
+    mutex.lock(function () {
+        res.on("finish",()=>{
+            mutex.unlock();
+        });
+        next();
+    });
 });
 
 routes(app);
