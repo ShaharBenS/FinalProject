@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "test": "mocha ./test/integration/usersAndRoles.js",
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
     "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/",
@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "artillery": "^1.6.0-28",
-    "auto-updater": "^1.0.2",
     "body-parser": "^1.18.3",
     "bson": "latest",
     "cookie-parser": "~1.4.3",
