@@ -8,7 +8,7 @@
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
     "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/SankeyGUITests.js",
     "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/SankeyGUITests.js",
-    "artillery": "artillery run ./test/loadAndStressTests/loadAndStress.yml"
+    "artillery": "artillery run ./test/loadAndStressTests/stressTest2.yml"
   },
   "dependencies": {
     "artillery": "^1.6.0-28",
