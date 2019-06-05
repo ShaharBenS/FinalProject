@@ -22,8 +22,7 @@ router.get('/google/callback',
         if (req.isAuthenticated()) {
             res.redirect('/Home')
         }
-        else
-        {
+        else {
             res.redirect('userViews/login')
         }
     });
@@ -37,30 +36,36 @@ router.get('/outlook',
             'offline_access',
             'https://outlook.office.com/Mail.Read'
         ],
-        prompt:'login'
+        prompt: 'login'
     })
 );
 
 router.get('/outlook/callback',
-    passportOutlook.authenticate('windowslive', { failureRedirect: '/userViews/login' }),
+    passportOutlook.authenticate('windowslive', {failureRedirect: '/userViews/login'}),
     function (req, res)
     {
         if (req.isAuthenticated()) {
             res.redirect('/Home')
         }
-        else
-        {
+        else {
             res.redirect('userViews/login')
         }
     });
 
-router.get('/dummyAuth', dummyAuth.authenticate('local', {failureRedirect: '/userViews/login'}),
-    function (req, res) {
-        if (req.isAuthenticated()) {
-            res.redirect('/Home')
-        } else {
-            res.redirect('userViews/login')
+let argv = process.argv;
+if (argv.length >= 3 && argv[2].toLowerCase() === "test") {
+    router.get('/dummyAuth', dummyAuth.authenticate('local', {failureRedirect: '/userViews/login'}),
+        function (req, res)
+        {
+            if (req.isAuthenticated()) {
+                res.redirect('/Home')
+            }
+            else {
+                res.redirect('userViews/login')
+            }
         }
-    });
+    );
+}
+
 ///////////////
 module.exports = router;
