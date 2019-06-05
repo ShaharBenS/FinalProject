@@ -59,6 +59,7 @@ module.exports.getAllWaitingProcessStructuresWithoutSankey = (callback) => {
                                     onlineForms: waitingProcessStructure.onlineForms,
                                     automaticAdvanceTime: waitingProcessStructure.automaticAdvanceTime,
                                     notificationTime: waitingProcessStructure.notificationTime,
+                                    userEmail: waitingProcessStructure.userEmail
                                 };
                             });
                             callback(null, waitingProcessStructuresWithFixedDates);

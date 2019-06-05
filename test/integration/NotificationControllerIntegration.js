@@ -768,7 +768,7 @@ describe('9. updateNotifications', function ()
                                                         {
                                                             assert.deepEqual(notifications.some(notification =>
                                                             {
-                                                                return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                return notification.notificationType === "תזכורת לתהליך בהמתנה";
                                                             }), true);
                                                             activeProcessController.uploadFilesAndHandleProcess("new_media@outlook.com", {
                                                                 processName: "תהליך 1",
@@ -811,11 +811,11 @@ describe('9. updateNotifications', function ()
                                                                                                 {
                                                                                                     assert.deepEqual(notifications1.some(notification =>
                                                                                                     {
-                                                                                                        return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                        return notification.notificationType === "תזכורת לתהליך בהמתנה";
                                                                                                     }), true);
                                                                                                     assert.deepEqual(notifications2.some(notification =>
                                                                                                     {
-                                                                                                        return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                        return notification.notificationType === "תזכורת לתהליך בהמתנה";
                                                                                                     }), true);
                                                                                                     notificationController.deleteAllNotification("cesef@outlook.com",(err)=>{
                                                                                                         notificationController.deleteAllNotification("revaha@outlook.com",(err)=>{
@@ -827,11 +827,11 @@ describe('9. updateNotifications', function ()
                                                                                                                         {
                                                                                                                             assert.deepEqual(notifications1.some(notification =>
                                                                                                                             {
-                                                                                                                                return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                                                return notification.notificationType === "תזכורת לתהליך בהמתנה";
                                                                                                                             }), true);
                                                                                                                             assert.deepEqual(notifications2.some(notification =>
                                                                                                                             {
-                                                                                                                                return notification.notificationType === "תזכורת להתליך בהמתנה";
+                                                                                                                                return notification.notificationType === "תזכורת לתהליך בהמתנה";
                                                                                                                             }), true);
                                                                                                                             activeProcessController.uploadFilesAndHandleProcess("cesef@outlook.com", {
                                                                                                                                 processName: "תהליך 1",

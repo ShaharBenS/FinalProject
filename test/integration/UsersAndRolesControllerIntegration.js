@@ -432,7 +432,9 @@ describe('1. usersAndRolesController', function () {
 
     it('1.16 getAllUsers', function (done) {
         usersAndRolesController.getAllUsers((err,users)=>{
-            assert.deepEqual(users,[
+            assert.deepEqual(users.map((user)=>{
+                return user.userEmail
+            }),[
                 "meizamim@outlook.com",
                 "website@outlook.com",
                 "new_media@outlook.com",
