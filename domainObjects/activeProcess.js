@@ -365,6 +365,16 @@ class activeProcess {
             stage.notificationsCycle = stage.notificationsCycle + 1;
         }
     }
+
+    removePathNotFromStage(stageNum) {
+        let chosenPath = this.getCoverage([stageNum]);
+        if (chosenPath instanceof Error) return chosenPath;
+        let notChosenPath = this.stages.map(stage=> stage.stageNum).filter(stageNum=> !chosenPath.includes(stageNum));
+        for (let i = 0; i < this.stages.length; i++) {
+            let result = this.stages[i].removeStagesToWaitForIncludingOrigin(notChosenPath);
+            if (result instanceof Error) return result;
+        }
+    }
 }
 
 module.exports = activeProcess;

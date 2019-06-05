@@ -4,11 +4,12 @@ let mongoose = require('mongoose');
 let userAccessor = require('../../models/accessors/usersAccessor');
 let UsersAndRolesTreeSankey = require('../../controllers/usersControllers/usersAndRolesController');
 let sankeyContent = require('../inputs/trees/treeForGUIStartAndHandle/sankey');
-let emailsToFullName = require('../inputs/trees/treeForGUIStartAndHandle/emailsToFullNames');
+let emailsToFullName = require('../inputs/trees/treeForGUIStartAndHandle/emailsToFullNames2');
 let rolesToDereg = require('../inputs/trees/treeForGUIStartAndHandle/rolesToDeregs');
 let rolesToEmails = require('../inputs/trees/treeForGUIStartAndHandle/rolesToEmails');
 let processStructureSankeyJSON = require('../inputs/processStructures/processStructureForGuiStartAndHandle/processStructure');
 let processStructureController = require('../../controllers/processesControllers/processStructureController');
+let activeProcessController = require('../../controllers/processesControllers/activeProcessController');
 
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
@@ -31,11 +32,16 @@ let login = async function (browser) {
 
 function addProcessStructure() {
     return new Promise(resolve => {
-        processStructureController.addProcessStructure('levtom@outlook.co.il', 'תהליך אישור', JSON.stringify(processStructureSankeyJSON), [], 0, "12", (err, needApproval) => {
+        processStructureController.addProcessStructure('levtom@outlook.co.il', 'תהליך אישור', JSON.stringify(processStructureSankeyJSON), [], 0, "" + 12 * 60 * 60, (err, needApproval) => {
             if (err) {
                 resolve(err);
             } else {
-                resolve();
+                activeProcessController.startProcessByUsername('shahar0897@outlook.com', 'תהליך אישור', 'תהליך2', new Date(2022, 4, 26, 16), 1, (err, res) => {
+                    if (err) resolve(err);
+                    else
+                        resolve();
+                });
+
             }
         });
     });
@@ -64,14 +70,18 @@ function insertToDB() {
 fixture('Permissions')
     .page('https://localhost')
     .beforeEach(async browser => {
-        mongoose.set('useCreateIndex', true);
-        await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
-        mongoose.connection.db.dropDatabase();
         await insertToDB();
         await addProcessStructure();
         await browser.setNativeDialogHandler(() => true);
         await login(browser);
 
+    })
+    .before(async browser => {
+        await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
+        mongoose.connection.db.dropDatabase();
+    })
+    .after(async browser => {
+        mongoose.connection.close();
     });
 
 
@@ -103,18 +113,25 @@ test('type and check', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
 });
 
-/*test('check permissions worked', async browser =>{
+test('check permissions structures tree', async browser => {
+    await browser.click('#reports-button');
+    await browser.expect(getCurrentUrl()).contains('https://localhost/activeProcesses/getAllProcessesReportsByUser');
+    await browser.expect(Selector('tbody tr').count).eql(2);
+});
+
+test('check permissions worked', async browser => {
     await browser.click('#permission');
     await browser.expect(getCurrentUrl()).eql('https://localhost/permissionsControl');
     await browser.click(Selector('a[title="דף הבית"]'));
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
 
-});*/
+});
 
 test('check permissions users tree', async browser => {
     await browser.click('#edit-tree-button');
     await browser.expect(getCurrentUrl()).eql('https://localhost/usersAndRoles/editTree/');
     await browser.click('#save-button');
+    await browser.wait(1000);
     await browser.pressKey('enter');
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
 });
@@ -124,6 +141,8 @@ test('check permissions structures tree', async browser => {
     await browser.click('#edit-process-structure-button');
     await browser.expect(getCurrentUrl()).contains('https://localhost/processStructures/editProcessStructure/');
     await browser.click('#saveButton');
+    await browser.wait(1000);
     await browser.pressKey('enter');
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
 });
+
