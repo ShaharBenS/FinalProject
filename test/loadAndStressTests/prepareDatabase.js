@@ -12,14 +12,14 @@ async function setDB() {
 
     await userAccessor.addAdmin("admin@admin.com", (err) => {
         usersAndRolesController.getUsersAndRolesTree((err) => {
-            usersAndRolesController.loadDefaultTree("admin@admin.com",(err)=>{
-                /*let demoTreeString = fs.readFileSync("../../defaultTree/defaultTree.json");
-                let emailsToFullName = JSON.parse(fs.readFileSync("../../defaultTree/emailsToFullName.json"));
-                let rolesToDereg = JSON.parse(fs.readFileSync("../../defaultTree/rolesToDereg.json"));
-                let rolesToEmails = JSON.parse(fs.readFileSync("../../defaultTree/rolesToEmails.json"));
-                usersAndRolesController.setUsersAndRolesTree("admin@admin.com", demoTreeString, rolesToEmails, emailsToFullName, rolesToDereg, (err) => {
+            /*usersAndRolesController.loadDefaultTree("admin@admin.com",(err)=>{
 
-                });*/
+            });*/
+            let demoTreeString = fs.readFileSync("../../defaultTree/defaultTree.json");
+            let emailsToFullName = JSON.parse(fs.readFileSync("../../defaultTree/emailsToFullName.json"));
+            let rolesToDereg = JSON.parse(fs.readFileSync("../../defaultTree/rolesToDereg.json"));
+            let rolesToEmails = JSON.parse(fs.readFileSync("../../defaultTree/rolesToEmails.json"));
+            usersAndRolesController.setUsersAndRolesTree("admin@admin.com", demoTreeString, rolesToEmails, emailsToFullName, rolesToDereg, (err) => {
                 processStructureController.addProcessStructure("admin@admin.com", "TestStructure", ps, [], "10000", "10000", (err) => {
                     mongoose.connection.close();
                 });

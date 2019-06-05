@@ -341,7 +341,7 @@ test('Testing Sankey', async browser =>
     await browser.click('#forms-button')
         .click(Selector('.plus-button').nth(0))
         .click('#selectForm')
-        .click(Selector('#selectForm').find('option').withText("טופס קניות"))
+        .click(Selector('#selectForm').find('option').withText("טופס החתמה על ציוד"))
         .click(Selector('.plus-button').nth(0))
         .click('#no-id124');
 
