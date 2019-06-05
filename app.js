@@ -67,7 +67,9 @@ autoupdater.on('error', function(name, e) {
 
 // Start checking
 autoupdater.fire('check');
-
+/*
+    Tomer+kuti = Love
+ */
 
 ///
 let app = express();
