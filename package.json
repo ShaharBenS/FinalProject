@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "nodemon ./bin/www",
     "test": "mocha ./test/integration/usersAndRoles.js",
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
     "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "artillery": "^1.6.0-28",
+    "auto-updater": "^1.0.2",
     "body-parser": "^1.18.3",
     "bson": "latest",
     "cookie-parser": "~1.4.3",
@@ -30,6 +31,7 @@
     "mongoose": "^5.3.11",
     "mongoose-id-validator": "^0.5.0",
     "morgan": "~1.9.0",
+    "nodemon": "^1.19.1",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
     "passport-google-oauth20": "^1.0.0",
