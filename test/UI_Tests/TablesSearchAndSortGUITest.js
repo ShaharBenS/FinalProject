@@ -126,7 +126,7 @@ test('Stage 1 - Check The Everything Is In The Table And Sorted By Name', async 
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         //Line 1.
         .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור הזמנת מופע')
         .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('3')
@@ -160,7 +160,7 @@ test('Stage 2 - Check The Everything Is In The Table And Reversed Sorted By Name
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .click(Selector('thead tr th').nth(0))
         .wait(1000)
         //Line 1.
@@ -195,7 +195,7 @@ test('Stage 3 - Check The Everything Is In The Table And Sorted By Urgency', asy
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .click(Selector('thead tr th').nth(1))
         .wait(1000)
         //Line 1.
@@ -230,7 +230,7 @@ test('Stage 4 - Check The Everything Is In The Table And Reversed Sorted By Urge
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .click(Selector('thead tr th').nth(1))
         .click(Selector('thead tr th').nth(1))
         .wait(1000)
@@ -266,7 +266,7 @@ test('Stage 5 - Check The Everything Is In The Table And Sorted By Destination D
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .click(Selector('thead tr th').nth(2))
         .wait(1000)
         //Line 1.
@@ -301,7 +301,7 @@ test('Stage 6 - Check The Everything Is In The Table And Reversed Sorted By Dest
     await browser.expect(getCurrentUrl()).eql('https://localhost/activeProcesses/getAllActiveProcessesByUser', {
         timeout: 10000
     })
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .click(Selector('thead tr th').nth(2))
         .click(Selector('thead tr th').nth(2))
         .wait(1000)
@@ -341,7 +341,7 @@ test('Stage 7 - Search Process By Name', async browser => {
         .click(Selector('#example_filter input'))
         .typeText('[class="form-control form-control-sm"]', 'אישור פרסום');
     await browser
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         //Line 1.
         .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור פרסום')
         .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('1')
@@ -351,7 +351,7 @@ test('Stage 7 - Search Process By Name', async browser => {
         .pressKey('ctrl+a delete')
         .typeText('[class="form-control form-control-sm"]', 'אישור תקציב שנתי');
     await browser
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         //Line 1.
         .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור תקציב שנתי 1')
         .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('3')
@@ -373,7 +373,7 @@ test('Stage 8 - Search Process By Destination Date', async browser => {
         .click(Selector('#example_filter input'))
         .typeText('[class="form-control form-control-sm"]', '01/02/2020 13:00:00');
     await browser
-        .expect(Selector('h1').innerText).eql('התהליכים שלי')
+        .expect(Selector('h1').innerText).eql('תהליכים פעילים')
         .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('אישור הזמנת מופע')
         .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('3')
         .expect(Selector('tbody tr').nth(0).child(2).innerText).eql('01/02/2020 13:00:00');

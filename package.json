@@ -6,9 +6,9 @@
     "start": "node ./bin/www",
     "test": "mocha ./test/integration/usersAndRoles.js",
     "debug": "testcafe $NODE_DEBUG_OPTION chrome",
-    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/PermissionsGUITests.js",
-    "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/",
-    "artillery": "artillery run ./test/loadAndStressTests/check.yml"
+    "guitest": "./node_modules/.bin/testcafe chrome test/UI_Tests/TablesSearchAndSortGUITest.js",
+    "guitest-headless": "./node_modules/.bin/testcafe chrome:headless test/UI_Tests/TablesSearchAndSortGUITest.js",
+    "artillery": "artillery run ./test/loadAndStressTests/stressTest2.yml"
   },
   "dependencies": {
     "artillery": "^1.6.0-28",
@@ -23,6 +23,7 @@
     "formidable": "^1.2.1",
     "googleapis": "^36.0.0",
     "http-errors": "~1.6.2",
+    "locks": "^0.2.2",
     "mdbootstrap": "^4.7.4",
     "moment": "^2.24.0",
     "mongodb": "latest",
@@ -32,6 +33,7 @@
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
     "passport-google-oauth20": "^1.0.0",
+    "passport-local": "^1.0.0",
     "passport-outlook": "^2.2.0",
     "popups": "^1.1.3",
     "pug": "^2.0.3",
