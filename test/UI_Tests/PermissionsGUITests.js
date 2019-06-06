@@ -14,10 +14,10 @@ let activeProcessController = require('../../controllers/processesControllers/ac
 let getCurrentUrl = ClientFunction(() => window.location.href);
 
 
-let userName = 'levtom@outlook.co.il';
+let userName = 'levtom1@outlook.co.il';
 let original = userName;
 let passwd = 'tomer8108';
-let userToChange = 'levtom1@outlook.co.il';
+let userToChange = 'levtom@outlook.co.il';
 
 let login = async function (browser) {
     await browser
@@ -25,6 +25,7 @@ let login = async function (browser) {
     await browser
         .typeText('[name="loginfmt"]', userName)
         .pressKey('enter');
+    await browser.wait(2000);
     await browser
         .typeText('[name="passwd"]', passwd)
         .pressKey('enter');
@@ -88,6 +89,37 @@ fixture('Permissions')
         mongoose.connection.close();
     });
 
+
+test('check permission does not exists', async browser => {
+    await browser.navigateTo('https://localhost/Home/');
+
+    // see permissions
+    await browser.expect(Selector('#permission').visible).notOk();
+
+    await browser.navigateTo('https://localhost/Home/');
+
+    // users tree
+    await browser.click('#edit-tree-button');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/usersAndRoles/editTree/');
+    await browser.wait(1000);
+    await browser.click('#save-button');
+    await browser.wait(1000);
+    await browser.pressKey('enter');
+    await browser.expect(getCurrentUrl()).notEql('https://localhost/Home');
+
+    await browser.navigateTo('https://localhost/Home/');
+
+    // structure tree
+    await browser.click('#edit-process-structure');
+    await browser.click('#edit-process-structure-button');
+    await browser.expect(getCurrentUrl()).contains('https://localhost/processStructures/editProcessStructure/');
+    await browser.wait(1000);
+    await browser.click('#saveButton');
+    await browser.wait(1000);
+    await browser.pressKey('enter');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
+    userName = userToChange;
+});
 
 test('type and check', async browser => {
     await browser.click('#permission');
