@@ -710,7 +710,7 @@ function updateDeletedRolesInEveryActiveProcess(deletedRolesIds, oldTree, rootID
         else {
             processes.forEach(process =>
             {
-                process.stages.filter(stage => stage.roleID !== undefined).forEach(stage =>
+                process.stages.filter(stage => (stage.roleID !== undefined && stage.roleID != null)).forEach(stage =>
                 {
                     if (deletedRolesIds.map(x => x.toString()).includes(stage.roleID.toString())) {
                         let findReplacement = (roleId) =>
