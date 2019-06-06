@@ -36,10 +36,14 @@ function addProcessStructure() {
             if (err) {
                 resolve(err);
             } else {
-                activeProcessController.startProcessByUsername('shahar0897@outlook.com', 'תהליך אישור', 'תהליך2', new Date(2022, 4, 26, 16), 1, (err, res) => {
+                activeProcessController.startProcessByUsername('shahar0897@outlook.com', 'תהליך אישור', 'תהליך1', new Date(2022, 4, 26, 16), 1, (err, res) => {
                     if (err) resolve(err);
                     else
-                        resolve();
+                        activeProcessController.startProcessByUsername('shahar0897@outlook.com', 'תהליך אישור', 'תהליך2', new Date(2022, 4, 26, 16), 1, (err, res) => {
+                            if (err) resolve(err);
+                            else
+                                resolve();
+                        });
                 });
 
             }
@@ -70,8 +74,6 @@ function insertToDB() {
 fixture('Permissions')
     .page('https://localhost')
     .beforeEach(async browser => {
-        await insertToDB();
-        await addProcessStructure();
         await browser.setNativeDialogHandler(() => true);
         await login(browser);
 
@@ -79,6 +81,8 @@ fixture('Permissions')
     .before(async browser => {
         await mongoose.connect('mongodb://localhost:27017/Tests', {useNewUrlParser: true});
         mongoose.connection.db.dropDatabase();
+        await insertToDB();
+        await addProcessStructure();
     })
     .after(async browser => {
         mongoose.connection.close();
@@ -113,7 +117,7 @@ test('type and check', async browser => {
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');
 });
 
-test('check permissions structures tree', async browser => {
+test('check permissions observer', async browser => {
     await browser.click('#reports-button');
     await browser.expect(getCurrentUrl()).contains('https://localhost/activeProcesses/getAllProcessesReportsByUser');
     await browser.expect(Selector('tbody tr').count).eql(2);
@@ -130,6 +134,7 @@ test('check permissions worked', async browser => {
 test('check permissions users tree', async browser => {
     await browser.click('#edit-tree-button');
     await browser.expect(getCurrentUrl()).eql('https://localhost/usersAndRoles/editTree/');
+    await browser.wait(1000);
     await browser.click('#save-button');
     await browser.wait(1000);
     await browser.pressKey('enter');
@@ -140,6 +145,7 @@ test('check permissions structures tree', async browser => {
     await browser.click('#edit-process-structure');
     await browser.click('#edit-process-structure-button');
     await browser.expect(getCurrentUrl()).contains('https://localhost/processStructures/editProcessStructure/');
+    await browser.wait(1000);
     await browser.click('#saveButton');
     await browser.wait(1000);
     await browser.pressKey('enter');
