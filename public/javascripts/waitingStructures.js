@@ -21,11 +21,12 @@ function approveClicked(id)
     {
         if (status === "success") {
             if (responseText === "success") {
-                alert("תהליך אושר בהצלחה");
-                window.location.href = '/processStructures/waitingForApproval/';
+                alertify.alert("תהליך אושר בהצלחה",()=>{
+                    window.location.href = '/processStructures/waitingForApproval/';
+                });
             }
             else {
-                alert(responseText);
+                alertify.alert(responseText);
             }
         }
     });
@@ -49,11 +50,12 @@ function disapproveClicked(id)
     {
         if (status === "success") {
             if (responseText === "success") {
-                alert("תהליך נדחה בהצלחה");
-                window.location.href = '/processStructures/waitingForApproval/';
+                alertify.alert("תהליך נדחה בהצלחה", ()=>{
+                    window.location.href = '/processStructures/waitingForApproval/';
+                });
             }
             else {
-                alert(responseText);
+                alertify.alert(responseText);
             }
         }
     });}

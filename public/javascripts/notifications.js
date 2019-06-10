@@ -48,7 +48,7 @@ function removeNotification(id)
                 window.location.reload();
             }
             else {
-                alert(responseText);
+                alertify.alert(responseText);
             }
         }
     });
@@ -72,7 +72,7 @@ function removeAllNotifications()
                         window.location.reload();
                     }
                     else {
-                        alert(responseText);
+                        alertify.alert(responseText);
                     }
                 }
             });

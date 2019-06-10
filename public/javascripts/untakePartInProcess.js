@@ -9,13 +9,16 @@ function unTakePartInProcess(processName)
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             if(xhr.responseText === "success")
             {
-                alert('החזרת תהליך למאגר התהליכים הזמינים הצליחה.');
+                alertify.alert('החזרת תהליך למאגר התהליכים הזמינים הצליחה.', ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
             else
             {
-                alert('קרתה שגיאה בעת החזרת תהליך למאגר התהליכים הזמינים.');
+                alertify.alert('קרתה שגיאה בעת החזרת תהליך למאגר התהליכים הזמינים.', ()=>{
+                    window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
+                });
             }
-            window.location.href = "/activeProcesses/getWaitingActiveProcessesByUser";
         }
     };
     xhr.send(data);

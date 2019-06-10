@@ -60,8 +60,9 @@ let submitForm = function () {
     });
     //receiveFormInfo is a function on the opener window that receive the form's data
     oldWin.receiveFormInfo(_formName, info, filledSignatures === signatures);
-    alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת");
-    window.close();
+    alertify.alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת", ()=>{
+        window.close();
+    });
     return false;
 };
 
@@ -431,10 +432,10 @@ let initSignatures = function () {
             request.onreadystatechange = function () {
                 if (request.readyState === 4) {
                     if (request.status === 200) {
-                        alert("חתימה נשמרה בהצלחה");
+                        alertify.alert("חתימה נשמרה בהצלחה");
                         mySignature = jsonData;
                     } else {
-                        alert(request.responseText);
+                        alertify.alert(request.responseText);
                     }
                 }
             };

@@ -122,7 +122,6 @@ function isChecked()
         return true;
     }
     alertify.alert('אנא בחר לפחות תפקיד אחד לשלב הבא');
-    return false;
 }
 
 function finishProcessInTheMiddle(processName){

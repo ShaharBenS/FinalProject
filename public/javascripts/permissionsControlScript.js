@@ -46,16 +46,16 @@ function submitPermissionsForm()
         ).done(function (responseText, status) {
             if (status === "success") {
                 if (responseText === "success") {
-                    alert("ההרשאות ניתנו בהצלחה");
+                    alertify.alert("ההרשאות ניתנו בהצלחה");
                 } else {
-                    alert(responseText);
+                    alertify.alert(responseText);
                 }
             }
         });
     }
     else
     {
-        alert('בחר משתמש');
+        alertify.alert('בחר משתמש');
     }
     return false;
 }

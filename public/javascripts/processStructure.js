@@ -212,7 +212,7 @@ function deleteStructureClicked() {
                     }
                 }
                 else {
-                    alert(responseText);
+                    alertify.alert(responseText);
                 }
             }
         });
@@ -281,15 +281,20 @@ function seeFormsOpened() {
     button.onclick = () => {
         let selectValue = select.options[select.selectedIndex].innerText;
         let found = false;
-        formsOfProcess.forEach(formName => {
+        formsOfProcess.every(formName => {
             if (formName === selectValue) {
                 found = true;
-                alert('טופס כבר קיים בתהליך זה');
+                return false;
             }
+            return true;
         });
         if (!found) {
             formsOfProcess.push(selectValue);
             seeFormsOpened();
+        }
+        else
+        {
+            alertify.alert('טופס כבר קיים בתהליך זה');
         }
     };
     div.appendChild(button);

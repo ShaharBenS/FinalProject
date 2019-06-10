@@ -9,13 +9,16 @@ function takePartInProcess(processName)
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             if(xhr.responseText === "success")
             {
-                alert('לקיחת חלק בתהליך הצליחה.');
+                alertify.alert('לקיחת חלק בתהליך הצליחה.',()=>{
+                    window.location.href = "/activeProcesses/getAvailableActiveProcessesByUser";
+                });
             }
             else
             {
-                alert('קרתה שגיאה בעת לקיחת חלק בתהליך');
+                alertify.alert('קרתה שגיאה בעת לקיחת חלק בתהליך',()=>{
+                    window.location.href = "/activeProcesses/getAvailableActiveProcessesByUser";
+                });
             }
-            window.location.href = "/activeProcesses/getAvailableActiveProcessesByUser";
         }
     };
     xhr.send(data);

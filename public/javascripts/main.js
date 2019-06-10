@@ -51,15 +51,20 @@ function confirmAddProcessStructureClicked() {
                 return;
             }
             let isProcessExists = false;
-            JSON.parse(xmlHttp.responseText).forEach((structureName) => {
+            JSON.parse(xmlHttp.responseText).every((structureName) => {
                 if (structureName === name) {
                     isProcessExists = true;
-                    alertify.alert("תהליך בעל שם זה כבר קיים");
+                    return false;
                 }
+                return true;
             });
 
             if (!isProcessExists) {
                 window.location.href = '/processStructures/addProcessStructure/?name=' + name;
+            }
+            else
+            {
+                alertify.alert("תהליך בעל שם זה כבר קיים");
             }
         }
     };
@@ -78,7 +83,7 @@ function editProcessStructureClicked() {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if(JSON.parse(xmlHttp.responseText).length < 1)
             {
-                alert('לא קיימים מבני תהליכים במערכת');
+                alertify.alert('לא קיימים מבני תהליכים במערכת');
                 return;
             }
             let selector = document.getElementById("processes_selector");
@@ -135,7 +140,7 @@ function startActiveProcess() {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if(JSON.parse(xmlHttp.responseText).length < 1 || !Array.isArray(JSON.parse(xmlHttp.responseText)))
             {
-                alert('לא קיימים מבני תהליכים במערכת להתחיל');
+                alertify.alert('לא קיימים מבני תהליכים במערכת להתחיל');
                 return;
             }
             let selector = document.getElementById("start-processes-selector");
