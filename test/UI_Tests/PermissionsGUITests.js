@@ -144,6 +144,8 @@ test('type and check', async browser => {
         .click(checkbox4)
         .expect(checkbox4.checked).ok()
         .click(submit)
+        .wait(1000)
+        .pressKey('enter')
         .click(Selector('a[title="דף הבית"]'));
     userName = userToChange;
     await browser.expect(getCurrentUrl()).eql('https://localhost/Home');

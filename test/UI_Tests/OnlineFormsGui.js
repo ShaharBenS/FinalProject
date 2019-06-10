@@ -77,7 +77,6 @@ function insertToDB() {
 fixture('OnlineForms')
     .page('https://localhost')
     .beforeEach(async browser => {
-        await browser.setNativeDialogHandler(() => true);
         await login(browser);
 
     })
@@ -109,7 +108,7 @@ test('enter form page', async browser => {
         .typeText(Selector('#role'), 'התפקיד שלי');
 
     // sign form
-    await browser.click(Selector('#signature_1_sign'));
+    await browser.click(Selector('#signature_1_sign')).wait(1000).pressKey('enter');
     await browser.expect(Selector('#signature_1_sign').hasAttribute('disabled')).ok();
 
 

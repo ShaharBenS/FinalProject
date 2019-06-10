@@ -60,7 +60,7 @@ let submitForm = function () {
     });
     //receiveFormInfo is a function on the opener window that receive the form's data
     oldWin.receiveFormInfo(_formName, info, filledSignatures === signatures);
-    alertify.alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת", ()=>{
+    alertify.alert("הטופס \"" + _formName + "\" נקלט בהצלחה!\nהחלון יסגר כעת", () => {
         window.close();
     });
     return false;
@@ -241,8 +241,6 @@ let setupInputs = function (formName, isForShow, fields, shouldLock) {
         num_of_rows_to_add = 0;
     }
     if (isForShow) {
-        let info = document.createTextNode("טופס דמו של " + formName);
-        document.getElementById("info").appendChild(info);
         setupTables(num_of_rows_to_add, 'every_table');
         disableForm()
     } else {
@@ -478,8 +476,7 @@ let initSignatures = function () {
         load.addEventListener('click', loadListener);
 
         sign.addEventListener('click', function (event) {
-            let ans = confirm('בטוח שאתה רוצה לחתום?' + '\n' + 'לאחר החתימה אין אפשרות לעדכן אותה!' + '\n' + 'שים לב! אם כל החתימות מולאו הטופס ינעל!');
-            if (ans) {
+            let dit = function () {
                 let data = signaturePad.toData();
                 input.value = encodeJSONtoNotJSON(JSON.stringify(data));
                 signaturePad.off();
@@ -487,7 +484,10 @@ let initSignatures = function () {
                 clear.disabled = true;
                 load.disabled = true;
                 sign.disabled = true;
-            }
+            };
+            alertify.confirm('', 'בטוח שאתה רוצה לחתום?' + '\n' + 'לאחר החתימה אין אפשרות לעדכן אותה!' + '\n' + 'שים לב! אם כל החתימות מולאו הטופס ינעל!',
+                dit, () => {
+                });
         });
 
     });
@@ -504,7 +504,4 @@ let initSignatures = function () {
         }
     }
 
-// need to decide if to allow this or not
-//  window.addEventListener("resize", resizeCanvas);
-//  resizeCanvas();
 };
