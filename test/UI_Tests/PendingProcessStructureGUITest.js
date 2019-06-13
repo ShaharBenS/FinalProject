@@ -108,11 +108,19 @@ test('Stage 1 - Check There Is A Pending Process Structure', async browser => {
         .expect(Selector('tbody tr').nth(0).child(0).innerText).eql('תהליך אישור')
         .expect(Selector('tbody tr').nth(0).child(1).innerText).eql('קיילור נבאס - אחראי מיתוג קמפיינים')
         .expect(Selector('tbody tr').nth(0).child(2).innerText).eql('הוספה')
-        .click(Selector('tbody tr').nth(0).child(5))
-        .expect(Selector('tbody tr').nth(0).innerText).eql('אין כרגע מידע בטבלה');
+        .click(Selector('tbody tr').nth(0).child(5));
 }).before(beforeGlobal);
 
-test('Stage 2 - Check That The Process Structure Is Available Now.', async browser => {
+test('Stage 2 - Check There Is No Pending Process Structure', async browser => {
+    await login(browser, 'kutigolberg@outlook.co.il');
+    await browser.click('#pendingProcessStructures');
+    await browser.expect(getCurrentUrl()).eql('https://localhost/processStructures/waitingForApproval/', {
+        timeout: 10000
+    })
+    .expect(Selector('tbody tr').nth(0).innerText).eql('אין כרגע מידע בטבלה');
+});
+
+test('Stage 3 - Check That The Process Structure Is Available Now.', async browser => {
     await login(browser, 'kutigolberg@outlook.co.il');
     await browser.click('[name="startProcessView"]')
         .expect(Selector('#start-processes-selector option').innerText).eql('תהליך אישור');
