@@ -21,7 +21,7 @@
     "express-session": "^1.15.6",
     "form-data": "^2.3.3",
     "formidable": "^1.2.1",
-    "googleapis": "^36.0.0",
+    "googleapis": "^39.1.0",
     "http-errors": "~1.6.2",
     "locks": "^0.2.2",
     "mdbootstrap": "^4.7.4",
